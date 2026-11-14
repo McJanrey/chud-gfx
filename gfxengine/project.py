@@ -7,7 +7,7 @@ sources, and the asset files they use.
 A composition is a 1920x1080 graphic made of layers, bottom to top:
 
     {"id", "name", "layer": 0 (stacking on the output: higher is in front),
-     "layers": [{"id", "name", "type": "image" | "video" | "text" | "rect" | "lottie",
+     "layers": [{"id", "name", "type": "image" | "video" | "text" | "rect" | "lottie" | "ticker",
                  "x", "y", "w", "h", "opacity", "rotation", "visible", "blend",
                  "field": "" (the name it's edited by in Control; "" = fixed),
                  "anim": {"in": {"type", "dur", "delay"}, "out": {...}},
@@ -57,6 +57,11 @@ def blank_layer(kind, **extra):
                       "weight": 700, "italic": False, "scroll": 0, "h": 90})
     elif kind == "rect":
         layer.update({"fill": "#0b6b3a", "radius": 0, "stroke": "#f5c518", "strokeWidth": 0})
+    elif kind == "ticker":
+        # Scrolling strip of items (picture and/or text), typed here or read from a data source's columns.
+        layer.update({"x": 0, "y": 1000, "w": 1920, "h": 70, "items": [{"text": "Follow @SCCSaints", "img": ""}, {"text": "Thanks for watching", "img": ""}],
+                      "source": "", "textCol": "", "imgCol": "", "speed": 120, "gap": 60, "sep": "•", "imgSize": 48, "fade": True,
+                      "font": "Inter", "size": 36, "color": "#ffffff", "weight": 700, "caps": True, "tracking": 0, "italic": False})
     elif kind in ("image", "video", "lottie"):
         layer.update({"src": "", "fit": "contain", "loop": True})
     layer.update(extra)

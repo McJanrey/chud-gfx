@@ -156,6 +156,15 @@
       }
       return box;
     }
+    if (t === "ticker") {
+      const box = el("div", "gfx-ticker", { overflow: "hidden", display: "flex", alignItems: "center", width: "100%", height: "100%" });
+      if (layer.fade) box.style.maskImage = box.style.webkitMaskImage = "linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)";
+      box._layer = layer;
+      box._still = !!opts.still;
+      buildTicker(box);
+      if (!opts.still) tickers.add(box);
+      return box;
+    }
     if (t === "rect") {
       return el("div", "gfx-rect", {
         background: value || "transparent", borderRadius: (layer.radius || 0) + "px",
@@ -210,6 +219,51 @@
     span.textContent = text;
     fit(box);
   }
+
+  // --- ticker: items (picture + text) side by side, twice in a row, sliding forever ---
+  const tickers = new Set();
+  function tickerItems(layer) {
+    let items = layer.items || [];
+    const name = layer.source && Object.keys(ctx.tables || {}).find(k => k.toLowerCase() === layer.source.toLowerCase());
+    if (name) {
+      const rows = ctx.tables[name] || [], head = rows[0] || [];
+      const ti = head.indexOf(layer.textCol), ii = head.indexOf(layer.imgCol);
+      items = rows.slice(1).map(r => ({ text: ti >= 0 ? r[ti] || "" : "", img: ii >= 0 ? r[ii] || "" : "" }));
+    }
+    return items.map(it => ({ text: GFX.resolve(it.text || ""), img: hasTokens(it.img) ? GFX.resolve(it.img).trim() : it.img || "" }))
+      .filter(it => it.text || it.img);
+  }
+  function buildTicker(box) {
+    const layer = box._layer, items = tickerItems(layer), sig = JSON.stringify(items);
+    if (box._sig === sig) return;
+    box._sig = sig;
+    const [family, weight] = GFX.fontFor(layer);
+    const gap = (layer.gap ?? 60) + "px";
+    const group = el("div", "", { display: "flex", alignItems: "center", flex: "none", whiteSpace: "nowrap", paddingRight: gap,
+      fontFamily: family, fontWeight: weight, fontStyle: layer.italic ? "italic" : "normal", fontSize: layer.size + "px", color: layer.color,
+      letterSpacing: ((layer.tracking || 0) / 1000) + "em", textTransform: layer.caps ? "uppercase" : "none" });
+    items.forEach((it, i) => {
+      if (i && layer.sep) group.appendChild(Object.assign(el("span", "", { margin: `0 calc(${gap} / 2)`, opacity: 0.7 }), { textContent: layer.sep }));
+      else if (i) group.appendChild(el("span", "", { width: gap, flex: "none" }));
+      const item = el("span", "", { display: "inline-flex", alignItems: "center", gap: "12px" });
+      if (it.img) { const img = el("img", "", { height: (layer.imgSize || 48) + "px", width: "auto", objectFit: "contain" }); img.draggable = false; img.src = url(encodeURI(it.img)); item.appendChild(img); }
+      if (it.text) item.appendChild(Object.assign(el("span"), { textContent: it.text }));
+      group.appendChild(item);
+    });
+    const row = el("div", "", { display: "flex", alignItems: "center", flex: "none" });
+    row.append(group, group.cloneNode(true));
+    box.replaceChildren(row);
+    if (box._still || !items.length) return;
+    const go = () => {
+      const w = group.offsetWidth || 1;
+      row.getAnimations().forEach(x => x.cancel());
+      row.animate([{ transform: "translateX(0)" }, { transform: `translateX(${-w}px)` }], { duration: (w / Math.max(5, layer.speed || 120)) * 1000, iterations: Infinity });
+    };
+    setTimeout(go, 30);   // a timer, not a frame callback: outputs in a hidden tab or vMix input still start
+    box.querySelectorAll("img").forEach(img => img.addEventListener("load", go, { once: true }));   // widths change as pictures load
+  }
+  // New data or the clock: rebuild a ticker only when its items really changed.
+  setInterval(() => { for (const b of tickers) { if (!b.isConnected) tickers.delete(b); else buildTicker(b); } }, 1000);
 
   // Text that doesn't fit its box: made smaller ("shrink") or narrower ("squeeze").
   function fit(box) {

@@ -132,7 +132,7 @@
     if (!comp) return toast("Make or pick a graphic first", true);
     const { layer } = await api("/api/layer/blank", { type: b.dataset.add });
     snapshot();
-    layer.name = { text: "Text", rect: "Shape", image: "Picture", video: "Video", lottie: "Animation" }[layer.type];
+    layer.name = { text: "Text", rect: "Shape", image: "Picture", video: "Video", lottie: "Animation", ticker: "Ticker" }[layer.type];
     comp.layers.push(layer);
     selected = layer.id;
     changed({ props: true });
@@ -441,6 +441,34 @@
     fill(l.text);
     return ed;
   }
+  // Ticker settings: items typed here (picture + text) or read from a data source's columns.
+  function tickerProps(l) {
+    const save = (redrawProps) => { snapshot(); changed(redrawProps ? { props: true } : { keepList: true }); };
+    const srcNames = ["", "Global", ...(App.state.project.sources || []).map(x => x.name), ...Object.keys(App.state.data.feeds || {})];
+    const head = ((App.state.data.tables || {})[l.source] || [])[0] || [];
+    const colSel = (key, label) => lab(label, h("select", { onchange: e => { l[key] = e.target.value; save(); } },
+      h("option", { value: "" }, "(none)"), head.filter(Boolean).map(c => h("option", { value: c, selected: l[key] === c }, c))));
+    const items = l.items || (l.items = []);
+    // One card per item: its text on top, its picture (optional) under it.
+    const itemRows = items.map((it, i) => h("div", { style: { border: "1px solid var(--line, #333)", borderRadius: "6px", padding: "6px", marginBottom: "6px" } },
+      h("div", { class: "row-gap", style: { alignItems: "center" } },
+        h("input", { value: it.text || "", placeholder: `Item ${i + 1} text`, style: { flex: 1, minWidth: 0 }, onchange: e => { it.text = e.target.value; save(); } }),
+        h("button", { class: "small", title: "Move up", disabled: !i, onclick: () => { items.splice(i - 1, 0, items.splice(i, 1)[0]); save(true); } }, "↑"),
+        h("button", { class: "small danger", title: "Remove", onclick: () => { items.splice(i, 1); save(true); } }, "×")),
+      h("div", { class: "row-gap", style: { alignItems: "center", marginTop: "4px" } }, h("span", { class: "muted small" }, "Picture"),
+        assetSelect("image", it.img, v => { it.img = v; save(true); }))));
+    return h("div", { class: "sect" }, h("h3", {}, "Ticker"),
+      lab("Items from", h("select", { onchange: e => { l.source = e.target.value; l.textCol = l.imgCol = ""; save(true); } },
+        srcNames.map(n => h("option", { value: n, selected: (l.source || "") === n }, n || "The list below")))),
+      l.source ? h("div", { class: "grid2" }, colSel("textCol", "Text column"), colSel("imgCol", "Picture column"))
+        : h("div", {}, ...itemRows, h("button", { class: "small", onclick: () => { items.push({ text: "", img: "" }); save(true); } }, "+ Add item")),
+      h("div", { class: "grid3" }, lab("Speed px/s", bind(l, "speed", "number", { min: 5, step: 10 })),
+        lab("Gap", bind(l, "gap", "number", { min: 0, step: 10 })), lab("Separator", bind(l, "sep", "text"))),
+      h("div", { class: "grid3" }, lab("Picture height", bind(l, "imgSize", "number", { min: 8 })), lab("Size", bind(l, "size", "number", { min: 1 })),
+        bind(l, "color", "color", { label: "Colour" })),
+      lab("Font", h("select", { onchange: e => { snapshot(); l.font = e.target.value; changed({ props: true }); } }, fontOptions(l.font))),
+      h("div", { class: "row-gap" }, bind(l, "caps", "check", { label: "ALL CAPS" }), bind(l, "fade", "check", { label: "Fade the edges" })));
+  }
   // Insert menu for text layers: data fields, the clock and countdowns, so nobody types {{...}} codes by hand.
   function insertPicker(l, textBox) {
     const put = token => textBox.insertCode(token);
@@ -509,7 +537,7 @@
     if (!l) return renderCompProps();
     const sections = [];
     sections.push(h("div", { class: "sect" },
-      h("h3", {}, { text: "Text", rect: "Shape", image: "Picture", video: "Video", lottie: "Lottie animation" }[l.type] + " layer"),
+      h("h3", {}, { text: "Text", rect: "Shape", image: "Picture", video: "Video", lottie: "Lottie animation", ticker: "Ticker" }[l.type] + " layer"),
       lab("Name", bind(l, "name", "text")),
       h("label", { title: "Give it a name to change it from Control (and from data)" }, "Field (changed from Control)",
         h("div", { class: "row-gap" },
@@ -549,6 +577,8 @@
           lab("Scroll px/s", bind(l, "scroll", "number", { min: 0, step: 10 }))),
         h("div", { class: "row-gap" }, bind(l, "caps", "check", { label: "ALL CAPS" }), bind(l, "italic", "check", { label: "Italic" }),
           bind(l, "shadow", "check", { label: "Shadow" }))));
+    } else if (l.type === "ticker") {
+      sections.push(tickerProps(l));
     } else if (l.type === "rect") {
       sections.push(h("div", { class: "sect" }, h("h3", {}, "Shape"),
         h("div", { class: "grid2" }, bind(l, "fill", "color", { label: "Fill" }), lab("Corner radius", bind(l, "radius", "number", { min: 0 }))),
