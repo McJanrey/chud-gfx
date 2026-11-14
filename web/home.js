@@ -246,7 +246,7 @@ App.on(s => {
     list.dataset.sig = sig;
     list.replaceChildren(...rows.map(r => {
       const t = `{{Global!${r[0]}}}`;
-      return h("code", { title: "Copy", onclick: () => copy(t) }, t);
+      return h("button", { class: "small", title: "Copy, then paste into a text layer", onclick: () => copy(t, r[0]) }, r[0]);
     }));
   }
   function renderFeeds(s) {

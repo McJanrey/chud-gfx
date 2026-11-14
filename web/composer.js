@@ -388,23 +388,70 @@
   }
 
   // An input bound to a layer property.
-  // Insert menu for text layers: data fields, the clock and countdowns, so nobody types {{...}} codes by hand.
-  function insertPicker(l, textBox) {
-    const ta = textBox.tagName === "TEXTAREA" ? textBox : textBox.querySelector("textarea");
-    const put = token => {
+  // Plain-words names for the {{...}} codes, so the text box shows "Time (12-hour)" instead of {{time}}.
+  function codeLabel(code) {
+    const c = code.slice(2, -2).trim();
+    if (c === "time") return "Time (12-hour)";
+    if (c === "time24") return "Time (24-hour)";
+    if (c === "date") return "Date";
+    let m = c.match(/^countdown:(\d{1,2}):(\d{2})$/);
+    if (m) { const hh = +m[1]; return `Countdown to ${(hh % 12) || 12}:${m[2]} ${hh < 12 ? "AM" : "PM"}`; }
+    m = c.match(/^([^!]+)!(.+)$/);
+    if (!m) return c;
+    const [, src, ref] = m;
+    const cell = ref.match(/^([A-Z]{1,3})(\d+)$/), col = ref.match(/^(.+)#(\d+)$/);
+    return `${src} › ` + (cell ? `cell ${ref}` : col ? `${col[1]}, row ${col[2]}` : ref);
+  }
+  // Text box that shows codes as chips. l.text keeps the real codes; the chips are only how they look.
+  function tokenEditor(l) {
+    const chip = code => h("span", { class: "code-chip", contenteditable: "false", "data-code": code, title: code,
+      style: { display: "inline-block", padding: "0 6px", margin: "0 1px", borderRadius: "6px", fontSize: "12px", lineHeight: "18px",
+        background: "rgba(80,150,255,.22)", border: "1px solid rgba(80,150,255,.55)", whiteSpace: "nowrap", userSelect: "all" } }, codeLabel(code));
+    const ed = h("div", { class: "token-edit", contenteditable: "true", spellcheck: "false", role: "textbox", "aria-multiline": "true",
+      style: { minHeight: "54px", padding: "6px 8px", border: "1px solid var(--line, #333)", borderRadius: "6px", background: "var(--input-bg, #0f1115)",
+        whiteSpace: "pre-wrap", lineHeight: "22px", outline: "none", cursor: "text" } });
+    const fill = text => ed.replaceChildren(...String(text || "").split(/(\{\{[^{}]+\}\})/).filter(Boolean)
+      .map(part => /^\{\{[^{}]+\}\}$/.test(part) ? chip(part) : document.createTextNode(part)));
+    // DOM back to text: chips become their codes, line breaks become \n.
+    const read = node => [...node.childNodes].map(n => n.nodeType === 3 ? n.nodeValue
+      : n.dataset && n.dataset.code ? n.dataset.code
+      : n.nodeName === "BR" ? "\n"
+      : (n.nodeName === "DIV" || n.nodeName === "P" ? "\n" : "") + read(n)).join("");
+    let range = null, dirty = false;
+    const keepRange = () => { const sel = getSelection(); if (sel.rangeCount && ed.contains(sel.anchorNode)) range = sel.getRangeAt(0).cloneRange(); };
+    const sync = () => { l.text = read(ed).replace(/^\n/, ""); dirty = true; pending = true; saveSoon(); redraw(); };
+    ed.addEventListener("input", () => { sync(); keepRange(); });
+    ["keyup", "mouseup", "focus"].forEach(t => ed.addEventListener(t, keepRange));
+    ed.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); document.execCommand("insertLineBreak"); } });
+    ed.addEventListener("paste", e => {   // pasted codes turn into chips too
+      e.preventDefault();
+      const t = (e.clipboardData || window.clipboardData).getData("text");
+      document.execCommand("insertText", false, t);
+      if (/\{\{[^{}]+\}\}/.test(t)) { snapshot(); fill(read(ed)); sync(); }
+    });
+    ed.addEventListener("blur", () => { if (dirty) { dirty = false; snapshot(); changed({ keepList: true }); } });
+    ed.insertCode = code => {
       snapshot();
-      const t = l.text || "", at = ta && document.body.contains(ta) ? ta.selectionStart : t.length;
-      l.text = t.slice(0, at) + token + t.slice(at);
+      const c = chip(code);
+      if (range && ed.contains(range.startContainer)) { range.deleteContents(); range.insertNode(c); }
+      else ed.appendChild(c);
+      l.text = read(ed).replace(/^\n/, "");
       changed({ props: true });
     };
-    const sources = (App.state.project.sources || []).map(x => x.name);
+    fill(l.text);
+    return ed;
+  }
+  // Insert menu for text layers: data fields, the clock and countdowns, so nobody types {{...}} codes by hand.
+  function insertPicker(l, textBox) {
+    const put = token => textBox.insertCode(token);
+    const sources = ["Global", ...(App.state.project.sources || []).map(x => x.name), ...Object.keys(App.state.data.feeds || {})];
     const fieldSel = h("select", { style: { flex: 1, minWidth: 0 } });
     const rowIn = h("input", { type: "number", min: 1, value: 1, title: "Row under the headers", style: { width: "56px" }, hidden: true });
     const srcSel = h("select", { style: { flex: 1, minWidth: 0 }, onchange: () => fillFields() },
       sources.length ? sources.map(n => h("option", { value: n }, n)) : [h("option", { value: "" }, "No data sources yet")]);
     function fillFields() {
       const name = srcSel.value, rows = (App.state.data.tables || {})[name] || [];
-      const labels = rows.filter(r => r[0] && r.length > 1).map(r => h("option", { value: `{{${name}!${r[0]}}}` }, `${r[0]}  (${String(r[1] ?? "").slice(0, 24)})`));
+      const labels = rows.filter((r, i) => r[0] && r.length > 1 && !(i === 0 && name === "Global")).map(r => h("option", { value: `{{${name}!${r[0]}}}` }, `${r[0]}  (${String(r[1] ?? "").slice(0, 24)})`));
       const cols = (rows[0] || []).filter(Boolean).map(c => h("option", { value: `{{${name}!${c}#ROW}}`, "data-col": "1" }, `${c} column`));
       fieldSel.replaceChildren(...(rows.length ? [h("optgroup", { label: "Value next to a label" }, labels), h("optgroup", { label: "A column, by row" }, cols)]
         : [h("option", { value: "" }, name ? "No data read yet" : "Add a source on the Data page")]));
@@ -484,7 +531,7 @@
 
     if (l.type === "text") {
       const missing = !GFX.hasFont(l.font);
-      const textBox = bind(l, "text", "textarea");
+      const textBox = tokenEditor(l);
       sections.push(h("div", { class: "sect" }, h("h3", {}, "Text"),
         lab("Text", textBox),
         insertPicker(l, textBox),
