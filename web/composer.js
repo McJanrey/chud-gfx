@@ -377,6 +377,39 @@
   }
 
   // An input bound to a layer property.
+  // Insert menu for text layers: data fields, the clock and countdowns, so nobody types {{...}} codes by hand.
+  function insertPicker(l, textBox) {
+    const ta = textBox.tagName === "TEXTAREA" ? textBox : textBox.querySelector("textarea");
+    const put = token => {
+      snapshot();
+      const t = l.text || "", at = ta && document.body.contains(ta) ? ta.selectionStart : t.length;
+      l.text = t.slice(0, at) + token + t.slice(at);
+      changed({ props: true });
+    };
+    const sources = (App.state.project.sources || []).map(x => x.name);
+    const fieldSel = h("select", { style: { flex: 1, minWidth: 0 } });
+    const rowIn = h("input", { type: "number", min: 1, value: 1, title: "Row under the headers", style: { width: "56px" }, hidden: true });
+    const srcSel = h("select", { style: { flex: 1, minWidth: 0 }, onchange: () => fillFields() },
+      sources.length ? sources.map(n => h("option", { value: n }, n)) : [h("option", { value: "" }, "No data sources yet")]);
+    function fillFields() {
+      const name = srcSel.value, rows = (App.state.data.tables || {})[name] || [];
+      const labels = rows.filter(r => r[0] && r.length > 1).map(r => h("option", { value: `{{${name}!${r[0]}}}` }, `${r[0]}  (${String(r[1] ?? "").slice(0, 24)})`));
+      const cols = (rows[0] || []).filter(Boolean).map(c => h("option", { value: `{{${name}!${c}#ROW}}`, "data-col": "1" }, `${c} column`));
+      fieldSel.replaceChildren(...(rows.length ? [h("optgroup", { label: "Value next to a label" }, labels), h("optgroup", { label: "A column, by row" }, cols)]
+        : [h("option", { value: "" }, name ? "No data read yet" : "Add a source on the Data page")]));
+      fieldSel.onchange();
+    }
+    fieldSel.onchange = () => { const o = fieldSel.selectedOptions[0]; rowIn.hidden = !(o && o.dataset.col); };
+    fillFields();
+    const clockSel = h("select", { style: { flex: 1 }, onchange: () => { at.hidden = clockSel.value !== "countdown"; } },
+      [["time", "Time (12-hour)"], ["time24", "Time (24-hour)"], ["date", "Date"], ["countdown", "Countdown to…"]].map(([v, t]) => h("option", { value: v }, t)));
+    const at = h("input", { type: "time", value: "19:30", hidden: true, style: { width: "110px" } });
+    return h("div", { class: "insert-picker", style: { display: "flex", flexDirection: "column", gap: "6px", margin: "6px 0 10px" } },
+      h("div", { class: "row-gap" }, h("span", { class: "muted small", style: { width: "44px" } }, "Data"), srcSel, fieldSel, rowIn,
+        h("button", { class: "small", onclick: () => { if (fieldSel.value) put(fieldSel.value.replace("ROW", Math.max(1, +rowIn.value || 1))); } }, "Insert")),
+      h("div", { class: "row-gap" }, h("span", { class: "muted small", style: { width: "44px" } }, "Clock"), clockSel, at,
+        h("button", { class: "small", onclick: () => put(clockSel.value === "countdown" ? `{{countdown:${at.value || "19:30"}}}` : `{{${clockSel.value}}}`) }, "Insert")));
+  }
   function bind(l, key, kind, extra) {
     extra = extra || {};
     const set = v => { snapshot(); l[key] = v; changed({ keepList: key !== "name" && key !== "field" }); };
@@ -440,9 +473,10 @@
 
     if (l.type === "text") {
       const missing = !GFX.hasFont(l.font);
+      const textBox = bind(l, "text", "textarea");
       sections.push(h("div", { class: "sect" }, h("h3", {}, "Text"),
-        lab("Text", bind(l, "text", "textarea")),
-        h("div", { class: "muted small" }, "Use data: {{Source!B2}} · clock: {{time}} · {{countdown:19:30}}"),
+        lab("Text", textBox),
+        insertPicker(l, textBox),
         lab("Font", h("select", { onchange: e => { snapshot(); l.font = e.target.value; changed({ props: true }); } }, fontOptions(l.font))),
         missing ? h("div", { class: "warnline" }, `"${l.font}" isn't added: a similar font stands in. Add the font file in Assets.`) : null,
         h("div", { class: "grid3" }, lab("Size", bind(l, "size", "number", { min: 1 })), bind(l, "color", "color", { label: "Colour" }),
