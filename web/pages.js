@@ -3,19 +3,55 @@
 "use strict";
 
 // --- adding files ----------------------------------------------------------------
-async function upload(file) {
+async function upload(file, graphic) {
   const fps = +($("#seq-fps") && $("#seq-fps").value) || 30;
-  toast(`Adding ${file.name}…`);
-  const r = await fetch(`/api/upload?fps=${fps}`, { method: "POST", headers: { "X-Filename": encodeURIComponent(file.name) }, body: file });
-  const data = await r.json().catch(() => ({}));
+  toast(graphic ? `Importing ${file.name}…` : `Adding ${file.name}…`);
+  const r = await fetch(`/api/upload?fps=${fps}${graphic ? "&graphic=1" : ""}`, { method: "POST", headers: { "X-Filename": encodeURIComponent(file.name) }, body: file });
+  let data = await r.json().catch(() => ({}));
   if (!r.ok || data.error) { toast(`${file.name}: ${data.error || r.status}`, true); return null; }
-  if (data.comps && data.comps.length) {
+  if (data.aep) {
+    // An After Effects project with several compositions: which one to render.
+    const comp = await pickComp(file.name, data.aep.comps);
+    if (comp == null) return null;
+    data = await api("/api/aep/render", { file: data.aep.file, comp, graphic: !!graphic }).catch(() => null);
+    if (!data) return null;
+  }
+  if (data.job && /\.aepx?$/i.test(file.name)) toast(`After Effects is rendering ${file.name}… (Assets shows how far)`);
+  else if (data.imported) toast(data.comps.length === 1 ? `Imported the graphic "${data.comps[0].name}"` : `Imported ${data.comps.length} graphics`);
+  else if (data.comps && data.comps.length) {
     const c = data.comps[0];
     toast(`Made the graphic "${c.name}" (${c.layers.length} layers)` + (data.missing_fonts && data.missing_fonts.length ? ` - add these fonts: ${data.missing_fonts.join(", ")}` : ""));
   } else if (data.job) toast(`Converting ${file.name}…`);
   else if (data.sources && data.sources.length) toast(`Added ${file.name} as a data source`);
   else toast(`Added ${file.name}`);
   return data;
+}
+// Waits for a background job (converting, rendering) to finish: its result, or null.
+async function waitJob(id) {
+  for (;;) {
+    const j = ((App.state && App.state.jobs) || []).find(x => x.id === id);
+    if (j && j.status === "done") return j.result || {};
+    if (j && j.status === "error") { toast(j.error, true); return null; }
+    await new Promise(res => setTimeout(res, 400));
+  }
+}
+// Picks one of an After Effects project's compositions (null: cancelled).
+function pickComp(name, comps) {
+  return new Promise(resolve => {
+    const sel = h("select", {}, comps.map(c => h("option", { value: c }, c)));
+    const done = v => { back.remove(); resolve(v); };
+    const back = h("div", { class: "dialog-back" },
+      h("div", { class: "dialog panel" },
+        h("div", { class: "pad" },
+          h("h3", {}, "Which composition?"),
+          h("p", { class: "muted small" }, `${name} has ${comps.length} compositions. After Effects renders the one you pick as see-through video.`),
+          h("label", {}, "Composition", sel)),
+        h("div", { class: "dialog-btns" }, h("span", { style: { flex: 1 } }),
+          h("button", { type: "button", onclick: () => done(null) }, "Cancel"),
+          h("button", { type: "button", class: "primary", onclick: () => done(sel.value) }, "Render"))));
+    document.body.append(back);
+    sel.focus();
+  });
 }
 async function uploadAll(files) {
   for (const f of files) await upload(f);
@@ -283,6 +319,25 @@ addEventListener("drop", e => {
     if (t.type === "cut") body.push(h("p", { class: "muted small" }, "Straight away, no animation."));
     if (t.type === "stinger") {
       const videos = App.assets.filter(a => a.kind === "video");
+      // Adding a video here picks it once it's ready (converted or rendered).
+      const addFile = h("input", { type: "file", hidden: true, accept: "video/*,.mov,.webm,.mxf,.zip,.aep,.aepx",
+        onchange: async e => {
+          const f = e.target.files[0];
+          e.target.value = "";
+          if (!f) return;
+          let r = await upload(f);
+          if (r && r.job) r = await waitJob(r.job);
+          const src = r && r.assets && r.assets.find(p => /\.(webm|mp4|m4v)$/i.test(p));
+          if (!src) return;
+          for (let i = 0; i < 40 && !App.assets.some(a => a.path === src); i++) await new Promise(res => setTimeout(res, 150));
+          // (the list may have been redrawn from the engine since: this stinger as it is now)
+          const cur = list.find(x => x.id === t.id);
+          if (!cur) return;
+          cur.src = src;
+          save();
+          render(true);
+          detect(cur);
+        } });
       const vid = h("video", { src: t.src ? "/" + encodeURI(t.src) : "", muted: true, playsInline: true, preload: "auto" });
       const asset = videos.find(a => a.path === t.src);
       const dur = asset ? asset.duration : 0;
@@ -296,8 +351,11 @@ addEventListener("drop", e => {
       vid.addEventListener("loadeddata", () => { vid.currentTime = (t.cut || 0) / 1000; });
       body.push(
         h("label", {}, "Video (see-through WebM, or any video; .mov is converted when added)",
-          h("select", { onchange: e => { set("src", e.target.value, true); detect(t); } }, h("option", { value: "" }, "(pick one)"),
-            videos.map(a => h("option", { value: a.path, selected: a.path === t.src }, a.path.replace(/^assets\//, "") + (a.alpha ? "" : " (not see-through)"))))),
+          h("div", { class: "pick" },
+            h("select", { onchange: e => { set("src", e.target.value, true); detect(t); } }, h("option", { value: "" }, "(pick one)"),
+              videos.map(a => h("option", { value: a.path, selected: a.path === t.src }, a.path.replace(/^assets\//, "") + (a.alpha ? "" : " (not see-through)")))),
+            h("button", { class: "small", title: "Add a video: .mov from After Effects (ProRes 4444 / Animation with alpha), .webm, .mp4, an After Effects project (.aep) or a PNG sequence (.zip)",
+              onclick: () => addFile.click() }, "+"), addFile)),
         h("div", { class: "tr-video" }, vid),
         h("div", { class: "scrub" }, range, mark),
         h("div", { class: "grid3" },
@@ -370,10 +428,38 @@ addEventListener("drop", e => {
         urlRow("Program", base(host) + "/output"),
         urlRow("Preview", base(host) + "/output?bus=preview"),
         host === "localhost" ? null : urlRow("Control panel", base(host) + "/control"))),
-      h("div", { class: "folder-title" }, "One graphic each (shows when it's on Program)"),
-      ...s.project.compositions.map(c => urlRow(c.name, base(hosts[hosts.length - 1]) + "/output?comp=" + c.id)));
+      h("div", { class: "folder-title" }, "One graphic each (always shows its graphic while switched on; off, it shows nothing and saves the PC's work)"),
+      ...s.project.compositions.map(c => {
+        const row = urlRow(c.name, base(hosts[hosts.length - 1]) + "/output?comp=" + c.id);
+        const on = (s.global.outputs_on || []).includes(c.id);
+        row.prepend(h("label", { class: "toggle out-on", title: on ? "Showing: switch off to save the PC's work" : "Off: switch on to show this graphic" },
+          h("input", { type: "checkbox", checked: on, onchange: e => {
+            const ids = new Set(App.state.global.outputs_on || []);
+            if (e.target.checked) ids.add(c.id); else ids.delete(c.id);
+            api("/api/global", { global: { outputs_on: [...ids] } });
+          } }), on ? "On" : "Off"));
+        return row;
+      }));
+    const plain = (label, text) => h("div", { class: "url-row" }, h("span", { class: "lbl" }, label), h("code", {}, text),
+      h("button", { class: "small", onclick: () => copy(text, label) }, "Copy"));
+    $("#companion-info").replaceChildren(
+      ...hosts.map(host => plain(host === "localhost" ? "On this PC" : "From another PC", host === "localhost" ? "127.0.0.1" : host)),
+      plain("Port", String(s.app.port)));
     const allow = $("#net-allow");
     allow.checked = s.app.network;
+    // The one network other PCs reach it on (an NDI VLAN, say), or every one.
+    const pick = $("#net-address"), net = s.app.network_address || "";
+    const nets = [...(s.app.all_addresses || [])];
+    if (net && !nets.includes(net)) nets.push(net);
+    const opts = [["", "Every network on this PC"], ...nets.map(a => [a, a + (a === net && !(s.app.all_addresses || []).includes(a) ? " (not connected now)" : "")])];
+    if (pick.dataset.sig !== JSON.stringify(opts)) {
+      pick.dataset.sig = JSON.stringify(opts);
+      pick.replaceChildren(...opts.map(([v, t]) => h("option", { value: v }, t)));
+    }
+    if (document.activeElement !== pick) pick.value = net;
+    $("#net-address-note").textContent = net
+      ? `Only ${net} and this PC: the outputs, control panel and engine finding are on that network alone.`
+      : "Every network this PC is on. Pick one (your NDI VLAN, say) to keep the engine to it.";
     const name = $("#net-name");
     if (document.activeElement !== name) name.value = s.app.name;
     // Export list.
@@ -389,13 +475,22 @@ addEventListener("drop", e => {
     const r = await fetch(scan ? "/api/scan" : "/api/engines").then(r => r.json()).catch(() => ({ engines: [] }));
     box.replaceChildren(...(r.engines.length ? r.engines.map(e => h("div", { class: "engine" },
       h("b", {}, e.name), h("span", { class: "muted" }, `${e.ip}:${e.port}`), h("div", { class: "spacer" }),
+      h("button", { class: "small", title: "Send the graphics ticked under Export to that engine, with their files", onclick: () => sendTo(e) }, "Send graphics"),
       h("button", { class: "small", onclick: () => copy(`${e.url}/output`, "its Program address") }, "Copy output"),
       h("a", { class: "btn small", href: `${e.url}/control`, target: "_blank" }, "Open"))) :
       [h("div", { class: "muted small" }, scan ? "No other engines found." : "None seen yet. Engines that allow the network show up here by themselves; Scan looks for them too.")]));
   }
+  async function sendTo(e) {
+    const ids = App.comps().filter(c => chosen.has(c.id)).map(c => c.id);
+    if (!ids.length) return toast("Tick the graphics to send under Export", true);
+    toast(`Sending ${ids.length} graphic(s) to ${e.name}…`);
+    const r = await api("/api/share/send", { url: e.url, comps: ids }).catch(() => null);
+    if (r) toast(`${e.name} has them now: ${r.comps.join(", ")}`);
+  }
   $("#net-scan").addEventListener("click", () => engines(true));
   $("#net-allow").addEventListener("change", e => api("/api/settings", { allow_network: e.target.checked }));
   $("#net-name").addEventListener("change", e => api("/api/settings", { name: e.target.value.trim() }));
+  $("#net-address").addEventListener("change", e => api("/api/settings", { network_address: e.target.value }));
   $("#export-all").addEventListener("click", () => { App.comps().forEach(c => chosen.add(c.id)); render(); });
   $("#export-none").addEventListener("click", () => { chosen.clear(); render(); });
   $("#export-go").addEventListener("click", () => {
@@ -403,6 +498,11 @@ addEventListener("drop", e => {
     const ids = App.comps().filter(c => chosen.has(c.id)).map(c => c.id);
     const name = ids.length === 1 ? App.comp(ids[0]).name : App.state.project.name;
     location.href = `/api/export?comps=${ids.join(",")}&name=${encodeURIComponent(name)}`;
+  });
+  $("#share-go").addEventListener("click", () => {
+    if (!chosen.size) return toast("Pick some graphics to export", true);
+    const ids = App.comps().filter(c => chosen.has(c.id)).map(c => c.id);
+    location.href = `/api/share?comps=${ids.join(",")}`;
   });
   $("#ws-folder").addEventListener("click", () => api("/api/open", { what: "workspace" }));
 
@@ -422,7 +522,7 @@ addEventListener("drop", e => {
   setInterval(() => { if (App.tab === "outputs") pollLog(); }, 1500);
   let sig = "";
   App.on(s => {
-    const now = JSON.stringify([s.app, s.project.compositions.map(c => [c.id, c.name])]);
+    const now = JSON.stringify([s.app, s.project.compositions.map(c => [c.id, c.name]), s.global.outputs_on]);
     if (App.tab === "outputs" && now !== sig) { sig = now; render(); }
   });
   pages.outputs = { shown: () => { sig = ""; render(); engines(false); pollLog(); } };
