@@ -1320,7 +1320,7 @@
     },
     {
      "id": "l3dee81c5",
-     "name": "07:25 PM EST LOCAL TIME",
+     "name": "Local time",
      "type": "text",
      "x": 70,
      "y": 879,
@@ -1330,7 +1330,7 @@
      "rotation": 0,
      "visible": true,
      "blend": "normal",
-     "field": "07:25 PM EST LOCAL TIME",
+     "field": "Local time",
      "anim": {
       "in": {
        "type": "slide-up",
@@ -1343,7 +1343,7 @@
        "delay": 0
       }
      },
-     "text": "{{time}} EST\nLOCAL TIME",
+     "text": "{{time}}\nLOCAL TIME",
      "font": "Gotham-Bold",
      "size": 28.0,
      "color": "#ffffff",
