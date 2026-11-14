@@ -202,7 +202,7 @@
     return null;
   }
   // Snapping to the canvas' edges and middle and other layers' edges and middles.
-  function snap(l, moving) {
+  function snap(l, moving, resizing) {
     const tol = 6 / scale;
     const xs = [0, GFX.W / 2, GFX.W], ys = [0, GFX.H / 2, GFX.H];
     for (const o of comp.layers) {
@@ -221,6 +221,13 @@
       if (bx) { l.x += bx.d; guides.push({ x: bx.c }); }
       const by = best([[l.y, 0], [l.y + l.h / 2, 0], [l.y + l.h, 0]], ys);
       if (by) { l.y += by.d; guides.push({ y: by.c }); }
+    } else if (resizing) {
+      // Resizing: only the edges being dragged snap; the opposite edges stay put.
+      const one = (edge, cands, apply, guide) => { const b = best([[edge, 0]], cands); if (b && apply(b.d)) guides.push(guide(b.c)); };
+      if (resizing.includes("e")) one(l.x + l.w, xs, d => l.w + d >= 4 && (l.w += d, true), c => ({ x: c }));
+      if (resizing.includes("w")) one(l.x, xs, d => l.w - d >= 4 && (l.x += d, l.w -= d, true), c => ({ x: c }));
+      if (resizing.includes("s")) one(l.y + l.h, ys, d => l.h + d >= 4 && (l.h += d, true), c => ({ y: c }));
+      if (resizing.includes("n")) one(l.y, ys, d => l.h - d >= 4 && (l.y += d, l.h -= d, true), c => ({ y: c }));
     }
     return guides;
   }
@@ -268,6 +275,10 @@
           else { w = hh * ratio; if (handle.includes("w")) x = start.x + start.w - w; }
         }
         Object.assign(l, { x: Math.round(x), y: Math.round(y), w: Math.round(w), h: Math.round(hh) });
+        if (!ev.ctrlKey && !ev.shiftKey) {   // Shift keeps the exact shape, so no snapping then
+          guides = snap(l, false, handle);
+          Object.assign(l, { x: Math.round(l.x), y: Math.round(l.y), w: Math.round(l.w), h: Math.round(l.h) });
+        }
       }
       pending = true;
       saveSoon();
@@ -549,7 +560,7 @@
           h("button", { class: "small", onclick: () => allAnim("fade") }, "All fade"),
           h("button", { class: "small", onclick: () => allAnim("none") }, "None"))),
       h("div", { class: "sect" }, h("h3", {}, "Shortcuts"),
-        h("p", { class: "muted small" }, "Drag to move (Shift: straight, Ctrl: no snapping), handles to resize (Shift: keep shape). Arrows nudge (Shift: 10). Ctrl+D duplicates, Delete removes, Ctrl+Z / Ctrl+Shift+Z undo / redo. Alt+click picks the layer underneath.")));
+        h("p", { class: "muted small" }, "Drag to move (Shift: straight, Ctrl: no snapping), handles to resize (snaps too; Shift: keep shape, Ctrl: no snapping). Arrows nudge (Shift: 10). Ctrl+D duplicates, Delete removes, Ctrl+Z / Ctrl+Shift+Z undo / redo. Alt+click picks the layer underneath.")));
   }
   function allAnim(type) {
     snapshot();
