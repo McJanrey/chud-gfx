@@ -1,7 +1,7 @@
-# Builds the Chud GFX desktop app (ChudGFX.exe) on Windows and publishes it as
+# Builds the Chud GFX Baby desktop app (ChudGFX.exe) on Windows and publishes it as
 # a GitHub release (v1.0.<run number>) with ChudGFX-windows.zip. The app
 # checks the latest release on launch and offers to update itself. Each
-# release also gets Chud-GFX-Setup.exe, an installer that downloads the
+# release also gets Chud-GFX-Baby-Setup.exe, an installer that downloads the
 # latest release from GitHub when it runs.
 #
 # A commit with [no release] in its message builds and tests without publishing.
@@ -88,7 +88,7 @@ jobs:
           Compress-Archive -Path dist\ChudGFX\* -DestinationPath ChudGFX-windows.zip
           $notes = git log -1 --format=%B | Where-Object { $_ -notmatch '^(Co-Authored-By|Claude-Session):' }
           $notes = ($notes -join "`n").Trim()
-          gh release create "$env:VERSION" ChudGFX-windows.zip dist\Chud-GFX-Setup.exe --target "${{ github.sha }}" --title "Chud GFX $env:VERSION" --notes "$notes"
+          gh release create "$env:VERSION" ChudGFX-windows.zip dist\Chud-GFX-Baby-Setup.exe --target "${{ github.sha }}" --title "Chud GFX Baby $env:VERSION" --notes "$notes"
         env:
           GH_TOKEN: ${{ github.token }}
 
@@ -96,9 +96,9 @@ jobs:
         if: "!contains(github.event.head_commit.message, '[no release]')"
         shell: pwsh
         run: |
-          $dir = "$env:RUNNER_TEMP\Chud GFX test"
+          $dir = "$env:RUNNER_TEMP\Chud GFX Baby test"
           $installArgs = '/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', "/DIR=`"$dir`"", '/MERGETASKS="!desktopicon"', '/LOG=install.log'
-          $p = Start-Process dist\Chud-GFX-Setup.exe -ArgumentList $installArgs -PassThru -Wait
+          $p = Start-Process dist\Chud-GFX-Baby-Setup.exe -ArgumentList $installArgs -PassThru -Wait
           Get-Content install.log -Tail 25
           if ($p.ExitCode -ne 0) { throw "Installer failed (exit code $($p.ExitCode))" }
           if (-not (Test-Path "$dir\ChudGFX.exe")) { throw "ChudGFX.exe wasn't installed" }

@@ -22,7 +22,7 @@ def add_arguments(parser):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Chud GFX")
+    parser = argparse.ArgumentParser(description="Chud GFX Baby")
     add_arguments(parser)
     engine = build_engine(parser.parse_args())
     start(engine)

@@ -1,4 +1,4 @@
-// The GFX Engine player: draws graphics (compositions of layers) and plays
+// The GFX Baby player: draws graphics (compositions of layers) and plays
 // them in and out, and the transitions between Preview and Program.
 //
 // Used by the outputs (output.html), the control panel's thumbnails and

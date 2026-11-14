@@ -1,4 +1,4 @@
-r"""Entry point for the desktop build (PyInstaller): starts the GFX Engine app."""
+r"""Entry point for the desktop build (PyInstaller): starts the GFX Baby app."""
 
 import sys
 

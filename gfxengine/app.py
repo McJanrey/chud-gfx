@@ -687,6 +687,6 @@ def start(engine):
     clean_up_old_update()
     engine.updater.check_in_background()
     threading.Thread(target=engine.sources.refresh, daemon=True).start()
-    log(f"GFX Engine {engine.updater.current} running - control panel http://localhost:{port}/control")
+    log(f"GFX Baby {engine.updater.current} running - control panel http://localhost:{port}/control")
     log(f"Program output (browser source, 1920x1080): http://localhost:{port}/output")
     return engine.server

@@ -17,7 +17,7 @@ from .app import start
 from .config import DATA_DIR
 from .log import log
 
-TITLE = "Chud GFX"
+TITLE = "Chud GFX Baby"
 
 
 def message_box(text, title=TITLE, error=False):
@@ -98,7 +98,7 @@ def main():
     if sys.stderr is None:
         sys.stderr = open(os.devnull, "w")
 
-    parser = argparse.ArgumentParser(description="Chud GFX desktop app")
+    parser = argparse.ArgumentParser(description="Chud GFX Baby desktop app")
     add_arguments(parser)
     parser.add_argument("--debug", action="store_true", help="allow right-click > Inspect in the window")
     parser.add_argument("--smoke-test", action="store_true", help=argparse.SUPPRESS)
@@ -138,7 +138,7 @@ def main():
         log(f"Couldn't open the app window ({e!r}); using the web browser instead", "warn")
         webbrowser.open(url)
         if own_server:
-            message_box("The GFX Engine has opened in your web browser.\n\n"
+            message_box("The GFX Baby has opened in your web browser.\n\n"
                         "It keeps running until you close this box.")
     finally:
         if own_server:

@@ -1,9 +1,9 @@
-// The control panel's "GFX Engine" page, the same in every SCC HUD (the GFX
-// Engine repository keeps the original, in hud-link/): find Chud GFXs on
+// The control panel's "GFX Baby" page, the same in every SCC HUD (the GFX
+// Engine repository keeps the original, in hud-link/): find Chud GFX Babys on
 // the network, connect to one (this HUD's game and series go to it), and take
 // its global configuration (team names, short names, logos) into the HUD.
 //
-// Load it before shell.js, with {"id": "engine", "label": "GFX Engine",
+// Load it before shell.js, with {"id": "engine", "label": "GFX Baby",
 // "icon": "engine"} in window.SHELL.pages. The HUD serves /api/engine
 // (see enginelink.py). window.onEngineGlobal(reply), if set, runs after
 // "Use Global Information" (to reload the HUD's team fields).
@@ -43,8 +43,8 @@
   section.className = "wide";
   section.dataset.page = "engine";
   section.innerHTML = `
-    <h2>Connect to GFX Engine</h2>
-    <div class="eng-status" id="eng-status"><span class="dot"></span><div class="grow"><b id="eng-title">Not connected</b><span class="sub" id="eng-sub">Find an Chud GFX on the network, then connect: this HUD's game stats and series score go to its graphics.</span></div>
+    <h2>Connect to GFX Baby</h2>
+    <div class="eng-status" id="eng-status"><span class="dot"></span><div class="grow"><b id="eng-title">Not connected</b><span class="sub" id="eng-sub">Find an Chud GFX Baby on the network, then connect: this HUD's game stats and series score go to its graphics.</span></div>
       <button id="eng-disconnect" hidden>Disconnect</button></div>
     <div class="eng-row"><button id="eng-scan">Scan the network</button><span class="note" id="eng-scan-note"></span></div>
     <div class="eng-list" id="eng-list"></div>
@@ -74,7 +74,7 @@
     box.className = "eng-status" + (s.connected ? (s.ok ? " ok" : " bad") : "");
     $("eng-title").textContent = s.connected ? `Connected to ${s.name || s.url}` : "Not connected";
     $("eng-sub").textContent = !s.connected
-      ? "Find an Chud GFX on the network, then connect: this HUD's game stats and series score go to its graphics."
+      ? "Find an Chud GFX Baby on the network, then connect: this HUD's game stats and series score go to its graphics."
       : s.ok ? `${s.url} · sending (last ${s.age == null ? "–" : s.age + " s"} ago)` : `${s.url} · ${s.error || "connecting…"}`;
     $("eng-disconnect").hidden = !s.connected;
     $("eng-global").hidden = !s.url;

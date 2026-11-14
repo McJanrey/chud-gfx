@@ -1,8 +1,8 @@
-"""Connect to GFX Engine: a game HUD sends its game and series to an SCC GFX
+"""Connect to GFX Baby: a game HUD sends its game and series to an SCC GFX
 Engine on the network, and can take the engine's global configuration (the
 teams' names, short names and logos).
 
-The same file is in every SCC HUD (the GFX Engine repository keeps the
+The same file is in every SCC HUD (the GFX Baby repository keeps the
 original, in hud-link/). A HUD makes one EngineLink with:
 
     source        its name on the engine, e.g. "League HUD" (the engine's data
@@ -196,11 +196,11 @@ class EngineLink:
         url = normalise(url)
         info = hello(url, timeout=4)
         if not info:
-            raise ValueError(f"No GFX Engine answered at {url}. Is it running, with 'Let other PCs use this engine' on?")
+            raise ValueError(f"No GFX Baby answered at {url}. Is it running, with 'Let other PCs use this engine' on?")
         self.url, self.name, self.connected = url, info.get("name") or url, True
         self.error, self._last_body = "", None
         self._remember()
-        self.log(f"Connected to the GFX Engine {self.name} ({url})")
+        self.log(f"Connected to the GFX Baby {self.name} ({url})")
         self._wake.set()
         return self.status()
 
@@ -208,17 +208,17 @@ class EngineLink:
         self.connected = False
         self.ok = False
         self._remember()
-        self.log("Disconnected from the GFX Engine")
+        self.log("Disconnected from the GFX Baby")
         return self.status()
 
     def use_global(self):
         """Takes the engine's teams (names, short names, logos) into the HUD."""
         if not self.url:
-            raise ValueError("Connect to a GFX Engine first")
+            raise ValueError("Connect to a GFX Baby first")
         try:
             reply = json.loads(_get(self.url + "/api/global", 5))
         except Exception as e:
-            raise ValueError(f"Couldn't reach the GFX Engine: {getattr(e, 'reason', e)}")
+            raise ValueError(f"Couldn't reach the GFX Baby: {getattr(e, 'reason', e)}")
         g = reply.get("global") or {}
         summary = self.apply_global(g, lambda u: _get(u, 10))
         self.log(f"Took the global configuration from {self.name}: {summary}")
@@ -256,11 +256,11 @@ class EngineLink:
                     raise ValueError(reply["error"])
                 self.engine_global = reply.get("global")
                 if not self.ok:
-                    self.log(f"Sending to the GFX Engine {self.name}")
+                    self.log(f"Sending to the GFX Baby {self.name}")
                 self.ok, self.error, self.sent_at, self._last_body = True, "", time.time(), body
             except Exception as e:
                 if self.ok or not self.error:
-                    self.log(f"Couldn't reach the GFX Engine {self.name}: {getattr(e, 'reason', e)}", "warn")
+                    self.log(f"Couldn't reach the GFX Baby {self.name}: {getattr(e, 'reason', e)}", "warn")
                 self.ok, self.error = False, str(getattr(e, "reason", e))
                 self._stop.wait(2)
 

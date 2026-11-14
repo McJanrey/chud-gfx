@@ -130,7 +130,7 @@ const projectName = $("#project-name");
 projectName.addEventListener("change", () => api("/api/project", { name: projectName.value }));
 App.on(s => {
   if (document.activeElement !== projectName) projectName.value = s.project.name;
-  document.title = `${s.project.name} · Chud GFX`;
+  document.title = `${s.project.name} · Chud GFX Baby`;
   const net = $("#net");
   const addr = s.app.addresses[0];
   net.className = "pill" + (s.app.network ? " on" : "");

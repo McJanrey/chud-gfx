@@ -95,7 +95,7 @@ class Updater:
         if self.info()["available"]:
             log(f"Update available: {self.latest} (you have {self.current})")
         else:
-            log(f"GFX Engine {self.current} is up to date")
+            log(f"GFX Baby {self.current} is up to date")
 
     # --- installing ------------------------------------------------------
 
@@ -116,7 +116,7 @@ class Updater:
             self.status = "installing"
             new_dir = self._unpack(zip_path)
             script = self._write_script(new_dir)
-            log(f"Installing {self.latest} - GFX Engine will restart")
+            log(f"Installing {self.latest} - GFX Baby will restart")
             # Hidden console, own process group so it outlives the app.
             subprocess.Popen(["cmd", "/c", script], cwd=os.path.dirname(os.path.abspath(sys.executable)),
                              creationflags=0x08000000 | 0x00000200)
@@ -172,7 +172,7 @@ class Updater:
         script = os.path.join(self.work_dir, "apply-update.bat")
         with open(script, "w", encoding="utf-8") as f:
             f.write(f"""@echo off
-rem GFX Engine updater: waits for the app to close, copies in the new
+rem GFX Baby updater: waits for the app to close, copies in the new
 rem version (settings and the workspace are left alone), then restarts it.
 :wait
 tasklist /FI "PID eq {os.getpid()}" 2>nul | find "{os.getpid()}" >nul && (ping -n 2 127.0.0.1 >nul & goto wait)

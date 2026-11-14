@@ -1,4 +1,4 @@
-"""Finding GFX Engines on the network.
+"""Finding GFX Babys on the network.
 
 Each engine that allows the network says so every few seconds with a UDP
 broadcast on DISCOVERY_PORT ({"app": "chud-gfx", "name", "port"}),

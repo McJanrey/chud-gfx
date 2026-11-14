@@ -1,6 +1,6 @@
-; Chud GFX installer (Inno Setup 6).
+; Chud GFX Baby installer (Inno Setup 6).
 ;
-; Carries the app (the repo is private). Installs to C:\Chud GFX (no admin
+; Carries the app (the repo is private). Installs to C:\Chud GFX Baby (no admin
 ; rights needed), adds a desktop shortcut, and keeps the settings and the
 ; graphics when run again over an existing install.
 ;
@@ -10,7 +10,7 @@
 #ifndef AppVersion
   #define AppVersion "1.0"
 #endif
-#define AppName "Chud GFX"
+#define AppName "Chud GFX Baby"
 #define Repo "McJanrey/chud-gfx"
 #define ZipName "ChudGFX-windows.zip"
 
@@ -21,14 +21,14 @@ AppVersion={#AppVersion}
 AppVerName={#AppName}
 AppPublisher=St. Clair Saints
 AppPublisherURL=https://github.com/{#Repo}
-DefaultDirName=C:\Chud GFX
+DefaultDirName=C:\Chud GFX Baby
 DisableDirPage=yes
 DisableProgramGroupPage=yes
 UsePreviousAppDir=no
 ; C:\ lets any user create a folder, so no administrator prompt is needed.
 PrivilegesRequired=lowest
 OutputDir=..\dist
-OutputBaseFilename=Chud-GFX-Setup
+OutputBaseFilename=Chud-GFX-Baby-Setup
 SetupIconFile=..\packaging\icon.ico
 UninstallDisplayIcon={app}\ChudGFX.exe
 UninstallDisplayName={#AppName}

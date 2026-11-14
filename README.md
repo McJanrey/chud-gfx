@@ -1,4 +1,4 @@
-# Chud GFX
+# Chud GFX Baby
 
 A broadcast graphics engine for St. Clair Saints streams, in the spirit of
 Singular.live: build graphics from Photoshop files, cue them on **Preview**,
@@ -8,9 +8,9 @@ network, and graphics can be exported as plain HTML.
 
 ## Install
 
-Download **Chud-GFX-Setup.exe** from the
+Download **Chud-GFX-Baby-Setup.exe** from the
 [latest release](https://github.com/McJanrey/chud-gfx/releases/latest) and run it
-(no admin rights needed; it installs to `C:\Chud GFX`). The app updates
+(no admin rights needed; it installs to `C:\Chud GFX Baby`). The app updates
 itself: when a new release is out, an **Update** button shows in the top bar.
 Chud Hud Hub installs and updates it too.
 
@@ -90,7 +90,7 @@ and every field's ⛓ menu links it to one.
 
 ## Game HUDs
 
-The League, VALORANT, CoD and Rocket League HUDs have a **GFX Engine** page:
+The League, VALORANT, CoD and Rocket League HUDs have a **GFX Baby** page:
 scan the network, connect, and the HUD sends its live stats (a data table
 named after it, e.g. `{{League HUD!KILLS LEFT}}`) and the series score (into
 Global) about once a second. **Use Global Information** takes the teams'
