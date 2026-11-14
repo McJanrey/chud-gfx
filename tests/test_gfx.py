@@ -304,5 +304,24 @@ class ServerTests(unittest.TestCase):
             shutil.rmtree(tmp, ignore_errors=True)
 
 
+
+class ChudHudSource(unittest.TestCase):
+    def test_finds_running_editions_and_builds_source(self):
+        from gfxengine import chudhud
+        def fetch(port, timeout):
+            if port != 7787:
+                raise OSError("closed")
+            return {"db": {"events": [{"id": "ab12", "name": "LOTD Valorant", "game": "Valorant"}, {"name": "no id"}]}}
+        found = chudhud.find(fetch=fetch)
+        self.assertEqual(found, [{"edition": "Chud Hud LOTD", "port": 7787, "events": [{"id": "ab12", "name": "LOTD Valorant", "game": "Valorant"}]}])
+        src = chudhud.source_for("Chud Hud LOTD", 7787, "ab12")
+        self.assertEqual(src["url"], "http://127.0.0.1:7787/hud.json?event=ab12")
+        self.assertEqual(src["type"], "url")
+
+    def test_flat_hud_json_reads_as_label_value(self):
+        rows, _ = data.parse("hud.json", b'{"TEAM LEFT": "Saints", "SCORE LEFT": "2"}')
+        self.assertEqual(data.lookup(rows, "TEAM LEFT"), "Saints")
+
+
 if __name__ == "__main__":
     unittest.main()

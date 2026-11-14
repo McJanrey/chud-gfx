@@ -218,11 +218,35 @@ addEventListener("drop", e => {
         : h("div", { class: "empty" }, st.error ? "" : "No data read yet."),
       st.updated ? h("div", { class: "muted small", style: { padding: "6px 10px" } }, "Read at " + new Date(st.updated * 1000).toLocaleTimeString()) : null);
   }
+  // Chud Hud on this PC: each event's live fields as one source, read every second ({{Chud Hud!Field}}).
+  function chudPicker() {
+    const box = h("div", { class: "notice", style: { margin: "0 0 14px" } });
+    const use = async (f, ev) => {
+      const name = sources().some(x => x.name === f.edition) ? `${f.edition} ${ev.name}` : f.edition;
+      await api("/api/sources", { sources: [...sources(), { name, type: "url", url: `http://127.0.0.1:${f.port}/hud.json?event=${encodeURIComponent(ev.id)}`, path: "", sheet: "", refresh: 1 }] });
+      adding = false;
+      toast(`Added "${name}": use {{${name}!Field name}} in text`);
+      setTimeout(() => { const found = sources().find(x => x.name === name); if (found) selected = found.id; render(); }, 300);
+    };
+    const find = async () => {
+      box.replaceChildren(h("div", {}, "Looking for Chud Hud…"));
+      const r = await fetch("/api/chudhud").then(x => x.json()).catch(() => ({ found: [] }));
+      if (!r.found.length) return box.replaceChildren(h("div", {}, "No Chud Hud is open on this PC. Open it, then look again."), h("button", { class: "small", style: { marginTop: "8px" }, onclick: find }, "Look again"));
+      box.replaceChildren(...r.found.map(f => h("div", { style: { marginBottom: "8px" } },
+        h("b", {}, f.edition),
+        f.events.length ? h("div", { class: "row-gap", style: { flexWrap: "wrap", marginTop: "6px" } },
+          f.events.map(ev => h("button", { class: "small", title: ev.game, onclick: () => use(f, ev) }, ev.name)))
+          : h("div", { class: "muted small" }, "No events yet."))));
+    };
+    box.replaceChildren(h("div", {}, "Live scores, teams and timers from a Chud Hud event, updated every second."),
+      h("button", { class: "small primary", style: { marginTop: "8px" }, onclick: find }, "Use a Chud Hud event"));
+    return box;
+  }
   function render() {
     if (!App.state) return;
     renderList();
     const main = $("#src-main");
-    if (adding) { main.replaceChildren(h("div", { class: "panel-head" }, h("h3", {}, "New data source")), form(null)); return; }
+    if (adding) { main.replaceChildren(h("div", { class: "panel-head" }, h("h3", {}, "New data source")), chudPicker(), form(null)); return; }
     const src = sources().find(x => x.id === selected) || sources()[0];
     if (!src) { main.replaceChildren(); return; }
     selected = src.id;

@@ -25,7 +25,7 @@ import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, quote, unquote, urlparse
 
-from . import discover, export, globalcfg
+from . import discover, export, globalcfg, chudhud
 from .assets import Assets
 from .config import WEB_DIR, Settings, safe_join
 from .data import Sources
@@ -495,6 +495,8 @@ def make_handler(engine):
                 return self._json({"assets": engine.assets.list(), "rev": engine.assets_rev})
             if path == "/api/log":
                 return self._json({"lines": since(int((q.get("after") or ["0"])[0]))})
+            if path == "/api/chudhud":   # Data > Add a Chud Hud event
+                return self._json({"found": chudhud.find()})
             if path == "/api/engines":
                 return self._json({"engines": engine.beacon.engines()})
             if path == "/api/scan":
