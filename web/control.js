@@ -38,6 +38,42 @@ function debounce(fn, ms) {
   let t;
   return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
 }
+// Plain-words names for the {{...}} codes, so nobody has to read or remember them.
+function codeLabel(code) {
+  const c = code.slice(2, -2).trim(), low = c.toLowerCase();
+  const fixed = { time: "Time (12-hour)", time24: "Time (24-hour)", date: "Date", clock: "Clock (Global)", timer: "Timer (Global)" };
+  if (fixed[low]) return fixed[low];
+  let m = c.match(/^countdown:\s*(\d{1,2}):(\d{2})$/i);
+  if (m) { const hh = +m[1]; return `Countdown to ${(hh % 12) || 12}:${m[2]} ${hh < 12 ? "AM" : "PM"}`; }
+  m = c.match(/^([^!]+)!(.+)$/);
+  if (!m) return c;
+  const [, src, ref] = m;
+  const cell = ref.match(/^([A-Z]{1,3})(\d+)$/), col = ref.match(/^(.+)#\s*(\d+)$/);
+  return `${src} › ` + (cell ? `cell ${ref}` : col ? `${col[1]}, row ${col[2]}` : ref);
+}
+// Text with codes written as [labels], for previews and placeholders.
+function friendly(text) { return String(text ?? "").replace(/\{\{[^{}]+\}\}/g, c => `[${codeLabel(c)}]`); }
+// A text box that shows codes as chips but reads and writes plain text with codes (.value, like a textarea).
+function chipBox(opts) {
+  const chip = code => h("span", { class: "code-chip", contenteditable: "false", "data-code": code, title: code }, codeLabel(code));
+  const el = h("div", { class: "chip-box", contenteditable: "true", spellcheck: "false", role: "textbox", "aria-multiline": "true",
+    "data-ph": opts.placeholder || "", "data-field": opts.field || null });
+  const fill = text => el.replaceChildren(...String(text ?? "").split(/(\{\{[^{}]+\}\})/).filter(Boolean)
+    .map(p => /^\{\{[^{}]+\}\}$/.test(p) ? chip(p) : document.createTextNode(p)));
+  const read = node => [...node.childNodes].map(n => n.nodeType === 3 ? n.nodeValue : n.dataset && n.dataset.code ? n.dataset.code
+    : n.nodeName === "BR" ? "\n" : (n.nodeName === "DIV" || n.nodeName === "P" ? "\n" : "") + read(n)).join("");
+  Object.defineProperty(el, "value", { get: () => read(el).replace(/^\n/, ""), set: v => fill(v) });
+  el.addEventListener("input", () => opts.oninput && opts.oninput({ target: el }));
+  el.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); document.execCommand("insertLineBreak"); } });
+  el.addEventListener("paste", e => {
+    e.preventDefault();
+    const t = (e.clipboardData || window.clipboardData).getData("text");
+    document.execCommand("insertText", false, t);
+    if (/\{\{[^{}]+\}\}/.test(t)) { fill(el.value); el.dispatchEvent(new Event("input")); }
+  });
+  fill(opts.value);
+  return el;
+}
 function copy(text, what) {
   const done = () => toast(`Copied ${what || text}`);
   if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, () => fallback());
@@ -376,9 +412,8 @@ $("#update").addEventListener("click", () => api("/api/update/install"));
       const v = pvVals[l.field];
       let input;
       if (l.type === "text") {
-        input = h("textarea", { "data-field": l.field, placeholder: l.text, rows: Math.min(4, Math.max(1, String(v ?? "").split("\n").length)),
+        input = chipBox({ field: l.field, placeholder: friendly(l.text), value: v ?? "",
           oninput: e => { push(comp.id, l.field, e.target.value); updateResolved(res, l, e.target.value); } });
-        input.value = v ?? "";
       } else if (l.type === "rect") {
         input = h("input", { type: "color", "data-field": l.field, value: v || l.fill || "#000000",
           oninput: e => push(comp.id, l.field, e.target.value) });
@@ -640,9 +675,9 @@ $("#update").addEventListener("click", () => api("/api/update/install"));
     return out;
   }
   function updateResolved(el, layer, value) {
-    if (layer.type !== "text") { el.textContent = /\{\{/.test(value || "") ? `${value} → ${GFX.resolve(value)}` : ""; return; }
+    if (layer.type !== "text") { el.textContent = /\{\{/.test(value || "") ? `${friendly(value)} → ${GFX.resolve(value)}` : ""; return; }
     const raw = value || layer.text;
-    el.textContent = /\{\{/.test(raw) ? "→ " + GFX.resolve(raw) : value ? "" : "Shows: " + layer.text;
+    el.textContent = /\{\{/.test(raw) ? "→ " + GFX.resolve(raw) : value ? "" : "Shows: " + friendly(layer.text);
   }
   setInterval(() => { if (App.state && App.tab === "control") renderFields(App.state); }, 1000);
 

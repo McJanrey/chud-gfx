@@ -1,12 +1,12 @@
-/* SCC control panel Appearance: four Apple-inspired looks, picked under Appearance.
-   Shared verbatim by GFX Baby, every SCC HUD and the HUD Manager. Generated from the look files;
+/* Chud control panel Appearance: four Apple-inspired looks, picked under Appearance.
+   Shared verbatim by GFX Baby, Chud Hud and Chud Hud Hub. Generated from the look files;
    html[data-look] picks the look (Studio Black when none), --x-accent on <html> is the highlight colour. */
 
 
-/* ===== Studio Black ===== */
+/* ===== Chud Night ===== */
 :root, html[data-look="studio"] {
   --x-bg: #000; --x-surface: #1c1c1e; --x-fill: #2c2c2e; --x-fill-hover: #3a3a3c; --x-line: rgba(84,84,88,.6); --x-line2: rgba(84,84,88,.9);
-  --x-text: #fff; --x-muted: #8e8e93; --x-accent: #f5c518; --x-on-accent: #1d1600;
+  --x-text: #fff; --x-muted: #8e8e93; --x-accent: #f28c28; --x-on-accent: #1f0d00;
   --x-input: #2c2c2e; --x-input-line: transparent; --x-seg: #1c1c1e; --x-seg-on: #3a3a3c; --x-seg-on-text: #fff; --x-seg-r: 10px;
   --x-btn-r: 10px; --x-in-r: 10px; --x-btn-shadow: none;
   --x-card-r: 14px; --x-card-border: 0; --x-card-shadow: none; --x-blur: none; --x-h2: 22px;
@@ -64,17 +64,17 @@ html[data-look="daylight"] #tabs > button.on, html[data-look="daylight"] .shell-
 
 /* ===== Liquid Glass ===== */
 html[data-look="glass"] {
-  --x-bg: #08120d; --x-surface: rgba(14,22,18,.82); --x-fill: rgba(255,255,255,.12); --x-fill-hover: rgba(255,255,255,.2); --x-line: rgba(255,255,255,.12); --x-line2: rgba(255,255,255,.2);
-  --x-text: #fff; --x-muted: rgba(235,235,245,.62); --x-accent: #f5c518; --x-on-accent: #1d1600;
-  --x-input: rgba(0,0,0,.25); --x-input-line: rgba(255,255,255,.12); --x-seg: rgba(255,255,255,.1); --x-seg-on: rgba(255,255,255,.9); --x-seg-on-text: #08120d; --x-seg-r: 999px;
+  --x-bg: #140c06; --x-surface: rgba(14,22,18,.82); --x-fill: rgba(255,255,255,.12); --x-fill-hover: rgba(255,255,255,.2); --x-line: rgba(255,255,255,.12); --x-line2: rgba(255,255,255,.2);
+  --x-text: #fff; --x-muted: rgba(235,235,245,.62); --x-accent: #f28c28; --x-on-accent: #1f0d00;
+  --x-input: rgba(0,0,0,.25); --x-input-line: rgba(255,255,255,.12); --x-seg: rgba(255,255,255,.1); --x-seg-on: rgba(255,255,255,.9); --x-seg-on-text: #140c06; --x-seg-r: 999px;
   --x-btn-r: 999px; --x-in-r: 14px; --x-btn-shadow: inset 0 1px 0 rgba(255,255,255,.22), inset 0 0 0 1px rgba(255,255,255,.08);
   --x-card-r: 22px; --x-card-border: 1px solid rgba(255,255,255,.06);
   --x-card-shadow: 0 20px 50px rgba(0,0,0,.35); --x-blur: blur(30px); --x-h2: 19px;
   --x-bar: rgba(255,255,255,.06); --x-side: rgba(255,255,255,.06); --x-side-blur: blur(40px) saturate(170%); --x-hover: rgba(255,255,255,.08); --x-sel: rgba(255,255,255,.18); --x-sel-text: #fff;
   --x-green: #32d74b; --x-red: #ff453a; --x-mon-r: 18px; --x-mon-shadow: 0 16px 40px rgba(0,0,0,.5);
   --x-row: rgba(255,255,255,.05); --x-row-hover: rgba(255,255,255,.11); --x-row-shadow: inset 0 1px 0 rgba(255,255,255,.08);
-  --x-page: radial-gradient(55% 65% at 8% 0%, #1f6b3a 0%, transparent 62%), radial-gradient(45% 55% at 95% 10%, #8a6a12 0%, transparent 60%),
-            radial-gradient(70% 60% at 60% 105%, #0f4d34 0%, transparent 62%), #08120d;
+  --x-page: radial-gradient(55% 65% at 8% 0%, #6b3a1f 0%, transparent 62%), radial-gradient(45% 55% at 95% 10%, #8a4a12 0%, transparent 60%),
+            radial-gradient(70% 60% at 60% 105%, #0f4d34 0%, transparent 62%), #140c06;
 }
 html[data-look="glass"] body, html[data-look="glass"] body.shell { background-attachment: fixed !important; }
 html[data-look="glass"] #shell-side, html[data-look="glass"] #top { margin: 10px; border-radius: 22px; border: 1px solid rgba(255,255,255,.14) !important; height: calc(100% - 20px); box-shadow: inset 0 1px 0 rgba(255,255,255,.15); }
@@ -256,11 +256,11 @@ html body button.ap-look[aria-checked="true"] { box-shadow: 0 0 0 2.5px var(--x-
 .ap-mini span { position: absolute; left: 32%; width: 34%; bottom: 12%; height: 34%; border-radius: var(--m-r); background: var(--m-card); box-shadow: 0 0 0 1px var(--m-line); }
 .ap-mini em { position: absolute; right: 6%; bottom: 12%; width: 22%; height: 14%; border-radius: 999px; background: var(--m-accent); }
 .ap-mini u { position: absolute; left: 4%; top: 14%; width: 18%; height: 7%; border-radius: 4px; background: var(--m-sel); }
-.ap-mini[data-mini="studio"]   { --m-bg: #000; --m-side: #000; --m-card: #1c1c1e; --m-line: transparent; --m-accent: #f5c518; --m-sel: #fff; --m-r: 6px; }
+.ap-mini[data-mini="studio"]   { --m-bg: #000; --m-side: #000; --m-card: #1c1c1e; --m-line: transparent; --m-accent: #f28c28; --m-sel: #fff; --m-r: 6px; }
 .ap-mini[data-mini="graphite"] { --m-bg: #1e1e1e; --m-side: #232325; --m-card: #2c2c2e; --m-line: rgba(255,255,255,.08); --m-accent: #0a84ff; --m-sel: rgba(255,255,255,.16); --m-r: 5px; }
 .ap-mini[data-mini="daylight"] { --m-bg: #f5f5f7; --m-side: #ececf0; --m-card: #fff; --m-line: rgba(0,0,0,.06); --m-accent: #0071e3; --m-sel: rgba(0,0,0,.1); --m-r: 7px; }
-.ap-mini[data-mini="glass"]    { --m-bg: radial-gradient(70% 90% at 0% 0%, #1f6b3a, transparent 70%), radial-gradient(60% 80% at 100% 10%, #8a6a12, transparent 70%), #08120d;
-  --m-side: rgba(255,255,255,.12); --m-card: rgba(14,22,18,.8); --m-line: rgba(255,255,255,.14); --m-accent: #f5c518; --m-sel: rgba(255,255,255,.3); --m-r: 8px; }
+.ap-mini[data-mini="glass"]    { --m-bg: radial-gradient(70% 90% at 0% 0%, #6b3a1f, transparent 70%), radial-gradient(60% 80% at 100% 10%, #8a4a12, transparent 70%), #140c06;
+  --m-side: rgba(255,255,255,.12); --m-card: rgba(14,22,18,.8); --m-line: rgba(255,255,255,.14); --m-accent: #f28c28; --m-sel: rgba(255,255,255,.3); --m-r: 8px; }
 .ap-accent-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .ap-accent-row input[type=color] { width: 54px !important; height: 34px !important; flex: 0 0 54px; padding: 3px !important; cursor: pointer; }
 .ap-swatches { display: flex; gap: 8px; flex-wrap: wrap; }

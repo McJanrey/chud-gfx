@@ -5,12 +5,12 @@
 (function () {
   "use strict";
   const LOOKS = [
-    { id: "studio", name: "Studio Black", note: "Pure black, big titles, gold on key buttons. Calmest in a dark room.", accent: "#f5c518" },
+    { id: "studio", name: "Chud Night", note: "Pure black, big titles, Chud orange on key buttons. Calmest in a dark room.", accent: "#f28c28" },
     { id: "graphite", name: "Graphite", note: "Mac pro-app greys and blue, with glowing Preview and Program.", accent: "#0a84ff" },
     { id: "daylight", name: "Daylight", note: "Light, with white cards. Best in a bright room.", accent: "#0071e3" },
-    { id: "glass", name: "Liquid Glass", note: "Frosted glass over Saints green and gold.", accent: "#f5c518" },
+    { id: "glass", name: "Chud Glass", note: "Frosted glass over warm Chud brown and orange.", accent: "#f28c28" },
   ];
-  const SWATCHES = ["#f5c518", "#0a84ff", "#30d158", "#ff9f0a", "#ff375f", "#bf5af2", "#64d2ff", "#ffffff"];
+  const SWATCHES = ["#f28c28", "#f5c518", "#0a84ff", "#30d158", "#ff9f0a", "#ff375f", "#bf5af2", "#64d2ff", "#ffffff"];
   const root = document.documentElement;
   const KEY = "scc-appearance";
   let state = { look: "studio", accent: "" };

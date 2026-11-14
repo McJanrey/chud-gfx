@@ -664,22 +664,6 @@
   }
 
   // An input bound to a layer property.
-  // Plain-words names for the {{...}} codes, so the text box shows "Time (12-hour)" instead of {{time}}.
-  function codeLabel(code) {
-    const c = code.slice(2, -2).trim();
-    if (c === "time") return "Time (12-hour)";
-    if (c === "time24") return "Time (24-hour)";
-    if (c === "date") return "Date";
-    if (c === "clock") return "Clock (Global)";
-    if (c === "timer") return "Timer (Global)";
-    let m = c.match(/^countdown:(\d{1,2}):(\d{2})$/);
-    if (m) { const hh = +m[1]; return `Countdown to ${(hh % 12) || 12}:${m[2]} ${hh < 12 ? "AM" : "PM"}`; }
-    m = c.match(/^([^!]+)!(.+)$/);
-    if (!m) return c;
-    const [, src, ref] = m;
-    const cell = ref.match(/^([A-Z]{1,3})(\d+)$/), col = ref.match(/^(.+)#(\d+)$/);
-    return `${src} › ` + (cell ? `cell ${ref}` : col ? `${col[1]}, row ${col[2]}` : ref);
-  }
   // Text box that shows codes as chips. l.text keeps the real codes; the chips are only how they look.
   function tokenEditor(l) {
     const chip = code => h("span", { class: "code-chip", contenteditable: "false", "data-code": code, title: code,
