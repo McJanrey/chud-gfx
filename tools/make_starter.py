@@ -3,7 +3,7 @@ SCC broadcast PSDs and stingers.
 
     python tools/make_starter.py <folder with the PSDs> <folder with the stingers>
 
-The PSD folder is the SCC graphics folder (the PSDs in GRAPHICS below, and
+The PSD folder is the starter graphics folder (the PSDs in GRAPHICS below, and
 the SCREENS folder); the stinger folder has SCC_Main_Stinger.mov,
 SCC_Replay.mov and SCCIntroStinger.webm. The St. Clair badge (the left
 team's logo) comes from packaging/.
@@ -62,7 +62,7 @@ def main(psd_dir, stinger_dir):
     out = os.path.join(ROOT, "starter")
     shutil.rmtree(out, ignore_errors=True)
     ws = Workspace(out, starter=None)
-    ws.data["name"] = "SCC Broadcast"
+    ws.data["name"] = "Chud Broadcast"
     for fname, title in GRAPHICS:
         comp, fonts = import_psd(os.path.join(psd_dir, fname), ws, title)
         print(title, len(comp["layers"]), "layers, fonts:", ", ".join(fonts))

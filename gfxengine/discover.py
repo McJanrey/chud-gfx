@@ -1,7 +1,7 @@
 """Finding GFX Engines on the network.
 
 Each engine that allows the network says so every few seconds with a UDP
-broadcast on DISCOVERY_PORT ({"app": "scc-gfx-engine", "name", "port"}),
+broadcast on DISCOVERY_PORT ({"app": "chud-gfx", "name", "port"}),
 and listens for the others'. Where broadcasts don't get through (some
 switches and Wi-Fi), find() also tries every address on this PC's own
 networks on the engine's port.
@@ -17,7 +17,7 @@ import urllib.request
 
 from .config import DISCOVERY_PORT
 
-APP = "scc-gfx-engine"
+APP = "chud-gfx"
 
 
 def own_addresses():

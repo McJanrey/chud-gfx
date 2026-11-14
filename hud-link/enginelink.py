@@ -27,9 +27,9 @@ import threading
 import time
 import urllib.request
 
-APP = "scc-gfx-engine"
-PORT = 8782             # the engine's web port
-DISCOVERY_PORT = 8783   # where engines announce themselves
+APP = "chud-gfx"
+PORT = 7790             # the engine's web port
+DISCOVERY_PORT = 7791   # where engines announce themselves
 
 _opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))   # (the LAN, never a proxy)
 
@@ -69,7 +69,7 @@ def own_addresses():
 
 
 def normalise(url):
-    """"192.168.1.20", "pc:8782" or "http://pc:8782/control" -> "http://192.168.1.20:8782"."""
+    """"192.168.1.20", "pc:7790" or "http://pc:7790/control" -> "http://192.168.1.20:7790"."""
     url = (url or "").strip().rstrip("/")
     if not url:
         raise ValueError("Enter the engine's address")

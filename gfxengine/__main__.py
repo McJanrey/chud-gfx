@@ -1,6 +1,6 @@
 """Start the engine without a window:  python -m gfxengine
 
-For the desktop app, run GFXEngine.exe (or python -m gfxengine.gui).
+For the desktop app, run ChudGFX.exe (or python -m gfxengine.gui).
 """
 
 import argparse
@@ -22,7 +22,7 @@ def add_arguments(parser):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="SCC GFX Engine")
+    parser = argparse.ArgumentParser(description="Chud GFX")
     add_arguments(parser)
     engine = build_engine(parser.parse_args())
     start(engine)

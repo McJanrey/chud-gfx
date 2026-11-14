@@ -1,9 +1,9 @@
 # PyInstaller build for the desktop app.
 #
 #   pip install -r requirements-windows.txt pyinstaller
-#   pyinstaller --noconfirm GFXEngine.spec
+#   pyinstaller --noconfirm ChudGFX.spec
 #
-# Produces dist/GFXEngine/GFXEngine.exe (plus its _internal folder). The GitHub
+# Produces dist/ChudGFX/ChudGFX.exe (plus its _internal folder). The GitHub
 # Actions workflow in .github/workflows/build-windows.yml runs this.
 import os
 import sys
@@ -41,8 +41,8 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name="GFXEngine",
+    name="ChudGFX",
     console=False,
     icon=icon if sys.platform == "win32" else None,
 )
-coll = COLLECT(exe, a.binaries, a.datas, name="GFXEngine")
+coll = COLLECT(exe, a.binaries, a.datas, name="ChudGFX")

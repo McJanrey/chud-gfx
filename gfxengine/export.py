@@ -8,7 +8,7 @@ without the engine - in OBS, vMix, CasparCG, SPX or any browser.
 
 index.html shows the graphics straight away. Its address can change that:
     ?autoplay=0         wait for play() (CasparCG and SPX call it)
-    ?live=http://PC:8782  follow that engine's Program instead
+    ?live=http://PC:7790  follow that engine's Program instead
     ?Field%20Name=Text  set a field
 and the page has play(), stop(), next(), update(data) and remove() for
 CasparCG / SPX templates.

@@ -84,16 +84,16 @@ class LiveTests(unittest.TestCase):
         live.cue(self.b["id"])
         live.cue(self.a["id"])
         self.assertEqual(live.get()["preview"]["on"], [self.a["id"], self.b["id"]])   # project order
-        live.set_values(self.a["id"], {"Name": "Owen"})
+        live.set_values(self.a["id"], {"Name": "Alex"})
         t = live.take("fade")
         state = live.get()
         self.assertEqual(t["type"], "fade")
         self.assertEqual(state["program"]["on"], [self.a["id"], self.b["id"]])
-        self.assertEqual(state["program"]["values"][self.a["id"]], {"Name": "Owen"})
+        self.assertEqual(state["program"]["values"][self.a["id"]], {"Name": "Alex"})
         self.assertEqual(state["take"]["seq"], 1)
         # New values on Preview stay off air until sent.
         live.set_values(self.a["id"], {"Name": "Sam"})
-        self.assertEqual(live.get()["program"]["values"][self.a["id"]]["Name"], "Owen")
+        self.assertEqual(live.get()["program"]["values"][self.a["id"]]["Name"], "Alex")
         live.send_values(self.a["id"])
         self.assertEqual(live.get()["program"]["values"][self.a["id"]]["Name"], "Sam")
         self.assertEqual(live.get()["take"]["seq"], 1)      # no transition for that
@@ -196,18 +196,18 @@ class ServerTests(unittest.TestCase):
                 self.assertTrue(get(path), path)
             state = json.loads(get("/api/state"))
             self.assertGreaterEqual(len(state["project"]["compositions"]), 4)   # the starter graphics
-            self.assertEqual(json.loads(get("/api/hello"))["app"], "scc-gfx-engine")
+            self.assertEqual(json.loads(get("/api/hello"))["app"], "chud-gfx")
             # A new graphic with a text field, cued and taken.
             comp = blank_comp("Test")
             layer = blank_layer("text", field="Name", text="{{Match!Left}}")
             comp["layers"].append(layer)
             cid = post("/api/comp/new", {"comp": comp})["comp"]["id"]
             post("/api/cue", {"id": cid})
-            post("/api/values", {"id": cid, "values": {"Name": "Owen"}})
+            post("/api/values", {"id": cid, "values": {"Name": "Alex"}})
             post("/api/take", {"transition": "cut"})
             live = json.loads(get("/api/state"))["live"]
             self.assertIn(cid, live["program"]["on"])
-            self.assertEqual(live["program"]["values"][cid]["Name"], "Owen")
+            self.assertEqual(live["program"]["values"][cid]["Name"], "Alex")
             # Files: a picture, and a CSV (which becomes a data source).
             buf = io.BytesIO()
             Image.new("RGB", (40, 20), "red").save(buf, "PNG")
@@ -267,7 +267,7 @@ class ServerTests(unittest.TestCase):
             self.assertEqual((state2["global"]["left"]["score"], state2["global"]["right"]["score"]), (2, 1))
             self.assertIn(["Game", "4"], state2["data"]["tables"]["Global"])
             self.assertIn("League HUD", state2["data"]["feeds"])
-            # Workspaces: a new empty one with a picture, opened; the SCC pack added to it; back again.
+            # Workspaces: a new empty one with a picture, opened; the starter pack added to it; back again.
             first_id = state2["workspace"]["id"]
             wid = post("/api/workspaces/create", {"name": "NACE Spring", "template": "empty", "open": False})["id"]
             post(f"/api/workspaces/picture?id={wid}&name=cover.png", buf.getvalue(), {"X-Filename": "cover.png"})

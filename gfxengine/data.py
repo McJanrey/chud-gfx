@@ -129,7 +129,7 @@ def parse(name, blob, sheet=""):
 
 
 def _fetch(url):
-    request = urllib.request.Request(url, headers={"User-Agent": "SCC-GFX-Engine"})
+    request = urllib.request.Request(url, headers={"User-Agent": "Chud-GFX"})
     with urllib.request.urlopen(request, timeout=15) as r:
         return r.read(), r.headers.get("Content-Type", "")
 

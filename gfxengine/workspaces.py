@@ -68,7 +68,7 @@ class Workspaces:
         return out
 
     def create(self, name, template="scc"):
-        """A new workspace, from the SCC graphics ("scc") or empty. Returns its id."""
+        """A new workspace, from the starter graphics ("scc") or empty. Returns its id."""
         name = (name or "").strip()[:80] or "New workspace"
         wid = self._new_id(name)
         folder = os.path.join(self.root, wid)

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>SCC GFX Engine</title>
+<title>Chud GFX</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="assets-ui/badge.png">
 <link rel="stylesheet" href="control.css">
@@ -229,12 +229,12 @@
       <div class="row-gap"><button id="export-all" class="small">All</button><button id="export-none" class="small">None</button>
         <div class="spacer"></div><button id="export-go" class="primary">Export .zip</button></div>
       <p class="muted small">In the zip, open <code>index.html</code>. Add <code>?autoplay=0</code> to wait for play(), <code>?Field=Text</code> to set a field,
-        or <code>?live=http://this-pc:8782</code> to follow this engine's Program.</p>
+        or <code>?live=http://this-pc:7790</code> to follow this engine's Program.</p>
     </section>
     <section class="panel">
       <div class="panel-head"><h3>Workspace</h3></div>
       <div class="row-gap"><a class="btn" href="/api/backup">Download a backup (.zip)</a><button id="ws-folder">Open folder</button></div>
-      <div class="row-gap" style="margin-top:8px"><button id="ws-pack" title="The SCC graphics this workspace doesn't have yet, with their files">Add the SCC graphics it's missing</button></div>
+      <div class="row-gap" style="margin-top:8px"><button id="ws-pack" title="The starter graphics this workspace doesn't have yet, with their files">Add the starter graphics it's missing</button></div>
       <div class="panel-head"><h3>Log</h3></div>
       <div id="log" class="log"></div>
     </section>
@@ -252,7 +252,7 @@
           <label>Name<input id="dlg-name" placeholder="e.g. NACE Spring 2027" maxlength="80" required></label>
           <div id="dlg-template-row">
             <label>Start with</label>
-            <label class="toggle"><input type="radio" name="dlg-template" value="scc" checked> The SCC graphics (scorebug, lower thirds, screens, stingers…)</label>
+            <label class="toggle"><input type="radio" name="dlg-template" value="scc" checked> The starter graphics (scorebug, lower thirds, screens, stingers…)</label>
             <label class="toggle"><input type="radio" name="dlg-template" value="empty"> Nothing (an empty workspace)</label>
           </div>
         </div>

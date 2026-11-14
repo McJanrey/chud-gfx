@@ -2,7 +2,7 @@
 
 The graphics themselves (compositions, transitions, data sources) and their
 files are workspaces: workspaces/<id>/project.json and assets/, next to the
-app (next to GFXEngine.exe in the desktop build). Fonts are shared by every
+app (next to ChudGFX.exe in the desktop build). Fonts are shared by every
 workspace, in library/fonts.
 """
 
@@ -25,8 +25,8 @@ SETTINGS_PATH = os.path.join(DATA_DIR, "settings.json")
 
 # Not the League (8777, 8779), VALORANT (8778), CoD (8780), RL (8781) HUDs'
 # or the HUD Manager's (8790) ports. Engines find each other on DISCOVERY_PORT.
-PORT = 8782
-DISCOVERY_PORT = 8783
+PORT = 7790
+DISCOVERY_PORT = 7791
 
 DEFAULTS = {
     "http_port": PORT,

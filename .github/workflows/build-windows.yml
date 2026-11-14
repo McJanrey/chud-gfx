@@ -1,7 +1,7 @@
-# Builds the SCC GFX Engine desktop app (GFXEngine.exe) on Windows and publishes it as
-# a GitHub release (v1.0.<run number>) with GFXEngine-windows.zip. The app
+# Builds the Chud GFX desktop app (ChudGFX.exe) on Windows and publishes it as
+# a GitHub release (v1.0.<run number>) with ChudGFX-windows.zip. The app
 # checks the latest release on launch and offers to update itself. Each
-# release also gets SCC-GFX-Engine-Setup.exe, an installer that downloads the
+# release also gets Chud-GFX-Setup.exe, an installer that downloads the
 # latest release from GitHub when it runs.
 #
 # A commit with [no release] in its message builds and tests without publishing.
@@ -43,14 +43,14 @@ jobs:
           Set-Content gfxengine/version.py "VERSION = `"$env:VERSION`"" -Encoding utf8
           Get-Content gfxengine/version.py
 
-      - name: Build GFXEngine.exe
-        run: pyinstaller --noconfirm GFXEngine.spec
+      - name: Build ChudGFX.exe
+        run: pyinstaller --noconfirm ChudGFX.spec
 
       - name: Smoke test the built app
         shell: pwsh
         run: |
-          $app = "dist\GFXEngine"
-          $p = Start-Process "$app\GFXEngine.exe" -ArgumentList '--smoke-test', '--port', '8797' -PassThru -Wait
+          $app = "dist\ChudGFX"
+          $p = Start-Process "$app\ChudGFX.exe" -ArgumentList '--smoke-test', '--port', '8797' -PassThru -Wait
           Get-Content "$app\smoke-test.txt"
           if ($p.ExitCode -ne 0) { throw "Smoke test failed (exit code $($p.ExitCode))" }
           # Leave no test leftovers in the download.
@@ -61,14 +61,14 @@ jobs:
       - name: Add readme and version.txt
         shell: pwsh
         run: |
-          Copy-Item README.md dist\GFXEngine\
-          # (the SCC HUD Manager reads the installed version from it)
-          Set-Content dist\GFXEngine\version.txt $env:VERSION -NoNewline
+          Copy-Item README.md dist\ChudGFX\
+          # (Chud Hud Hub reads the installed version from it)
+          Set-Content dist\ChudGFX\version.txt $env:VERSION -NoNewline
 
       - uses: actions/upload-artifact@v4
         with:
-          name: GFXEngine-windows
-          path: dist/GFXEngine
+          name: ChudGFX-windows
+          path: dist/ChudGFX
 
       - name: Build the installer
         if: "!contains(github.event.head_commit.message, '[no release]')"
@@ -76,7 +76,7 @@ jobs:
         run: |
           $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
           if (-not (Test-Path $iscc)) { choco install innosetup --no-progress -y | Out-Null }
-          & $iscc "/DAppVersion=$($env:VERSION.TrimStart('v'))" installer\SCC-GFX-Engine.iss
+          & $iscc "/DAppVersion=$($env:VERSION.TrimStart('v'))" installer\Chud-GFX.iss
           if ($LASTEXITCODE) { exit 1 }
 
       - name: Publish release
@@ -85,10 +85,10 @@ jobs:
         # always has both (the installer link never 404s mid-build).
         shell: pwsh
         run: |
-          Compress-Archive -Path dist\GFXEngine\* -DestinationPath GFXEngine-windows.zip
+          Compress-Archive -Path dist\ChudGFX\* -DestinationPath ChudGFX-windows.zip
           $notes = git log -1 --format=%B | Where-Object { $_ -notmatch '^(Co-Authored-By|Claude-Session):' }
           $notes = ($notes -join "`n").Trim()
-          gh release create "$env:VERSION" GFXEngine-windows.zip dist\SCC-GFX-Engine-Setup.exe --target "${{ github.sha }}" --title "SCC GFX Engine $env:VERSION" --notes "$notes"
+          gh release create "$env:VERSION" ChudGFX-windows.zip dist\Chud-GFX-Setup.exe --target "${{ github.sha }}" --title "Chud GFX $env:VERSION" --notes "$notes"
         env:
           GH_TOKEN: ${{ github.token }}
 
@@ -96,11 +96,11 @@ jobs:
         if: "!contains(github.event.head_commit.message, '[no release]')"
         shell: pwsh
         run: |
-          $dir = "$env:RUNNER_TEMP\SCC GFX Engine test"
+          $dir = "$env:RUNNER_TEMP\Chud GFX test"
           $installArgs = '/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', "/DIR=`"$dir`"", '/MERGETASKS="!desktopicon"', '/LOG=install.log'
-          $p = Start-Process dist\SCC-GFX-Engine-Setup.exe -ArgumentList $installArgs -PassThru -Wait
+          $p = Start-Process dist\Chud-GFX-Setup.exe -ArgumentList $installArgs -PassThru -Wait
           Get-Content install.log -Tail 25
           if ($p.ExitCode -ne 0) { throw "Installer failed (exit code $($p.ExitCode))" }
-          if (-not (Test-Path "$dir\GFXEngine.exe")) { throw "GFXEngine.exe wasn't installed" }
+          if (-not (Test-Path "$dir\ChudGFX.exe")) { throw "ChudGFX.exe wasn't installed" }
           if (-not (Test-Path "$dir\_internal")) { throw "_internal wasn't installed" }
           Write-Host "Installed OK to $dir"

@@ -1,7 +1,7 @@
 """The desktop app: runs the engine and shows the control panel in its own
 window (no command prompt).
 
-    GFXEngine.exe                the built app
+    ChudGFX.exe                the built app
     python -m gfxengine.gui      the same, from source (needs: pip install pywebview)
 """
 
@@ -17,7 +17,7 @@ from .app import start
 from .config import DATA_DIR
 from .log import log
 
-TITLE = "SCC GFX Engine"
+TITLE = "Chud GFX"
 
 
 def message_box(text, title=TITLE, error=False):
@@ -31,7 +31,7 @@ def message_box(text, title=TITLE, error=False):
 def already_running(port):
     try:
         with urllib.request.urlopen(f"http://127.0.0.1:{port}/api/hello", timeout=2) as r:
-            return json.loads(r.read()).get("app") == "scc-gfx-engine"
+            return json.loads(r.read()).get("app") == "chud-gfx"
     except Exception:
         return False
 
@@ -98,7 +98,7 @@ def main():
     if sys.stderr is None:
         sys.stderr = open(os.devnull, "w")
 
-    parser = argparse.ArgumentParser(description="SCC GFX Engine desktop app")
+    parser = argparse.ArgumentParser(description="Chud GFX desktop app")
     add_arguments(parser)
     parser.add_argument("--debug", action="store_true", help="allow right-click > Inspect in the window")
     parser.add_argument("--smoke-test", action="store_true", help=argparse.SUPPRESS)

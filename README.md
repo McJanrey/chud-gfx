@@ -1,4 +1,4 @@
-# SCC GFX Engine
+# Chud GFX
 
 A broadcast graphics engine for St. Clair Saints streams, in the spirit of
 Singular.live: build graphics from Photoshop files, cue them on **Preview**,
@@ -8,11 +8,11 @@ network, and graphics can be exported as plain HTML.
 
 ## Install
 
-Download **SCC-GFX-Engine-Setup.exe** from the
-[latest release](https://github.com/owenbparker/GFX-Engine/releases/latest) and run it
-(no admin rights needed; it installs to `C:\SCC GFX Engine`). The app updates
+Download **Chud-GFX-Setup.exe** from the
+[latest release](https://github.com/McJanrey/chud-gfx/releases/latest) and run it
+(no admin rights needed; it installs to `C:\Chud GFX`). The app updates
 itself: when a new release is out, an **Update** button shows in the top bar.
-The SCC HUD Manager installs and updates it too.
+Chud Hud Hub installs and updates it too.
 
 The first time it starts, Windows may ask whether to let it on the network:
 allow it on private networks so other PCs can use the outputs.
@@ -74,7 +74,7 @@ HTML export, a workspace backup, and the log.
 
 The app opens on **Home**: your workspaces, one per event or show, each with
 its own graphics, files, data, transitions and global configuration. **+ New
-workspace** asks for a name and a picture, and starts from the SCC graphics
+workspace** asks for a name and a picture, and starts from the starter graphics
 or empty. Fonts are shared by every workspace (`library/fonts`), and are
 matched by any of their names, so a PSD that records "Carbon-Bold" finds the
 file whose font is called "Carbon-Black". Workspaces live in `workspaces/`
@@ -99,12 +99,12 @@ names, short names and logos from here into the HUD. The HUD side is in
 
 ## Outputs and the network
 
-    http://<this PC>:8782/output                Program (with transitions and stingers)
-    http://<this PC>:8782/output?bus=preview    Preview
-    http://<this PC>:8782/output?comp=<id>      one graphic, as it is on Program
-    http://<this PC>:8782/control               the control panel, from any PC
+    http://<this PC>:7790/output                Program (with transitions and stingers)
+    http://<this PC>:7790/output?bus=preview    Preview
+    http://<this PC>:7790/output?comp=<id>      one graphic, as it is on Program
+    http://<this PC>:7790/control               the control panel, from any PC
 
-Engines announce themselves on the network (UDP 8783) and show up under
+Engines announce themselves on the network (UDP 7791) and show up under
 Outputs > Engines on the network; **Scan** also looks for them directly.
 Turn off "Let other PCs use this engine" to keep it to this PC.
 
@@ -116,17 +116,17 @@ as a browser source, or use it as a CasparCG / SPX template:
 
 - `?autoplay=0`: wait for `play()` (CasparCG and SPX call it)
 - `?Field%20Name=Text`: set a field
-- `?live=http://PC:8782`: follow that engine's Program instead
+- `?live=http://PC:7790`: follow that engine's Program instead
 - `play()`, `stop()`, `next()`, `update(data)` (JSON, or CasparCG's XML)
 
 ## From source
 
     pip install pywebview pillow psd-tools openpyxl imageio-ffmpeg
-    python -m gfxengine            # just the engine (open http://localhost:8782/control)
+    python -m gfxengine            # just the engine (open http://localhost:7790/control)
     python -m gfxengine.gui        # in its own window
     python -m unittest discover -s tests
 
 The graphics live in `workspace/` next to the app (`project.json` and
-`assets/`); a new install starts with the SCC example graphics from
+`assets/`); a new install starts with the example graphics from
 `starter/` (rebuilt with `tools/make_starter.py`). Every push to `main`
 builds the Windows app and publishes a release.

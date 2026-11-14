@@ -25,9 +25,9 @@ from .config import DATA_DIR, FROZEN
 from .log import log
 from .version import VERSION
 
-REPO = "owenbparker/GFX-Engine"
+REPO = "McJanrey/chud-gfx"
 LATEST_URL = f"https://api.github.com/repos/{REPO}/releases/latest"
-ASSET_NAME = "GFXEngine-windows.zip"
+ASSET_NAME = "ChudGFX-windows.zip"
 UPDATE_DIR = os.path.join(DATA_DIR, "_update")
 
 
@@ -72,7 +72,7 @@ class Updater:
         self.status, self.error, self.check_error = "checking", None, None
         try:
             request = urllib.request.Request(LATEST_URL, headers={
-                "Accept": "application/vnd.github+json", "User-Agent": f"SCC-GFX-Engine/{self.current}"})
+                "Accept": "application/vnd.github+json", "User-Agent": f"Chud-GFX/{self.current}"})
             with urllib.request.urlopen(request, timeout=10) as r:
                 release = json.loads(r.read().decode("utf-8"))
         except urllib.error.HTTPError as e:
@@ -137,7 +137,7 @@ class Updater:
         total = self.asset.get("size") or 0
         digest = hashlib.sha256()
         request = urllib.request.Request(self.asset["browser_download_url"],
-                                         headers={"User-Agent": f"SCC-GFX-Engine/{self.current}"})
+                                         headers={"User-Agent": f"Chud-GFX/{self.current}"})
         with urllib.request.urlopen(request, timeout=30) as r, open(path, "wb") as f:
             done = 0
             while True:
@@ -163,8 +163,8 @@ class Updater:
                 if not target.startswith(os.path.normpath(new_dir) + os.sep):
                     raise ValueError(f"Unexpected file in update: {name}")
             z.extractall(new_dir)
-        if not os.path.isfile(os.path.join(new_dir, "GFXEngine.exe")):
-            raise ValueError("The update doesn't contain GFXEngine.exe")
+        if not os.path.isfile(os.path.join(new_dir, "ChudGFX.exe")):
+            raise ValueError("The update doesn't contain ChudGFX.exe")
         return new_dir
 
     def _write_script(self, new_dir):
@@ -178,7 +178,7 @@ rem version (settings and the workspace are left alone), then restarts it.
 tasklist /FI "PID eq {os.getpid()}" 2>nul | find "{os.getpid()}" >nul && (ping -n 2 127.0.0.1 >nul & goto wait)
 robocopy "{new_dir}\\_internal" "{app_dir}\\_internal" /MIR /R:3 /W:1 /NFL /NDL /NJH /NJS /NP >nul
 robocopy "{new_dir}" "{app_dir}" /XD _internal /R:3 /W:1 /NFL /NDL /NJH /NJS /NP >nul
-start "" "{app_dir}\\GFXEngine.exe"
+start "" "{app_dir}\\ChudGFX.exe"
 """)
         return script
 

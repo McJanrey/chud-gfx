@@ -1,29 +1,29 @@
-; SCC GFX Engine installer (Inno Setup 6).
+; Chud GFX installer (Inno Setup 6).
 ;
 ; The installer doesn't carry the app: it downloads the latest release from
-; GitHub while installing, so the same SCC-GFX-Engine-Setup.exe always installs
-; the newest version. Installs to C:\SCC GFX Engine (no admin rights needed),
+; GitHub while installing, so the same Chud-GFX-Setup.exe always installs
+; the newest version. Installs to C:\Chud GFX (no admin rights needed),
 ; adds a desktop shortcut, and keeps the settings and the graphics (the
 ; workspace folder) when run again over an existing install.
 ;
-; Build:  ISCC.exe /DAppVersion=1.0.15 installer\SCC-GFX-Engine.iss
+; Build:  ISCC.exe /DAppVersion=1.0.15 installer\Chud-GFX.iss
 ; (the GitHub Actions workflow does this for every release)
 
 #ifndef AppVersion
   #define AppVersion "1.0"
 #endif
-#define AppName "SCC GFX Engine"
-#define Repo "owenbparker/GFX-Engine"
-#define ZipName "GFXEngine-windows.zip"
+#define AppName "Chud GFX"
+#define Repo "McJanrey/chud-gfx"
+#define ZipName "ChudGFX-windows.zip"
 
 [Setup]
-AppId={{3B7C1E9D-5A2F-4D86-8E43-9F0A1B2C3D74}
+AppId={{43214707-B19B-4A99-80D1-95904B763F12}
 AppName={#AppName}
 AppVersion={#AppVersion}
 AppVerName={#AppName}
 AppPublisher=St. Clair Saints
 AppPublisherURL=https://github.com/{#Repo}
-DefaultDirName=C:\SCC GFX Engine
+DefaultDirName=C:\Chud GFX
 DisableDirPage=yes
 DisableProgramGroupPage=yes
 UsePreviousAppDir=no
@@ -31,9 +31,9 @@ UsePreviousAppDir=no
 ; so no administrator prompt is needed.
 PrivilegesRequired=lowest
 OutputDir=..\dist
-OutputBaseFilename=SCC-GFX-Engine-Setup
+OutputBaseFilename=Chud-GFX-Setup
 SetupIconFile=..\packaging\icon.ico
-UninstallDisplayIcon={app}\GFXEngine.exe
+UninstallDisplayIcon={app}\ChudGFX.exe
 UninstallDisplayName={#AppName}
 WizardStyle=modern
 Compression=lzma2
@@ -43,23 +43,23 @@ SolidCompression=yes
 Name: "desktopicon"; Description: "Create a desktop shortcut"; GroupDescription: "Shortcuts:"
 
 [Icons]
-Name: "{autodesktop}\{#AppName}"; Filename: "{app}\GFXEngine.exe"; WorkingDir: "{app}"; Tasks: desktopicon
-Name: "{autoprograms}\{#AppName}"; Filename: "{app}\GFXEngine.exe"; WorkingDir: "{app}"
+Name: "{autodesktop}\{#AppName}"; Filename: "{app}\ChudGFX.exe"; WorkingDir: "{app}"; Tasks: desktopicon
+Name: "{autoprograms}\{#AppName}"; Filename: "{app}\ChudGFX.exe"; WorkingDir: "{app}"
 
 [Run]
-Filename: "{app}\GFXEngine.exe"; WorkingDir: "{app}"; Description: "Launch {#AppName}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\ChudGFX.exe"; WorkingDir: "{app}"; Description: "Launch {#AppName}"; Flags: nowait postinstall skipifsilent
 
 [UninstallDelete]
 ; The app's files (unpacked from the download, so Setup doesn't track them).
 ; The settings and the graphics (workspace) are asked about separately.
 Type: filesandordirs; Name: "{app}\_internal"
 Type: filesandordirs; Name: "{app}\_update"
-Type: files; Name: "{app}\GFXEngine.exe"
+Type: files; Name: "{app}\ChudGFX.exe"
 Type: files; Name: "{app}\README.md"
 Type: files; Name: "{app}\smoke-test.txt"
 
 [Messages]
-ReadyLabel2a=Setup will download the latest version of SCC GFX Engine from GitHub and install it to C:\SCC GFX Engine.
+ReadyLabel2a=Setup will download the latest version of Chud GFX from GitHub and install it to C:\Chud GFX.
 
 [Code]
 const
@@ -71,7 +71,7 @@ var
 
 procedure InitializeWizard;
 begin
-  DownloadPage := CreateDownloadPage('Downloading SCC GFX Engine',
+  DownloadPage := CreateDownloadPage('Downloading Chud GFX',
     'Getting the latest version from GitHub...', nil);
 end;
 
@@ -96,7 +96,7 @@ begin
     end;
     Downloaded := True;
   except
-    Result := 'Couldn''t download SCC GFX Engine from GitHub. Check the internet connection and try again.'
+    Result := 'Couldn''t download Chud GFX from GitHub. Check the internet connection and try again.'
       + #13#10#13#10 + GetExceptionMessage;
   end;
 end;
@@ -140,12 +140,12 @@ begin
   App := ExpandConstant('{app}');
 
   { Close the engine if it's running so its files can be replaced. }
-  RunHidden(ExpandConstant('{sys}\taskkill.exe'), '/IM GFXEngine.exe /F');
+  RunHidden(ExpandConstant('{sys}\taskkill.exe'), '/IM ChudGFX.exe /F');
   Sleep(800);
 
   Code := RunHidden('powershell.exe', '-NoProfile -ExecutionPolicy Bypass -Command "Expand-Archive -LiteralPath '''
     + Tmp + '\{#ZipName}'' -DestinationPath ''' + Tmp + '\new'' -Force"');
-  if (Code <> 0) or not FileExists(Tmp + '\new\GFXEngine.exe') then begin
+  if (Code <> 0) or not FileExists(Tmp + '\new\ChudGFX.exe') then begin
     Result := 'Couldn''t unpack the download (code ' + IntToStr(Code) + ').';
     Exit;
   end;
@@ -158,7 +158,7 @@ begin
     download, so an existing install keeps them. }
   Code := RunHidden('robocopy.exe', '"' + Tmp + '\new\_internal" "' + App + '\_internal" /MIR /R:3 /W:1 /NFL /NDL /NJH /NJS /NP');
   if (Code < 0) or (Code >= 8) then begin
-    Result := 'Copying files failed (robocopy ' + IntToStr(Code) + '). Is SCC GFX Engine still open?';
+    Result := 'Copying files failed (robocopy ' + IntToStr(Code) + '). Is Chud GFX still open?';
     Exit;
   end;
   Code := RunHidden('robocopy.exe', '"' + Tmp + '\new" "' + App + '" /XD _internal /R:3 /W:1 /NFL /NDL /NJH /NJS /NP');
@@ -168,14 +168,14 @@ end;
 
 function InitializeUninstall: Boolean;
 begin
-  RunHidden(ExpandConstant('{sys}\taskkill.exe'), '/IM GFXEngine.exe /F');
+  RunHidden(ExpandConstant('{sys}\taskkill.exe'), '/IM ChudGFX.exe /F');
   Result := True;
 end;
 
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
 begin
   if (CurUninstallStep = usPostUninstall) and DirExists(ExpandConstant('{app}')) then
-    if SuppressibleMsgBox('Also delete your graphics, their files and the SCC GFX Engine settings?',
+    if SuppressibleMsgBox('Also delete your graphics, their files and the Chud GFX settings?',
         mbConfirmation, MB_YESNO or MB_DEFBUTTON2, IDNO) = IDYES then
       DelTree(ExpandConstant('{app}'), True, True, True);
 end;

@@ -72,7 +72,7 @@ class Engine:
         wid = self.settings.get().get("workspace")
         if not self.workspaces.path(wid):
             listed = self.workspaces.list()
-            wid = listed[0]["id"] if listed else self.workspaces.create("SCC Broadcast", "scc")
+            wid = listed[0]["id"] if listed else self.workspaces.create("Chud Broadcast", "scc")
         self.open(wid)
         self.beacon = discover.Beacon(self._beacon_info)
 
@@ -262,14 +262,14 @@ class Engine:
         self.changed()
 
     def pack(self):
-        """The SCC graphics that come with the engine, and which this workspace has."""
+        """The starter graphics that come with the engine, and which this workspace has."""
         have = {c["name"] for c in self.ws.get()["compositions"]}
         return [{"id": c["id"], "name": c["name"], "have": c["name"] in have,
                  "w": c.get("width", 1920), "h": c.get("height", 1080)}
                 for c in self.workspaces.starter_project().get("compositions", [])]
 
     def import_pack(self, ids=None):
-        """Copies graphics from the SCC pack (all this workspace doesn't have, or ids) with their files."""
+        """Copies graphics from the starter pack (all this workspace doesn't have, or ids) with their files."""
         starter = self.workspaces.starter
         project = self.workspaces.starter_project()
         have = {c["name"] for c in self.ws.get()["compositions"]}
@@ -289,7 +289,7 @@ class Engine:
             self.ws.add_comp(comp)
         if comps:
             self.assets_rev += 1
-            log(f"Added {len(comps)} graphic(s) from the SCC pack")
+            log(f"Added {len(comps)} graphic(s) from the starter pack")
         self.changed()
         return [c["name"] for c in comps]
 
