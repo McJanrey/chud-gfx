@@ -1429,11 +1429,15 @@
     sync(want, mode, t) {
       t = t || {};
       const ids = new Set(want.ids);
+      // A wipe or fade swaps old for new in one move: the old waits for the new
+      // one's pictures (or there's a see-through gap between them).
+      const readies = [], going = [];
       for (const [id, root] of this.shown) {
         if (!ids.has(id)) {
           this.shown.delete(id);
           // (under a stinger: gone at once, it's covered)
-          this.out(root, t.animAt ? "cut" : mode, t);
+          if (!t.animAt && (mode === "wipe" || mode === "fade")) { this.leaving.add(root); going.push(root); }
+          else this.out(root, t.animAt ? "cut" : mode, t);
         } else {
           GFX.updateComp(root, want.comps.get(id), want.values[id] || {});
         }
@@ -1445,12 +1449,15 @@
         this.shown.set(id, root);
         // Played in once its pictures are decoded, so it never comes in half drawn.
         root.style.visibility = "hidden";
-        GFX.ready(root, 400).then(() => {
+        const ready = GFX.ready(root, 400);
+        readies.push(ready);
+        ready.then(() => {
           if (this.shown.get(id) !== root) return;
           root.style.visibility = "";
           this.in(root, mode, t);
         });
       }
+      if (going.length) Promise.allSettled(readies).then(() => going.forEach(root => { if (root.isConnected) this.out(root, mode, t); }));
       // Stacking: the graphic's "layer" setting, then its kind (full-page
       // boards at the back, overlays over them, lower thirds in front), then
       // its place in the list.
