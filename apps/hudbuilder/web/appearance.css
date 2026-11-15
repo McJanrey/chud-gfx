@@ -1,10 +1,73 @@
 /* Chud control panel Appearance: four Apple-inspired looks, picked under Appearance.
    Shared verbatim by GFX Baby, Chud Hud and Chud Hud Hub. Generated from the look files;
-   html[data-look] picks the look (Studio Black when none), --x-accent on <html> is the highlight colour. */
+   html[data-look] picks the look (Control Room when none), --x-accent on <html> is the highlight colour. */
 
+
+/* ===== Control Room (the default) =====
+   GFX Baby's own look: a broadcast gallery at night. Zinc greys that stay out of the way,
+   one lime tally colour for what's selected or about to go, red only for on air. */
+:root, html[data-look="room"] {
+  --x-bg: #0a0a0b; --x-surface: #151517; --x-fill: #212124; --x-fill-hover: #2a2a2e; --x-line: rgba(255,255,255,.07); --x-line2: rgba(255,255,255,.12);
+  --x-text: #ececef; --x-muted: #8b8b94; --x-accent: #c8f03c; --x-on-accent: #10140a;
+  --x-input: #0e0e10; --x-input-line: rgba(255,255,255,.08); --x-seg: #0e0e10; --x-seg-on: #26262a; --x-seg-on-text: #fff; --x-seg-r: 8px;
+  --x-btn-r: 7px; --x-in-r: 7px; --x-btn-shadow: none;
+  --x-card-r: 10px; --x-card-border: 1px solid rgba(255,255,255,.06); --x-card-shadow: none; --x-blur: none; --x-h2: 18px;
+  --x-bar: #0a0a0b; --x-side: #0a0a0b; --x-side-blur: none; --x-hover: rgba(255,255,255,.05); --x-sel: rgba(255,255,255,.08); --x-sel-text: #fff;
+  --x-green: #3ddc84; --x-red: #f0454b; --x-mon-r: 8px; --x-mon-shadow: none;
+  --x-row: transparent; --x-row-hover: rgba(255,255,255,.04); --x-row-shadow: none;
+  --x-mono: "Cascadia Mono", "Cascadia Code", Consolas, ui-monospace, monospace;
+}
+:is(html:not([data-look]), html[data-look="room"]) body { letter-spacing: 0 !important; font-family: "Inter", system-ui, sans-serif !important; }
+/* The page sits in one raised sheet beside the sidebar. */
+:is(html:not([data-look]), html[data-look="room"]) body:has(#top) > main.page { margin: 8px 8px 8px 0; background-color: #111113; border: 1px solid var(--x-line); border-radius: 12px; overflow: hidden; }
+:is(html:not([data-look]), html[data-look="room"]) #top { border-right: 0 !important; }
+/* Sidebar: muted icons, the open page marked with a lime tally bar (the signature). */
+:is(html:not([data-look]), html[data-look="room"]) #tabs > button::before, :is(html:not([data-look]), html[data-look="room"]) #tabs .extras-menu button::before { background-color: var(--x-muted) !important; flex-basis: 16px; height: 16px; }
+:is(html:not([data-look]), html[data-look="room"]) #tabs > button, :is(html:not([data-look]), html[data-look="room"]) #tabs .extras-menu button { color: #b4b4bc !important; font-size: 13px !important; padding: 8px 10px !important; border-radius: 6px !important; }
+:is(html:not([data-look]), html[data-look="room"]) #tabs > button.on, :is(html:not([data-look]), html[data-look="room"]) #tabs .extras-menu button.on { color: #fff !important; font-weight: 500 !important; box-shadow: inset 2px 0 0 var(--x-accent) !important; }
+:is(html:not([data-look]), html[data-look="room"]) #tabs > button.on::before, :is(html:not([data-look]), html[data-look="room"]) #tabs .extras-menu button.on::before { background-color: var(--x-accent) !important; }
+:is(html:not([data-look]), html[data-look="room"]) #tabs #extras-menu::before { font-size: 11px; font-weight: 500; margin: 16px 10px 4px; }
+:is(html:not([data-look]), html[data-look="room"]) #top .brand b { color: var(--x-accent) !important; font-weight: 600; }
+:is(html:not([data-look]), html[data-look="room"]) #top .brand span { font-size: 12px; letter-spacing: .06em; font-weight: 500; }
+/* Type: medium weights, size makes the hierarchy, numbers in mono. */
+:is(html:not([data-look]), html[data-look="room"]) h3, :is(html:not([data-look]), html[data-look="room"]) .panel-head h3 { font-size: 14px !important; font-weight: 600 !important; letter-spacing: 0 !important; }
+:is(html:not([data-look]), html[data-look="room"]) body.shell section > h2, :is(html:not([data-look]), html[data-look="room"]) body.shell h2 { font-weight: 600 !important; letter-spacing: -0.01em !important; }
+:is(html:not([data-look]), html[data-look="room"]) :is(#net, #version, .pill, .mon-list, input[type=number], .ruler, .kind, .tn-score, .rd .meta) { font-family: var(--x-mono); font-variant-numeric: tabular-nums; }
+:is(html:not([data-look]), html[data-look="room"]) button.primary, :is(html:not([data-look]), html[data-look="room"]) button.on, :is(html:not([data-look]), html[data-look="room"]) .update { font-weight: 600 !important; }
+:is(html:not([data-look]), html[data-look="room"]) .panel-head { border-bottom-color: var(--x-line) !important; }
+/* Monitors: no glow, a hairline frame, the tally as a flat label with its light. */
+:is(html:not([data-look]), html[data-look="room"]) .mon-box { box-shadow: 0 0 0 1px var(--x-line2) !important; }
+:is(html:not([data-look]), html[data-look="room"]) .monitor.pvw .mon-box { box-shadow: 0 0 0 1.5px var(--x-green) !important; }
+:is(html:not([data-look]), html[data-look="room"]) .monitor.pgm .mon-box { box-shadow: 0 0 0 1.5px var(--x-red) !important; }
+:is(html:not([data-look]), html[data-look="room"]) .tally { background-color: transparent !important; color: var(--x-text) !important; border-radius: 4px !important; padding: 2px 0 !important;
+  font-family: var(--x-mono); font-size: 11px !important; font-weight: 500 !important; letter-spacing: .08em !important; box-shadow: none !important; }
+:is(html:not([data-look]), html[data-look="room"]) .tally::before { width: 8px; height: 8px; border-radius: 2px; }
+:is(html:not([data-look]), html[data-look="room"]) .tally.pvw::before { background-color: var(--x-green) !important; }
+:is(html:not([data-look]), html[data-look="room"]) .tally.pgm::before { background-color: var(--x-red) !important; }
+/* TAKE: the one loud thing, solid and square-shouldered, no glow. */
+:is(html:not([data-look]), html[data-look="room"]) #page-control button.take { height: 60px !important; border-radius: 8px !important; background-color: var(--x-red) !important; color: #fff !important;
+  font-size: 16px !important; font-weight: 600 !important; letter-spacing: .12em !important; box-shadow: none !important; }
+:is(html:not([data-look]), html[data-look="room"]) #page-control button.take:hover { background-color: #f75d62 !important; }
+:is(html:not([data-look]), html[data-look="room"]) #page-control button.cut { border-radius: 8px !important; letter-spacing: .08em; }
+:is(html:not([data-look]), html[data-look="room"]) .tr-chips { border-radius: 8px; padding: 3px; box-shadow: 0 0 0 1px var(--x-line); }
+:is(html:not([data-look]), html[data-look="room"]) .tr-chips button { border-radius: 6px !important; }
+:is(html:not([data-look]), html[data-look="room"]) .tr-chips button.on { box-shadow: inset 2px 0 0 var(--x-accent) !important; }
+/* Rundown rows: flat list, selection is a lime hairline. */
+:is(html:not([data-look]), html[data-look="room"]) .rd { border-radius: 8px !important; }
+:is(html:not([data-look]), html[data-look="room"]) .rd.sel { background-color: color-mix(in srgb, var(--x-accent) 7%, transparent) !important; box-shadow: 0 0 0 1px color-mix(in srgb, var(--x-accent) 55%, transparent) !important; }
+:is(html:not([data-look]), html[data-look="room"]) .rd .thumb { border-radius: 4px !important; }
+:is(html:not([data-look]), html[data-look="room"]) .rd .btns button { border-radius: 6px !important; font-family: var(--x-mono); letter-spacing: .04em; font-weight: 500 !important; }
+:is(html:not([data-look]), html[data-look="room"]) .search { border-radius: 7px !important; }
+:is(html:not([data-look]), html[data-look="room"]) .comp-rail button { border-radius: 6px !important; background-color: transparent !important; color: var(--x-muted) !important; }
+:is(html:not([data-look]), html[data-look="room"]) .comp-rail button:hover { background-color: var(--x-hover) !important; }
+:is(html:not([data-look]), html[data-look="room"]) .comp-rail button.on { background-color: var(--x-sel) !important; color: var(--x-accent) !important; box-shadow: inset 2px 0 0 var(--x-accent) !important; }
+:is(html:not([data-look]), html[data-look="room"]) .comp-rail button.on span { color: #fff !important; }
+:is(html:not([data-look]), html[data-look="room"]) .seg button.on { box-shadow: none !important; }
+:is(html:not([data-look]), html[data-look="room"]) input:focus, :is(html:not([data-look]), html[data-look="room"]) select:focus, :is(html:not([data-look]), html[data-look="room"]) textarea:focus { box-shadow: 0 0 0 3px color-mix(in srgb, var(--x-accent) 22%, transparent) !important; }
+:is(html:not([data-look]), html[data-look="room"]) .comp-item.sel, :is(html:not([data-look]), html[data-look="room"]) .ly.sel, :is(html:not([data-look]), html[data-look="room"]) .src.sel { background-color: color-mix(in srgb, var(--x-accent) 10%, transparent) !important; border-color: color-mix(in srgb, var(--x-accent) 45%, transparent) !important; }
 
 /* ===== Chud Night ===== */
-:root, html[data-look="studio"] {
+html[data-look="studio"] {
   --x-bg: #000; --x-surface: #1c1c1e; --x-fill: #2c2c2e; --x-fill-hover: #3a3a3c; --x-line: rgba(84,84,88,.6); --x-line2: rgba(84,84,88,.9);
   --x-text: #fff; --x-muted: #8e8e93; --x-accent: #f28c28; --x-on-accent: #1f0d00;
   --x-input: #2c2c2e; --x-input-line: transparent; --x-seg: #1c1c1e; --x-seg-on: #3a3a3c; --x-seg-on-text: #fff; --x-seg-r: 10px;
@@ -14,19 +77,19 @@
   --x-green: #30d158; --x-red: #ff375f; --x-mon-r: 12px; --x-mon-shadow: 0 0 0 0 transparent;
   --x-row: transparent; --x-row-hover: #2c2c2e; --x-row-shadow: none;
 }
-:is(html:not([data-look]), html[data-look="studio"]) .rundown-list { gap: 0 !important; }
-:is(html:not([data-look]), html[data-look="studio"]) .rd { border-radius: 0 !important; border-bottom: .5px solid var(--x-line) !important; }
-:is(html:not([data-look]), html[data-look="studio"]) .panel-head { border-bottom: 0 !important; padding: 16px 16px 6px !important; }
-:is(html:not([data-look]), html[data-look="studio"]) .panel-head h3 { font-size: 22px !important; font-weight: 700 !important; }
-:is(html:not([data-look]), html[data-look="studio"]) .shell-item { font-size: 15px !important; padding: 9px 12px !important; border-radius: 10px !important; }
-:is(html:not([data-look]), html[data-look="studio"]) .shell-item.on { font-weight: 600 !important; }
-:is(html:not([data-look]), html[data-look="studio"]) body.shell .shell-crumb { font-size: 15px; }
-:is(html:not([data-look]), html[data-look="studio"]) body.shell section > h2 { font-size: 26px !important; margin-bottom: 18px !important; }
-:is(html:not([data-look]), html[data-look="studio"]) #page-control button.take { background-color: var(--x-red) !important; }
-:is(html:not([data-look]), html[data-look="studio"]) #tabs > button.on, :is(html:not([data-look]), html[data-look="studio"]) .shell-item.on { background-color: #fff !important; color: #000 !important; }
-:is(html:not([data-look]), html[data-look="studio"]) #tabs > button.on::before { background-color: #000 !important; }
-:is(html:not([data-look]), html[data-look="studio"]) .shell-item.on svg { color: #000 !important; }
-:is(html:not([data-look]), html[data-look="studio"]) #tabs > button, :is(html:not([data-look]), html[data-look="studio"]) #tabs .extras-menu button { font-size: 15px !important; padding: 9px 12px !important; border-radius: 10px !important; }
+html[data-look="studio"] .rundown-list { gap: 0 !important; }
+html[data-look="studio"] .rd { border-radius: 0 !important; border-bottom: .5px solid var(--x-line) !important; }
+html[data-look="studio"] .panel-head { border-bottom: 0 !important; padding: 16px 16px 6px !important; }
+html[data-look="studio"] .panel-head h3 { font-size: 22px !important; font-weight: 700 !important; }
+html[data-look="studio"] .shell-item { font-size: 15px !important; padding: 9px 12px !important; border-radius: 10px !important; }
+html[data-look="studio"] .shell-item.on { font-weight: 600 !important; }
+html[data-look="studio"] body.shell .shell-crumb { font-size: 15px; }
+html[data-look="studio"] body.shell section > h2 { font-size: 26px !important; margin-bottom: 18px !important; }
+html[data-look="studio"] #page-control button.take { background-color: var(--x-red) !important; }
+html[data-look="studio"] #tabs > button.on, html[data-look="studio"] .shell-item.on { background-color: #fff !important; color: #000 !important; }
+html[data-look="studio"] #tabs > button.on::before { background-color: #000 !important; }
+html[data-look="studio"] .shell-item.on svg { color: #000 !important; }
+html[data-look="studio"] #tabs > button, html[data-look="studio"] #tabs .extras-menu button { font-size: 15px !important; padding: 9px 12px !important; border-radius: 10px !important; }
 
 /* ===== Graphite ===== */
 html[data-look="graphite"] {
@@ -92,7 +155,7 @@ html[data-look="glass"] #tabs > button.on::before { background-color: #fff !impo
 :root, body.shell {
   --bg: var(--x-bg); --panel: var(--x-surface); --panel2: var(--x-fill); --line: var(--x-line); --line2: var(--x-line2);
   --text: var(--x-text); --muted: var(--x-muted); --accent: var(--x-accent); --accent-d: var(--x-accent);
-  --side: var(--x-side); --hover: var(--x-hover);
+  --side: var(--x-side); --hover: var(--x-hover); --gold: var(--x-accent);
 }
 html, body { -webkit-font-smoothing: antialiased; }
 body, body.shell { background: var(--x-page, var(--x-bg)) !important; color: var(--x-text); letter-spacing: -0.011em;
@@ -200,10 +263,10 @@ button:focus-visible, a:focus-visible, .shell-item:focus-visible { outline: 3px 
 
 /* segmented-controls.md: 5-7 segments at most, and a tab view (not a segmented control) to switch main views.
    sidebars.md: GFX Baby's 9 areas become a sidebar, the same as the HUDs. */
-body:has(#top) { display: grid !important; grid-template-columns: 224px minmax(0, 1fr); grid-template-rows: minmax(0, 100%); }
-#top { grid-column: 1; grid-row: 1; height: 100% !important; flex-direction: column !important; align-items: stretch !important; gap: 4px !important; padding: 14px 10px !important;
+body:has(#top) { display: grid !important; grid-template-columns: 224px minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+#top { grid-column: 1; grid-row: 1 / span 2; height: 100% !important; flex-direction: column !important; align-items: stretch !important; gap: 4px !important; padding: 14px 10px !important;
   border-bottom: 0 !important; border-right: 1px solid var(--x-line) !important; background-color: var(--x-side) !important; backdrop-filter: var(--x-side-blur) !important; overflow-y: auto; }
-body:has(#top) > main.page { grid-column: 2; grid-row: 1; min-height: 0; }
+body:has(#top) > main.page { grid-column: 2; grid-row: 2; min-height: 0; }
 #top .brand { padding: 6px 8px !important; justify-content: flex-start; font-size: 14px; }
 #top .ws-chip { border-left: 0 !important; padding: 4px 8px 12px !important; border-bottom: 1px solid var(--x-line); margin-bottom: 10px; }
 #top .project-name { width: 100% !important; padding: 4px 6px !important; }
@@ -257,6 +320,7 @@ html body button.ap-look[aria-checked="true"] { box-shadow: 0 0 0 2.5px var(--x-
 .ap-mini span { position: absolute; left: 32%; width: 34%; bottom: 12%; height: 34%; border-radius: var(--m-r); background: var(--m-card); box-shadow: 0 0 0 1px var(--m-line); }
 .ap-mini em { position: absolute; right: 6%; bottom: 12%; width: 22%; height: 14%; border-radius: 999px; background: var(--m-accent); }
 .ap-mini u { position: absolute; left: 4%; top: 14%; width: 18%; height: 7%; border-radius: 4px; background: var(--m-sel); }
+.ap-mini[data-mini="room"]     { --m-bg: #0a0a0b; --m-side: #0a0a0b; --m-card: #151517; --m-line: rgba(255,255,255,.08); --m-accent: #c8f03c; --m-sel: rgba(255,255,255,.12); --m-r: 4px; }
 .ap-mini[data-mini="studio"]   { --m-bg: #000; --m-side: #000; --m-card: #1c1c1e; --m-line: transparent; --m-accent: #f28c28; --m-sel: #fff; --m-r: 6px; }
 .ap-mini[data-mini="graphite"] { --m-bg: #1e1e1e; --m-side: #232325; --m-card: #2c2c2e; --m-line: rgba(255,255,255,.08); --m-accent: #0a84ff; --m-sel: rgba(255,255,255,.16); --m-r: 5px; }
 .ap-mini[data-mini="daylight"] { --m-bg: #f5f5f7; --m-side: #ececf0; --m-card: #fff; --m-line: rgba(0,0,0,.06); --m-accent: #0071e3; --m-sel: rgba(0,0,0,.1); --m-r: 7px; }
@@ -291,3 +355,101 @@ html[data-look="glass"] .ap-dialog { background: rgba(14,22,18,.92); }
 .ap-dialog-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
 .ap-dialog-head h2 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
 
+
+/* The side panel folds to a strip of icons (button at its top, remembered per PC). */
+.side-toggle { display: flex; align-self: flex-end; width: 28px; height: 28px; padding: 0 !important; margin: -6px -2px 0 0; border: 0 !important; border-radius: 7px !important; background-color: transparent !important; box-shadow: none !important; cursor: pointer; }
+.side-toggle::before { content: ""; width: 18px; height: 18px; margin: auto; background-color: var(--x-muted); transition: transform .2s;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill-rule='evenodd' d='M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2zm0 2v14h4V5zm6 0v14h8V5zm4.5 4l-3 3 3 3z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill-rule='evenodd' d='M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2zm0 2v14h4V5zm6 0v14h8V5zm4.5 4l-3 3 3 3z'/%3E%3C/svg%3E") center / contain no-repeat; }
+.side-toggle:hover { background-color: var(--x-hover) !important; }
+.side-toggle:hover::before { background-color: var(--x-text); }
+html.side-mini body:has(#top) { grid-template-columns: 60px minmax(0, 1fr); }
+html.side-mini #top { padding: 12px 8px !important; overflow-x: hidden; }
+html.side-mini .side-toggle { align-self: center; margin: 0 0 6px; }
+html.side-mini .side-toggle::before { transform: scaleX(-1); }
+html.side-mini #top .brand span, html.side-mini #top .ws-chip, html.side-mini #top .top-right, html.side-mini #tabs #extras-menu::before { display: none !important; }
+html.side-mini #top .brand { justify-content: center; padding: 4px 0 10px !important; }
+html.side-mini #tabs > button, html.side-mini #tabs .extras-menu button { font-size: 0 !important; justify-content: center !important; padding: 9px 0 !important; gap: 0 !important; }
+html.side-mini #tabs #extras-menu { border-top: 1px solid var(--x-line) !important; margin-top: 8px; padding-top: 8px !important; }
+
+
+/* ===== Sidebar groups, workspace card and the bar over each page (every look) ===== */
+.ws-text { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.ws-sub { font-size: 11.5px; color: var(--x-muted); padding: 0 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#tabs .nav-group { display: flex; align-items: center; gap: 8px; margin: 16px 10px 4px; font-size: 10.5px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--x-muted); }
+#tabs .nav-group::after { content: ""; flex: 1; height: 1px; background-color: var(--x-line); }
+#tabs .nav-group:first-of-type { margin-top: 4px; }
+html.side-mini #tabs .nav-group { font-size: 0; margin: 8px 6px; gap: 0; }
+#tabs #extras-menu::before { content: "More" !important; font-size: 10.5px !important; letter-spacing: .06em; text-transform: uppercase; }
+.crumb { grid-column: 2; grid-row: 1; display: flex; align-items: center; gap: 10px; height: 52px; padding: 0 16px 0 18px; border-bottom: 1px solid var(--x-line); font-size: 14px; color: var(--x-muted); min-width: 0; }
+.crumb .spacer { flex: 1; }
+.crumb-ic { flex: 0 0 26px; height: 26px; border-radius: 7px; background-color: var(--x-fill); position: relative; }
+.crumb-ic::after { content: ""; position: absolute; inset: 5px; background-color: var(--x-accent); -webkit-mask: var(--ic) center / contain no-repeat; mask: var(--ic) center / contain no-repeat; }
+.crumb-ws { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 30%; }
+.crumb-sep { opacity: .5; }
+.crumb-page { color: var(--x-text); font-weight: 500; white-space: nowrap; }
+.crumb-status { display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 12px; border-radius: 7px; background-color: var(--x-fill); color: var(--x-text); font-size: 12.5px; font-weight: 500; white-space: nowrap; }
+.crumb-status::before { content: ""; width: 8px; height: 8px; border-radius: 2px; background-color: var(--x-muted); }
+.crumb-status.live::before { background-color: var(--x-red); }
+:is(html:not([data-look]), html[data-look="room"]) .crumb-status { font-family: var(--x-mono); font-size: 12px; }
+/* Control Room: the page and its bar share one raised sheet; the workspace is a card, the open page a filled tile. */
+:is(html:not([data-look]), html[data-look="room"]) .crumb { margin: 8px 8px 0 0; background-color: #111113; border: 1px solid var(--x-line); border-bottom-color: var(--x-line); border-radius: 12px 12px 0 0; }
+:is(html:not([data-look]), html[data-look="room"]) body:has(#top) > main.page { margin: 0 8px 8px 0 !important; border-top: 0 !important; border-radius: 0 0 12px 12px !important; }
+:is(html:not([data-look]), html[data-look="room"]) #top .ws-chip { margin: 2px 0 6px !important; padding: 8px !important; border: 1px solid var(--x-line) !important; border-radius: 10px; background-color: #131315; gap: 10px; }
+:is(html:not([data-look]), html[data-look="room"]) #top .ws-chip .project-name { padding: 0 6px !important; height: 20px; font-size: 13px; }
+:is(html:not([data-look]), html[data-look="room"]) #tabs > button.on, :is(html:not([data-look]), html[data-look="room"]) #tabs .extras-menu button.on { background-color: #1c1c1f !important; box-shadow: inset 0 0 0 1px var(--x-line), inset 2px 0 0 var(--x-accent) !important; }
+:is(html:not([data-look]), html[data-look="room"]) input[type=number] { padding-left: 6px !important; padding-right: 2px !important; min-width: 40px; }
+/* Sidebar rows 32px, so every page fits without the sidebar scrolling. */
+:is(html:not([data-look]), html[data-look="room"]) #tabs > button, :is(html:not([data-look]), html[data-look="room"]) #tabs .extras-menu button { padding: 6px 10px !important; }
+:is(html:not([data-look]), html[data-look="room"]) #tabs .nav-group, :is(html:not([data-look]), html[data-look="room"]) #tabs #extras-menu::before { margin: 12px 10px 4px !important; }
+:is(html:not([data-look]), html[data-look="room"]) #top { scrollbar-width: thin; scrollbar-color: #2a2a2e transparent; }
+
+
+/* ===== Control Room v2: the whole app, not just the shell =====
+   Outline buttons (filled only for the one action that matters), switches for on/off,
+   36px fields, sentence-case labels, section titles that read as titles. */
+:is(html:not([data-look]), html[data-look="room"]) body button:not(:is(.primary, .on, .take, .update, .ws-pic, .ap-swatch, .ap-look, .side-toggle, .brand, .ghost)):not(:is(#tabs, .seg, .tr-chips, .comp-rail, .extras-menu) button) {
+  background-color: transparent !important; box-shadow: inset 0 0 0 1px var(--x-line2) !important; }
+:is(html:not([data-look]), html[data-look="room"]) body button:not(:is(.primary, .on, .take, .update, .ws-pic, .ap-swatch, .ap-look, .side-toggle, .brand, .ghost)):not(:is(#tabs, .seg, .tr-chips, .comp-rail, .extras-menu) button):hover { background-color: var(--x-hover) !important; }
+:is(html:not([data-look]), html[data-look="room"]) #tabs button, :is(html:not([data-look]), html[data-look="room"]) .seg button, :is(html:not([data-look]), html[data-look="room"]) .tr-chips button, :is(html:not([data-look]), html[data-look="room"]) .comp-rail button, :is(html:not([data-look]), html[data-look="room"]) button.ghost, :is(html:not([data-look]), html[data-look="room"]) .ly-btn, :is(html:not([data-look]), html[data-look="room"]) .ws-card .menu { box-shadow: none !important; }
+:is(html:not([data-look]), html[data-look="room"]) #tabs > button.on, :is(html:not([data-look]), html[data-look="room"]) #tabs .extras-menu button.on { background-color: #1c1c1f !important; box-shadow: inset 0 0 0 1px var(--x-line), inset 2px 0 0 var(--x-accent) !important; }
+:is(html:not([data-look]), html[data-look="room"]) .tr-chips button.on { box-shadow: inset 2px 0 0 var(--x-accent) !important; }
+:is(html:not([data-look]), html[data-look="room"]) .comp-rail button.on { box-shadow: inset 2px 0 0 var(--x-accent) !important; }
+:is(html:not([data-look]), html[data-look="room"]) #page-control button.take { box-shadow: none !important; }
+:is(html:not([data-look]), html[data-look="room"]) input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]), :is(html:not([data-look]), html[data-look="room"]) select { min-height: 34px; background-color: #0c0c0d !important; border-color: rgba(255,255,255,.09) !important; }
+:is(html:not([data-look]), html[data-look="room"]) input.small, :is(html:not([data-look]), html[data-look="room"]) select.small, :is(html:not([data-look]), html[data-look="room"]) .rd input, :is(html:not([data-look]), html[data-look="room"]) .ly input { min-height: 0; }
+/* on/off: a switch, lime when on */
+:is(html:not([data-look]), html[data-look="room"]) input[type=checkbox] { -webkit-appearance: none; appearance: none; width: 30px !important; height: 18px; flex: 0 0 30px; margin: 0; border-radius: 9px; position: relative; cursor: pointer;
+  background-color: #2a2a2e !important; border: 0 !important; transition: background-color .15s; vertical-align: middle; }
+:is(html:not([data-look]), html[data-look="room"]) input[type=checkbox]::after { content: ""; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: #8b8b94; transition: transform .15s, background-color .15s; }
+:is(html:not([data-look]), html[data-look="room"]) input[type=checkbox]:checked { background-color: var(--x-accent) !important; }
+:is(html:not([data-look]), html[data-look="room"]) input[type=checkbox]:checked::after { transform: translateX(12px); background: var(--x-on-accent); }
+:is(html:not([data-look]), html[data-look="room"]) input[type=checkbox]:focus-visible { outline: 2px solid color-mix(in srgb, var(--x-accent) 60%, transparent); outline-offset: 2px; }
+/* labels: sentence case, no tracking */
+:is(html:not([data-look]), html[data-look="room"]) h3, :is(html:not([data-look]), html[data-look="room"]) .field > label .kind, :is(html:not([data-look]), html[data-look="room"]) .tn-title, :is(html:not([data-look]), html[data-look="room"]) .st-heads, :is(html:not([data-look]), html[data-look="room"]) .rd-group, :is(html:not([data-look]), html[data-look="room"]) .cr-side h4 { text-transform: none !important; letter-spacing: 0 !important; }
+:is(html:not([data-look]), html[data-look="room"]) .tn-title, :is(html:not([data-look]), html[data-look="room"]) .st-heads, :is(html:not([data-look]), html[data-look="room"]) .cr-side h4 { font-size: 12px !important; font-weight: 500 !important; color: var(--x-muted) !important; }
+:is(html:not([data-look]), html[data-look="room"]) .field > label .kind { font-size: 11px !important; color: var(--x-muted) !important; opacity: .8; }
+:is(html:not([data-look]), html[data-look="room"]) .panel-head h3, :is(html:not([data-look]), html[data-look="room"]) body.shell section > h3 { font-size: 15px !important; font-weight: 500 !important; color: var(--x-text) !important; }
+:is(html:not([data-look]), html[data-look="room"]) main.page h2 { font-size: 20px !important; font-weight: 600 !important; letter-spacing: -0.01em !important; }
+:is(html:not([data-look]), html[data-look="room"]) .badge { font-size: 11px !important; font-weight: 500 !important; letter-spacing: 0 !important; background-color: #232327 !important; color: var(--x-muted) !important; border-radius: 4px !important; }
+/* Global: Left/Right are a quiet label with the team's own colour as its light */
+:is(html:not([data-look]), html[data-look="room"]) .team-card .side-tag { background-color: transparent !important; color: var(--x-text) !important; font-weight: 500; letter-spacing: 0; display: inline-flex; align-items: center; gap: 6px; padding: 0; }
+:is(html:not([data-look]), html[data-look="room"]) .team-card .side-tag::before { content: ""; width: 8px; height: 8px; border-radius: 2px; background-color: currentColor; opacity: .5; }
+/* Home: like an events list, not a splash */
+:is(html:not([data-look]), html[data-look="room"]) .home-hero { display: none; }
+:is(html:not([data-look]), html[data-look="room"]) .home { max-width: none; padding: 28px 32px 40px; }
+:is(html:not([data-look]), html[data-look="room"]) .home-head h2 { font-size: 20px !important; }
+:is(html:not([data-look]), html[data-look="room"]) .ws-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important; gap: 20px !important; }
+:is(html:not([data-look]), html[data-look="room"]) .ws-card { border-radius: 12px !important; padding: 8px; background-color: #131315 !important; border-color: var(--x-line) !important; }
+:is(html:not([data-look]), html[data-look="room"]) .ws-card .cover { border-radius: 8px; }
+:is(html:not([data-look]), html[data-look="room"]) .ws-card .info { padding: 12px 8px 6px; }
+:is(html:not([data-look]), html[data-look="room"]) .ws-card .name { font-weight: 500 !important; font-size: 15px !important; }
+:is(html:not([data-look]), html[data-look="room"]) .ws-card .sub::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--x-muted); margin-right: 8px; vertical-align: middle; }
+:is(html:not([data-look]), html[data-look="room"]) .ws-card.current .sub::before { background: var(--x-accent); }
+:is(html:not([data-look]), html[data-look="room"]) .ws-card .badge { top: 16px !important; left: 16px !important; background-color: var(--x-accent) !important; color: var(--x-on-accent) !important; }
+:is(html:not([data-look]), html[data-look="room"]) .ws-card.current { box-shadow: 0 0 0 1px color-mix(in srgb, var(--x-accent) 50%, transparent); }
+:is(html:not([data-look]), html[data-look="room"]) .ws-card.add .plus { border-width: 1px !important; width: 48px !important; height: 48px !important; }
+/* drop zones: dashed hairline like BLOB's uploaders */
+:is(html:not([data-look]), html[data-look="room"]) .drop, :is(html:not([data-look]), html[data-look="room"]) .logo-drop { border: 1px dashed var(--x-line2) !important; border-radius: 10px !important; }
+:is(html:not([data-look]), html[data-look="room"]) #top .project-name { min-height: 0 !important; background-color: transparent !important; border-color: transparent !important; }
+:is(html:not([data-look]), html[data-look="room"]) #top .project-name:focus { border-color: var(--x-line2) !important; }

@@ -51,7 +51,7 @@ App.on(s => {
         return h("div", { class: "ws-card" + (w.id === current ? " current" : ""), role: "button", tabindex: 0,
           onclick: () => open(w), onkeydown: e => { if (e.key === "Enter") open(w); } },
           cover,
-          w.id === current ? h("span", { class: "badge" }, "OPEN") : null,
+          w.id === current ? h("span", { class: "badge" }, "Open") : null,
           h("button", { class: "menu small", title: "Rename, picture, delete", onclick: e => { e.stopPropagation(); edit(w); } }, "⋯"),
           h("div", { class: "info" }, h("div", { class: "name" }, w.name),
             h("div", { class: "sub" }, `${w.graphics} graphic${w.graphics === 1 ? "" : "s"} · ${ago(w.updated)}`)));
@@ -163,7 +163,7 @@ App.on(s => {
       oninput: e => { g[side][key] = e.target.value; change({ [side]: { [key]: e.target.value } }); renderScore(); } }, attrs));
     card.replaceChildren(
       h("div", { class: "panel-head" }, h("h3", {}, side === "left" ? "Left team" : "Right team"),
-        h("span", { class: "side-tag", "data-k": "tag" }, side === "left" ? "LEFT" : "RIGHT")),
+        h("span", { class: "side-tag", "data-k": "tag" }, side === "left" ? "Left" : "Right")),
       h("div", { class: "pad" },
         drop, fileIn,
         h("div", { class: "row-gap", style: { justifyContent: "center" } },
