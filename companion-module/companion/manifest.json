@@ -1,16 +1,16 @@
 {
 	"$schema": "../node_modules/@companion-module/base/assets/manifest.schema.json",
-	"id": "scc-gfx-engine",
-	"name": "scc-gfx-engine",
-	"shortname": "chud-gfx",
-	"description": "St. Clair Saints GFX Engine: graphics to Preview and Program, Take, Clear, and quick functions (score, clock, background loop)",
+	"id": "chud-gfx-baby",
+	"name": "chud-gfx-baby",
+	"shortname": "chud-gfx-baby",
+	"description": "Chud GFX Baby: graphics to Preview and Program, Take, Clear, and quick functions (score, clock, background loop)",
 	"version": "0.0.0",
 	"license": "MIT",
-	"repository": "git+https://github.com/owenbparker/GFX-Engine.git",
-	"bugs": "https://github.com/owenbparker/GFX-Engine/issues",
+	"repository": "git+https://github.com/McJanrey/chud-gfx.git",
+	"bugs": "https://github.com/McJanrey/chud-gfx/issues",
 	"maintainers": [
 		{
-			"name": "St. Clair Saints"
+			"name": "Chud"
 		}
 	],
 	"runtime": {
@@ -20,9 +20,9 @@
 		"entrypoint": "../src/main.js"
 	},
 	"legacyIds": [],
-	"manufacturer": "St. Clair Saints",
+	"manufacturer": "Chud",
 	"products": [
-		"GFX Engine"
+		"GFX Baby"
 	],
 	"keywords": [
 		"graphics",

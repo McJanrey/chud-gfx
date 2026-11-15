@@ -29,7 +29,7 @@ import uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, quote, unquote, urlparse
 
-from . import appearance, companion, discover, export, globalcfg, media, pack, share, chudhud
+from . import appearance, companion, discover, export, globalcfg, media, pack, share, chudhud, ros
 from .assets import Assets
 from .config import DATA_DIR, WEB_DIR, Settings, safe_join
 from .data import Sources
@@ -80,6 +80,7 @@ class Engine:
                                      legacy=config.LEGACY_WORKSPACE_DIR if legacy_dir is None else legacy_dir)
         self.library_dir = library_dir or config.LIBRARY_DIR
         self.teams = Teams(self.library_dir)
+        self.ros = ros.RunOfShow(os.path.join(DATA_DIR, "run-of-show.json"))   # the evening's segments (Control, left)
         self.jobs = Jobs()
         self.updater = Updater()
         self.server = None
@@ -212,6 +213,59 @@ class Engine:
                                 "unreachable": bool(f.get("hud") and f["hud"]["remote"] and not f["hud"]["network"])}
                          for name, f in self.feeds.items()}
         return snap
+
+    def ros_summary(self):
+        """Tonight's match and the graphics, from this engine's own state (what Run of Show needs)."""
+        s = self.state()
+        g = s.get("global") or {}
+        sched = g.get("schedule") or {}
+        team = lambda side: {k: (g.get(side) or {}).get(k) or ("" if k != "score" else 0) for k in ("name", "short", "score", "color", "logo")}
+        return {"ok": True, "schedule": [m for m in sched.get("matches") or [] if isinstance(m, dict)],
+                "graphics": [{"id": c.get("id"), "name": c.get("name")} for c in (s.get("project") or {}).get("compositions", [])],
+                "match": {"event": g.get("event") or "", "stage": g.get("stage") or "", "best_of": g.get("best_of") or 0,
+                          "left": team("left"), "right": team("right")}}
+
+    def ros_state(self):
+        e = self.ros_summary()
+        try:
+            self.ros.auto_apply(e["schedule"], e["match"].get("best_of"))
+        except Exception as err:
+            log(f"Run of show: couldn't follow the Schedule ({err})")
+        out = self.ros.state()
+        out["engine"] = {"ok": True, "graphics": e["graphics"], "schedule": e["schedule"], "match": e["match"]}
+        return out
+
+    def ros_post(self, path, body):
+        r = self.ros
+        if path == "/api/ros/template":
+            return {"template": r.save_template(body.get("template") or {})}
+        if path == "/api/ros/template/delete":
+            r.delete_template(body.get("id"))
+        elif path == "/api/ros/template/new":
+            return {"template": r.save_template(ros.starter_template(body.get("game") or "val", int(body.get("best_of") or 3)))}
+        elif path == "/api/ros/apply":
+            e = self.ros_summary()
+            match = body.get("match") or ros.pick_match(e["schedule"]) or {}
+            if not match.get("best_of") and e["match"].get("best_of"):
+                match["best_of"] = e["match"]["best_of"]
+            r.apply(match, body.get("template_id"), body.get("best_of"))
+        elif path in ("/api/ros/next", "/api/ros/go"):
+            show = r.data.get("show")
+            if not show:
+                raise ValueError("No run of show yet")
+            m = self.ros_summary()["match"]
+            scores = [m["left"]["score"], m["right"]["score"]]
+            r.go(show.get("current", -1) + 1 if path == "/api/ros/next" else int(body.get("index", -1)),
+                 scores if path == "/api/ros/next" else None)
+        elif path == "/api/ros/reset":
+            r.reset()
+        elif path == "/api/ros/show":
+            r.edit_show(body.get("segments"), body.get("start"))
+        elif path == "/api/ros/auto":
+            r.set_auto(body.get("on"))
+        else:
+            raise KeyError(path)
+        return self.ros_state()
 
     def state(self):
         """Everything the pages show (the outputs only use project, live and data)."""
@@ -912,6 +966,8 @@ def make_handler(engine):
                 return self._json({"assets": engine.assets.list(), "rev": engine.assets_rev})
             if path == "/api/log":
                 return self._json({"lines": since(int((q.get("after") or ["0"])[0]))})
+            if path == "/api/ros":   # Run of show (Control, left)
+                return self._json(engine.ros_state())
             if path == "/api/chudhud":   # Data > Add a Chud Hud event
                 return self._json({"found": chudhud.find()})
             if path == "/api/engines":
@@ -1047,6 +1103,8 @@ def make_handler(engine):
                 body = json.loads(self.rfile.read(length) or b"{}")
                 result = {"ok": True}
                 ws, live = engine.ws, engine.live
+                if path.startswith("/api/ros/"):
+                    return self._json(engine.ros_post(path, body))
                 # --- graphics ---
                 if path == "/api/aep/render":
                     # (an After Effects project with several compositions: the one picked)

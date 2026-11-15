@@ -11,3 +11,4 @@ workspaces/
 library/
 appearance.json
 .venv/
+run-of-show.json

@@ -174,7 +174,7 @@ class Assets:
             raise ValueError(REFUSED[ext])
         kind = kind_of(name)
         result = {"assets": [], "comps": [], "sources": [], "job": None}
-        if ext == share.EXT or (ext == ".zip" and share.is_package(src_path)):
+        if ext in (share.EXT, ".sccgfx") or (ext == ".zip" and share.is_package(src_path)):
             # Graphics exported from a GFX Baby (or an Export HTML zip), with their files.
             try:
                 return share.import_package(src_path, self.ws, self)

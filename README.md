@@ -295,7 +295,7 @@ network, only this PC can use the engine until it is.
 
 ## Bitfocus Companion (Stream Deck)
 
-Each release has `SCC-GFX-Companion-module.tgz`, a module for Bitfocus
+Each release has `Chud-GFX-Companion-module.tgz`, a module for Bitfocus
 Companion (import it on Companion's **Modules** page). Add an **SCC GFX
 Engine** connection with this PC's address and port 8782 (Outputs shows them;
 from another PC the engine needs "Let other PCs use this engine" on). Its

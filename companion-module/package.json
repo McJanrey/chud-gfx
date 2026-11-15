@@ -1,5 +1,5 @@
 {
-	"name": "scc-gfx-engine",
+	"name": "chud-gfx-baby",
 	"version": "1.0.0",
 	"main": "src/main.js",
 	"private": true,
@@ -10,7 +10,7 @@
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/owenbparker/GFX-Engine.git"
+		"url": "git+https://github.com/McJanrey/chud-gfx.git"
 	},
 	"engines": {
 		"node": "^22.18"

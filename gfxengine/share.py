@@ -35,6 +35,8 @@ from .version import VERSION
 EXT = ".chudgfx"
 MANIFEST = "chud-gfx.json"
 FORMAT = "chud-gfx"
+# Graphics files from the engine GFX Baby was made from open too (same layout, older names).
+OLD_MANIFEST, OLD_FORMAT = "scc-gfx.json", "scc-gfx"
 
 
 def _tables_read(comps):
@@ -130,15 +132,16 @@ def is_package(path):
             names = set(z.namelist())
     except (OSError, zipfile.BadZipFile):
         return False
-    return MANIFEST in names or "gfx-data.js" in names
+    return MANIFEST in names or OLD_MANIFEST in names or "gfx-data.js" in names
 
 
 def _read(z):
     """(manifest, the folder in the zip its files are in)."""
     names = set(z.namelist())
-    if MANIFEST in names:
-        data = json.loads(z.read(MANIFEST).decode("utf-8"))
-        if data.get("format") != FORMAT:
+    manifest = MANIFEST if MANIFEST in names else OLD_MANIFEST if OLD_MANIFEST in names else None
+    if manifest:
+        data = json.loads(z.read(manifest).decode("utf-8"))
+        if data.get("format") not in (FORMAT, OLD_FORMAT):
             raise ValueError("That isn't a GFX Baby graphics file")
         if int(data.get("version") or 1) > 1:
             raise ValueError("That file was made by a newer GFX Baby: update this one first")

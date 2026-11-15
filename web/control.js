@@ -689,5 +689,24 @@ $("#update").addEventListener("click", () => api("/api/update/install"));
     $("#pvw-list").textContent = names(s.live.preview.on);
     $("#pgm-list").textContent = names(s.live.program.on);
   });
-  pages.control = { shown() { if (App.state) { renderRundown(App.state, true); renderFields(App.state, true); } } };
+  pages.control = { shown() { if (App.state) { renderRundown(App.state, true); renderFields(App.state, true); } if (typeof Ros !== "undefined") Ros.show("panel", true); } };
 })();
+
+// Run of show: its own page (the builder), and the panel on Control.
+pages.ros = { shown() { if (typeof Ros !== "undefined") Ros.show("builder", true); } };
+
+// Workspace picker, top right: switch the open workspace without leaving the page.
+async function fillWorkspacePicker() {
+  const sel = $("#ws-pick");
+  if (!sel) return;
+  const info = await fetch("/api/workspaces").then(r => r.json()).catch(() => null);
+  if (!info) return;
+  const list = info.workspaces || info.list || [];
+  const cur = (App.state && App.state.workspace && App.state.workspace.id) || info.current;
+  sel.replaceChildren(...list.map(w => h("option", { value: w.id, selected: w.id === cur }, w.name || w.id)));
+}
+$("#ws-pick").addEventListener("change", async e => {
+  try { await api("/api/workspaces/open", { id: e.target.value }); toast("Workspace opened"); } catch (err) { fillWorkspacePicker(); }
+});
+$("#ws-pick").addEventListener("focus", fillWorkspacePicker);
+setTimeout(fillWorkspacePicker, 800);

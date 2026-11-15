@@ -558,3 +558,56 @@ table.sheet td.c:hover { background: #1d3b5e; }
   white-space: pre-wrap; line-height: 22px; outline: none; cursor: text; }
 .chip-box:focus { border-color: var(--accent); }
 .chip-box:empty::before { content: attr(data-ph); color: var(--muted); }
+
+/* Run of show: panel on the left of Control, and the builder page. */
+#page-control { flex-direction: row; }
+#page-control > .ctl-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.ros-panel { width: 300px; flex: none; display: flex; flex-direction: column; padding: 14px 12px 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; min-height: 0; overflow: hidden; }
+.ros-head h2 { font-size: 18px; margin: 0; } .ros-head .sub, .rb .sub { color: var(--muted); font-size: 12.5px; margin: 2px 0 10px; }
+.ros-list { flex: 1; overflow-y: auto; margin: 0 -6px; padding: 0 6px; }
+.ros-block { display: flex; align-items: center; gap: 8px; margin: 12px 0 4px; padding-left: 9px; border-left: 3px solid var(--c); color: var(--c); font-size: 11.5px; font-weight: 700; letter-spacing: .04em; }
+.ros-block small { margin-left: auto; color: var(--muted); font-weight: 400; }
+.ros-seg { display: grid; grid-template-columns: 44px 1fr; gap: 8px; padding: 8px 10px; border-radius: 10px; border-left: 3px solid transparent; }
+.ros-seg:hover { background: color-mix(in srgb, var(--text) 4%, transparent); }
+.ros-seg .tm { font-family: ui-monospace, Consolas, monospace; font-size: 12px; color: var(--muted); padding-top: 2px; }
+.ros-seg .tt { font-weight: 600; font-size: 14px; } .ros-seg .nt { color: var(--muted); font-size: 12.5px; margin-top: 2px; }
+.ros-seg .air { color: var(--pgm); font-size: 10.5px; margin-left: 6px; } .ros-seg .nxt { color: var(--accent); font-size: 10.5px; margin-left: 6px; }
+.ros-seg.now { background: color-mix(in srgb, var(--text) 8%, transparent); border-left-color: var(--pgm); } .ros-seg.now .tm { color: var(--pgm); }
+.ros-seg.next { background: color-mix(in srgb, var(--text) 4%, transparent); border-left-color: var(--accent); }
+.ros-seg.done { opacity: .5; }
+.ros-seg .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+.ros-seg .tags button { padding: 2px 8px; font-size: 11.5px; border-radius: 6px; }
+.ros-seg .tags button:hover { border-color: var(--pvw); } .ros-seg .tags button.cued { background: var(--pvw); color: #000; }
+.ros-empty { color: var(--muted); font-size: 13px; padding: 16px 4px; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+.ros-foot { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+.ros-foot button.k, .ros-empty button.k { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+.ros-more { display: flex; justify-content: space-between; margin-top: 6px; }
+.ros-more button { background: none; border: 0; color: var(--muted); font-size: 12px; padding: 4px 6px; } .ros-more button:hover { color: var(--text); }
+#page-ros { padding: 10px; }
+.rb { display: grid; grid-template-columns: 240px minmax(0, 1fr) 360px; gap: 12px; height: 100%; min-height: 0; }
+.rb > * { padding: 16px; overflow-y: auto; min-height: 0; }
+.rb h2 { font-size: 20px; margin: 0; }
+.rb-left .hd { color: var(--muted); font-size: 11.5px; font-weight: 600; margin: 14px 4px 6px; }
+.rb-banner { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 10px; background: color-mix(in srgb, var(--pvw) 8%, transparent); border: 1px solid color-mix(in srgb, var(--pvw) 30%, transparent); font-size: 13px; margin-bottom: 14px; }
+.rb-banner b.on { color: var(--pvw); } .rb-banner button { margin-left: auto; flex: none; }
+.rb-title { display: flex; gap: 10px; align-items: center; margin-bottom: 6px; }
+.rb-title #rb-name { flex: 1; font-size: 20px; font-weight: 700; background: none; border-color: transparent; }
+.rb-block { margin-top: 14px; border-radius: 12px; background: color-mix(in srgb, var(--text) 3%, transparent); border: 1px solid var(--line); padding: 10px; }
+.rb-block.repeat { border-style: dashed; border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+.rb-bhead { display: flex; align-items: center; gap: 8px; padding: 2px 4px 8px 10px; border-left: 3px solid var(--c); }
+.rb-bhead .bname { font-weight: 700; background: none; width: 180px; border-color: transparent; }
+.rb-bhead .len { margin-left: auto; color: var(--muted); font-size: 12.5px; }
+.rb-rep { color: var(--accent); font-size: 12.5px; margin: 0 4px 8px 14px; }
+.rb-seg { display: grid; grid-template-columns: 26px minmax(0, 1fr) 200px auto; gap: 10px; align-items: start; padding: 10px; border-radius: 10px; background: color-mix(in srgb, var(--text) 3%, transparent); margin-top: 6px; }
+.rb-seg .main { display: flex; flex-direction: column; gap: 4px; }
+.rb-seg input { background: none; border-color: transparent; } .rb-seg input:hover, .rb-seg input:focus { border-color: var(--line2); }
+.rb-seg .stitle { font-weight: 600; font-size: 14px; } .rb-seg .snotes { color: var(--muted); font-size: 12.5px; } .rb-seg .sgfx { font-size: 12px; }
+.rb-seg .len { display: flex; flex-direction: column; gap: 6px; font-size: 12.5px; color: var(--muted); }
+.rb-seg .mins input { width: 64px; }
+.rb-add { margin: 8px 0 0 6px; display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; }
+.rb-none { padding: 30px 10px; } .rb-none p { margin-top: 8px; max-width: 520px; }
+.colours { position: fixed; z-index: 30; padding: 8px; display: flex; gap: 6px; align-items: center; border-radius: 12px; }
+.colours button { width: 24px; height: 24px; border-radius: 50%; padding: 0; border: 2px solid color-mix(in srgb, var(--text) 25%, transparent); }
+.colours input { width: 30px; height: 26px; padding: 0; }
+.rb-right .li input { width: 70px; text-align: right; }
+.ws-pick { display: inline-flex; align-items: center; gap: 6px; } .ws-pick select { max-width: 200px; }
