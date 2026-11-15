@@ -512,7 +512,9 @@
     }
     if (t === "ticker") {
       const box = el("div", "gfx-ticker", { overflow: "hidden", display: "flex", alignItems: "center", width: "100%", height: "100%" });
-      if (layer.fade) box.style.maskImage = box.style.webkitMaskImage = "linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)";
+      // Soft edges so logos slide in and out instead of being cut off. On unless turned off; a number is the fade width in %.
+      const fade = layer.fade === false ? 0 : typeof layer.fade === "number" ? layer.fade : 8;
+      if (fade > 0) box.style.maskImage = box.style.webkitMaskImage = `linear-gradient(90deg,transparent,#000 ${fade}%,#000 ${100 - fade}%,transparent)`;
       box._layer = layer;
       box._still = !!opts.still;
       buildTicker(box);

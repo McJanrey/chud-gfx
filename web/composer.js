@@ -389,7 +389,7 @@
     const tol = 6 / scale;
     const xs = [0, GFX.W / 2, GFX.W], ys = [0, GFX.H / 2, GFX.H];
     for (const o of comp.layers) {
-      if (o.id === l.id || o.visible === false) continue;
+      if (o.id === l.id || o.visible === false || (moving && multi.has(o.id))) continue;   // never snap to layers moving along
       xs.push(o.x, o.x + o.w / 2, o.x + o.w);
       ys.push(o.y, o.y + o.h / 2, o.y + o.h);
     }
@@ -421,18 +421,29 @@
     const px = (e.clientX - r.left - offX) / scale, py = (e.clientY - r.top - offY) / scale;
     const handle = e.target.dataset && e.target.dataset.h;
     let l = layerById(selected);
+    const inside = o => o && px >= o.x && px <= o.x + o.w && py >= o.y && py <= o.y + o.h;
     if (!handle) {
       const under = hit(px, py);
-      // Clicking inside the selected layer keeps it (it may be under another).
-      if (!(l && px >= l.x && px <= l.x + l.w && py >= l.y && py <= l.y + l.h) || e.altKey) l = under;
+      // Like Canva: Shift / Ctrl + click adds a layer to the selection (or takes it out);
+      // Shift / Ctrl + drag on empty canvas adds a box's worth.
+      if (e.shiftKey || e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        if (under) pickToo(under.id); else marquee(r, px, py, true);
+        return;
+      }
+      // Clicking inside a picked layer keeps the whole pick (it may be under another layer).
+      const keep = e.altKey ? null : inside(l) ? l : picked().find(inside);
+      l = keep || under;
       if (!l || !multi.has(l.id)) multi.clear();
       selected = l ? l.id : null;
       renderLayers();
       renderProps();
       drawSelection();
-      if (!l) return;
+      if (!l) { e.preventDefault(); return marquee(r, px, py, false); }
     }
     e.preventDefault();
+    // Moving one of several picked layers moves them all.
+    const others = !handle && multi.size > 1 ? picked().filter(o => o !== l).map(o => ({ o, x: o.x, y: o.y })) : [];
     const start = { x: l.x, y: l.y, w: l.w, h: l.h, px, py };
     const ratio = l.w / Math.max(1, l.h);
     let moved = false;
@@ -447,6 +458,7 @@
         l.x = Math.round(start.x + dx); l.y = Math.round(start.y + dy);
         if (!ev.ctrlKey) guides = snap(l, true);
         l.x = Math.round(l.x); l.y = Math.round(l.y);
+        for (const m of others) { m.o.x = m.x + l.x - start.x; m.o.y = m.y + l.y - start.y; }
       } else {
         let { x, y, w, h: hh } = start;
         if (handle.includes("e")) w = Math.max(4, start.w + dx);
@@ -479,6 +491,48 @@
     addEventListener("mousemove", move);
     addEventListener("mouseup", up);
   });
+  // Drag a box over empty canvas: every visible layer it touches is picked (added to the pick with Shift / Ctrl).
+  function marquee(r, sx, sy, add) {
+    const before = add ? new Set(picked().map(o => o.id)) : new Set();
+    const box = h("div", { class: "sel-box marquee" });
+    let shown = false;
+    const move = ev => {
+      const qx = (ev.clientX - r.left - offX) / scale, qy = (ev.clientY - r.top - offY) / scale;
+      const x0 = Math.min(sx, qx), y0 = Math.min(sy, qy), x1 = Math.max(sx, qx), y1 = Math.max(sy, qy);
+      if (!shown && (x1 - x0) * scale < 3 && (y1 - y0) * scale < 3) return;
+      const ids = new Set(before);
+      for (const o of comp.layers) if (o.visible !== false && o.x < x1 && o.x + o.w > x0 && o.y < y1 && o.y + o.h > y0) ids.add(o.id);
+      multi.clear();
+      ids.forEach(id => multi.add(id));
+      const order = comp.layers.filter(o => ids.has(o.id));
+      selected = order.length ? order[order.length - 1].id : null;
+      if (multi.size < 2) multi.clear();
+      drawSelection();
+      const [bx, by] = toScreen(x0, y0);
+      Object.assign(box.style, { left: bx + "px", top: by + "px", width: (x1 - x0) * scale + "px", height: (y1 - y0) * scale + "px" });
+      selLayer.appendChild(box);
+      shown = true;
+    };
+    const up = () => {
+      removeEventListener("mousemove", move);
+      removeEventListener("mouseup", up);
+      box.remove();
+      renderLayers();
+      renderProps();
+      drawSelection();
+    };
+    addEventListener("mousemove", move);
+    addEventListener("mouseup", up);
+  }
+  function selectAll() {
+    const all = comp.layers.filter(o => o.visible !== false);
+    multi.clear();
+    if (all.length > 1) all.forEach(o => multi.add(o.id));
+    selected = all.length ? all[all.length - 1].id : null;
+    renderLayers();
+    renderProps();
+    drawSelection();
+  }
   canvas.addEventListener("dblclick", () => {
     const l = layerById(selected);
     if (l && l.type === "text") { const t = document.querySelector("#props textarea[data-k=text]"); if (t) { t.focus(); t.select(); } }
@@ -496,6 +550,7 @@
     }
     if (mod && e.key.toLowerCase() === "y") { e.preventDefault(); if (redo.length) { undo.push(JSON.stringify(comp)); restore(redo.pop()); } return; }
     if (mod && e.key.toLowerCase() === "v" && !e.altKey) { e.preventDefault(); pasteLayers(); return; }
+    if (mod && e.key.toLowerCase() === "a") { e.preventDefault(); selectAll(); return; }
     if (!l) return;
     if (mod && (e.key.toLowerCase() === "c" || e.key.toLowerCase() === "x") && !e.altKey) {
       e.preventDefault();
@@ -507,7 +562,7 @@
     if (moves[e.key]) {
       e.preventDefault();
       snapshot();
-      l.x += moves[e.key][0]; l.y += moves[e.key][1];
+      for (const o of picked()) { o.x += moves[e.key][0]; o.y += moves[e.key][1]; }
       changed({ keepList: true });
     } else if (e.key === "Delete" || e.key === "Backspace") {
       e.preventDefault();
@@ -730,7 +785,10 @@
       h("div", { class: "grid3" }, lab("Picture height", bind(l, "imgSize", "number", { min: 8 })), lab("Size", bind(l, "size", "number", { min: 1 })),
         bind(l, "color", "color", { label: "Colour" })),
       lab("Font", h("select", { onchange: e => { snapshot(); l.font = e.target.value; changed({ props: true }); } }, fontOptions(l.font))),
-      h("div", { class: "row-gap" }, bind(l, "caps", "check", { label: "ALL CAPS" }), bind(l, "fade", "check", { label: "Fade the edges" })));
+      h("div", { class: "grid2" }, bind(l, "caps", "check", { label: "ALL CAPS" }),
+        lab("Edge fade % (0 = hard edge)", h("input", { type: "number", min: 0, max: 45, step: 1,
+          value: l.fade === false ? 0 : typeof l.fade === "number" ? l.fade : 8,
+          onchange: e => { snapshot(); l.fade = Math.max(0, Math.min(45, +e.target.value || 0)); changed({ keepList: true }); } }))));
   }
   // Insert menu for text layers: data fields, the clock and countdowns, so nobody types {{...}} codes by hand.
   function insertPicker(l, textBox) {
@@ -959,10 +1017,57 @@
   function renderMulti() {
     const layers = comp.layers.filter(l => multi.has(l.id));
     const setAnim = (dir, type) => { if (!type) return; snapshot(); layers.forEach(l => { l.anim = l.anim || {}; l.anim[dir] = Object.assign({ dur: 300, delay: 0 }, l.anim[dir], { type }); }); changed({ props: true }); };
+    const edit = fn => { snapshot(); layers.forEach(fn); changed({ props: true }); };
+    // Align to each other (to the canvas when the pick is only one layer wide or tall makes no sense, so always to the pick's box).
+    const x0 = Math.min(...layers.map(l => l.x)), y0 = Math.min(...layers.map(l => l.y));
+    const x1 = Math.max(...layers.map(l => l.x + l.w)), y1 = Math.max(...layers.map(l => l.y + l.h));
+    const ALIGN = [["Left", l => { l.x = x0; }], ["Centre", l => { l.x = Math.round((x0 + x1 - l.w) / 2); }], ["Right", l => { l.x = x1 - l.w; }],
+      ["Top", l => { l.y = y0; }], ["Middle", l => { l.y = Math.round((y0 + y1 - l.h) / 2); }], ["Bottom", l => { l.y = y1 - l.h; }]];
+    // Spread evenly: same gap between neighbours, the outer two stay put.
+    const spread = (pos, size) => {
+      const s = [...layers].sort((a, b) => a[pos] - b[pos]), first = s[0], last = s[s.length - 1];
+      const gap = (last[pos] + last[size] - first[pos] - s.reduce((t, o) => t + o[size], 0)) / (s.length - 1);
+      snapshot();
+      let at = first[pos];
+      for (const o of s) { o[pos] = Math.round(at); at += o[size] + gap; }
+      changed({ props: true });
+    };
+    // One value for every picked layer that has it; blank when they differ.
+    const same = (list, key) => list.every(o => o[key] === list[0][key]) ? list[0][key] : "";
+    const typed = layers.filter(o => o.type === "text" || o.type === "ticker");
+    const num = (list, key, label, opt) => lab(label, h("input", Object.assign({ type: "number", value: same(list, key) ?? "", placeholder: "mixed",
+      onchange: e => { if (e.target.value === "") return; const v = +e.target.value; snapshot(); list.forEach(o => { o[key] = v; }); changed({ props: true }); } }, opt)));
     props.replaceChildren(
       h("div", { class: "sect" }, h("h3", {}, `${layers.length} layers`),
         h("p", { class: "muted small" }, layers.map(l => l.name).join(", ")),
-        h("p", { class: "muted small" }, "Ctrl or Shift + click in the list picks more (or fewer).")),
+        h("p", { class: "muted small" }, "Shift or Ctrl + click picks more (or fewer), on the canvas or in the list. Drag a box on empty canvas to pick everything it touches. Ctrl+A picks all."),
+        h("div", { class: "row-gap" },
+          h("button", { class: "small", onclick: () => placeLayers(picked(), 20, " copy") }, "Duplicate"),
+          h("button", { class: "small", onclick: () => edit(l => { l.visible = l.visible === false; }) }, "Show / hide"),
+          h("div", { class: "spacer" }),
+          h("button", { class: "small danger", onclick: () => removeLayers(picked()) }, "Delete"))),
+      h("div", { class: "sect" }, h("h3", {}, "Align"),
+        h("div", { class: "grid3" }, ...ALIGN.map(([t, fn]) => h("button", { class: "small", onclick: () => edit(fn) }, t))),
+        layers.length > 2 ? h("div", { class: "grid2", style: { marginTop: "6px" } },
+          h("button", { class: "small", onclick: () => spread("x", "w") }, "Space evenly across"),
+          h("button", { class: "small", onclick: () => spread("y", "h") }, "Space evenly down")) : null,
+        h("div", { class: "grid2", style: { marginTop: "6px" } },
+          h("button", { class: "small", title: "Centre the group on the canvas", onclick: () => { const dx = Math.round((GFX.W - (x1 - x0)) / 2) - x0, dy = Math.round((GFX.H - (y1 - y0)) / 2) - y0; edit(l => { l.x += dx; l.y += dy; }); } }, "Centre on canvas"),
+          h("button", { class: "small", title: "Give them all the first one's size", onclick: () => { const f = layers[0]; edit(l => { l.w = f.w; l.h = f.h; }); } }, "Same size"))),
+      h("div", { class: "sect" }, h("h3", {}, "Style (all picked)"),
+        h("div", { class: "grid3" }, num(layers, "opacity", "Opacity", { step: 0.05, min: 0, max: 1 }), num(layers, "rotation", "Rotate °"),
+          lab("Blend", h("select", { onchange: e => edit(l => { l.blend = e.target.value; }) },
+            h("option", { value: "" }, same(layers, "blend") ? same(layers, "blend") : "mixed"),
+            ["normal", "multiply", "screen", "overlay", "darken", "lighten", "soft-light", "difference"].map(b => h("option", { value: b }, b))))),
+        typed.length ? h("div", {},
+          h("p", { class: "muted small" }, `Text: ${typed.length} of them`),
+          h("div", { class: "grid3" }, num(typed, "size", "Size", { min: 1 }),
+            lab("Colour", h("input", { type: "color", value: /^#[0-9a-f]{6}$/i.test(same(typed, "color")) ? same(typed, "color") : "#ffffff",
+              onchange: e => { snapshot(); typed.forEach(o => { o.color = e.target.value; }); changed({ props: true }); } })),
+            h("label", {}, h("input", { type: "checkbox", checked: typed.every(o => o.caps),
+              onchange: e => { snapshot(); typed.forEach(o => { o.caps = e.target.checked; }); changed({ props: true }); } }), " ALL CAPS")),
+          lab("Font", h("select", { onchange: e => { snapshot(); typed.forEach(o => { o.font = e.target.value; }); changed({ props: true }); } },
+            same(typed, "font") ? null : h("option", { value: "", selected: true, disabled: true }, "mixed"), fontOptions(same(typed, "font") || "")))) : null),
       liveSection(layers),
       h("div", { class: "sect" }, h("h3", {}, "Animation"),
         h("div", { class: "grid2" },
