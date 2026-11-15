@@ -139,16 +139,18 @@ const Ros = (() => {
     const games = Object.keys(R.games).filter(k => k !== "any");
     const withT = R.templates;
     let html = withT.map(t => `<button class="tpl${editing && editing.id === t.id ? " on" : ""}" data-open="${t.id}">
-      ${t.game !== "any" ? `<img src="assets/games/${gameIcon(t.game)}" alt="">` : icon("live")}
+      ${t.game !== "any" ? gameTile(t.game) : icon("live")}
       <span><b>${esc(t.name)}</b><small>${t.blocks.length} block${t.blocks.length === 1 ? "" : "s"} · ${t.blocks.reduce((n, b) => n + b.segments.length, 0)} segments</small></span></button>`).join("");
     const missing = games.filter(g => !withT.some(t => t.game === g));
     if (missing.length) {
       html += `<div class="hd">No template yet</div>` + missing.map(g => `<button class="tpl none" data-new="${g}">
-        <img src="assets/games/${gameIcon(g)}" alt=""><span><b>${esc(gameName(g))}</b><small>Run of show starts blank · + make one</small></span></button>`).join("");
+        ${gameTile(g)}<span><b>${esc(gameName(g))}</b><small>Run of show starts blank · + make one</small></span></button>`).join("");
     }
     html += `<button class="newtpl" data-new="any">${icon("plus")}New template</button>`;
     list.innerHTML = html;
   }
+  // A small tile with the game's initials (no picture files to go missing).
+  const gameTile = g => `<span class="tpl-ic" aria-hidden="true">${esc(gameName(g).split(/\s+/).map(w => w[0]).join("").slice(0, 2).toUpperCase())}</span>`;
   const gameIcon = g => ({ lol: "lol.svg", val: "valorant.svg", cod: "cod.png", rl: "rocketleague.png", smash: "smash.png", ow: "overwatch.png" }[g] || "gfx.png");
 
   function colourDot(colour, path) {
