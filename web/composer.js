@@ -15,7 +15,7 @@
   const undo = [], redo = [];
   try { compId = localStorage.getItem("gfx-edit"); } catch (e) { /* */ }
 
-  const TYPE_ICON = { text: "T", rect: "▭", image: "🖼", video: "▶", lottie: "✦", bracket: "⊏", web: "◫", ticker: "≋", rotator: "⟳" };
+  const TYPE_ICON = { shape: "◆", text: "T", rect: "▭", image: "🖼", video: "▶", lottie: "✦", bracket: "⊏", web: "◫", ticker: "≋", rotator: "⟳" };
 
   // --- saving ------------------------------------------------------------
   const saveSoon = debounce(save, 120);
@@ -174,6 +174,12 @@
     } else if (l.type === "rect") {
       box.appendChild(h("span", { class: "ly-sw", style: { background: plain(l.fill) ? l.fill : "repeating-linear-gradient(45deg,#555 0 4px,#333 4px 8px)",
         borderRadius: l.radius ? "4px" : "1px", outline: l.strokeWidth ? `2px solid ${l.stroke || "#fff"}` : "" } }));
+    } else if (l.type === "shape") {
+      const pv = GFX.buildShape(Object.assign({}, l, { fx: null }), l.fillType === "image" ? "" : (/\{\{/.test(l.fill || "") ? "#888" : l.fill), { still: true });
+      const svg = pv.querySelector("svg");
+      if (svg) svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+      pv.style.padding = "3px";
+      box.appendChild(pv);
     } else if (l.type === "text") {
       const [family, weight] = GFX.fontFor(l);
       box.appendChild(h("span", { class: "ly-tx", style: { fontFamily: family, fontWeight: weight, color: plain(l.color) ? l.color : "#fff" } }, "Aa"));
@@ -227,6 +233,9 @@
       one ? item("Rename", () => { const row = document.querySelector(`#layer-list .ly[data-id="${l.id}"]`); if (row) renameLayer(l, row); }) : null,
       item("Duplicate", () => one ? duplicateLayer(l) : placeLayers(ls, 20, " copy")),
       item(ls.every(o => o.visible === false) ? "Show" : "Hide", () => { snapshot(); const show = ls.every(o => o.visible === false); ls.forEach(o => { o.visible = show; }); changed(); }),
+      ls.length > 1 ? item("Group  (Ctrl+G)", () => groupLayers(ls)) : null,
+      ls.some(o => o.group) ? item("Ungroup  (Ctrl+Shift+G)", () => ungroupLayers(ls)) : null,
+      item("Save as part", () => saveAsPart(ls)),
       item(ls.every(o => o.locked) ? "Unlock" : "Lock", () => { snapshot(); const lock = !ls.every(o => o.locked); ls.forEach(o => { o.locked = lock; }); changed(); drawSelection(); }),
       h("hr"),
       item("Bring to front", () => restack(ls, "front")),
@@ -247,7 +256,7 @@
     const list = $("#layer-list");
     if (!comp) { list.replaceChildren(); return; }
     if (!comp.layers.length) { list.replaceChildren(h("div", { class: "empty" }, "No layers yet. Add one with the buttons above.")); return; }
-    list.replaceChildren(...[...comp.layers].reverse().map(l => {
+    const rowOf = l => {
       const row = h("div", {
         class: "ly" + (l.id === selected || multi.has(l.id) ? " sel" : "") + (l.visible === false ? " hid" : "") + (l.locked ? " locked" : ""),
         draggable: true, "data-id": l.id,
@@ -286,8 +295,34 @@
           onclick: e => { e.stopPropagation(); snapshot(); l.locked = !l.locked; changed(); drawSelection(); } }, SVG(l.locked ? ICONS.lock : ICONS.unlock)),
         h("button", { class: "ly-btn" + (l.visible === false ? " on" : ""), title: l.visible === false ? "Show" : "Hide", "aria-label": l.visible === false ? "Show layer" : "Hide layer",
           onclick: e => { e.stopPropagation(); snapshot(); l.visible = l.visible === false; changed(); } }, SVG(l.visible === false ? ICONS.eyeOff : ICONS.eye)));
+      if (l.group) row.classList.add("in-group");
       return row;
-    }));
+    };
+    const rows = [], done = new Set();
+    for (const l of [...comp.layers].reverse()) {
+      if (!l.group) { rows.push(rowOf(l)); continue; }
+      if (done.has(l.group)) continue;
+      done.add(l.group);
+      const members = comp.layers.filter(o => o.group === l.group).reverse();
+      const gid = l.group, open = !collapsed.has(gid), allPicked = members.every(o => multi.has(o.id) || o.id === selected && members.length === 1);
+      const name = (comp.groupNames || {})[gid] || "Group", hidden = members.every(o => o.visible === false), locked = members.every(o => o.locked);
+      const head = h("div", { class: "ly ly-group" + (allPicked ? " sel" : ""), "data-group": gid,
+        onclick: e => { if (e.target.closest(".ly-btn,.ly-fold")) return; multi.clear(); members.forEach(o => multi.add(o.id)); selected = members[0].id; if (multi.size < 2) multi.clear(); renderLayers(); renderProps(); drawSelection(); },
+        ondblclick: e => { if (e.target.closest(".ly-btn,.ly-fold")) return; const v = prompt("Name of the group", name); if (v && v.trim()) { snapshot(); comp.groupNames = Object.assign({}, comp.groupNames, { [gid]: v.trim() }); changed(); } },
+        oncontextmenu: e => { e.preventDefault(); multi.clear(); members.forEach(o => multi.add(o.id)); selected = members[0].id; layerMenu(members[0], e.clientX, e.clientY); } },
+        h("button", { class: "ly-fold", title: open ? "Fold" : "Unfold", "aria-label": open ? "Fold the group" : "Unfold the group", "aria-expanded": String(open),
+          onclick: () => { if (open) collapsed.add(gid); else collapsed.delete(gid); renderLayers(); } }, open ? "▾" : "▸"),
+        h("span", { class: "ly-pv ly-gpv" }, members[0].part ? "◆" : "▣"),
+        h("span", { class: "nm", title: `${name} (double-click to rename)` }, name),
+        members[0].part ? h("span", { class: "fld", title: "A copy of a part (Parts)" }, "part") : null,
+        h("button", { class: "ly-btn" + (locked ? " on" : ""), title: locked ? "Unlock the group" : "Lock the group", "aria-label": locked ? "Unlock group" : "Lock group",
+          onclick: e => { e.stopPropagation(); snapshot(); members.forEach(o => { o.locked = !locked; }); changed(); } }, SVG(locked ? ICONS.lock : ICONS.unlock)),
+        h("button", { class: "ly-btn" + (hidden ? " on" : ""), title: hidden ? "Show the group" : "Hide the group", "aria-label": hidden ? "Show group" : "Hide group",
+          onclick: e => { e.stopPropagation(); snapshot(); members.forEach(o => { o.visible = hidden; }); changed(); } }, SVG(hidden ? ICONS.eyeOff : ICONS.eye)));
+      rows.push(head);
+      if (open) members.forEach(o => rows.push(rowOf(o)));
+    }
+    list.replaceChildren(...rows);
   }
   // Does the layer follow live data (a link, a fill or a "Show when")?
   const linked = l => !!(l.meter || l.when || [l.text, l.src, l.fill].some(v => /\{\{\s*(Rocket League HUD|Global)!/i.test(v || "")));
@@ -308,14 +343,9 @@
     renderProps();
     drawSelection();
   }
-  document.querySelectorAll("[data-add]").forEach(b => b.addEventListener("click", async () => {
-    if (!comp) return toast("Make or pick a graphic first", true);
-    const { layer } = await api("/api/layer/blank", { type: b.dataset.add });
-    snapshot();
-    layer.name = { text: "Text", rect: "Shape", image: "Picture", video: "Video", lottie: "Animation", ticker: "Ticker", rotator: "Rotator" }[layer.type];
-    comp.layers.push(layer);
-    selected = layer.id;
-    changed({ props: true });
+  document.querySelectorAll("[data-add]").forEach(b => b.addEventListener("click", () => {
+    const t = b.dataset.add;
+    addLayer(t, null, { text: "Text", rect: "Shape", image: "Picture", video: "Video", lottie: "Animation", ticker: "Ticker", rotator: "Rotator", web: "Web page" }[t] || "Layer");
   }));
 
   // Special elements: layers that show what Global has (and change with it).
@@ -359,21 +389,429 @@
   const special = $("#add-special");
   special.replaceChildren(h("option", { value: "" }, "★"),
     ...SPECIAL.map(([group, items], gi) => h("optgroup", { label: group }, ...items.map((it, i) => h("option", { value: gi + ":" + i }, it[0])))));
-  special.addEventListener("change", async () => {
+  special.addEventListener("change", () => {
     const v = special.value;
     special.value = "";
-    if (!v) return;
+    if (v) addSpecial(...v.split(":").map(Number));
+  });
+  async function addSpecial(gi, i) {
     if (!comp) return toast("Make or pick a graphic first", true);
-    const [gi, i] = v.split(":").map(Number);
     const [name, type, extra] = SPECIAL[gi][1][i];
     const { layer } = await api("/api/layer/blank", { type });
     snapshot();
     Object.assign(layer, JSON.parse(JSON.stringify(extra)), { name });
     if (layer.type === "image" && !layer.src.includes("Sponsors")) layer.placeholder = "";
     comp.layers.push(layer);
+    multi.clear();
     selected = layer.id;
     changed({ props: true });
-  });
+  }
+
+  // --- the left side: a rail of panels, like Canva ----------------------------------
+  const page = $("#page-composer");
+  let pane = "layers";
+  try { pane = localStorage.getItem("gfx-pane") || "layers"; } catch (e) { /* */ }
+  function showPane(name, toggle) {
+    const same = name === pane && !page.classList.contains("drawer-off");
+    pane = name;
+    try { localStorage.setItem("gfx-pane", name); } catch (e) { /* */ }
+    page.classList.toggle("drawer-off", !!toggle && same);
+    document.querySelectorAll("#comp-rail button").forEach(b => b.classList.toggle("on", b.dataset.pane === name && !page.classList.contains("drawer-off")));
+    document.querySelectorAll("#comp-drawer .pane").forEach(p2 => p2.classList.toggle("on", p2.dataset.pane === name));
+    if (name === "media") renderMedia();
+    if (name === "parts") renderParts();
+    requestAnimationFrame(() => fitStage());
+  }
+  document.querySelectorAll("#comp-rail button").forEach(b => b.addEventListener("click", () => showPane(b.dataset.pane, true)));
+
+  // Adding a layer: in the middle of the canvas unless it says where, picked.
+  async function addLayer(type, extra, name) {
+    if (!comp) { toast("Make or pick a graphic first", true); return null; }
+    const { layer } = await api("/api/layer/blank", { type });
+    snapshot();
+    Object.assign(layer, JSON.parse(JSON.stringify(extra || {})));
+    if (name) layer.name = name;
+    if (!extra || extra.x == null) { layer.x = Math.round((GFX.W - layer.w) / 2); layer.y = Math.round((GFX.H - layer.h) / 2); }
+    comp.layers.push(layer);
+    multi.clear();
+    selected = layer.id;
+    changed({ props: true });
+    return layer;
+  }
+  const TEXT_PRESETS = {
+    heading: ["Heading", { text: "Heading", size: 110, weight: 800, w: 1000, h: 130 }],
+    sub: ["Subheading", { text: "Subheading", size: 60, weight: 600, w: 900, h: 80 }],
+    body: ["Body text", { text: "A little bit of body text", size: 36, weight: 400, w: 800, h: 110, fit: "none" }],
+    label: ["Label", { text: "LABEL", size: 26, weight: 700, caps: true, tracking: 140, w: 420, h: 40 }],
+  };
+  document.querySelectorAll("[data-text]").forEach(b => b.addEventListener("click", () => {
+    const [name, extra] = TEXT_PRESETS[b.dataset.text];
+    addLayer("text", extra, name);
+  }));
+
+  // Shapes, lines and the broadcast shapes, each a tile drawn with the real renderer.
+  const SHAPES = [
+    ["Basic", [["Square", "rect", { w: 300, h: 300 }], ["Rounded square", "rect", { w: 300, h: 300, radius: 48 }], ["Circle", "ellipse", { w: 300, h: 300 }],
+      ["Triangle", "triangle", { w: 320, h: 280 }], ["Diamond", "diamond", { w: 300, h: 300 }], ["Pentagon", "polygon", { sides: 5, w: 300, h: 290 }],
+      ["Hexagon", "polygon", { sides: 6, w: 320, h: 300 }], ["Octagon", "polygon", { sides: 8, w: 300, h: 300 }], ["Star", "star", { points: 5, inner: 0.45, w: 300, h: 290 }],
+      ["Burst", "star", { points: 14, inner: 0.74, w: 300, h: 300 }], ["Plus", "plus", { w: 280, h: 280 }], ["Ring", "ring", { w: 300, h: 300 }], ["Heart", "heart", { w: 300, h: 270 }]]],
+    ["Lines", [["Line", "line", { w: 500, h: 40 }], ["Arrow", "arrow", { w: 500, h: 60 }], ["Double arrow", "arrow", { w: 500, h: 60, headStart: "arrow" }],
+      ["Dashed line", "line", { w: 500, h: 40, dash: "dash" }], ["Dotted line", "line", { w: 500, h: 40, dash: "dot", strokeWidth: 10 }],
+      ["Line with dots", "line", { w: 500, h: 40, headStart: "circle", headEnd: "circle" }], ["Block arrow", "tab", { w: 400, h: 160, slant: 90 }]]],
+    ["Broadcast", [["Slanted bar", "parallelogram", { w: 640, h: 90, slant: 36 }], ["Chevron", "chevron", { w: 420, h: 120, slant: 50 }],
+      ["Arrow tab", "tab", { w: 480, h: 100, slant: 50 }], ["Trapezoid", "trapezoid", { w: 600, h: 110, slant: 50 }], ["Notched bar", "notch", { w: 640, h: 110, slant: 28 }],
+      ["Pill", "pill", { w: 420, h: 90 }], ["Speech bubble", "bubble", { w: 520, h: 240, radius: 24 }], ["Rounded bar", "rect", { w: 640, h: 90, radius: 14 }],
+      ["Score box", "rect", { w: 160, h: 120, radii: [0, 18, 0, 18] }], ["Name plate", "parallelogram", { w: 560, h: 70, slant: 22, radii: [6, 6, 6, 6] }]]],
+  ];
+  const isLineShape = k => k === "line" || k === "arrow";
+  function shapeTile(name, kind, extra, onAdd, look) {
+    const L = Object.assign({ shape: kind, fill: "#f28c28", stroke: "#ffffff", strokeWidth: isLineShape(kind) ? 8 : 0 }, extra, look || {});
+    const pv = GFX.buildShape(L, L.fillType === "image" ? "" : L.fill, { still: true });
+    const svg = pv.querySelector("svg");
+    if (svg) svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+    return h("button", { class: "shape-tile", title: name, "aria-label": name, onclick: onAdd }, pv);
+  }
+  const shapeDefaults = kind => isLineShape(kind) ? { stroke: "#ffffff", strokeWidth: 8, fill: "", headEnd: kind === "arrow" ? "arrow" : "none", headStart: "none" } : {};
+  function renderShapeTiles() {
+    const box = $("#shape-tiles");
+    box.replaceChildren(
+      h("button", { class: "txt-tile pen-tile", title: "Click points on the canvas; click the first point (or press Enter) to close it, Esc to stop. Shift: straight angles",
+        onclick: () => startPen() }, h("b", {}, "✎ Pen: draw your own shape"), h("div", { class: "muted small" }, "Click points on the canvas, click the first one to close")),
+      ...SHAPES.flatMap(([group, list]) => [h("h4", {}, group),
+        h("div", { class: "shape-grid" }, list.map(([name, kind, extra]) =>
+          shapeTile(name, kind, extra, () => addLayer("shape", Object.assign({ shape: kind }, shapeDefaults(kind), extra), name))))]));
+  }
+  const FRAMES = [["Rounded", "rect", { radius: 40, w: 420, h: 420 }], ["Circle", "ellipse", { w: 420, h: 420 }], ["Hexagon", "polygon", { sides: 6, w: 440, h: 420 }],
+    ["Diamond", "diamond", { w: 420, h: 420 }], ["Slanted", "parallelogram", { w: 580, h: 340, slant: 60 }], ["Notched", "notch", { w: 540, h: 380, slant: 54 }],
+    ["Star", "star", { w: 420, h: 400 }], ["Pill", "pill", { w: 580, h: 240 }], ["Heart", "heart", { w: 420, h: 380 }], ["Triangle", "triangle", { w: 440, h: 400 }],
+    ["Chevron", "chevron", { w: 520, h: 300, slant: 80 }], ["Wide", "rect", { w: 640, h: 360, radius: 16 }]];
+  function renderFrameTiles() {
+    $("#frame-tiles").replaceChildren(...FRAMES.map(([name, kind, extra]) => shapeTile(name + " frame", kind, extra,
+      () => addLayer("shape", Object.assign({ shape: kind, fillType: "image", fit: "cover", src: "", stroke: "#ffffff", strokeWidth: 0 }, extra), name + " frame"),
+      { fill: "#3b4148", stroke: "#8e8e93", strokeWidth: 6, dash: "dash" })));
+  }
+  // Media: the kinds, and every picture already in the workspace as a tile.
+  let mediaSig = "";
+  function renderMedia() {
+    const pics = App.assets.filter(a => a.kind === "image");
+    const sig = pics.map(a => a.path).join("|");
+    if (sig === mediaSig) return;
+    mediaSig = sig;
+    $("#media-grid").replaceChildren(...(pics.length ? pics.map(a => h("button", { title: a.path.replace(/^assets\//, ""), onclick: async () => {
+      const l = await addLayer("image", { src: a.path, w: 480, h: 480, fit: "contain" }, a.path.replace(/^.*\//, "").replace(/\.[^.]+$/, ""));
+      if (l) naturalSize(l);
+    } }, h("img", { src: encodeURI(a.path), alt: "", loading: "lazy", draggable: false }), h("span", {}, a.path.replace(/^.*\//, ""))))
+      : [h("p", { class: "muted small" }, "No pictures yet: add some in Assets, or with Picture above.")]));
+  }
+  // Live: the special elements (teams, event, HUD data, tournament) as tiles.
+  function renderLiveTiles() {
+    $("#live-tiles").replaceChildren(...SPECIAL.flatMap(([group, items], gi) => [h("h4", {}, group),
+      h("div", { class: "tile-list" }, items.map((it, i) => h("button", { onclick: () => addSpecial(gi, i) }, it[0])))]));
+    $("#live-text-tiles").replaceChildren(...SPECIAL.flatMap(([, items], gi) => items.map((it, i) => it[1] === "text"
+      ? h("button", { onclick: () => addSpecial(gi, i) }, it[0]) : null)).filter(Boolean));
+  }
+
+  // --- groups (Ctrl+G): picked together, moved, hidden and locked as one ---------------
+  const groupOf = l => l && l.group ? comp.layers.filter(o => o.group === l.group) : [];
+  function groupLayers(ls) {
+    if (ls.length < 2) return toast("Pick two or more layers to group (Shift or Ctrl + click)", true);
+    snapshot();
+    const gid = "g" + Math.random().toString(16).slice(2, 8);
+    const ids = new Set(ls.map(o => o.id));
+    // (kept together in the stacking order, where the top one was)
+    const top = Math.max(...ls.map(o => comp.layers.indexOf(o)));
+    const members = comp.layers.filter(o => ids.has(o.id));
+    const rest = comp.layers.filter(o => !ids.has(o.id));
+    const at = rest.filter(o => comp.layers.indexOf(o) < top).length;
+    rest.splice(at, 0, ...members);
+    comp.layers = rest;
+    members.forEach(o => { o.group = gid; });
+    comp.groupNames = Object.assign({}, comp.groupNames, { [gid]: "Group" });
+    multi.clear(); members.forEach(o => multi.add(o.id));
+    selected = members[members.length - 1].id;
+    changed({ props: true });
+  }
+  function ungroupLayers(ls) {
+    const gids = new Set(ls.map(o => o.group).filter(Boolean));
+    if (!gids.size) return;
+    snapshot();
+    comp.layers.forEach(o => { if (gids.has(o.group)) delete o.group; });
+    if (comp.groupNames) gids.forEach(g => delete comp.groupNames[g]);
+    changed({ props: true });
+  }
+  const collapsed = new Set();
+
+  // --- pen tool: click points, close on the first one --------------------------------
+  let pen = null;
+  function startPen() {
+    if (!comp) return toast("Make or pick a graphic first", true);
+    pen = { pts: [] };
+    canvas.classList.add("pen-on");
+    toast("Pen: click points on the canvas. Click the first point or press Enter to finish, Esc to stop.");
+    drawPen();
+  }
+  function stopPen(make) {
+    const p2 = pen;
+    pen = null;
+    canvas.classList.remove("pen-on");
+    const ov = selLayer.querySelector(".pen-svg");
+    if (ov) ov.remove();
+    if (!make || !p2 || p2.pts.length < 3) return;
+    const xs = p2.pts.map(q => q[0]), ys = p2.pts.map(q => q[1]);
+    const x = Math.min(...xs), y = Math.min(...ys), w = Math.max(1, Math.max(...xs) - x), hh = Math.max(1, Math.max(...ys) - y);
+    addLayer("shape", { shape: "path", x: Math.round(x), y: Math.round(y), w: Math.round(w), h: Math.round(hh), closed: p2.closed !== false,
+      pts: p2.pts.map(q => [+((q[0] - x) / w).toFixed(4), +((q[1] - y) / hh).toFixed(4)]) }, "Drawn shape");
+  }
+  function drawPen(mouse) {
+    let ov = selLayer.querySelector(".pen-svg");
+    if (!pen) { if (ov) ov.remove(); return; }
+    if (!ov) { ov = document.createElementNS("http://www.w3.org/2000/svg", "svg"); ov.setAttribute("class", "pen-svg"); selLayer.appendChild(ov); }
+    const pts = pen.pts.map(q => toScreen(q[0], q[1]));
+    if (mouse) pts.push(toScreen(mouse[0], mouse[1]));
+    ov.innerHTML = (pts.length > 1 ? `<polyline points="${pts.map(q => q.join(",")).join(" ")}" fill="rgba(242,140,40,.12)" stroke="#f28c28" stroke-width="2"/>` : "")
+      + pen.pts.map((q, i) => { const [sx, sy] = toScreen(q[0], q[1]); return `<circle cx="${sx}" cy="${sy}" r="${i ? 4 : 6}" fill="${i ? "#fff" : "#f28c28"}" stroke="#f28c28" stroke-width="2"/>`; }).join("");
+  }
+  function penPoint(e) {
+    const r = canvas.getBoundingClientRect();
+    let px = (e.clientX - r.left - offX) / scale, py = (e.clientY - r.top - offY) / scale;
+    const last = pen.pts[pen.pts.length - 1];
+    if (e.shiftKey && last) {   // straight: snapped to 45°
+      const a = Math.round(Math.atan2(py - last[1], px - last[0]) / (Math.PI / 4)) * Math.PI / 4, d = Math.hypot(px - last[0], py - last[1]);
+      px = last[0] + d * Math.cos(a); py = last[1] + d * Math.sin(a);
+    }
+    return [Math.round(px), Math.round(py)];
+  }
+  canvas.addEventListener("mousedown", e => {
+    if (!pen || e.button !== 0) return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    const q = penPoint(e), first = pen.pts[0];
+    if (first && pen.pts.length > 2 && Math.hypot((q[0] - first[0]) * scale, (q[1] - first[1]) * scale) < 10) return stopPen(true);
+    pen.pts.push(q);
+    drawPen();
+  }, true);
+  canvas.addEventListener("mousemove", e => { if (pen) drawPen(penPoint(e)); });
+  addEventListener("keydown", e => {
+    if (!pen) return;
+    if (e.key === "Escape") { e.preventDefault(); e.stopImmediatePropagation(); stopPen(false); }
+    else if (e.key === "Enter") { e.preventDefault(); e.stopImmediatePropagation(); stopPen(true); }
+    else if (e.key === "Backspace") { e.preventDefault(); e.stopImmediatePropagation(); pen.pts.pop(); drawPen(); }
+  }, true);
+
+  // --- combining shapes: union, subtract, intersect --------------------------------------
+  const combinable = l => l.type === "shape" && !isLineShape(l.shape);
+  function combine(ls, op) {
+    ls = ls.filter(combinable);
+    if (ls.length < 2) return toast("Pick two or more shapes to combine", true);
+    snapshot();
+    const x0 = Math.min(...ls.map(o => o.x)), y0 = Math.min(...ls.map(o => o.y));
+    const x1 = Math.max(...ls.map(o => o.x + o.w)), y1 = Math.max(...ls.map(o => o.y + o.h));
+    const base = ls[0];   // (the bottom one: its fill, border and effects)
+    const KEEP = ["shape", "radius", "radii", "sides", "points", "inner", "slant", "thick", "pts", "smooth", "closed", "parts", "op"];
+    const parts = ls.map(o => Object.assign(Object.fromEntries(KEEP.filter(k => o[k] != null).map(k => [k, JSON.parse(JSON.stringify(o[k]))])),
+      { x: o.x - x0, y: o.y - y0, w: o.w, h: o.h }));
+    const made = Object.assign(JSON.parse(JSON.stringify(base)), { id: newLayerId(), name: { union: "Joined shape", subtract: "Cut-out shape", intersect: "Overlap shape" }[op],
+      shape: "combo", op, parts, x: x0, y: y0, w: x1 - x0, h: y1 - y0, rotation: 0 });
+    const at = Math.max(...ls.map(o => comp.layers.indexOf(o)));
+    const gone = new Set(ls.map(o => o.id));
+    const before = comp.layers.slice(0, at + 1).filter(o => !gone.has(o.id)), after = comp.layers.slice(at + 1);
+    comp.layers = [...before, made, ...after];
+    multi.clear();
+    selected = made.id;
+    changed({ props: true });
+  }
+  function splitCombo(l) {
+    snapshot();
+    const made = (l.parts || []).map((pt, i) => Object.assign(JSON.parse(JSON.stringify(l)), pt, { id: newLayerId(), name: `${l.name} ${i + 1}`,
+      x: l.x + (pt.x || 0), y: l.y + (pt.y || 0), parts: undefined, op: undefined }));
+    made.forEach(o => { delete o.parts; delete o.op; });
+    comp.layers.splice(comp.layers.indexOf(l), 1, ...made);
+    multi.clear(); made.forEach(o => multi.add(o.id));
+    selected = made.length ? made[made.length - 1].id : null;
+    if (multi.size < 2) multi.clear();
+    changed({ props: true });
+  }
+
+  // --- parts: reusable pieces (a name plate made once, used everywhere) -------------------
+  // project.parts = [{id, name, w, h, layers (positions from the part's top left)}].
+  // A copy's layers carry part (its id) and group; "Update the part" changes every copy.
+  const partsList = () => App.state.project.parts || [];
+  function partFrom(ls, name, id) {
+    const x0 = Math.min(...ls.map(o => o.x)), y0 = Math.min(...ls.map(o => o.y));
+    const x1 = Math.max(...ls.map(o => o.x + o.w)), y1 = Math.max(...ls.map(o => o.y + o.h));
+    const layers = ls.map(o => { const c = JSON.parse(JSON.stringify(o)); c.x -= x0; c.y -= y0; delete c.group; delete c.part; delete c.locked; return c; });
+    return { id: id || "p" + Math.random().toString(16).slice(2, 10), name, w: x1 - x0, h: y1 - y0, layers };
+  }
+  async function saveAsPart(ls) {
+    if (!ls.length) return;
+    const name = prompt("Name of the part (it appears under Parts, ready to use in any graphic)", (comp.groupNames || {})[ls[0].group] || ls[0].name);
+    if (!name || !name.trim()) return;
+    const part = partFrom(ls, name.trim());
+    await api("/api/parts", { parts: [...partsList(), part] });
+    // (these layers become the first copy of it)
+    snapshot();
+    const gid = ls[0].group && ls.every(o => o.group === ls[0].group) ? ls[0].group : "g" + Math.random().toString(16).slice(2, 8);
+    ls.forEach(o => { o.part = part.id; o.group = gid; });
+    comp.groupNames = Object.assign({}, comp.groupNames, { [gid]: part.name });
+    changed({ props: true });
+    toast(`Saved the part "${part.name}"`);
+  }
+  async function usePart(part) {
+    if (!comp) return toast("Make or pick a graphic first", true);
+    snapshot();
+    const gid = "g" + Math.random().toString(16).slice(2, 8), x0 = Math.round((GFX.W - part.w) / 2), y0 = Math.round((GFX.H - part.h) / 2);
+    const made = part.layers.map(src => { const l = JSON.parse(JSON.stringify(src)); l.id = newLayerId(); l.x += x0; l.y += y0; l.group = gid; l.part = part.id; if (l.field) l.field = uniqueField(l.field); return l; });
+    comp.layers.push(...made);
+    comp.groupNames = Object.assign({}, comp.groupNames, { [gid]: part.name });
+    multi.clear(); made.forEach(o => multi.add(o.id));
+    selected = made[made.length - 1].id;
+    if (multi.size < 2) multi.clear();
+    changed({ props: true });
+  }
+  async function updatePart(ls) {
+    const pid = ls[0].part, old = partsList().find(p2 => p2.id === pid);
+    if (!old) return toast("That part isn't saved any more", true);
+    await window.saveForUpdate();   // (this graphic first, so the engine changes the latest copy)
+    const part = partFrom(ls, old.name, pid);
+    const r = await api("/api/parts/update", { part, keep: { comp: compId, group: ls[0].group } });
+    toast(`Updated "${part.name}" in ${r.copies} other place${r.copies === 1 ? "" : "s"}`);
+  }
+  function renderParts() {
+    const box = $("#parts-pane"), list = partsList();
+    box.replaceChildren(
+      h("p", { class: "muted small" }, "Make a name plate, a score box or a sponsor strip once, then use it in any graphic. Pick its layers and press Save as part (on the right). Change one copy and use Update the part: every copy changes."),
+      list.length ? h("div", { class: "media-grid" }, list.map(part => h("button", { title: `Add "${part.name}"`, onclick: () => usePart(part),
+        oncontextmenu: e => { e.preventDefault(); if (confirm(`Delete the part "${part.name}"? Copies already in graphics stay (as plain layers).`)) api("/api/parts", { parts: partsList().filter(p2 => p2.id !== part.id) }).then(renderParts); } },
+        thumb({ id: "part-" + part.id, name: part.name, layers: part.layers.map(l => Object.assign({}, l, { x: l.x + (GFX.W - part.w) / 2, y: l.y + (GFX.H - part.h) / 2 })) }, {}, 132),
+        h("span", {}, part.name))))
+        : h("p", { class: "muted small" }, "No parts yet."));
+  }
+
+  // --- shape properties --------------------------------------------------------------------
+  const SHAPE_NAMES = [["Basic", [["rect", "Rectangle"], ["pill", "Pill"], ["ellipse", "Ellipse / circle"], ["triangle", "Triangle"], ["diamond", "Diamond"], ["polygon", "Polygon"],
+    ["star", "Star"], ["plus", "Plus"], ["ring", "Ring"], ["heart", "Heart"]]],
+    ["Broadcast", [["parallelogram", "Slanted bar"], ["chevron", "Chevron"], ["tab", "Arrow tab"], ["trapezoid", "Trapezoid"], ["notch", "Notched bar"], ["bubble", "Speech bubble"]]],
+    ["Lines", [["line", "Line"], ["arrow", "Arrow"]]], ["Other", [["path", "Drawn shape"], ["combo", "Combined shape"]]]];
+  function seg(options, cur, pick2) {
+    return h("div", { class: "seg", role: "group" }, options.map(([v, t]) => h("button", { type: "button", class: v === cur ? "on" : "", "aria-pressed": String(v === cur), onclick: () => pick2(v) }, t)));
+  }
+  const setK = (obj, key, v, redrawProps) => { snapshot(); obj[key] = v; changed(redrawProps ? { props: true } : { keepList: true }); };
+  function colorField(label, get, put) {
+    const v = get() || "";
+    return lab(label, h("div", { class: "row-gap" },
+      h("input", { type: "color", value: /^#[0-9a-f]{6}$/i.test(v) ? v : "#ffffff", oninput: e => { put(e.target.value, true); e.target.nextSibling.value = e.target.value; }, onchange: () => { snapshot(); changed({ keepList: true }); } }),
+      h("input", { value: v, placeholder: "#ffffff or rgba()", onchange: e => { snapshot(); put(e.target.value); changed({ keepList: true }); } })));
+  }
+  // Colour chips: the teams' colours and a few house ones, one click.
+  function chips(onPick) {
+    const g = App.state.global || {};
+    const list = [["{{Global!Left color}}", (g.left || {}).color || "#888", "Left team colour"], ["{{Global!Right color}}", (g.right || {}).color || "#888", "Right team colour"],
+      ["#ffffff", "#ffffff", "White"], ["#000000", "#000000", "Black"], ["#f28c28", "#f28c28", "Orange"], ["#0b6b3a", "#0b6b3a", "Green"], ["#f5c518", "#f5c518", "Gold"], ["rgba(0,0,0,.55)", "rgba(0,0,0,.55)", "See-through black"]];
+    return h("div", { class: "chips" }, list.map(([v, show, t]) => h("button", { type: "button", class: "chip-c", title: t, "aria-label": t, style: { background: show }, onclick: () => onPick(v) })));
+  }
+  function shapeProps(l) {
+    const out = [];
+    const line = isLineShape(l.shape);
+    const num2 = (key, label, opt) => lab(label, bind(l, key, "number", opt));
+    const kids = [lab("Shape", h("select", { onchange: e => { snapshot(); l.shape = e.target.value; if (isLineShape(l.shape) && !l.strokeWidth) { l.strokeWidth = 8; l.stroke = l.stroke || "#ffffff"; } changed({ props: true }); } },
+      SHAPE_NAMES.map(([g, list]) => h("optgroup", { label: g }, list.map(([v, t]) => h("option", { value: v, selected: (l.shape || "rect") === v }, t))))))];
+    const k = l.shape || "rect";
+    if (["rect", "parallelogram", "trapezoid"].includes(k)) {
+      const each = Array.isArray(l.radii);
+      kids.push(h("div", { class: "fx-row" }, h("span", { class: "muted small", style: { flex: 1 } }, "Corners"),
+        seg([["all", "All the same"], ["each", "Each corner"]], each ? "each" : "all", v => { snapshot(); if (v === "each") l.radii = [+l.radius || 0, +l.radius || 0, +l.radius || 0, +l.radius || 0]; else { l.radius = l.radii ? l.radii[0] : 0; delete l.radii; } changed({ props: true }); })));
+      kids.push(each ? h("div", { class: "grid4" }, ["Top left", "Top right", "Bottom right", "Bottom left"].map((t, i) => lab(t, h("input", { type: "number", min: 0, value: l.radii[i] ?? 0,
+        onchange: e => { snapshot(); l.radii[i] = Math.max(0, +e.target.value || 0); changed({ keepList: true }); } }))))
+        : num2("radius", "Corner radius", { min: 0 }));
+    } else if (!line && !["ellipse", "ring", "heart", "pill", "path", "combo"].includes(k)) kids.push(num2("radius", "Round the corners", { min: 0 }));
+    if (k === "polygon") kids.push(num2("sides", "Sides", { min: 3, max: 64 }));
+    if (k === "star") kids.push(h("div", { class: "grid2" }, num2("points", "Points", { min: 3, max: 64 }), num2("inner", "Inner size (0-1)", { min: 0.05, max: 0.95, step: 0.05 })));
+    if (k === "plus" || k === "ring") kids.push(num2("thick", "Thickness (0-1)", { min: 0.02, max: 0.98, step: 0.02 }));
+    if (["parallelogram", "trapezoid", "chevron", "tab", "notch"].includes(k)) kids.push(num2("slant", k === "notch" ? "Corner cut (px)" : "Slant (px)", { min: 0 }));
+    if (k === "path") kids.push(h("div", { class: "row-gap" }, bind(l, "smooth", "check", { label: "Smooth curves" }), h("label", { class: "toggle" },
+      h("input", { type: "checkbox", checked: l.closed !== false, onchange: e => setK(l, "closed", e.target.checked) }), "Closed")));
+    if (k === "combo") kids.push(lab("Combine", seg([["union", "Join"], ["subtract", "Cut out"], ["intersect", "Overlap"]], l.op || "union", v => setK(l, "op", v, true))),
+      h("button", { class: "small", onclick: () => splitCombo(l) }, "Split apart"));
+    if (line) {
+      const ends = [["none", "None"], ["arrow", "Arrow"], ["triangle", "Solid arrow"], ["circle", "Dot"], ["bar", "Bar"]];
+      kids.push(h("div", { class: "grid2" }, num2("strokeWidth", "Thickness", { min: 1 }), colorField("Colour", () => l.stroke, (v) => { l.stroke = v; redraw(); })),
+        chips(v => setK(l, "stroke", v, true)),
+        h("div", { class: "grid2" }, lab("Start", bind(l, "headStart", "select", { options: ends })), lab("End", bind(l, "headEnd", "select", { options: ends }))),
+        lab("Style", seg([["solid", "Solid"], ["dash", "Dashed"], ["dot", "Dotted"]], l.dash || "solid", v => setK(l, "dash", v, true))),
+        h("p", { class: "muted small" }, "Rotate the layer to point it any way (Rotate ° above)."));
+      out.push(h("div", { class: "sect" }, h("h3", {}, "Line"), ...kids));
+      return out;
+    }
+    out.push(h("div", { class: "sect" }, h("h3", {}, "Shape"), ...kids));
+
+    // Fill: a colour, a gradient or a picture (a frame).
+    const ft = l.fillType || "solid";
+    const fill = [seg([["solid", "Colour"], ["linear", "Gradient"], ["radial", "Radial"], ["image", "Picture"]], ft, v => {
+      snapshot(); l.fillType = v;
+      if ((v === "linear" || v === "radial") && !(l.grad && l.grad.stops)) l.grad = { angle: 90, stops: [{ at: 0, color: /^#/.test(l.fill || "") ? l.fill : "#f28c28" }, { at: 100, color: "#000000" }] };
+      if (v === "image" && !l.fit) l.fit = "cover";
+      changed({ props: true });
+    })];
+    if (ft === "solid") fill.push(bind(l, "fill", "color", { label: "Colour" }), chips(v => setK(l, "fill", v, true)));
+    else if (ft === "image") fill.push(lab("Picture", assetSelect("image", l.src, v => { snapshot(); l.src = v; changed({ props: true }); })),
+      lab("Fit", seg([["cover", "Fill"], ["contain", "Fit"], ["fill", "Stretch"]], l.fit || "cover", v => setK(l, "fit", v, true))));
+    else {
+      const g = l.grad || (l.grad = { angle: 90, stops: [] });
+      if (ft === "linear") fill.push(lab("Angle °", h("input", { type: "number", step: 15, value: g.angle ?? 90, onchange: e => { snapshot(); g.angle = +e.target.value || 0; changed({ keepList: true }); } })));
+      g.stops.forEach((st, i) => fill.push(h("div", { class: "stop-row" },
+        h("input", { type: "color", value: /^#[0-9a-f]{6}$/i.test(st.color) ? st.color : "#ffffff", "aria-label": `Stop ${i + 1} colour`, oninput: e => { st.color = e.target.value; redraw(); }, onchange: () => { snapshot(); changed({ keepList: true }); } }),
+        h("input", { value: st.color, "aria-label": `Stop ${i + 1} colour code`, onchange: e => { snapshot(); st.color = e.target.value; changed({ props: true }); } }),
+        h("input", { type: "number", min: 0, max: 100, value: st.at, title: "Where (0-100 %)", "aria-label": `Stop ${i + 1} position`, onchange: e => { snapshot(); st.at = Math.max(0, Math.min(100, +e.target.value || 0)); changed({ keepList: true }); } }),
+        h("button", { class: "small danger", title: "Remove this colour", disabled: g.stops.length <= 2, onclick: () => { snapshot(); g.stops.splice(i, 1); changed({ props: true }); } }, "×"))));
+      fill.push(h("button", { class: "small", onclick: () => { snapshot(); g.stops.push({ at: 50, color: "#ffffff" }); g.stops.sort((a, b) => a.at - b.at); changed({ props: true }); } }, "+ Colour"));
+    }
+    out.push(h("div", { class: "sect" }, h("h3", {}, "Fill"), ...fill));
+    out.push(h("div", { class: "sect" }, h("h3", {}, "Border"),
+      h("div", { class: "grid2" }, num2("strokeWidth", "Width", { min: 0 }), colorField("Colour", () => l.stroke, v => { l.stroke = v; redraw(); })),
+      +l.strokeWidth > 0 ? h("div", {},
+        lab("Position", seg([["inside", "Inside"], ["center", "Centre"], ["outside", "Outside"]], l.strokeAlign || "center", v => setK(l, "strokeAlign", v, true))),
+        lab("Style", seg([["solid", "Solid"], ["dash", "Dashed"], ["dot", "Dotted"]], l.dash || "solid", v => setK(l, "dash", v, true)))) : null));
+    return out;
+  }
+  // Effects, for every kind of layer: shadow, glow, inner shadow (shapes), blur, blur behind.
+  function fxSection(l) {
+    const fx = l.fx || {};
+    const put = (key, v) => { snapshot(); l.fx = Object.assign({}, l.fx, { [key]: v }); changed({ props: true }); };
+    const sub = (key, defaults, fields) => {
+      const cur = fx[key] || {}, on = !!cur.on;
+      const upd = (k2, v) => { snapshot(); l.fx = Object.assign({}, l.fx, { [key]: Object.assign({}, defaults, cur, { [k2]: v }) }); changed({ keepList: true }); };
+      return h("div", {},
+        h("div", { class: "fx-row" }, h("label", { class: "toggle" }, h("input", { type: "checkbox", checked: on, onchange: e => put(key, Object.assign({}, defaults, cur, { on: e.target.checked })) }), fields.title)),
+        on ? h("div", { class: "grid4" }, ...fields.nums.map(([k2, t, o]) => lab(t, h("input", Object.assign({ type: "number", value: cur[k2] ?? defaults[k2], onchange: e => upd(k2, +e.target.value) }, o)))),
+          lab("Colour", h("input", { type: "color", value: /^#[0-9a-f]{6}$/i.test(cur.color || defaults.color) ? (cur.color || defaults.color) : "#000000", onchange: e => upd("color", e.target.value) }))) : null);
+    };
+    const shapeish = l.type === "shape" || l.type === "rect";
+    return h("div", { class: "sect" }, h("h3", {}, "Effects"),
+      sub("shadow", { x: 0, y: 8, blur: 16, color: "#000000" }, { title: "Drop shadow", nums: [["x", "X"], ["y", "Y"], ["blur", "Blur", { min: 0 }]] }),
+      sub("glow", { blur: 16, color: "#f28c28" }, { title: "Glow", nums: [["blur", "Size", { min: 0 }]] }),
+      l.type === "shape" ? sub("inner", { x: 0, y: 4, blur: 8, color: "#000000" }, { title: "Inner shadow", nums: [["x", "X"], ["y", "Y"], ["blur", "Blur", { min: 0 }]] }) : null,
+      h("div", { class: "grid2" },
+        lab("Blur", h("input", { type: "number", min: 0, value: fx.blur || 0, onchange: e => put("blur", Math.max(0, +e.target.value || 0)) })),
+        shapeish ? lab("Blur behind (glass)", h("input", { type: "number", min: 0, value: fx.backdrop || 0, title: "Blurs what's behind it, like frosted glass (use a see-through fill)", onchange: e => put("backdrop", Math.max(0, +e.target.value || 0)) })) : null));
+  }
+  // Extra sections for several picked layers: group, combine, parts.
+  function multiExtras(layers) {
+    const grouped = layers.some(o => o.group);
+    const shapes = layers.filter(combinable);
+    const isPart = layers[0].part && layers.every(o => o.part === layers[0].part && o.group === layers[0].group);
+    return [h("div", { class: "sect" }, h("h3", {}, "Group"),
+      h("div", { class: "row-gap" },
+        h("button", { class: "small", title: "Ctrl+G", onclick: () => groupLayers(layers) }, "Group"),
+        grouped ? h("button", { class: "small", title: "Ctrl+Shift+G", onclick: () => ungroupLayers(layers) }, "Ungroup") : null,
+        h("button", { class: "small", onclick: () => saveAsPart(layers) }, "Save as part"),
+        isPart ? h("button", { class: "small primary", title: "Every copy of this part, in every graphic, changes to look like this one", onclick: () => updatePart(layers) }, "Update the part") : null,
+        isPart ? h("button", { class: "small", title: "Stop following the part: these layers stay as they are", onclick: () => { snapshot(); layers.forEach(o => delete o.part); changed({ props: true }); } }, "Detach") : null)),
+    shapes.length > 1 ? h("div", { class: "sect" }, h("h3", {}, "Combine shapes"),
+      h("p", { class: "muted small" }, "The bottom shape's fill and border are kept."),
+      h("div", { class: "grid3" },
+        h("button", { class: "small", onclick: () => combine(layers, "union") }, "Join"),
+        h("button", { class: "small", onclick: () => combine(layers, "subtract") }, "Cut out"),
+        h("button", { class: "small", onclick: () => combine(layers, "intersect") }, "Overlap"))) : null].filter(Boolean);
+  }
 
   // --- the canvas --------------------------------------------------------------
   // Zoom: Ctrl + scroll wheel zooms toward the mouse, the scroll wheel pans
@@ -576,6 +1014,11 @@
       // Clicking inside a picked layer keeps the whole pick (it may be under another layer).
       const keep = e.altKey ? null : inside(l) ? l : picked().find(inside);
       l = keep || under;
+      if (l && l.group && !e.altKey && !multi.has(l.id) && !insideGroup.has(l.group)) {
+        multi.clear();
+        groupOf(l).filter(o => !o.locked && o.visible !== false).forEach(o => multi.add(o.id));
+        if (multi.size < 2) multi.clear();
+      }
       if (!l || !multi.has(l.id)) multi.clear();
       selected = l ? l.id : null;
       renderLayers();
@@ -676,7 +1119,19 @@
     renderProps();
     drawSelection();
   }
-  canvas.addEventListener("dblclick", () => {
+  // Double-click a group: go inside it (single layers pick one at a time until you click outside).
+  const insideGroup = new Set();
+  canvas.addEventListener("mousedown", e => {
+    if (pen || e.detail > 1) return;
+    const r = canvas.getBoundingClientRect();
+    const under = comp && hit((e.clientX - r.left - offX) / scale, (e.clientY - r.top - offY) / scale);
+    if (!under || !under.group) insideGroup.clear();
+    else if (!insideGroup.has(under.group)) insideGroup.clear();
+  }, true);
+  canvas.addEventListener("dblclick", e => {
+    const r = canvas.getBoundingClientRect();
+    const under = comp && hit((e.clientX - r.left - offX) / scale, (e.clientY - r.top - offY) / scale);
+    if (under && under.group && !insideGroup.has(under.group)) { insideGroup.add(under.group); selectLayer(under.id); return; }
     const l = layerById(selected);
     if (l && l.type === "text") { const t = document.querySelector("#props textarea[data-k=text]"); if (t) { t.focus(); t.select(); } }
   });
@@ -714,6 +1169,9 @@
       e.preventDefault();
       if (multi.size > 1) placeLayers(picked(), 20, " copy");
       else duplicateLayer(l);
+    } else if (mod && e.key.toLowerCase() === "g") {
+      e.preventDefault();
+      if (e.shiftKey) ungroupLayers(picked()); else groupLayers(picked());
     } else if (mod && (e.key === "]" || e.key === "[")) {
       e.preventDefault();
       restack(picked(), e.key === "]" ? (e.altKey ? "front" : "forward") : (e.altKey ? "back" : "backward"));
@@ -1028,7 +1486,7 @@
     if (!l) return renderCompProps();
     const sections = [];
     sections.push(h("div", { class: "sect" },
-      h("h3", {}, ({ text: "Text", rect: "Shape", image: "Picture", video: "Video", lottie: "Lottie animation", bracket: "Bracket", web: "Web page", ticker: "Ticker", rotator: "Rotator" }[l.type] || "Layer") + " layer"),
+      h("h3", {}, ({ text: "Text", rect: "Shape", image: "Picture", video: "Video", lottie: "Lottie animation", bracket: "Bracket", web: "Web page", ticker: "Ticker", rotator: "Rotator", shape: "Shape" }[l.type] || "Layer") + " layer"),
       lab("Name", bind(l, "name", "text")),
       h("label", { title: "Give it a name to change it from Control (and from data)" }, "Field (changed from Control)",
         h("div", { class: "row-gap" },
@@ -1089,6 +1547,8 @@
         h("p", { class: "muted small" }, "A live web page in this box: a game HUD's page, or the spectated player's cam."),
         l.design != null ? h("button", { class: "small", onclick: () => { snapshot(); l.type = /^#|^rgb|^\{\{Global!.*colou?r/i.test(l.design) ? "rect" : "image";
           if (l.type === "rect") { l.fill = l.design; delete l.src; } else l.src = l.design; delete l.design; delete l.when; changed({ props: true }); } }, "Back to the design's picture") : null));
+    } else if (l.type === "shape") {
+      sections.push(...shapeProps(l));
     } else if (l.type === "rect") {
       sections.push(h("div", { class: "sect" }, h("h3", {}, "Shape"),
         h("div", { class: "grid2" }, bind(l, "fill", "color", { label: "Fill" }), lab("Corner radius", bind(l, "radius", "number", { min: 0 }))),
@@ -1106,6 +1566,7 @@
         l.type !== "image" ? h("div", { class: "row-gap" }, bind(l, "loop", "check", { label: "Loop" }),
           l.type === "video" ? bind(l, "audio", "check", { label: "Sound (Program output)" }) : null) : null));
     }
+    sections.push(fxSection(l));
     sections.push(liveSection([l]));
     sections.push(animSection(l));
     props.replaceChildren(...sections);
@@ -1113,7 +1574,8 @@
 
   // --- live data: what a layer shows, fills by, and when it shows ------------------
   // (the property a layer's content is in)
-  const contentKey = l => l.type === "text" ? "text" : l.type === "rect" ? "fill" : ["image", "web", "video"].includes(l.type) ? "src" : null;
+  const contentKey = l => l.type === "text" ? "text" : l.type === "rect" ? "fill" : l.type === "shape" ? (isLineShape(l.shape) ? null : l.fillType === "image" ? "src" : l.fillType === "linear" || l.fillType === "radial" ? null : "fill")
+    : ["image", "web", "video"].includes(l.type) ? "src" : null;
   function setShows(l, v) {
     const key = contentKey(l);
     if (!key) return;
@@ -1217,6 +1679,7 @@
           h("button", { class: "small", onclick: () => edit(l => { l.visible = l.visible === false; }) }, "Show / hide"),
           h("div", { class: "spacer" }),
           h("button", { class: "small danger", onclick: () => removeLayers(picked()) }, "Delete"))),
+      ...multiExtras(layers),
       h("div", { class: "sect" }, h("h3", {}, "Align"),
         h("div", { class: "grid3" }, ...ALIGN.map(([t, fn]) => h("button", { class: "small", onclick: () => edit(fn) }, t))),
         layers.length > 2 ? h("div", { class: "grid2", style: { marginTop: "6px" } },
@@ -1297,7 +1760,7 @@
       hudSection(),
       linksSection(),
       h("div", { class: "sect" }, h("h3", {}, "Shortcuts"),
-        h("p", { class: "muted small" }, "Drag to move (Shift: straight, Ctrl: no snapping), handles to resize (snaps too; Shift: keep shape, Ctrl: no snapping). Arrows nudge (Shift: 10). Ctrl+C / Ctrl+X copy or cut (Ctrl / Shift + click picks more) and Ctrl+V pastes, into this graphic or any other. Ctrl+D duplicates, Delete removes, Ctrl+Z / Ctrl+Shift+Z undo / redo. Alt+click picks the layer underneath. Ctrl+] / Ctrl+[ bring forward / send backward (with Alt: to front / to back). In the layers list: double-click renames, right-click opens the layer menu, the lock keeps a layer from being picked on the canvas. Ctrl+scroll zooms (Ctrl+0 fits, Ctrl+1 is 100%), scroll or middle-drag or Space+drag moves around while zoomed.")));
+        h("p", { class: "muted small" }, "Drag to move (Shift: straight, Ctrl: no snapping), handles to resize (snaps too; Shift: keep shape, Ctrl: no snapping). Arrows nudge (Shift: 10). Ctrl+C / Ctrl+X copy or cut (Ctrl / Shift + click picks more) and Ctrl+V pastes, into this graphic or any other. Ctrl+D duplicates, Delete removes, Ctrl+Z / Ctrl+Shift+Z undo / redo. Alt+click picks the layer underneath (or one layer of a group; double-click goes inside a group). Ctrl+G groups, Ctrl+Shift+G ungroups. Ctrl+] / Ctrl+[ bring forward / send backward (with Alt: to front / to back). In the layers list: double-click renames, right-click opens the layer menu, the lock keeps a layer from being picked on the canvas. Ctrl+scroll zooms (Ctrl+0 fits, Ctrl+1 is 100%), scroll or middle-drag or Space+drag moves around while zoomed.")));
   }
   // --- Add to a HUD: this graphic as a game HUD's own overlay -------------------
   let hudGame = "rl";
@@ -1394,6 +1857,10 @@
     if (what === "assets") { if (selected) renderProps(); return; }
     adopt(false);
   });
+  renderShapeTiles();
+  renderFrameTiles();
+  renderLiveTiles();
+  showPane(pane, false);
   pages.composer = { shown() { fitStage(); adopt(!comp); } };
   window.editGraphic = id => { open(id); showTab("composer"); };
 })();

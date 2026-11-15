@@ -109,5 +109,25 @@ class Bin(unittest.TestCase):
             self.ws.rename_comp(self.a["id"], " ")
 
 
+class Parts(unittest.TestCase):
+    def test_update_changes_every_other_copy_where_it_sits(self):
+        d = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, d, True)
+        ws = Workspace(d, starter="")
+        plate = {"id": "p1", "name": "Plate", "w": 100, "h": 20, "layers": [{"id": "a", "name": "Bar", "type": "shape", "x": 0, "y": 0, "w": 100, "h": 20, "fill": "#000"}]}
+        ws.set_parts([plate])
+        mk = lambda gid, x: {"id": "l" + gid, "name": "Bar", "type": "shape", "x": x, "y": 50, "w": 100, "h": 20, "fill": "#000", "part": "p1", "group": gid, "field": "Name " + gid}
+        c1 = ws.add_comp({"id": "c1", "name": "One", "layers": [mk("g1", 10)]})
+        ws.add_comp({"id": "c2", "name": "Two", "layers": [{"id": "x", "type": "text", "x": 0, "y": 0, "w": 1, "h": 1}, mk("g2", 300)]})
+        new = dict(plate, layers=[dict(plate["layers"][0], fill="#f00"), {"id": "b", "name": "Line", "type": "shape", "x": 0, "y": 18, "w": 100, "h": 2}])
+        n = ws.update_part(new, keep={"comp": c1["id"], "group": "g1"})
+        self.assertEqual(n, 1)
+        two = ws.comp("c2")["layers"]
+        self.assertEqual([l.get("name") for l in two[1:]], ["Bar", "Line"])
+        self.assertEqual((two[1]["fill"], two[1]["x"], two[1]["y"], two[1]["group"], two[1]["field"]), ("#f00", 300, 50, "g2", "Name g2"))
+        self.assertEqual((two[2]["x"], two[2]["y"]), (300, 68))
+        self.assertEqual(ws.comp("c1")["layers"][0]["fill"], "#000")   # (the copy it was changed from: left alone)
+
+
 if __name__ == "__main__":
     unittest.main()

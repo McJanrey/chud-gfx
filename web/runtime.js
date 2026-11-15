@@ -3,6 +3,116 @@
 //
 // Used by the outputs (output.html), the control panel's thumbnails and
 // Composer canvas, and exported HTML graphics.
+
+// Shapes: the geometry of every shape layer, as an SVG path for a box w × h.
+// Used by the outputs (runtime.js) and by Composer (its shape picker's
+// previews and the pen tool). Plain functions, no page needed.
+//
+//   layer.shape   rect | pill | ellipse | triangle | diamond | polygon | star | plus |
+//                 ring | heart | parallelogram | trapezoid | chevron | tab | notch |
+//                 bubble | line | arrow | path | combo
+//   layer.radius  corner rounding (px); layer.radii [tl, tr, br, bl] for a rectangle
+//   layer.sides   polygon sides; layer.points + layer.inner (0-1) for a star
+//   layer.slant   px the slanted / pointed shapes lean or point by
+//   layer.thick   0-1, how thick a ring or plus is
+//   layer.pts     the pen tool's points [[x, y], ...] in 0-1 of the box; layer.smooth
+//   layer.parts   a combined shape's shapes [{shape, x, y, w, h, ...}] (px in the box); layer.op
+
+(function (root) {
+  const f = n => Math.round(n * 100) / 100;
+
+  // A closed polygon with its corners rounded (each corner its own radius).
+  function roundPoly(pts, radii) {
+    const n = pts.length;
+    if (!radii || !radii.some(r => r > 0)) return "M" + pts.map(p => f(p[0]) + " " + f(p[1])).join("L") + "Z";
+    let d = "";
+    for (let i = 0; i < n; i++) {
+      const p = pts[i], a = pts[(i - 1 + n) % n], b = pts[(i + 1) % n];
+      const la = Math.hypot(a[0] - p[0], a[1] - p[1]), lb = Math.hypot(b[0] - p[0], b[1] - p[1]);
+      const r = Math.max(0, Math.min(radii[i % radii.length] || 0, la / 2, lb / 2));
+      const p1 = [p[0] + (a[0] - p[0]) * r / (la || 1), p[1] + (a[1] - p[1]) * r / (la || 1)];
+      const p2 = [p[0] + (b[0] - p[0]) * r / (lb || 1), p[1] + (b[1] - p[1]) * r / (lb || 1)];
+      d += (i ? "L" : "M") + f(p1[0]) + " " + f(p1[1]) + "Q" + f(p[0]) + " " + f(p[1]) + " " + f(p2[0]) + " " + f(p2[1]);
+    }
+    return d + "Z";
+  }
+  function ellipse(cx, cy, rx, ry) {
+    return `M${f(cx - rx)} ${f(cy)}A${f(rx)} ${f(ry)} 0 1 0 ${f(cx + rx)} ${f(cy)}A${f(rx)} ${f(ry)} 0 1 0 ${f(cx - rx)} ${f(cy)}Z`;
+  }
+  // Points through the given ones, smoothed (Catmull-Rom as curves).
+  function smoothPath(p, closed) {
+    if (p.length < 3) return "M" + p.map(q => f(q[0]) + " " + f(q[1])).join("L") + (closed ? "Z" : "");
+    const n = p.length, at = i => closed ? p[(i + n) % n] : p[Math.max(0, Math.min(n - 1, i))];
+    let d = `M${f(p[0][0])} ${f(p[0][1])}`;
+    for (let i = 0; i < (closed ? n : n - 1); i++) {
+      const p0 = at(i - 1), p1 = at(i), p2 = at(i + 1), p3 = at(i + 2);
+      d += `C${f(p1[0] + (p2[0] - p0[0]) / 6)} ${f(p1[1] + (p2[1] - p0[1]) / 6)} ${f(p2[0] - (p3[0] - p1[0]) / 6)} ${f(p2[1] - (p3[1] - p1[1]) / 6)} ${f(p2[0])} ${f(p2[1])}`;
+    }
+    return d + (closed ? "Z" : "");
+  }
+
+  function path(l, w, h) {
+    const r = +l.radius || 0, s = Math.max(0, Math.min(+(l.slant ?? Math.min(w, h) * 0.35), w / 2));
+    const rr = Array.isArray(l.radii) ? l.radii.map(Number) : [r, r, r, r];
+    switch (l.shape || "rect") {
+      case "rect": return roundPoly([[0, 0], [w, 0], [w, h], [0, h]], rr);
+      case "pill": return roundPoly([[0, 0], [w, 0], [w, h], [0, h]], [Math.min(w, h) / 2]);
+      case "ellipse": return ellipse(w / 2, h / 2, w / 2, h / 2);
+      case "triangle": return roundPoly([[w / 2, 0], [w, h], [0, h]], [r]);
+      case "diamond": return roundPoly([[w / 2, 0], [w, h / 2], [w / 2, h], [0, h / 2]], [r]);
+      case "polygon": {
+        const n = Math.max(3, Math.min(64, Math.round(+l.sides || 6)));
+        return roundPoly([...Array(n)].map((_, i) => { const a = -Math.PI / 2 + i * 2 * Math.PI / n; return [w / 2 + w / 2 * Math.cos(a), h / 2 + h / 2 * Math.sin(a)]; }), [r]);
+      }
+      case "star": {
+        const n = Math.max(3, Math.min(64, Math.round(+l.points || 5))), k = Math.max(0.05, Math.min(0.95, +(l.inner ?? 0.45)));
+        return roundPoly([...Array(n * 2)].map((_, i) => { const a = -Math.PI / 2 + i * Math.PI / n, q = i % 2 ? k : 1; return [w / 2 + w / 2 * q * Math.cos(a), h / 2 + h / 2 * q * Math.sin(a)]; }), [r]);
+      }
+      case "plus": {
+        const t = Math.max(0.05, Math.min(0.95, +(l.thick ?? 0.34))), x0 = w * (1 - t) / 2, x1 = w - x0, y0 = h * (1 - t) / 2, y1 = h - y0;
+        return roundPoly([[x0, 0], [x1, 0], [x1, y0], [w, y0], [w, y1], [x1, y1], [x1, h], [x0, h], [x0, y1], [0, y1], [0, y0], [x0, y0]], [r]);
+      }
+      case "ring": {
+        const t = Math.max(0.02, Math.min(0.98, +(l.thick ?? 0.25)));
+        return ellipse(w / 2, h / 2, w / 2, h / 2) + ellipse(w / 2, h / 2, w / 2 * (1 - t), h / 2 * (1 - t));
+      }
+      case "heart":
+        return `M${f(w / 2)} ${f(h)}C${f(w * 0.12)} ${f(h * 0.72)} 0 ${f(h * 0.5)} 0 ${f(h * 0.28)}C0 ${f(h * 0.1)} ${f(w * 0.14)} 0 ${f(w * 0.28)} 0C${f(w * 0.4)} 0 ${f(w * 0.47)} ${f(h * 0.08)} ${f(w / 2)} ${f(h * 0.18)}`
+          + `C${f(w * 0.53)} ${f(h * 0.08)} ${f(w * 0.6)} 0 ${f(w * 0.72)} 0C${f(w * 0.86)} 0 ${f(w)} ${f(h * 0.1)} ${f(w)} ${f(h * 0.28)}C${f(w)} ${f(h * 0.5)} ${f(w * 0.88)} ${f(h * 0.72)} ${f(w / 2)} ${f(h)}Z`;
+      case "parallelogram": return roundPoly([[s, 0], [w, 0], [w - s, h], [0, h]], rr);
+      case "trapezoid": return roundPoly([[s, 0], [w - s, 0], [w, h], [0, h]], rr);
+      case "chevron": return roundPoly([[0, 0], [w - s, 0], [w, h / 2], [w - s, h], [0, h], [s, h / 2]], [r]);
+      case "tab": return roundPoly([[0, 0], [w - s, 0], [w, h / 2], [w - s, h], [0, h]], [r]);
+      case "notch": { const c = Math.min(s, h / 2); return roundPoly([[c, 0], [w, 0], [w, h - c], [w - c, h], [0, h], [0, c]], [r]); }
+      case "bubble": {
+        const th = Math.min(h * 0.3, 60), bh = h - th, tx = Math.min(w * 0.18, w - 40);
+        return roundPoly([[0, 0], [w, 0], [w, bh], [tx + th, bh], [tx, h], [tx, bh], [0, bh]], [Math.min(r || 16, bh / 2), Math.min(r || 16, bh / 2), Math.min(r || 16, bh / 2), 0, 0, 0, Math.min(r || 16, bh / 2)]);
+      }
+      case "path": {
+        const p = (l.pts || []).map(q => [q[0] * w, q[1] * h]);
+        if (p.length < 2) return "";
+        const closed = l.closed !== false;
+        return l.smooth ? smoothPath(p, closed) : "M" + p.map(q => f(q[0]) + " " + f(q[1])).join("L") + (closed ? "Z" : "");
+      }
+      case "combo": return (l.parts || []).map(pt => offset(path(pt, +pt.w || 1, +pt.h || 1), +pt.x || 0, +pt.y || 0)).join("");
+      default: return roundPoly([[0, 0], [w, 0], [w, h], [0, h]], rr);
+    }
+  }
+  // A path moved by (dx, dy): every absolute coordinate pair shifted (the paths here are all absolute).
+  function offset(d, dx, dy) {
+    if (!dx && !dy) return d;
+    return d.replace(/([MLQCA])([^MLQCAZ]*)/g, (m, cmd, args) => {
+      const n = args.trim().split(/[\s,]+/).filter(Boolean).map(Number);
+      if (cmd === "A") { n[5] += dx; n[6] += dy; }
+      else for (let i = 0; i < n.length; i += 2) { n[i] += dx; n[i + 1] += dy; }
+      return cmd + n.map(f).join(" ");
+    });
+  }
+  const LINES = new Set(["line", "arrow"]);
+
+  root.Shapes = { path, offset, roundPoly, isLine: l => LINES.has(l.shape) };
+})(typeof window !== "undefined" ? window : globalThis);
+
 (function () {
   "use strict";
   const GFX = (window.GFX = {});
@@ -143,7 +253,7 @@
     const v = layer.field && values && values[layer.field] != null && values[layer.field] !== "" ? values[layer.field] : null;
     if (layer.type === "text") return v != null ? String(v) : layer.text || "";
     // (a picture or colour can come from the data too: {{Global!Left logo}})
-    const own = v != null ? String(v) : (layer.type === "rect" ? layer.fill : layer.src) || "";
+    const own = v != null ? String(v) : (layer.type === "rect" || layer.type === "shape" && layer.fillType !== "image" ? layer.fill : layer.src) || "";
     if (SPONSORS.test(own)) return "{{Sponsors}}";
     // (every sponsor in a row: the list is part of the value, so a new list redraws it)
     if (STRIP.test(own)) return "{{Sponsors all}}" + GFX.sponsors().map(x => "|" + (x.white ? "w:" : "c:") + x.logo).join("");
@@ -498,8 +608,151 @@
     }
   }
 
+  // --- shapes: an SVG of the layer's shape (see Shapes above) ---------------------
+  // Fill: a colour (value: it can come from the data), a gradient or a picture
+  // (a picture frame). Border inside, centred or outside, solid / dashed / dotted.
+  let svgIds = 0;
+  const NS = "http://www.w3.org/2000/svg";
+  const sv = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const k in attrs) if (attrs[k] != null) e.setAttribute(k, attrs[k]); return e; };
+  function gradientEl(layer, id) {
+    const g = layer.grad || {}, radial = layer.fillType === "radial";
+    const el2 = radial ? sv("radialGradient", { id, cx: "50%", cy: "50%", r: "70%" })
+      : sv("linearGradient", { id, x1: "0", y1: "0", x2: "1", y2: "0", gradientTransform: `rotate(${+(g.angle ?? 90) - 90} .5 .5)` });
+    const stops = (g.stops && g.stops.length ? g.stops : [{ at: 0, color: "#f28c28" }, { at: 100, color: "#7a2a00" }]);
+    for (const st of stops) el2.appendChild(sv("stop", { offset: (+st.at || 0) + "%", "stop-color": GFX.resolve(st.color || "#000") || "#000", "stop-opacity": st.alpha ?? 1 }));
+    return el2;
+  }
+  function buildShape(layer, value, opts) {
+    const w = Math.max(1, +layer.w || 1), h = Math.max(1, +layer.h || 1), id = "s" + (++svgIds);
+    const box = el("div", "gfx-shape", { position: "relative", width: "100%", height: "100%" });
+    const svg = sv("svg", { viewBox: `0 0 ${w} ${h}`, width: "100%", height: "100%", preserveAspectRatio: "none" });
+    svg.style.overflow = "visible";
+    svg.style.display = "block";
+    const defs = sv("defs", {});
+    svg.appendChild(defs);
+    const sw = +layer.strokeWidth || 0, stroke = sw ? (GFX.resolve(layer.stroke || "#ffffff") || "#ffffff") : null;
+    const dash = layer.dash === "dash" ? `${sw * 3} ${sw * 2}` : layer.dash === "dot" ? `0 ${sw * 2}` : null;
+    const cap = layer.dash === "dot" ? "round" : layer.cap || "butt";
+
+    if (Shapes.isLine(layer)) {
+      // A line across the box's middle (rotate the layer to point it), with its ends.
+      const t = Math.max(1, sw || 6), col = GFX.resolve(layer.stroke || value || "#ffffff") || "#ffffff";
+      const ends = { start: layer.headStart || "none", end: layer.headEnd || (layer.shape === "arrow" ? "arrow" : "none") };
+      const len = t * 3.2, y = h / 2;
+      let x0 = 0, x1 = w;
+      for (const side of ["start", "end"]) {
+        const kind = ends[side];
+        if (kind === "none") continue;
+        const tip = side === "end" ? w : 0, dir = side === "end" ? -1 : 1;
+        if (kind === "arrow" || kind === "triangle") {
+          const base = tip + dir * len;
+          if (kind === "triangle") svg.appendChild(sv("path", { d: `M${tip} ${y}L${base} ${y - len * 0.6}L${base} ${y + len * 0.6}Z`, fill: col }));
+          else svg.appendChild(sv("path", { d: `M${base} ${y - len * 0.6}L${tip} ${y}L${base} ${y + len * 0.6}`, fill: "none", stroke: col, "stroke-width": t, "stroke-linecap": "round", "stroke-linejoin": "round" }));
+          if (kind === "triangle") { if (side === "end") x1 = base + 1; else x0 = base - 1; }
+        } else if (kind === "circle") svg.appendChild(sv("circle", { cx: tip + dir * t * 1.2, cy: y, r: t * 1.2, fill: col }));
+        else if (kind === "bar") svg.appendChild(sv("rect", { x: tip - (side === "end" ? t : 0), y: y - t * 1.6, width: t, height: t * 3.2, fill: col }));
+      }
+      svg.insertBefore(sv("path", { d: `M${x0} ${y}L${x1} ${y}`, stroke: col, "stroke-width": t, "stroke-dasharray": layer.dash === "dash" ? `${t * 3} ${t * 2}` : layer.dash === "dot" ? `0 ${t * 2}` : null,
+        "stroke-linecap": layer.dash === "dot" ? "round" : layer.cap || "butt", fill: "none" }), defs.nextSibling);
+      box.appendChild(svg);
+      return box;
+    }
+
+    const d = Shapes.path(layer, w, h);
+    // The fill.
+    let fill = value || "transparent";
+    const ft = layer.fillType || "solid";
+    if (ft === "linear" || ft === "radial") { defs.appendChild(gradientEl(layer, id + "g")); fill = `url(#${id}g)`; }
+    else if (ft === "image") {
+      const pat = sv("pattern", { id: id + "p", patternUnits: "userSpaceOnUse", width: w, height: h });
+      if (value) {
+        const im = sv("image", { href: url(encodeURI(value)), width: w, height: h,
+          preserveAspectRatio: layer.fit === "fill" ? "none" : layer.fit === "contain" ? "xMidYMid meet" : "xMidYMid slice" });
+        pat.appendChild(im);
+      }
+      defs.appendChild(pat);
+      fill = value ? `url(#${id}p)` : "rgba(255,255,255,.08)";
+    }
+    // Inner shadow (inside the shape's edge).
+    const fx = layer.fx || {};
+    let filter = null;
+    if (fx.inner && fx.inner.on) {
+      const s2 = fx.inner, f2 = sv("filter", { id: id + "i", x: "-20%", y: "-20%", width: "140%", height: "140%" });
+      f2.innerHTML = `<feComponentTransfer in="SourceAlpha"><feFuncA type="table" tableValues="1 0"/></feComponentTransfer>`
+        + `<feGaussianBlur stdDeviation="${+s2.blur || 8}"/><feOffset dx="${+s2.x || 0}" dy="${+s2.y || 4}" result="o"/>`
+        + `<feFlood flood-color="${s2.color || "#000"}" flood-opacity="${s2.alpha ?? 0.6}"/><feComposite in2="o" operator="in"/>`
+        + `<feComposite in2="SourceAlpha" operator="in"/><feMerge><feMergeNode in="SourceGraphic"/><feMergeNode/></feMerge>`;
+      defs.appendChild(f2);
+      filter = `url(#${id}i)`;
+    }
+    const paths = [];
+    if (layer.shape === "combo" && (layer.parts || []).length) {
+      // A combined shape: joined (union), the first minus the rest (subtract) or only where all overlap (intersect).
+      const parts = layer.parts.map(pt => Shapes.offset(Shapes.path(pt, +pt.w || 1, +pt.h || 1), +pt.x || 0, +pt.y || 0));
+      const op = layer.op || "union";
+      if (op === "union") paths.push(...parts.map(pd => ({ d: pd })));
+      else if (op === "subtract") {
+        const m = sv("mask", { id: id + "m", maskUnits: "userSpaceOnUse", x: -w, y: -h, width: w * 3, height: h * 3 });
+        m.appendChild(sv("rect", { x: -w, y: -h, width: w * 3, height: h * 3, fill: "#fff" }));
+        parts.slice(1).forEach(pd => m.appendChild(sv("path", { d: pd, fill: "#000" })));
+        defs.appendChild(m);
+        paths.push({ d: parts[0], mask: `url(#${id}m)` });
+      } else {
+        let clip = null;
+        parts.slice(1).forEach((pd, i) => {
+          const c = sv("clipPath", { id: `${id}c${i}`, "clip-path": clip });
+          c.appendChild(sv("path", { d: pd }));
+          defs.appendChild(c);
+          clip = `url(#${id}c${i})`;
+        });
+        paths.push({ d: parts[0], clip });
+      }
+    } else paths.push({ d });
+    const g = sv("g", { filter, mask: paths[0].mask, "clip-path": paths[0].clip });
+    const rule = layer.shape === "ring" ? "evenodd" : "nonzero";
+    const align = layer.strokeAlign || "center";
+    for (const p of paths) {
+      if (stroke && align === "outside") g.appendChild(sv("path", { d: p.d, fill: "none", stroke, "stroke-width": sw * 2, "stroke-dasharray": dash, "stroke-linecap": cap, "stroke-linejoin": "round" }));
+      g.appendChild(sv("path", { d: p.d, fill, "fill-rule": rule }));
+    }
+    if (stroke && align !== "outside") {
+      for (const [i, p] of paths.entries()) {
+        let clip = null;
+        if (align === "inside") {
+          const c = sv("clipPath", { id: `${id}s${i}` });
+          c.appendChild(sv("path", { d: p.d, "clip-rule": rule }));
+          defs.appendChild(c);
+          clip = `url(#${id}s${i})`;
+        }
+        g.appendChild(sv("path", { d: p.d, fill: "none", stroke, "stroke-width": align === "inside" ? sw * 2 : sw, "stroke-dasharray": dash, "stroke-linecap": cap, "stroke-linejoin": "round", "clip-path": clip }));
+      }
+    }
+    svg.appendChild(g);
+    // Blur behind (frosted glass): the page behind, blurred, in the shape's outline.
+    if (+fx.backdrop > 0 && d) {
+      const back = el("div", "", { position: "absolute", inset: "0", backdropFilter: `blur(${+fx.backdrop}px)`, webkitBackdropFilter: `blur(${+fx.backdrop}px)` });
+      back.style.clipPath = `path('${d}')`;
+      box.appendChild(back);
+    }
+    box.appendChild(svg);
+    return box;
+  }
+  GFX.buildShape = buildShape;
+
+  // Effects any layer can have (layer.fx): drop shadow, glow and blur, as a CSS filter
+  // on the layer's content (they follow its outline: text, a logo's edges, a shape).
+  function fxFilter(layer) {
+    const fx = layer.fx || {}, out = [];
+    if (fx.shadow && fx.shadow.on) { const s2 = fx.shadow; out.push(`drop-shadow(${+s2.x || 0}px ${+(s2.y ?? 6)}px ${+(s2.blur ?? 12)}px ${GFX.resolve(s2.color || "rgba(0,0,0,.6)") || "rgba(0,0,0,.6)"})`); }
+    if (fx.glow && fx.glow.on) { const c = GFX.resolve(fx.glow.color || "#f28c28") || "#f28c28", b = +(fx.glow.blur ?? 14); out.push(`drop-shadow(0 0 ${b}px ${c})`, `drop-shadow(0 0 ${Math.round(b / 2)}px ${c})`); }
+    if (+fx.blur > 0) out.push(`blur(${+fx.blur}px)`);
+    return out.join(" ");
+  }
+  GFX.fxFilter = fxFilter;
+
   function buildOther(layer, value, opts) {
     const t = layer.type;
+    if (t === "shape") return buildShape(layer, value, opts);
     if (t === "lottie") {
       const box = el("div", "gfx-media");
       if (value && window.lottie) {
@@ -990,7 +1243,11 @@
     outer.dataset.id = layer.id;
     if (layer.show && !opts.showHidden && !showing(layer)) outer.style.display = "none";
     const inner = el("div", "gfx-A");
-    inner.appendChild(buildContent(layer, value, opts));
+    const content = buildContent(layer, value, opts);
+    const fxf = layer.fx && fxFilter(layer);
+    if (fxf) content.style.filter = [content.style.filter, fxf].filter(Boolean).join(" ");
+    if (layer.fx && +layer.fx.backdrop > 0 && layer.type === "rect") content.style.backdropFilter = content.style.webkitBackdropFilter = `blur(${+layer.fx.backdrop}px)`;
+    inner.appendChild(content);
     outer.appendChild(inner);
     outer._value = value;
     outer._extra = extraOf(layer);

@@ -1275,6 +1275,10 @@ def make_handler(engine):
                     result = {"comp": ws.restore_comp(body.get("id"))}
                 elif path == "/api/comp/rename":
                     ws.rename_comp(body.get("id"), body.get("name"))
+                elif path == "/api/parts":
+                    ws.set_parts(body.get("parts"))
+                elif path == "/api/parts/update":
+                    result = {"copies": ws.update_part(body.get("part") or {}, body.get("keep"))}
                 elif path == "/api/playlists":
                     ids = {c["id"] for c in ws.get()["compositions"]}
                     ws.set_playlists(playlist.clean(body.get("playlists"), ids))

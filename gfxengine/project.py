@@ -64,6 +64,11 @@ def blank_layer(kind, **extra):
         layer.update({"x": 0, "y": 1000, "w": 1920, "h": 70, "items": [{"text": "Follow @SCCSaints", "img": ""}, {"text": "Thanks for watching", "img": ""}],
                       "source": "", "textCol": "", "imgCol": "", "speed": 120, "gap": 60, "sep": "•", "imgSize": 48, "fade": True,
                       "font": "Inter", "size": 36, "color": "#ffffff", "weight": 700, "caps": True, "tracking": 0, "italic": False})
+    elif kind == "shape":
+        # Any shape (see the Shapes part of runtime.js): its outline, fill (colour, gradient
+        # or picture), border and effects (fx: shadow, glow, inner shadow, blur, blur behind).
+        layer.update({"shape": "rect", "w": 400, "h": 240, "fill": "#f28c28", "fillType": "solid", "radius": 0,
+                      "stroke": "#ffffff", "strokeWidth": 0, "strokeAlign": "center", "dash": "solid"})
     elif kind == "rotator":
         # One item at a time in place (sponsor logos, lines of text), swapping every few seconds.
         layer.update({"x": 1500, "y": 960, "w": 360, "h": 100, "items": [{"text": "", "img": ""}],
@@ -248,6 +253,58 @@ class Workspace:
                 raise KeyError("No such graphic")
             c["name"] = name
             self.changed()
+
+    # --- parts: reusable pieces of graphics ------------------------------------
+    # {"id", "name", "w", "h", "layers"} (layers placed from the part's top left).
+    # A copy in a graphic is its layers with "part" (the id) and one "group".
+
+    def set_parts(self, parts):
+        clean = []
+        for p in parts if isinstance(parts, list) else []:
+            if isinstance(p, dict) and p.get("id") and isinstance(p.get("layers"), list):
+                clean.append({"id": str(p["id"])[:20], "name": str(p.get("name") or "Part")[:60], "w": float(p.get("w") or 1),
+                              "h": float(p.get("h") or 1), "layers": p["layers"]})
+        with self.lock:
+            self.data["parts"] = clean
+            self.changed()
+
+    def update_part(self, part, keep=None):
+        """A part changed: its saved copy, and every copy in every graphic redrawn from it
+        where it sits (keep: {"comp", "group"}, the copy it was changed from, left as it is).
+        Returns how many copies changed."""
+        pid = part.get("id")
+        with self.lock:
+            parts = self.data.get("parts") or []
+            old = next((p for p in parts if p["id"] == pid), None)
+            if not old:
+                raise KeyError("No such part")
+            old.update({"name": str(part.get("name") or old["name"])[:60], "w": float(part.get("w") or old["w"]),
+                        "h": float(part.get("h") or old["h"]), "layers": part.get("layers") or old["layers"]})
+            n = 0
+            for comp in self.data["compositions"]:
+                copies = {}
+                for i, l in enumerate(comp["layers"]):
+                    if l.get("part") == pid and l.get("group"):
+                        copies.setdefault(l["group"], []).append(i)
+                for gid, idx in copies.items():
+                    if keep and keep.get("comp") == comp["id"] and keep.get("group") == gid:
+                        continue
+                    was = [comp["layers"][i] for i in idx]
+                    x0, y0 = min(l["x"] for l in was), min(l["y"] for l in was)
+                    fields = {l.get("name"): l.get("field") for l in was if l.get("field")}
+                    made = []
+                    for src in old["layers"]:
+                        l = copy.deepcopy(src)
+                        l.update(id=new_id("l"), x=l["x"] + x0, y=l["y"] + y0, group=gid, part=pid)
+                        if l.get("name") in fields:   # (the copy's own field names, so Control keeps working)
+                            l["field"] = fields[l["name"]]
+                        made.append(l)
+                    first = idx[0]
+                    comp["layers"] = [l for j, l in enumerate(comp["layers"]) if j not in set(idx)]
+                    comp["layers"][first:first] = made
+                    n += 1
+            self.changed()
+            return n
 
     def set_playlists(self, playlists):
         with self.lock:
