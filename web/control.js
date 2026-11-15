@@ -182,6 +182,8 @@ fetch("/api/state").then(r => r.json()).then(s => App.apply(s)).finally(connect)
   set(mini);
   btn.addEventListener("click", () => set(!root.classList.contains("side-mini")));
 })();
+// Set by "Update now" just before the restart (read once, here, before anything clears it).
+const UPDATED_FROM = (() => { try { return localStorage.getItem("gfx-updated-from"); } catch (e) { return null; } })();
 const pages = {};
 function showTab(name) {
   if (!pages[name] && name !== "control") name = "control";
@@ -208,6 +210,8 @@ document.addEventListener("click", e => { if (!e.target.closest("#extras")) extr
 document.addEventListener("keydown", e => { if (e.key === "Escape") extrasMenu(false); });
 addEventListener("load", () => {
   let start = location.hash.slice(1);
+  // (back from an update: the page that was open, not the app's usual Home)
+  if (UPDATED_FROM) start = "";
   if (!start) { try { start = localStorage.getItem("gfx-tab") || "control"; } catch (e) { start = "control"; } }
   showTab(start);
 });
@@ -227,7 +231,65 @@ App.on(s => {
   btn.disabled = up.status === "downloading" || up.status === "installing";
   btn.textContent = up.status === "downloading" ? `Downloading ${up.progress}%` : up.status === "installing" ? "Installing…" : `Update to ${up.latest}`;
 });
-$("#update").addEventListener("click", () => api("/api/update/install"));
+$("#update").addEventListener("click", () => updatePop(true));
+
+// --- the update pop-up ---------------------------------------------------------
+// Shown when a new version is out (Not now: until GFX Baby is opened again, the
+// top-right button still updates). Update now saves what's being worked on first
+// and the page opens where it was after the restart.
+let updAsked = null, updGoing = false;
+try { updAsked = sessionStorage.getItem("gfx-upd-later"); } catch (e) { /* */ }
+function updatePop(force) {
+  const s = App.state, up = s && s.update;
+  if (!up || !(up.available && up.can_install)) return;
+  if (!force && (updAsked === up.latest || updGoing)) return;
+  $("#upd-ver").textContent = up.latest;
+  $("#upd-cur").textContent = up.current;
+  const notes = (up.notes || "").trim();
+  $("#upd-notes").hidden = !notes;
+  $("#upd-notes").textContent = notes;
+  const onAir = (s.live.program.on || []).length;
+  $("#upd-air").hidden = !onAir;
+  $("#upd-air").textContent = onAir ? `${onAir} graphic${onAir === 1 ? " is" : "s are"} on air: the outputs go blank for about a minute while it restarts, then come back as they were.` : "";
+  $("#upd-pop").hidden = false;
+  $("#upd-now").focus();
+}
+$("#upd-later").addEventListener("click", () => {
+  updAsked = App.state.update.latest;
+  try { sessionStorage.setItem("gfx-upd-later", updAsked); } catch (e) { /* */ }
+  $("#upd-pop").hidden = true;
+});
+$("#upd-pop").addEventListener("keydown", e => { if (e.key === "Escape" && !updGoing) $("#upd-later").click(); });
+$("#upd-now").addEventListener("click", async () => {
+  updGoing = true;
+  $("#upd-now").disabled = $("#upd-later").disabled = true;
+  $("#upd-progress").hidden = false;
+  $("#upd-step").textContent = "Saving your work…";
+  try {
+    if (window.saveForUpdate) await window.saveForUpdate();
+    localStorage.setItem("gfx-updated-from", App.state.app.version);
+  } catch (e) { /* (the engine has everything up to the last change anyway) */ }
+  try { await api("/api/update/install"); }
+  catch (e) { updGoing = false; $("#upd-now").disabled = $("#upd-later").disabled = false; $("#upd-step").textContent = "Couldn't start the update. Try again."; }
+});
+App.on(s => {
+  const up = s.update;
+  if (updGoing) {
+    $("#upd-bar").style.width = (up.status === "installing" ? 100 : up.progress || 0) + "%";
+    $("#upd-step").textContent = up.status === "downloading" ? `Downloading ${up.progress || 0}%` : up.status === "installing" ? "Installing: GFX Baby restarts in a moment…"
+      : up.status === "error" ? `Update failed: ${up.error}` : $("#upd-step").textContent;
+    if (up.status === "error") { updGoing = false; $("#upd-now").disabled = $("#upd-later").disabled = false; }
+    return;
+  }
+  updatePop(false);
+  // Just updated: say so (once).
+  const from = UPDATED_FROM;
+  if (from && from !== s.app.version && !updatePop.told) {
+    updatePop.told = true;
+    try { localStorage.removeItem("gfx-updated-from"); } catch (e) { /* */ }
+    toast(`Updated to ${s.app.version}. Picked up where you left off.`);
+  }
+});
 
 // --- CONTROL ----------------------------------------------------------------
 (function control() {

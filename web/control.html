@@ -477,6 +477,22 @@
   </div>
 </main>
 
+<div id="upd-pop" class="dialog-back" hidden role="dialog" aria-modal="true" aria-labelledby="upd-title">
+  <div class="dialog panel upd-pop">
+    <div class="pad">
+      <h3 id="upd-title">GFX Baby <span id="upd-ver"></span> is out</h3>
+      <p class="muted small" id="upd-sub">You have <span id="upd-cur"></span>. Updating takes about a minute and GFX Baby restarts by itself. What you're working on is saved first and opens where you left it.</p>
+      <p class="warnline small" id="upd-air" hidden></p>
+      <div class="upd-notes small" id="upd-notes" hidden></div>
+      <div class="upd-progress" id="upd-progress" hidden><div class="upd-bar"><i id="upd-bar"></i></div><span class="small" id="upd-step"></span></div>
+    </div>
+    <div class="dialog-btns">
+      <div class="spacer" style="flex:1"></div>
+      <button type="button" class="ghost" id="upd-later">Not now</button>
+      <button type="button" class="primary" id="upd-now">Update now</button>
+    </div>
+  </div>
+</div>
 <div id="dialog" class="dialog-back" hidden>
   <form class="dialog panel" id="dialog-form" method="dialog">
     <div class="panel-head"><h3 id="dialog-title">New workspace</h3></div>

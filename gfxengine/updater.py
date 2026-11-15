@@ -77,6 +77,7 @@ class Updater:
         # Only the packaged app can replace itself.
         self.can_install = FROZEN and sys.platform == "win32"
         self.on_exit = None       # set by the window, to close it for the restart
+        self.before_exit = None   # set by the engine: saves the workspace first
         self.work_dir = UPDATE_DIR
         self._lock = threading.Lock()
 
@@ -139,6 +140,11 @@ class Updater:
             new_dir = self._unpack(zip_path)
             script = self._write_script(new_dir)
             log(f"Installing {self.latest} - GFX Baby will restart")
+            if self.before_exit:
+                try:
+                    self.before_exit()
+                except Exception as e:   # (still update: the workspace saves itself every change anyway)
+                    log(f"Couldn't save before the update: {e}", "warn")
             # Hidden console, own process group so it outlives the app.
             subprocess.Popen(["cmd", "/c", script], cwd=os.path.dirname(os.path.abspath(sys.executable)),
                              creationflags=0x08000000 | 0x00000200)

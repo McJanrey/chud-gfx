@@ -140,6 +140,7 @@ class Engine:
             wid = listed[0]["id"] if listed else self.workspaces.create("Chud Broadcast", "scc")
         self.open(wid)
         self.beacon = discover.Beacon(self._beacon_info)
+        self.updater.before_exit = lambda: self.ws.save()
         threading.Thread(target=self._watch_stats, daemon=True).start()
 
     def _watch_stats(self):

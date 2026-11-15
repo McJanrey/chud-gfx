@@ -26,6 +26,23 @@
     lastSent = body;
     api("/api/comp/save", { comp }).finally(() => { pending = false; });
   }
+  window.saveForUpdate = async () => {
+    try { localStorage.setItem("gfx-resume", JSON.stringify({ comp: compId, layer: selected, multi: [...multi] })); } catch (e) { /* */ }
+    if (!comp) return;
+    const body = JSON.stringify(comp);
+    if (body === lastSent) return;
+    lastSent = body;
+    await api("/api/comp/save", { comp });
+  };
+  function resume() {
+    let r = null;
+    try { r = JSON.parse(localStorage.getItem("gfx-resume") || "null"); localStorage.removeItem("gfx-resume"); } catch (e) { /* */ }
+    if (!r || r.comp !== compId || !comp) return;
+    const has = id => comp.layers.some(l => l.id === id);
+    selected = has(r.layer) ? r.layer : null;
+    multi.clear();
+    for (const id of r.multi || []) if (has(id)) multi.add(id);
+  }
   function changed(opts) {
     pending = true;
     saveSoon();
@@ -78,6 +95,7 @@
     if (!force && json === lastSent) return;
     comp = JSON.parse(json);
     lastSent = json;
+    if (!adopt.done) { adopt.done = true; resume(); }
     if (selected && !comp.layers.some(l => l.id === selected)) selected = null;
     draw();
     renderLayers();
