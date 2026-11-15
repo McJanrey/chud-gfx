@@ -752,7 +752,7 @@
       letterSpacing: ((layer.tracking || 0) / 1000) + "em", textTransform: layer.caps ? "uppercase" : "none" });
     if (it.img) {
       // A picture on its own fills the box; next to text it's the set height.
-      const img = el("img", "", it.text ? { height: (layer.imgSize || 80) + "px", width: "auto", objectFit: "contain" } : { width: "100%", height: "100%", objectFit: "contain" });
+      const img = el("img", "", it.text ? { height: (layer.imgSize || 80) + "px", width: "auto", objectFit: "contain" } : { width: "100%", height: "100%", objectFit: fitOf(layer.fit) });
       img.draggable = false; img.src = url(encodeURI(it.img)); item.appendChild(img);
     }
     if (it.text) item.appendChild(Object.assign(el("span"), { textContent: it.text }));
@@ -788,7 +788,7 @@
   GFX.rotatorSwaps = Object.keys(SWAPS).filter(k => k !== "fade");
   function turnRotator(box, now = GFX.now()) {
     const layer = box._layer, items = tickerItems(layer);
-    const sig = JSON.stringify(items) + [layer.secs, layer.order, layer.size, layer.color, layer.font, layer.imgSize, layer.caps, layer.align];
+    const sig = JSON.stringify(items) + [layer.secs, layer.order, layer.size, layer.color, layer.font, layer.imgSize, layer.caps, layer.align, layer.fit];
     if (!items.length) { box._sig = sig; box._i = -1; box.replaceChildren(); return; }
     const i = box._still ? 0 : rotatorIndex(layer, items.length, now);
     if (box._sig === sig && box._i === i) return;

@@ -946,7 +946,8 @@
     const pick = (key, opts) => h("select", { onchange: e => { snapshot(); l[key] = e.target.value; changed({ keepList: true }); } },
       opts.map(([v, t]) => h("option", { value: v, selected: (l[key] || opts[0][0]) === v }, t)));
     return h("div", { class: "sect" }, h("h3", {}, "Rotator"),
-      h("p", { class: "muted small" }, "Shows one item at a time in this box, then swaps to the next. A picture on its own fills the box."),
+      h("p", { class: "muted small" }, "Shows one item at a time in this box, then swaps to the next. A picture on its own fills the box: drag the box's handles to size it."),
+      lab("Pictures", pick("fit", [["contain", "Fit (whole picture)"], ["cover", "Fill (crop the edges)"], ["fill", "Stretch (to the box's shape)"]])),
       ...itemsEditor(l, save),
       h("div", { class: "grid3" }, lab("Seconds each", bind(l, "secs", "number", { min: 1, step: 1 })),
         lab("Swap", pick("swap", GFX.rotatorSwaps.map(k => [k, k[0].toUpperCase() + k.slice(1)]))),
