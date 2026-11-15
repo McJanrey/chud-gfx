@@ -1382,8 +1382,8 @@
     // A graphic's own output that's switched on (Outputs) always shows it,
     // with what it shows on Program (or else on Preview); switched off, nothing.
     always(state) {
-      if (this.opts.hud) return true;
-      return !!this.opts.comp && ((state.global || {}).outputs_on || []).includes(this.opts.comp);
+      // (a graphic's own link always shows it: adding the link to OBS is the choice)
+      return !!(this.opts.hud || this.opts.comp);
     }
     // The graphic this output shows on its own: ?comp=, or the one added to ?hud='s game.
     own(state) {
