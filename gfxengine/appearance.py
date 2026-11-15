@@ -14,8 +14,8 @@ import os
 import re
 import threading
 
-LOOKS = ("studio", "graphite", "daylight", "glass")
-DEFAULT = {"look": "studio", "accent": ""}
+LOOKS = ("room", "studio", "graphite", "daylight", "glass")
+DEFAULT = {"look": "room", "accent": ""}
 _lock = threading.Lock()
 
 

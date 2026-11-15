@@ -68,7 +68,7 @@
   function renderComps() {
     const list = $("#comp-list");
     const comps = App.comps();
-    const sig = JSON.stringify([comps.map(c => [c.id, c.name, c.layers]), (App.state.trash || []).map(t => t.id)]) + compId;
+    const sig = JSON.stringify([comps.map(c => [c.id, c.name, c.layers]), ((App.state || {}).trash || []).map(t => t.id)]) + compId;
     if (list.dataset.sig === sig) return;
     list.dataset.sig = sig;
     list.replaceChildren(...comps.map(c => h("div", { class: "comp-item" + (c.id === compId ? " sel" : ""), onclick: () => open(c.id),
@@ -142,7 +142,7 @@
   $("#canvas-name").addEventListener("dblclick", () => compId && renameGraphic(compId));
   const trashSel = $("#comp-trash");
   function renderTrash() {
-    const t = App.state.trash || [];
+    const t = (App.state || {}).trash || [];
     trashSel.hidden = !t.length;
     trashSel.replaceChildren(h("option", { value: "" }, `Deleted (${t.length})…`),
       ...t.map(x => h("option", { value: x.id }, `${x.name} · ${new Date(x.at * 1000).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}`)));
@@ -444,7 +444,7 @@
     const ls = comp ? picked() : [];
     if (ls.length) {
       const lo = Math.min(...ls.map(o => horiz ? o.x : o.y)), hi = Math.max(...ls.map(o => horiz ? o.x + o.w : o.y + o.h));
-      g.fillStyle = "rgba(242,140,40,.28)";
+      g.fillStyle = "rgba(200,240,60,.22)";
       if (horiz) g.fillRect(toPx(lo), 0, toPx(hi) - toPx(lo), H2); else g.fillRect(0, toPx(lo), W2, toPx(hi) - toPx(lo));
     }
     const step = niceStep(70), minor = step / (step % 5 === 0 ? 5 : step % 2 === 0 ? 2 : 1);
@@ -468,7 +468,7 @@
     // Where the mouse is.
     if (mouseAt) {
       const p = Math.round(toPx(horiz ? mouseAt[0] : mouseAt[1])) + 0.5;
-      g.strokeStyle = "#f28c28";
+      g.strokeStyle = "#c8f03c";
       g.beginPath();
       if (horiz) { g.moveTo(p, 0); g.lineTo(p, 20); } else { g.moveTo(0, p); g.lineTo(20, p); }
       g.stroke();
@@ -709,8 +709,8 @@
     if (!ov) { ov = document.createElementNS("http://www.w3.org/2000/svg", "svg"); ov.setAttribute("class", "pen-svg"); selLayer.appendChild(ov); }
     const pts = pen.pts.map(q => toScreen(q[0], q[1]));
     if (mouse) pts.push(toScreen(mouse[0], mouse[1]));
-    ov.innerHTML = (pts.length > 1 ? `<polyline points="${pts.map(q => q.join(",")).join(" ")}" fill="rgba(242,140,40,.12)" stroke="#f28c28" stroke-width="2"/>` : "")
-      + pen.pts.map((q, i) => { const [sx, sy] = toScreen(q[0], q[1]); return `<circle cx="${sx}" cy="${sy}" r="${i ? 4 : 6}" fill="${i ? "#fff" : "#f28c28"}" stroke="#f28c28" stroke-width="2"/>`; }).join("");
+    ov.innerHTML = (pts.length > 1 ? `<polyline points="${pts.map(q => q.join(",")).join(" ")}" fill="rgba(200,240,60,.1)" stroke="#c8f03c" stroke-width="2"/>` : "")
+      + pen.pts.map((q, i) => { const [sx, sy] = toScreen(q[0], q[1]); return `<circle cx="${sx}" cy="${sy}" r="${i ? 4 : 6}" fill="${i ? "#fff" : "#c8f03c"}" stroke="#c8f03c" stroke-width="2"/>`; }).join("");
   }
   function penPoint(e) {
     const r = canvas.getBoundingClientRect();

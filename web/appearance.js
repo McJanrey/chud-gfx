@@ -5,15 +5,16 @@
 (function () {
   "use strict";
   const LOOKS = [
+    { id: "room", name: "Control Room", note: "Zinc greys and a lime tally light. GFX Baby's own look.", accent: "#c8f03c" },
     { id: "studio", name: "Chud Night", note: "Pure black, big titles, Chud orange on key buttons. Calmest in a dark room.", accent: "#f28c28" },
     { id: "graphite", name: "Graphite", note: "Mac pro-app greys and blue, with glowing Preview and Program.", accent: "#0a84ff" },
     { id: "daylight", name: "Daylight", note: "Light, with white cards. Best in a bright room.", accent: "#0071e3" },
     { id: "glass", name: "Chud Glass", note: "Frosted glass over warm Chud brown and orange.", accent: "#f28c28" },
   ];
-  const SWATCHES = ["#f28c28", "#f5c518", "#0a84ff", "#30d158", "#ff9f0a", "#ff375f", "#bf5af2", "#64d2ff", "#ffffff"];
+  const SWATCHES = ["#c8f03c", "#f28c28", "#f5c518", "#0a84ff", "#30d158", "#ff9f0a", "#ff375f", "#bf5af2", "#64d2ff", "#ffffff"];
   const root = document.documentElement;
   const KEY = "scc-appearance";
-  let state = { look: "studio", accent: "" };
+  let state = { look: "room", accent: "" };
   const boxes = new Set();
 
   // Dark or light text on a highlight colour, whichever reads better.
@@ -23,7 +24,7 @@
     return (L + 0.05) / 0.05 > 1.05 / (L + 0.05) ? "#111111" : "#ffffff";
   }
   function apply(a) {
-    state = { look: LOOKS.some(l => l.id === a.look) ? a.look : "studio", accent: /^#[0-9a-f]{6}$/i.test(a.accent || "") ? a.accent.toLowerCase() : "" };
+    state = { look: LOOKS.some(l => l.id === a.look) ? a.look : "room", accent: /^#[0-9a-f]{6}$/i.test(a.accent || "") ? a.accent.toLowerCase() : "" };
     root.dataset.look = state.look;
     if (state.accent) {
       root.style.setProperty("--x-accent", state.accent);
@@ -49,7 +50,7 @@
       <div><h4>Look</h4><div class="ap-looks" role="radiogroup" aria-label="Look">${LOOKS.map(l => `
         <button type="button" class="ap-look" role="radio" aria-checked="${l.id === state.look}" data-look="${l.id}">
           <span class="ap-mini" data-mini="${l.id}"><span></span><em></em><u></u></span>
-          <b>${esc(l.name)}${l.id === "studio" ? " <i>Default</i>" : ""}</b><small>${esc(l.note)}</small></button>`).join("")}</div></div>
+          <b>${esc(l.name)}${l.id === "room" ? " <i>Default</i>" : ""}</b><small>${esc(l.note)}</small></button>`).join("")}</div></div>
       <div><h4><label for="ap-accent-${boxes.size}">Highlight colour</label></h4>
         <div class="ap-accent-row">
           <input type="color" id="ap-accent-${boxes.size}" value="${accent}" aria-label="Highlight colour">
@@ -67,7 +68,7 @@
 
   // The last choice first (no flash), then what the app has saved.
   try { const cached = JSON.parse(localStorage.getItem(KEY) || "null"); if (cached) apply(cached); } catch (e) { /* none */ }
-  if (!root.dataset.look) root.dataset.look = "studio";
+  if (!root.dataset.look) root.dataset.look = "room";
   fetch("/api/appearance", { cache: "no-store" }).then(r => r.json()).then(a => { if (a && !a.error) apply(a); }).catch(() => {});
 
   window.Appearance = {
