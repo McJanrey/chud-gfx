@@ -55,7 +55,11 @@ PAGES = {"/": "/control", "/control": "control.html", "/output": "output.html"}
 # copy of the same HUD is turned away meanwhile).
 FEED_HOLD = 12
 # The game HUDs a Composer graphic can be added to (as their overlay): game -> the HUD's name.
-HUD_LOOK_GAMES = {"rl": "Rocket League HUD"}
+HUD_LOOK_GAMES = {"rl": "Rocket League HUD"}   # HUDs that play a graphic themselves (look.py)
+# The other games' HUDs can't: GFX Baby plays the graphic for them on that game's
+# overlay output (/output?hud=<game>), fed by the live data the HUD sends here.
+HUD_NAMES = {"lol": "League HUD", "valorant": "VALORANT HUD", "rl": "Rocket League HUD", "cod": "CoD HUD",
+             "smash": "Smash HUD", "overwatch": "Overwatch HUD"}
 
 
 class Paired(ValueError):
@@ -370,7 +374,7 @@ class Engine:
             "workspace": {"id": self.workspace_id, "name": project.get("name", ""),
                           "picture": bool(project.get("picture"))},
             "rev": self.ws.rev, "assets_rev": self.assets_rev,
-            "project": project, "live": self.live.get(), "playlist": self.player.get(),
+            "project": project, "live": self.live.get(), "playlist": self.player.get(), "hud_overlays": self.hud_overlays(),
             "trash": [{"id": t["comp"]["id"], "name": t["comp"].get("name", ""), "at": t["at"]} for t in self.ws.trash()], "data": self.data_snapshot(), "builder": {**self.builder.state(), "enabled": bool((self.settings.get().get("hudbuilder") or {}).get("enabled"))}, "stream": {**self.stream.state(), "enabled": bool((self.settings.get().get("multistream") or {}).get("enabled"))}, "obs": {**self.obs.public(), "follow": (self.settings.get().get("obs") or {}).get("follow") or []},
             "global": globalcfg.clean(project.get("global")),
             "teams": self.teams.list(),
@@ -698,7 +702,7 @@ class Engine:
 
     def hud_look(self, game):
         """What's kept for that game's HUD: {"game", "name", "comp", "at", "rev", "size"} or None."""
-        if game not in HUD_LOOK_GAMES:
+        if game not in GAMES:
             return None
         try:
             with open(os.path.join(self._looks_dir(), game + ".json"), encoding="utf-8") as f:
@@ -729,12 +733,23 @@ class Engine:
         return {"layers": layers, "assets": added}
 
     def add_to_hud(self, comp_id, game):
-        """Makes the graphic that game's HUD's overlay."""
-        if game not in HUD_LOOK_GAMES:
-            raise ValueError(f"The {GAMES.get(game, game)} HUD can't take a graphic yet")
+        """Makes the graphic that game's HUD's overlay: the HUD plays it (Rocket League), or
+        GFX Baby does on the game's overlay output, with the HUD's live data."""
+        if game not in GAMES:
+            raise ValueError("No HUD for that game")
         comp = next((c for c in self.ws.get()["compositions"] if c["id"] == comp_id), None)
         if not comp:
             raise KeyError("No such graphic")
+        if game not in HUD_LOOK_GAMES:
+            os.makedirs(self._looks_dir(), exist_ok=True)
+            old = self.hud_look(game) or {}
+            meta = {"game": game, "hud": self._hud_name(game), "name": comp["name"], "comp": comp_id,
+                    "at": time.time(), "rev": int(old.get("rev") or 0) + 1, "engine": True}
+            with open(os.path.join(self._looks_dir(), game + ".json"), "w", encoding="utf-8") as f:
+                json.dump(meta, f)
+            log(f'"{comp["name"]}" is the {GAMES[game]} overlay now (Outputs: /output?hud={game})')
+            self.changed()
+            return meta
         tables = self.data_snapshot()["tables"]
         # (only the data the graphic reads: the whole of Teams would bring every team's logo)
         used = {m.strip().lower() for m in re.findall(r"\{\{\s*([^!{}|]+)!", json.dumps(comp))}
@@ -759,12 +774,38 @@ class Engine:
     def hud_looks(self):
         """For Composer: each game a HUD can take a graphic for, what it has, and whether that HUD is connected."""
         out = []
-        for game, hud in HUD_LOOK_GAMES.items():
+        for game in GAMES:
+            hud = self._hud_name(game)
             feed = self.feeds.get(hud)
             out.append({"game": game, "name": GAMES[game], "hud": hud, "look": self.hud_look(game),
+                        "native": game in HUD_LOOK_GAMES, "output": f"/output?hud={game}",
                         "connected": bool(feed and time.time() - feed["at"] < 15),
                         "from": feed["from"] if feed else "", "took": (feed or {}).get("look_rev")})
         return out
+
+    def _hud_name(self, game):
+        """The name that game's HUD sends its data under (the one connected now, if any)."""
+        for name, f in self.feeds.items():
+            if f.get("game") == game:
+                return name
+        return HUD_LOOK_GAMES.get(game) or HUD_NAMES.get(game) or f"{GAMES.get(game, game)} HUD"
+
+    def hud_overlays(self):
+        """{game: graphic id} for the games' overlay outputs."""
+        out = {}
+        for game in GAMES:
+            look = self.hud_look(game)
+            if look and look.get("comp"):
+                out[game] = look["comp"]
+        return out
+
+    def clear_hud_look(self, game):
+        for ext in (".json", ".zip"):
+            try:
+                os.remove(os.path.join(self._looks_dir(), game + ext))
+            except OSError:
+                pass
+        self.changed()
 
     def hud_rows(self):
         """The "HUDs" data table: each connected HUD's pages' addresses."""
@@ -1254,8 +1295,12 @@ def make_handler(engine):
                     log(f"Sent {len(got.get('comps') or [])} graphic(s) to {body.get('url')}")
                     result = {"comps": [c.get("name") for c in got.get("comps") or []]}
                 elif path == "/api/hud-look":
-                    result = {"look": engine.add_to_hud(body.get("comp") or "", body.get("game") or ""),
-                              "huds": engine.hud_looks()}
+                    if body.get("clear"):
+                        engine.clear_hud_look(str(body.get("game") or ""))
+                        result = {"huds": engine.hud_looks()}
+                    else:
+                        result = {"look": engine.add_to_hud(body.get("comp") or "", body.get("game") or ""),
+                                  "huds": engine.hud_looks()}
                 elif path == "/api/layer/paste":
                     result = engine.paste_layers(str(body.get("workspace") or ""), body.get("layers"))
                 elif path == "/api/layer/blank":

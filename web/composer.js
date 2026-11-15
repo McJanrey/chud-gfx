@@ -1285,30 +1285,50 @@
   try { hudGame = localStorage.getItem("gfx-hud-game") || "rl"; } catch (e) { /* */ }
   function hudSection() {
     const box = h("div", { class: "sect hud-add" }, h("h3", {}, "Add this to a game HUD"),
-      h("p", { class: "muted small" }, "Makes this graphic the HUD's overlay: the HUD plays it with its own live data (no delay), cams and all."),
+      h("p", { class: "muted small" }, "Makes this graphic that game's overlay, with the HUD's live data."),
       h("div", { class: "muted small" }, "Looking for the HUDs…"));
     const forComp = compId;
     fetch("/api/hud-looks").then(r => r.json()).then(r => {
       if (compId !== forComp || !box.isConnected) return;
       const huds = r.huds || [];
-      const games = Object.fromEntries((App.state.games || []).map(n => [n, n]));
       const pick = huds.find(x => x.game === hudGame) || huds[0];
       const list = h("select", { onchange: e => { hudGame = e.target.value; try { localStorage.setItem("gfx-hud-game", hudGame); } catch (err) { /* */ } renderProps(); } },
-        huds.map(x => h("option", { value: x.game, selected: x === pick }, x.name)),
-        h("optgroup", { label: "Not yet" }, Object.keys(games).filter(n => !huds.some(x => x.name === n)).map(n => h("option", { disabled: true }, n))));
+        huds.map(x => h("option", { value: x.game, selected: x === pick }, x.name + (x.look ? ` · "${x.look.name}"` : ""))));
       const kids = [lab("Game", list)];
       if (pick) {
         const look = pick.look, mine = look && look.comp === compId;
         const n = comp.layers.filter(linked).length;
-        kids.push(h("p", { class: "small " + (pick.connected ? "" : "warnline") }, pick.connected
-          ? `${pick.hud} is connected (${pick.from}).` + (look ? (pick.took === look.rev ? " It's playing what was sent last." : " It picks up the last one in a few seconds.") : "")
-          : `${pick.hud} isn't connected to this engine now. It takes the graphic when it connects (Connect to GFX Baby in the HUD).`));
-        if (look) kids.push(h("p", { class: "muted small" }, `${mine ? "This graphic" : `"${look.name}"`} was sent ${new Date(look.at * 1000).toLocaleString()}.`));
+        if (pick.native) {
+          // The Rocket League HUD plays the graphic itself (no delay).
+          kids.push(h("p", { class: "muted small" }, `The ${pick.hud} plays it itself, with its own live data (no delay), cams and all.`));
+          kids.push(h("p", { class: "small " + (pick.connected ? "" : "warnline") }, pick.connected
+            ? `${pick.hud} is connected (${pick.from}).` + (look ? (pick.took === look.rev ? " It's playing what was sent last." : " It picks up the last one in a few seconds.") : "")
+            : `${pick.hud} isn't connected to this engine now. It takes the graphic when it connects (Connect to GFX Baby in the HUD).`));
+        } else {
+          // Every other game: GFX Baby plays it on the game's overlay output, fed by the HUD's data.
+          const app = App.state.app || {}, host = (app.addresses || [])[0] || location.hostname;
+          const url = `http://${host}:${app.port || location.port}${pick.output}`;
+          kids.push(h("p", { class: "muted small" }, `GFX Baby plays it as the ${pick.name} overlay. Add this address in OBS as a browser source (1920 × 1080) above the ${pick.hud}:`));
+          kids.push(h("div", { class: "row-gap", style: { alignItems: "center" } },
+            h("input", { value: url, readOnly: true, style: { flex: 1, minWidth: 0 }, onfocus: e => e.target.select() }),
+            h("button", { class: "small", onclick: () => copy(url, "the overlay address") }, "Copy"),
+            h("a", { class: "btn small", href: pick.output + "&bg=checker", target: "_blank" }, "Open ↗")));
+          kids.push(h("p", { class: "small " + (pick.connected ? "" : "warnline") }, pick.connected
+            ? `${pick.hud} is connected (${pick.from}): its live data is in the overlay.`
+            : `${pick.hud} isn't connected now. The overlay shows, and its live data comes in once the HUD connects (Connect to GFX Baby in the HUD).`));
+        }
+        if (look) kids.push(h("p", { class: "muted small" }, `${mine ? "This graphic" : `"${look.name}"`} is the ${pick.name} overlay (since ${new Date(look.at * 1000).toLocaleString()}).`));
         if (!n) kids.push(h("p", { class: "warnline small" }, "None of its layers follow the live data yet: link them below, or pick a layer and use Live data."));
-        kids.push(h("button", { class: "primary", onclick: async () => {
-          const r2 = await api("/api/hud-look", { comp: compId, game: pick.game });
-          if (r2 && r2.look) { toast(`Sent to the ${pick.hud}`); renderProps(); }
-        } }, look && mine ? `Send the changes to the ${pick.hud}` : `Make it the ${pick.hud}'s overlay`));
+        kids.push(h("div", { class: "row-gap" },
+          h("button", { class: "primary", onclick: async () => {
+            const r2 = await api("/api/hud-look", { comp: compId, game: pick.game });
+            if (r2 && r2.look) { toast(pick.native ? `Sent to the ${pick.hud}` : `"${comp.name}" is the ${pick.name} overlay`); renderProps(); }
+          } }, pick.native ? (look && mine ? `Send the changes to the ${pick.hud}` : `Make it the ${pick.hud}'s overlay`) : (mine ? "It's the overlay ✓" : `Make it the ${pick.name} overlay`)),
+          look ? h("button", { class: "small", title: `Nothing on the ${pick.name} overlay`, onclick: async () => {
+            await api("/api/hud-look", { game: pick.game, clear: true });
+            toast(`The ${pick.name} overlay is empty now`);
+            renderProps();
+          } }, "Clear") : null));
       }
       box.replaceChildren(box.firstChild, box.children[1], ...kids);
     }).catch(() => { if (box.isConnected) box.lastChild.textContent = "Couldn't ask the engine about the HUDs."; });

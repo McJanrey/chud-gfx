@@ -1125,15 +1125,20 @@
     // A graphic's own output that's switched on (Outputs) always shows it,
     // with what it shows on Program (or else on Preview); switched off, nothing.
     always(state) {
+      if (this.opts.hud) return true;
       return !!this.opts.comp && ((state.global || {}).outputs_on || []).includes(this.opts.comp);
+    }
+    // The graphic this output shows on its own: ?comp=, or the one added to ?hud='s game.
+    own(state) {
+      return this.opts.hud ? ((state.hud_overlays || {})[this.opts.hud] || null) : this.opts.comp;
     }
 
     wanted(state) {
       const bus = state.live[this.opts.bus] || { on: [], values: {} };
       let on = bus.on || [];
       const comps = new Map(state.project.compositions.map(c => [c.id, c]));
-      if (this.opts.comp) {
-        const id = this.opts.comp, pg = state.live.program || {}, pv = state.live.preview || {};
+      if (this.opts.comp || this.opts.hud) {
+        const id = this.own(state), pg = state.live.program || {}, pv = state.live.preview || {};
         const values = (pg.values || {})[id] || (pv.values || {})[id] || {};
         return { ids: this.always(state) && comps.has(id) ? [id] : [], comps, values: { [id]: values } };
       }
@@ -1142,7 +1147,7 @@
 
     apply(state) {
       // (nothing it shows changed: nothing to do)
-      const sig = [state.project, state.live, state.global, state.data, state.fonts];
+      const sig = [state.project, state.live, state.global, state.data, state.fonts, JSON.stringify(state.hud_overlays || null)];
       if (this.sig && sig.every((v, i) => v === this.sig[i])) return;
       this.sig = sig;
       GFX.loadFonts(state.fonts);
@@ -1157,7 +1162,7 @@
       this.seen = { rev: state.rev, take, seq: bus.seq };
       if (tookNow) {
         // (one graphic's own output doesn't follow takes: it's on while switched on)
-        if (!this.opts.comp) return this.transition(want, t, state);
+        if (!this.opts.comp && !this.opts.hud) return this.transition(want, t, state);
       }
       return this.sync(want, first ? "cut" : this.opts.bus === "preview" ? "cut" : "update");
     }
@@ -1299,7 +1304,8 @@
       if (this.opts.bus !== "program" || this.warmed === state.project && this.warmedData === state.data && this.warmedLive === state.live) return;
       this.warmed = state.project; this.warmedData = state.data; this.warmedLive = state.live;
       const live = state.live || {}, pg = live.program || {}, pv = live.preview || {};
-      const comps = state.project.compositions.filter(c => !this.opts.comp || c.id === this.opts.comp);
+      const own = this.opts.comp || this.opts.hud ? this.own(state) : null;
+      const comps = state.project.compositions.filter(c => !own && !this.opts.hud || c.id === own);
       const go = () => { this.warmTimer = null; this.warmAt = performance.now(); GFX.warm(comps, id => Object.assign({}, (pv.values || {})[id], (pg.values || {})[id])); };
       // (the game's data changes many times a second: looked at again every few seconds at most)
       if (this.warmTimer) clearTimeout(this.warmTimer);
@@ -1309,7 +1315,7 @@
 
     // Stinger videos load before they're needed, so they start on the button.
     preload(transitions) {
-      if (this.opts.bus !== "program" || (this.opts.comp && !this.opts.stingers)) return;
+      if (this.opts.bus !== "program" || ((this.opts.comp || this.opts.hud) && !this.opts.stingers)) return;
       for (const t of transitions) if (t.type === "stinger" && t.src && t.enabled !== false) this.stingerVideo(t.src);
     }
   };

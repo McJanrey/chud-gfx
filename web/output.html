@@ -23,6 +23,7 @@
 //   ?bus=preview         Preview instead of Program
 //   ?comp=<id>           just that graphic, as it is on Program
 //   ?monitor=1           muted (the control panel's monitors)
+//   ?hud=lol             that game's HUD overlay (the graphic added to it in Composer), always on
 //   ?bg=checker|black|green
 //   ?live=http://PC:7790 another engine's output (exported graphics too)
 //   ?autoplay=0          exported graphics: wait for play()
@@ -38,7 +39,7 @@
   addEventListener("resize", scale);
   scale();
 
-  const bus = new GFX.Bus(stage, { bus: q.get("bus") || "program", comp: q.get("comp") || null,
+  const bus = new GFX.Bus(stage, { bus: q.get("bus") || "program", comp: q.get("comp") || null, hud: q.get("hud") || null,
     monitor: q.get("monitor") === "1", stingers: q.get("stingers") === "1" });
   window.gfxBus = bus;
 
@@ -70,7 +71,7 @@
     const values = JSON.parse(JSON.stringify(data.values || {}));
     // ?Field=Value sets that field on every graphic that has it.
     for (const [k, v] of q) {
-      if (["bus", "comp", "monitor", "bg", "live", "autoplay", "stingers"].includes(k)) continue;
+      if (["bus", "comp", "hud", "monitor", "bg", "live", "autoplay", "stingers"].includes(k)) continue;
       for (const id of ids) (values[id] = values[id] || {})[k] = v;
     }
     let on = [], seq = 0;

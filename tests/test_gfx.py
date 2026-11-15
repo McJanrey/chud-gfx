@@ -1161,7 +1161,14 @@ class HudLookTests(unittest.TestCase):
                  "when": [{"value": "{{Rocket League HUD!target}}", "op": "has"}], "x": 0, "y": 0, "w": 10, "h": 10}]})
             self.assertIsNone(engine.hud_look("rl"))
             with self.assertRaises(ValueError):
-                engine.add_to_hud(comp["id"], "lol")
+                engine.add_to_hud(comp["id"], "nope")
+            # (a HUD that can't play graphics: GFX Baby plays it on that game's overlay output)
+            lol = engine.add_to_hud(comp["id"], "lol")
+            self.assertTrue(lol["engine"])
+            self.assertEqual(engine.hud_overlays()["lol"], comp["id"])
+            self.assertEqual(engine.state()["hud_overlays"]["lol"], comp["id"])
+            engine.clear_hud_look("lol")
+            self.assertNotIn("lol", engine.hud_overlays())
             engine.ingest({"source": "Rocket League HUD", "game": "rl", "fields": {"target": "ATOMIC", "look_rev": ""}}, "127.0.0.1")
             meta = engine.add_to_hud(comp["id"], "rl")
             self.assertEqual((meta["name"], meta["rev"]), ("RL HUD", 1))
@@ -1171,8 +1178,9 @@ class HudLookTests(unittest.TestCase):
             data = z.read("gfx-data.js").decode()
             self.assertIn("Rocket League HUD", data)     # (the HUD's table, as it was)
             self.assertNotIn('"Teams"', data)            # (not the data the graphic doesn't read)
-            huds = engine.hud_looks()
-            self.assertEqual((huds[0]["game"], huds[0]["connected"], huds[0]["look"]["rev"]), ("rl", True, 2))
+            rl = next(x for x in engine.hud_looks() if x["game"] == "rl")
+            self.assertEqual((rl["native"], rl["connected"], rl["look"]["rev"]), (True, True, 2))
+            self.assertEqual(len(engine.hud_looks()), 6)   # (every game is offered)
         finally:
             shutil.rmtree(tmp, ignore_errors=True)
 
