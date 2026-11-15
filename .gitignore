@@ -12,3 +12,5 @@ library/
 appearance.json
 .venv/
 run-of-show.json
+apps/multistream/bin/
+apps/multistream/config.json

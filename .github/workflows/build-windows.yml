@@ -45,7 +45,9 @@ jobs:
           Get-Content gfxengine/version.py
 
       - name: Build ChudGFX.exe
-        run: pyinstaller --noconfirm ChudGFX.spec
+        run: |
+          python apps/multistream/tools/fetch_binaries.py
+          pyinstaller --noconfirm ChudGFX.spec
 
       - name: Smoke test the built app
         shell: pwsh

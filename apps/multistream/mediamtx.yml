@@ -1,0 +1,17 @@
+# Written by Chud Multistream each time it starts; edits here are replaced.
+logLevel: info
+logDestinations: [stdout]
+api: yes
+apiAddress: 127.0.0.1:9987
+metrics: no
+pprof: no
+playback: no
+rtsp: no
+hls: no
+webrtc: no
+srt: no
+rtmp: yes
+rtmpAddress: 127.0.0.1:1935
+rtmpEncryption: "no"
+paths:
+  all_others:

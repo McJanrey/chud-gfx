@@ -779,3 +779,19 @@ setTimeout(fillWorkspacePicker, 800);
   });
   App.on(() => { pill(); strip(); settings(); });
 })();
+
+
+// --- Stream: Multistream on / off, its own page below -------------------------------
+pages.stream = { shown() { streamPage(); } };
+function streamPage() {
+  const s = (App.state && App.state.stream) || {};
+  $("#stream-on").checked = !!s.enabled;
+  $("#stream-status").textContent = s.running ? "Running" : s.error ? s.error : s.enabled ? "Starting…" : "Off";
+  const f = $("#stream-frame"), want = s.running ? `http://${location.hostname}:${s.port}/` : "";
+  f.hidden = !s.running;
+  if (want && f.dataset.src !== want) { f.dataset.src = want; f.src = want; }
+}
+$("#stream-on").addEventListener("change", async e => {
+  try { await api("/api/stream", { on: e.target.checked }); } catch (err) { e.target.checked = !e.target.checked; }
+});
+App.on(() => { if (App.tab === "stream") streamPage(); });

@@ -97,5 +97,17 @@ class TakeSwitchesScene(unittest.TestCase):
         self.assertEqual(e.obs.scenes, ["Starting Soon"])
 
 
+
+class SettingsKept(unittest.TestCase):
+    def test_obs_and_multistream_settings_are_saved(self):
+        import os
+        import tempfile
+        from gfxengine.config import Settings
+        p = os.path.join(tempfile.mkdtemp(), "s.json")
+        Settings(p).update({"obs": {"enabled": True, "port": 4455}, "multistream": {"enabled": True}})
+        again = Settings(p).get()
+        self.assertTrue(again["obs"]["enabled"] and again["multistream"]["enabled"])
+
+
 if __name__ == "__main__":
     unittest.main()

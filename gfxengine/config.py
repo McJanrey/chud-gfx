@@ -48,6 +48,10 @@ DEFAULTS = {
     # The Camera Control Room's saved lighting: [{"name", "cams": {"<pc>|<camera>":
     # {setting: {"value", "auto"}}}}]
     "camera_looks": [],
+    # OBS Studio link (Outputs > OBS Studio): enabled, host, port, password, follow rules.
+    "obs": {},
+    # Multistream (Stream page): {"enabled": bool}.
+    "multistream": {},
 }
 
 _lock = threading.Lock()

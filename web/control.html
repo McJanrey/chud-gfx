@@ -23,6 +23,7 @@
     <button data-tab="schedule">Upcoming Schedule</button>
     <button data-tab="ros">Run of show</button>
     <button data-tab="cameras">Camera Control Room</button>
+    <button data-tab="stream">Stream</button>
     <div class="extras" id="extras">
       <button class="extras-btn" id="extras-btn" aria-haspopup="true" aria-expanded="false">Extras <span class="caret">▾</span></button>
       <div class="extras-menu" id="extras-menu" hidden>
@@ -286,6 +287,16 @@
     </div>
   </section>
   </div>
+</main>
+
+<!-- STREAM: Multistream, one OBS stream to every platform -->
+<main id="page-stream" class="page" hidden>
+  <div class="stream-head panel">
+    <label class="toggle"><input type="checkbox" id="stream-on"> Multistream</label>
+    <span id="stream-status" class="muted small"></span>
+    <span class="muted small">In OBS: Settings &rsaquo; Stream &rsaquo; Custom, Server <code>rtmp://this-pc/live</code>; then add the platforms below.</span>
+  </div>
+  <iframe id="stream-frame" title="Multistream" hidden></iframe>
 </main>
 
 <!-- RUN OF SHOW: templates per game, tonight's show from the Schedule -->

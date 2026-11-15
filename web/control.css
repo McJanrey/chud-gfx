@@ -619,3 +619,9 @@ table.sheet td.c:hover { background: #1d3b5e; }
 .obs-scenes { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
 .obs-scenes button.pgm { border-color: var(--pgm); color: var(--pgm); }
 .obs-scenes button.pvw { border-color: var(--pvw); color: var(--pvw); }
+
+/* Stream page */
+#page-stream:not([hidden]) { display: flex; flex-direction: column; gap: 10px; padding: 10px; height: 100vh; box-sizing: border-box; }
+.stream-head { display: flex; align-items: center; gap: 14px; padding: 10px 14px; flex-wrap: wrap; }
+#stream-frame { flex: 1; width: 100%; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); min-height: 0; }
+[data-tab="stream"] { --ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3Cpath d='M7 7a7 7 0 000 10M17 7a7 7 0 010 10M4 4a11 11 0 000 16M20 4a11 11 0 010 16' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E"); }
