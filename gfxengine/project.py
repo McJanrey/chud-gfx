@@ -67,7 +67,7 @@ def blank_layer(kind, **extra):
     elif kind == "rotator":
         # One item at a time in place (sponsor logos, lines of text), swapping every few seconds.
         layer.update({"x": 1500, "y": 960, "w": 360, "h": 100, "items": [{"text": "", "img": ""}],
-                      "source": "", "textCol": "", "imgCol": "", "secs": 8, "swap": "fade", "order": "in order",
+                      "source": "", "textCol": "", "imgCol": "", "secs": 8, "swap": "crossfade", "swapMs": 600, "order": "in order",
                       "imgSize": 80, "font": "Inter", "size": 36, "color": "#ffffff", "weight": 700, "caps": False,
                       "tracking": 0, "italic": False})
     elif kind in ("image", "video", "lottie"):

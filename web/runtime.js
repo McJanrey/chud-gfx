@@ -758,12 +758,34 @@
     if (it.text) item.appendChild(Object.assign(el("span"), { textContent: it.text }));
     return item;
   }
+  // Rotator swaps: [new one in, old one out, how] ("seq": the old goes out first, then the new comes in).
+  const T = v => ({ transform: v }), O = (o, t) => ({ opacity: o, transform: t || "none" });
+  const CLIP = (a, b) => [{ clipPath: a }, { clipPath: b }];
   const SWAPS = {
-    fade: [[{ opacity: 0 }, { opacity: 1 }], [{ opacity: 1 }, { opacity: 0 }]],
-    "slide up": [[{ transform: "translateY(100%)" }, { transform: "none" }], [{ transform: "none" }, { transform: "translateY(-100%)" }]],
-    "slide left": [[{ transform: "translateX(100%)" }, { transform: "none" }], [{ transform: "none" }, { transform: "translateX(-100%)" }]],
-    cut: null,
+    "crossfade": [[O(0), O(1)], [O(1), O(0)]],
+    "alpha fade": [[O(0), O(1)], [O(1), O(0)], "seq"],
+    "dip to black": [[{ opacity: 0, filter: "brightness(0)" }, { opacity: 1, filter: "brightness(1)" }], [{ opacity: 1, filter: "brightness(1)" }, { opacity: 0, filter: "brightness(0)" }], "seq"],
+    "slide up": [[T("translateY(100%)"), T("none")], [T("none"), T("translateY(-100%)")]],
+    "slide down": [[T("translateY(-100%)"), T("none")], [T("none"), T("translateY(100%)")]],
+    "slide left": [[T("translateX(100%)"), T("none")], [T("none"), T("translateX(-100%)")]],
+    "slide right": [[T("translateX(-100%)"), T("none")], [T("none"), T("translateX(100%)")]],
+    "rise": [[{ opacity: 0, transform: "translateY(35%) scale(.92)", filter: "blur(4px)" }, { opacity: 1, transform: "none", filter: "blur(0)" }],
+             [{ opacity: 1, transform: "none", filter: "blur(0)" }, { opacity: 0, transform: "translateY(-35%) scale(.92)", filter: "blur(4px)" }]],
+    "swipe left": [CLIP("inset(0 0 0 100%)", "inset(0 0 0 0)"), CLIP("inset(0 0 0 0)", "inset(0 100% 0 0)")],
+    "swipe right": [CLIP("inset(0 100% 0 0)", "inset(0 0 0 0)"), CLIP("inset(0 0 0 0)", "inset(0 0 0 100%)")],
+    "swipe up": [CLIP("inset(100% 0 0 0)", "inset(0 0 0 0)"), CLIP("inset(0 0 0 0)", "inset(0 0 100% 0)")],
+    "wipe": [CLIP("inset(0 100% 0 0)", "inset(0 0 0 0)"), [O(1), O(1)]],
+    "iris": [CLIP("circle(0% at 50% 50%)", "circle(75% at 50% 50%)"), [O(1), O(1)]],
+    "zoom in": [[O(0, "scale(.6)"), O(1)], [O(1), O(0, "scale(1.4)")]],
+    "zoom out": [[O(0, "scale(1.4)"), O(1)], [O(1), O(0, "scale(.6)")]],
+    "pop": [[O(0, "scale(.4)"), { opacity: 1, transform: "scale(1.08)", offset: .7 }, O(1)], [O(1), O(0, "scale(.8)")], "seq"],
+    "flip": [[O(0, "perspective(600px) rotateX(-90deg)"), O(1, "perspective(600px) rotateX(0)")], [O(1, "perspective(600px) rotateX(0)"), O(0, "perspective(600px) rotateX(90deg)")], "seq"],
+    "spin": [[O(0, "rotate(-180deg) scale(.5)"), O(1)], [O(1), O(0, "rotate(180deg) scale(.5)")]],
+    "blur": [[{ opacity: 0, filter: "blur(16px)" }, { opacity: 1, filter: "blur(0)" }], [{ opacity: 1, filter: "blur(0)" }, { opacity: 0, filter: "blur(16px)" }]],
+    "cut": null,
   };
+  SWAPS.fade = SWAPS.crossfade;   // (rotators made before the list grew)
+  GFX.rotatorSwaps = Object.keys(SWAPS).filter(k => k !== "fade");
   function turnRotator(box, now = GFX.now()) {
     const layer = box._layer, items = tickerItems(layer);
     const sig = JSON.stringify(items) + [layer.secs, layer.order, layer.size, layer.color, layer.font, layer.imgSize, layer.caps, layer.align];
@@ -774,13 +796,15 @@
     box._sig = sig; box._i = i;
     const next = rotatorItem(layer, items[i]), old = [...box.children];
     box.appendChild(next);
-    const swap = SWAPS[layer.swap || "fade"];
+    const swap = SWAPS[layer.swap || "crossfade"];
     if (fresh || box._still || !swap) { old.forEach(o => o.remove()); return; }
-    const dur = Math.min(600, Math.max(1, +layer.secs || 8) * 300);
-    next.animate(swap[0], { duration: dur, easing: "cubic-bezier(.2,.7,.2,1)" });
-    old.forEach(o => o.animate(swap[1], { duration: dur, easing: "cubic-bezier(.4,0,.6,1)", fill: "forwards" }));
+    // Swap time: set on the layer (ms), never more than a third of the time each item shows.
+    const dur = Math.max(80, Math.min(+layer.swapMs || 600, Math.max(1, +layer.secs || 8) * 333));
+    const seq = swap[2] === "seq", half = seq ? dur / 2 : dur;
+    next.animate(swap[0], { duration: half, delay: seq ? half : 0, easing: "cubic-bezier(.2,.7,.2,1)", fill: "backwards" });
+    old.forEach(o => o.animate(swap[1], { duration: half, easing: "cubic-bezier(.4,0,.6,1)", fill: "forwards" }));
     // (a timer, not the animation's end: paused or hidden pages never finish it)
-    setTimeout(() => old.forEach(o => o.remove()), dur + 50);
+    setTimeout(() => old.forEach(o => o.remove()), half + 50);
   }
   setInterval(() => { for (const b of itemRotators) { if (!b.isConnected && b._seen) itemRotators.delete(b); else if (b.isConnected) { b._seen = true; turnRotator(b); } } }, 200);
 

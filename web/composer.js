@@ -136,35 +136,140 @@
   });
 
   // --- layers ---------------------------------------------------------------
+  // Like Canva / vMix: top layer first, each row a small preview of the layer,
+  // its name (double-click to rename), and on hover its eye and lock. Drag to
+  // restack (a line shows where it lands), right-click for the layer menu.
   let dragLayer = null;
+  const SVG = d => { const t = document.createElement("template"); t.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">${d}</svg>`; return t.content.firstChild; };
+  const ICONS = {
+    eye: '<path d="M12 5c5 0 9 4.5 10 7-1 2.5-5 7-10 7S3 14.5 2 12c1-2.5 5-7 10-7zm0 3a4 4 0 100 8 4 4 0 000-8zm0 2.2a1.8 1.8 0 110 3.6 1.8 1.8 0 010-3.6z"/>',
+    eyeOff: '<path d="M3.3 2l18.7 18.7-1.3 1.3-3.4-3.4A11 11 0 0112 19c-5 0-9-4.5-10-7 .6-1.5 2.1-3.6 4.2-5.2L2 3.3zM8.4 9.7A4 4 0 0014.3 15.6zM12 5c5 0 9 4.5 10 7-.4 1-1.2 2.3-2.3 3.5L16 11.8A4 4 0 0012.2 8L9.8 5.6C10.5 5.2 11.2 5 12 5z"/>',
+    lock: '<path d="M7 10V7a5 5 0 0110 0v3h1a1 1 0 011 1v9a1 1 0 01-1 1H6a1 1 0 01-1-1v-9a1 1 0 011-1zm2 0h6V7a3 3 0 00-6 0z"/>',
+    unlock: '<path d="M7 10V7a5 5 0 019.6-2l-1.8.9A3 3 0 009 7v3h9a1 1 0 011 1v9a1 1 0 01-1 1H6a1 1 0 01-1-1v-9a1 1 0 011-1z"/>',
+  };
+  // A small picture of the layer: its image, its colour, its text in its own font, or its kind.
+  function layerPreview(l) {
+    const box = h("span", { class: "ly-pv" });
+    const plain = v => typeof v === "string" && v && !/\{\{/.test(v);
+    if ((l.type === "image" || l.type === "video") && plain(l.src) && !/\.(mp4|webm|mov|m4v)$/i.test(l.src)) {
+      box.appendChild(h("img", { src: encodeURI(l.src), alt: "", draggable: false, loading: "lazy" }));
+    } else if (l.type === "rect") {
+      box.appendChild(h("span", { class: "ly-sw", style: { background: plain(l.fill) ? l.fill : "repeating-linear-gradient(45deg,#555 0 4px,#333 4px 8px)",
+        borderRadius: l.radius ? "4px" : "1px", outline: l.strokeWidth ? `2px solid ${l.stroke || "#fff"}` : "" } }));
+    } else if (l.type === "text") {
+      const [family, weight] = GFX.fontFor(l);
+      box.appendChild(h("span", { class: "ly-tx", style: { fontFamily: family, fontWeight: weight, color: plain(l.color) ? l.color : "#fff" } }, "Aa"));
+    } else {
+      box.appendChild(h("span", { class: "ly-ic" }, TYPE_ICON[l.type] || "?"));
+    }
+    return box;
+  }
+  function renameLayer(l, row) {
+    const nm = row.querySelector(".nm");
+    if (!nm) return;
+    const input = h("input", { class: "ly-rename", value: l.name, spellcheck: false });
+    let done = false;
+    const finish = keep => {
+      if (done) return;
+      done = true;
+      const v = input.value.trim();
+      if (keep && v && v !== l.name) { snapshot(); l.name = v; changed({ props: true }); } else renderLayers();
+    };
+    input.addEventListener("keydown", e => { e.stopPropagation(); if (e.key === "Enter") finish(true); if (e.key === "Escape") finish(false); });
+    input.addEventListener("blur", () => finish(true));
+    input.addEventListener("click", e => e.stopPropagation());
+    nm.replaceWith(input);
+    input.focus();
+    input.select();
+  }
+  // Restacking: "forward" is towards the front (later in comp.layers).
+  function restack(ls, where) {
+    if (!ls.length) return;
+    snapshot();
+    const ids = new Set(ls.map(x => x.id));
+    if (where === "front" || where === "back") {
+      const rest = comp.layers.filter(x => !ids.has(x.id)), moving = comp.layers.filter(x => ids.has(x.id));
+      comp.layers = where === "front" ? [...rest, ...moving] : [...moving, ...rest];
+    } else {
+      const arr = comp.layers, up = where === "forward";
+      const order = up ? [...arr.keys()].reverse() : [...arr.keys()];
+      for (const i of order) {
+        const j = up ? i + 1 : i - 1;
+        if (ids.has(arr[i].id) && j >= 0 && j < arr.length && !ids.has(arr[j].id)) [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+    }
+    changed();
+  }
+  function layerMenu(l, x, y) {
+    if (!picked().includes(l)) selectLayer(l.id);
+    const ls = picked(), one = ls.length === 1;
+    let close = () => {};
+    const item = (label, fn, extra) => h("button", Object.assign({ role: "menuitem", onclick: () => { close(); fn(); } }, extra || {}), label);
+    const menu = h("div", { class: "ly-menu", role: "menu" },
+      one ? item("Rename", () => { const row = document.querySelector(`#layer-list .ly[data-id="${l.id}"]`); if (row) renameLayer(l, row); }) : null,
+      item("Duplicate", () => one ? duplicateLayer(l) : placeLayers(ls, 20, " copy")),
+      item(ls.every(o => o.visible === false) ? "Show" : "Hide", () => { snapshot(); const show = ls.every(o => o.visible === false); ls.forEach(o => { o.visible = show; }); changed(); }),
+      item(ls.every(o => o.locked) ? "Unlock" : "Lock", () => { snapshot(); const lock = !ls.every(o => o.locked); ls.forEach(o => { o.locked = lock; }); changed(); drawSelection(); }),
+      h("hr"),
+      item("Bring to front", () => restack(ls, "front")),
+      item("Bring forward", () => restack(ls, "forward")),
+      item("Send backward", () => restack(ls, "backward")),
+      item("Send to back", () => restack(ls, "back")),
+      h("hr"),
+      item("Delete", () => removeLayers(ls), { class: "danger" }));
+    document.body.appendChild(menu);
+    const r = menu.getBoundingClientRect();
+    Object.assign(menu.style, { left: Math.max(8, Math.min(x, innerWidth - r.width - 8)) + "px", top: Math.max(8, Math.min(y, innerHeight - r.height - 8)) + "px" });
+    const away = e => { if (!menu.contains(e.target)) close(); };
+    const esc = e => { if (e.key === "Escape") { e.stopPropagation(); close(); } };
+    close = () => { menu.remove(); removeEventListener("mousedown", away, true); removeEventListener("keydown", esc, true); };
+    setTimeout(() => { addEventListener("mousedown", away, true); addEventListener("keydown", esc, true); });
+  }
   function renderLayers() {
     const list = $("#layer-list");
     if (!comp) { list.replaceChildren(); return; }
-    // Top layer first, as in Photoshop.
-    list.replaceChildren(...[...comp.layers].reverse().map(l => h("div", {
-      class: "ly" + (l.id === selected || multi.has(l.id) ? " sel" : ""), draggable: true,
-      onclick: e => (e.ctrlKey || e.metaKey || e.shiftKey) ? pickToo(l.id) : selectLayer(l.id),
-      ondragstart: e => { dragLayer = l.id; e.dataTransfer.effectAllowed = "move"; },
-      ondragover: e => { e.preventDefault(); e.currentTarget.classList.add("drag-over"); },
-      ondragleave: e => e.currentTarget.classList.remove("drag-over"),
-      ondrop: e => {
-        e.preventDefault();
-        e.currentTarget.classList.remove("drag-over");
-        if (!dragLayer || dragLayer === l.id) return;
-        snapshot();
-        const moving = comp.layers.find(x => x.id === dragLayer);
-        comp.layers = comp.layers.filter(x => x.id !== dragLayer);
-        // Dropped on a row: goes just above it.
-        comp.layers.splice(comp.layers.findIndex(x => x.id === l.id) + 1, 0, moving);
-        changed();
+    if (!comp.layers.length) { list.replaceChildren(h("div", { class: "empty" }, "No layers yet. Add one with the buttons above.")); return; }
+    list.replaceChildren(...[...comp.layers].reverse().map(l => {
+      const row = h("div", {
+        class: "ly" + (l.id === selected || multi.has(l.id) ? " sel" : "") + (l.visible === false ? " hid" : "") + (l.locked ? " locked" : ""),
+        draggable: true, "data-id": l.id,
+        onclick: e => (e.ctrlKey || e.metaKey || e.shiftKey) ? pickToo(l.id) : selectLayer(l.id),
+        ondblclick: e => { if (!e.target.closest(".ly-btn")) renameLayer(l, row); },
+        oncontextmenu: e => { e.preventDefault(); layerMenu(l, e.clientX, e.clientY); },
+        ondragstart: e => { dragLayer = l.id; e.dataTransfer.effectAllowed = "move"; row.classList.add("dragging"); },
+        ondragend: () => { row.classList.remove("dragging"); list.querySelectorAll(".drop-above,.drop-below").forEach(x => x.classList.remove("drop-above", "drop-below")); },
+        ondragover: e => {
+          e.preventDefault();
+          const below = e.clientY - row.getBoundingClientRect().top > row.offsetHeight / 2;
+          row.classList.toggle("drop-below", below);
+          row.classList.toggle("drop-above", !below);
+        },
+        ondragleave: () => row.classList.remove("drop-above", "drop-below"),
+        ondrop: e => {
+          e.preventDefault();
+          const below = row.classList.contains("drop-below");
+          row.classList.remove("drop-above", "drop-below");
+          if (!dragLayer || dragLayer === l.id) return;
+          snapshot();
+          const moving = comp.layers.find(x => x.id === dragLayer);
+          comp.layers = comp.layers.filter(x => x.id !== dragLayer);
+          // The list is top-first: dropped above a row = in front of it.
+          const at = comp.layers.findIndex(x => x.id === l.id);
+          comp.layers.splice(below ? at : at + 1, 0, moving);
+          changed();
+        },
       },
-    },
-      h("span", { class: "eye" + (l.visible === false ? " off" : ""), title: "Show / hide",
-        onclick: e => { e.stopPropagation(); snapshot(); l.visible = l.visible === false; changed(); } }, "👁"),
-      h("span", { class: "ic" }, TYPE_ICON[l.type] || "?"),
-      h("span", { class: "nm", title: l.name }, l.name),
-      l.field ? h("span", { class: "fld", title: `Changed from Control as "${l.field}"` }, "field") : null,
-      linked(l) ? h("span", { class: "fld live", title: "Follows live data" }, "live") : null)));
+        layerPreview(l),
+        h("span", { class: "nm", title: `${l.name} (double-click to rename)` }, l.name),
+        l.field ? h("span", { class: "fld", title: `Changed from Control as "${l.field}"` }, "field") : null,
+        linked(l) ? h("span", { class: "fld live", title: "Follows live data" }, "live") : null,
+        h("button", { class: "ly-btn" + (l.locked ? " on" : ""), title: l.locked ? "Unlock (it can be picked and moved on the canvas again)" : "Lock (it can't be picked or moved on the canvas)",
+          "aria-label": l.locked ? "Unlock layer" : "Lock layer",
+          onclick: e => { e.stopPropagation(); snapshot(); l.locked = !l.locked; changed(); drawSelection(); } }, SVG(l.locked ? ICONS.lock : ICONS.unlock)),
+        h("button", { class: "ly-btn" + (l.visible === false ? " on" : ""), title: l.visible === false ? "Show" : "Hide", "aria-label": l.visible === false ? "Show layer" : "Hide layer",
+          onclick: e => { e.stopPropagation(); snapshot(); l.visible = l.visible === false; changed(); } }, SVG(l.visible === false ? ICONS.eyeOff : ICONS.eye)));
+      return row;
+    }));
   }
   // Does the layer follow live data (a link, a fill or a "Show when")?
   const linked = l => !!(l.meter || l.when || [l.text, l.src, l.fill].some(v => /\{\{\s*(Rocket League HUD|Global)!/i.test(v || "")));
@@ -398,7 +503,7 @@
   // Which layer is at a point (top first, visible ones only).
   function hit(px, py) {
     for (const l of [...comp.layers].reverse()) {
-      if (l.visible === false) continue;
+      if (l.visible === false || l.locked) continue;
       if (px >= l.x && px <= l.x + l.w && py >= l.y && py <= l.y + l.h) return l;
     }
     return null;
@@ -461,8 +566,9 @@
       if (!l) { e.preventDefault(); return marquee(r, px, py, false); }
     }
     e.preventDefault();
-    // Moving one of several picked layers moves them all.
-    const others = !handle && multi.size > 1 ? picked().filter(o => o !== l).map(o => ({ o, x: o.x, y: o.y })) : [];
+    if (l.locked) return;   // (picked from the list: shown, but stays put)
+    // Moving one of several picked layers moves them all (not the locked ones).
+    const others = !handle && multi.size > 1 ? picked().filter(o => o !== l && !o.locked).map(o => ({ o, x: o.x, y: o.y })) : [];
     const start = { x: l.x, y: l.y, w: l.w, h: l.h, px, py };
     const ratio = l.w / Math.max(1, l.h);
     let moved = false;
@@ -520,7 +626,7 @@
       const x0 = Math.min(sx, qx), y0 = Math.min(sy, qy), x1 = Math.max(sx, qx), y1 = Math.max(sy, qy);
       if (!shown && (x1 - x0) * scale < 3 && (y1 - y0) * scale < 3) return;
       const ids = new Set(before);
-      for (const o of comp.layers) if (o.visible !== false && o.x < x1 && o.x + o.w > x0 && o.y < y1 && o.y + o.h > y0) ids.add(o.id);
+      for (const o of comp.layers) if (o.visible !== false && !o.locked && o.x < x1 && o.x + o.w > x0 && o.y < y1 && o.y + o.h > y0) ids.add(o.id);
       multi.clear();
       ids.forEach(id => multi.add(id));
       const order = comp.layers.filter(o => ids.has(o.id));
@@ -544,7 +650,7 @@
     addEventListener("mouseup", up);
   }
   function selectAll() {
-    const all = comp.layers.filter(o => o.visible !== false);
+    const all = comp.layers.filter(o => o.visible !== false && !o.locked);
     multi.clear();
     if (all.length > 1) all.forEach(o => multi.add(o.id));
     selected = all.length ? all[all.length - 1].id : null;
@@ -581,7 +687,7 @@
     if (moves[e.key]) {
       e.preventDefault();
       snapshot();
-      for (const o of picked()) { o.x += moves[e.key][0]; o.y += moves[e.key][1]; }
+      for (const o of picked()) if (!o.locked) { o.x += moves[e.key][0]; o.y += moves[e.key][1]; }
       changed({ keepList: true });
     } else if (e.key === "Delete" || e.key === "Backspace") {
       e.preventDefault();
@@ -590,6 +696,9 @@
       e.preventDefault();
       if (multi.size > 1) placeLayers(picked(), 20, " copy");
       else duplicateLayer(l);
+    } else if (mod && (e.key === "]" || e.key === "[")) {
+      e.preventDefault();
+      restack(picked(), e.key === "]" ? (e.altKey ? "front" : "forward") : (e.altKey ? "back" : "backward"));
     } else if (e.key === "Escape") {
       selectLayer(null);
     }
@@ -822,8 +931,9 @@
       h("p", { class: "muted small" }, "Shows one item at a time in this box, then swaps to the next. A picture on its own fills the box."),
       ...itemsEditor(l, save),
       h("div", { class: "grid3" }, lab("Seconds each", bind(l, "secs", "number", { min: 1, step: 1 })),
-        lab("Swap", pick("swap", [["fade", "Fade"], ["slide up", "Slide up"], ["slide left", "Slide left"], ["cut", "Cut"]])),
+        lab("Swap", pick("swap", GFX.rotatorSwaps.map(k => [k, k[0].toUpperCase() + k.slice(1)]))),
         lab("Order", pick("order", [["in order", "In order"], ["shuffle", "Shuffled"]]))),
+      lab("Swap time (ms)", bind(l, "swapMs", "number", { min: 80, step: 50, placeholder: "600" })),
       h("div", { class: "grid3" }, lab("Picture height (with text)", bind(l, "imgSize", "number", { min: 8 })), lab("Size", bind(l, "size", "number", { min: 1 })),
         bind(l, "color", "color", { label: "Colour" })),
       h("div", { class: "grid2" }, lab("Font", h("select", { onchange: e => { snapshot(); l.font = e.target.value; changed({ props: true }); } }, fontOptions(l.font))),
@@ -1168,7 +1278,7 @@
       hudSection(),
       linksSection(),
       h("div", { class: "sect" }, h("h3", {}, "Shortcuts"),
-        h("p", { class: "muted small" }, "Drag to move (Shift: straight, Ctrl: no snapping), handles to resize (snaps too; Shift: keep shape, Ctrl: no snapping). Arrows nudge (Shift: 10). Ctrl+C / Ctrl+X copy or cut (Ctrl / Shift + click picks more) and Ctrl+V pastes, into this graphic or any other. Ctrl+D duplicates, Delete removes, Ctrl+Z / Ctrl+Shift+Z undo / redo. Alt+click picks the layer underneath. Ctrl+scroll zooms (Ctrl+0 fits, Ctrl+1 is 100%), scroll or middle-drag or Space+drag moves around while zoomed.")));
+        h("p", { class: "muted small" }, "Drag to move (Shift: straight, Ctrl: no snapping), handles to resize (snaps too; Shift: keep shape, Ctrl: no snapping). Arrows nudge (Shift: 10). Ctrl+C / Ctrl+X copy or cut (Ctrl / Shift + click picks more) and Ctrl+V pastes, into this graphic or any other. Ctrl+D duplicates, Delete removes, Ctrl+Z / Ctrl+Shift+Z undo / redo. Alt+click picks the layer underneath. Ctrl+] / Ctrl+[ bring forward / send backward (with Alt: to front / to back). In the layers list: double-click renames, right-click opens the layer menu, the lock keeps a layer from being picked on the canvas. Ctrl+scroll zooms (Ctrl+0 fits, Ctrl+1 is 100%), scroll or middle-drag or Space+drag moves around while zoomed.")));
   }
   // --- Add to a HUD: this graphic as a game HUD's own overlay -------------------
   let hudGame = "rl";

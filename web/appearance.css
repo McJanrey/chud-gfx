@@ -291,3 +291,19 @@ html[data-look="glass"] .ap-dialog { background: rgba(14,22,18,.92); }
 .ap-dialog-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
 .ap-dialog-head h2 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
 
+
+/* The side panel folds to a strip of icons (button at its top, remembered per PC). */
+.side-toggle { display: flex; align-self: flex-end; width: 28px; height: 28px; padding: 0 !important; margin: -6px -2px 0 0; border: 0 !important; border-radius: 7px !important; background-color: transparent !important; box-shadow: none !important; cursor: pointer; }
+.side-toggle::before { content: ""; width: 18px; height: 18px; margin: auto; background-color: var(--x-muted); transition: transform .2s;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill-rule='evenodd' d='M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2zm0 2v14h4V5zm6 0v14h8V5zm4.5 4l-3 3 3 3z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill-rule='evenodd' d='M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2zm0 2v14h4V5zm6 0v14h8V5zm4.5 4l-3 3 3 3z'/%3E%3C/svg%3E") center / contain no-repeat; }
+.side-toggle:hover { background-color: var(--x-hover) !important; }
+.side-toggle:hover::before { background-color: var(--x-text); }
+html.side-mini body:has(#top) { grid-template-columns: 60px minmax(0, 1fr); }
+html.side-mini #top { padding: 12px 8px !important; overflow-x: hidden; }
+html.side-mini .side-toggle { align-self: center; margin: 0 0 6px; }
+html.side-mini .side-toggle::before { transform: scaleX(-1); }
+html.side-mini #top .brand span, html.side-mini #top .ws-chip, html.side-mini #top .top-right, html.side-mini #tabs #extras-menu::before { display: none !important; }
+html.side-mini #top .brand { justify-content: center; padding: 4px 0 10px !important; }
+html.side-mini #tabs > button, html.side-mini #tabs .extras-menu button { font-size: 0 !important; justify-content: center !important; padding: 9px 0 !important; gap: 0 !important; }
+html.side-mini #tabs #extras-menu { border-top: 1px solid var(--x-line) !important; margin-top: 8px; padding-top: 8px !important; }

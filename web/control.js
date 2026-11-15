@@ -166,6 +166,22 @@ function connect() {
 fetch("/api/state").then(r => r.json()).then(s => App.apply(s)).finally(connect);
 
 // --- tabs and header -------------------------------------------------------
+// The side panel: full, or folded to icons (each icon says its name on hover).
+(function sidePanel() {
+  const btn = $("#side-toggle"), root = document.documentElement;
+  for (const b of document.querySelectorAll("#tabs button[data-tab]")) if (!b.title) b.title = b.textContent.trim();
+  function set(mini) {
+    root.classList.toggle("side-mini", mini);
+    btn.title = mini ? "Show the side panel" : "Hide the side panel (icons only)";
+    btn.setAttribute("aria-label", btn.title);
+    btn.setAttribute("aria-expanded", String(!mini));
+    try { localStorage.setItem("gfx-side-mini", mini ? "1" : ""); } catch (e) { /* */ }
+  }
+  let mini = false;
+  try { mini = localStorage.getItem("gfx-side-mini") === "1"; } catch (e) { /* */ }
+  set(mini);
+  btn.addEventListener("click", () => set(!root.classList.contains("side-mini")));
+})();
 const pages = {};
 function showTab(name) {
   if (!pages[name] && name !== "control") name = "control";
