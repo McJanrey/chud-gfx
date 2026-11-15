@@ -15,7 +15,7 @@
   const undo = [], redo = [];
   try { compId = localStorage.getItem("gfx-edit"); } catch (e) { /* */ }
 
-  const TYPE_ICON = { text: "T", rect: "▭", image: "🖼", video: "▶", lottie: "✦", bracket: "⊏", web: "◫" };
+  const TYPE_ICON = { text: "T", rect: "▭", image: "🖼", video: "▶", lottie: "✦", bracket: "⊏", web: "◫", ticker: "≋", rotator: "⟳" };
 
   // --- saving ------------------------------------------------------------
   const saveSoon = debounce(save, 120);
@@ -51,12 +51,14 @@
   function renderComps() {
     const list = $("#comp-list");
     const comps = App.comps();
-    const sig = JSON.stringify(comps.map(c => [c.id, c.name, c.layers]) ) + compId;
+    const sig = JSON.stringify([comps.map(c => [c.id, c.name, c.layers]), (App.state.trash || []).map(t => t.id)]) + compId;
     if (list.dataset.sig === sig) return;
     list.dataset.sig = sig;
-    list.replaceChildren(...comps.map(c => h("div", { class: "comp-item" + (c.id === compId ? " sel" : ""), onclick: () => open(c.id) },
+    list.replaceChildren(...comps.map(c => h("div", { class: "comp-item" + (c.id === compId ? " sel" : ""), onclick: () => open(c.id),
+      ondblclick: () => renameGraphic(c.id), oncontextmenu: e => { e.preventDefault(); renameGraphic(c.id); }, title: "Double-click or right-click to rename" },
       thumb(c, {}, 48), h("span", { class: "nm" }, c.name))));
     if (!comps.length) list.replaceChildren(h("div", { class: "empty" }, "No graphics yet."));
+    renderTrash();
   }
   function open(id) {
     compId = id;
@@ -109,11 +111,28 @@
     location.href = `/api/share?comps=${compId}`;
   });
   $("#comp-dup").addEventListener("click", async () => { if (compId) open((await api("/api/comp/duplicate", { id: compId })).comp.id); });
+  // Deleted graphics go to a bin: Undo on the message, or "Deleted…" above the list, brings them back.
   $("#comp-del").addEventListener("click", async () => {
-    if (!comp || !confirm(`Delete "${comp.name}"? It comes off air too.`)) return;
-    await api("/api/comp/delete", { id: compId });
+    if (!comp) return;
+    const id = compId, name = comp.name;
+    await api("/api/comp/delete", { id });
     compId = null;
     adopt(true);
+    toast(`Deleted "${name}" (off air too)`, false, { label: "Undo", run: async () => open((await restoreGraphic(id)).id) });
+  });
+  $("#comp-rename").addEventListener("click", () => compId && renameGraphic(compId));
+  $("#canvas-name").addEventListener("dblclick", () => compId && renameGraphic(compId));
+  const trashSel = $("#comp-trash");
+  function renderTrash() {
+    const t = App.state.trash || [];
+    trashSel.hidden = !t.length;
+    trashSel.replaceChildren(h("option", { value: "" }, `Deleted (${t.length})…`),
+      ...t.map(x => h("option", { value: x.id }, `${x.name} · ${new Date(x.at * 1000).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}`)));
+  }
+  trashSel.addEventListener("change", async () => {
+    const id = trashSel.value;
+    trashSel.value = "";
+    if (id) open((await restoreGraphic(id)).id);
   });
 
   // --- layers ---------------------------------------------------------------
@@ -170,7 +189,7 @@
     if (!comp) return toast("Make or pick a graphic first", true);
     const { layer } = await api("/api/layer/blank", { type: b.dataset.add });
     snapshot();
-    layer.name = { text: "Text", rect: "Shape", image: "Picture", video: "Video", lottie: "Animation", ticker: "Ticker" }[layer.type];
+    layer.name = { text: "Text", rect: "Shape", image: "Picture", video: "Video", lottie: "Animation", ticker: "Ticker", rotator: "Rotator" }[layer.type];
     comp.layers.push(layer);
     selected = layer.id;
     changed({ props: true });
@@ -759,9 +778,8 @@
     fill(l.text);
     return ed;
   }
-  // Ticker settings: items typed here (picture + text) or read from a data source's columns.
-  function tickerProps(l) {
-    const save = (redrawProps) => { snapshot(); changed(redrawProps ? { props: true } : { keepList: true }); };
+  // Items typed here (picture + text) or read from a data source's columns: shared by the ticker and the rotator.
+  function itemsEditor(l, save) {
     const srcNames = ["", "Global", ...(App.state.project.sources || []).map(x => x.name), ...Object.keys(App.state.data.feeds || {})];
     const head = ((App.state.data.tables || {})[l.source] || [])[0] || [];
     const colSel = (key, label) => lab(label, h("select", { onchange: e => { l[key] = e.target.value; save(); } },
@@ -775,11 +793,16 @@
         h("button", { class: "small danger", title: "Remove", onclick: () => { items.splice(i, 1); save(true); } }, "×")),
       h("div", { class: "row-gap", style: { alignItems: "center", marginTop: "4px" } }, h("span", { class: "muted small" }, "Picture"),
         assetSelect("image", it.img, v => { it.img = v; save(true); }))));
-    return h("div", { class: "sect" }, h("h3", {}, "Ticker"),
+    return [
       lab("Items from", h("select", { onchange: e => { l.source = e.target.value; l.textCol = l.imgCol = ""; save(true); } },
         srcNames.map(n => h("option", { value: n, selected: (l.source || "") === n }, n || "The list below")))),
       l.source ? h("div", { class: "grid2" }, colSel("textCol", "Text column"), colSel("imgCol", "Picture column"))
-        : h("div", {}, ...itemRows, h("button", { class: "small", onclick: () => { items.push({ text: "", img: "" }); save(true); } }, "+ Add item")),
+        : h("div", {}, ...itemRows, h("button", { class: "small", onclick: () => { items.push({ text: "", img: "" }); save(true); } }, "+ Add item"))];
+  }
+  function tickerProps(l) {
+    const save = (redrawProps) => { snapshot(); changed(redrawProps ? { props: true } : { keepList: true }); };
+    return h("div", { class: "sect" }, h("h3", {}, "Ticker"),
+      ...itemsEditor(l, save),
       h("div", { class: "grid3" }, lab("Speed px/s", bind(l, "speed", "number", { min: 5, step: 10 })),
         lab("Gap", bind(l, "gap", "number", { min: 0, step: 10 })), lab("Separator", bind(l, "sep", "text"))),
       h("div", { class: "grid3" }, lab("Picture height", bind(l, "imgSize", "number", { min: 8 })), lab("Size", bind(l, "size", "number", { min: 1 })),
@@ -789,6 +812,23 @@
         lab("Edge fade % (0 = hard edge)", h("input", { type: "number", min: 0, max: 45, step: 1,
           value: l.fade === false ? 0 : typeof l.fade === "number" ? l.fade : 8,
           onchange: e => { snapshot(); l.fade = Math.max(0, Math.min(45, +e.target.value || 0)); changed({ keepList: true }); } }))));
+  }
+  // Rotator: one item at a time in this box (sponsor logos, lines of text), swapping every few seconds.
+  function rotatorProps(l) {
+    const save = (redrawProps) => { snapshot(); changed(redrawProps ? { props: true } : { keepList: true }); };
+    const pick = (key, opts) => h("select", { onchange: e => { snapshot(); l[key] = e.target.value; changed({ keepList: true }); } },
+      opts.map(([v, t]) => h("option", { value: v, selected: (l[key] || opts[0][0]) === v }, t)));
+    return h("div", { class: "sect" }, h("h3", {}, "Rotator"),
+      h("p", { class: "muted small" }, "Shows one item at a time in this box, then swaps to the next. A picture on its own fills the box."),
+      ...itemsEditor(l, save),
+      h("div", { class: "grid3" }, lab("Seconds each", bind(l, "secs", "number", { min: 1, step: 1 })),
+        lab("Swap", pick("swap", [["fade", "Fade"], ["slide up", "Slide up"], ["slide left", "Slide left"], ["cut", "Cut"]])),
+        lab("Order", pick("order", [["in order", "In order"], ["shuffle", "Shuffled"]]))),
+      h("div", { class: "grid3" }, lab("Picture height (with text)", bind(l, "imgSize", "number", { min: 8 })), lab("Size", bind(l, "size", "number", { min: 1 })),
+        bind(l, "color", "color", { label: "Colour" })),
+      h("div", { class: "grid2" }, lab("Font", h("select", { onchange: e => { snapshot(); l.font = e.target.value; changed({ props: true }); } }, fontOptions(l.font))),
+        lab("Align", pick("align", [["center", "Centre"], ["left", "Left"], ["right", "Right"]]))),
+      bind(l, "caps", "check", { label: "ALL CAPS" }));
   }
   // Insert menu for text layers: data fields, the clock and countdowns, so nobody types {{...}} codes by hand.
   function insertPicker(l, textBox) {
@@ -859,7 +899,7 @@
     if (!l) return renderCompProps();
     const sections = [];
     sections.push(h("div", { class: "sect" },
-      h("h3", {}, ({ text: "Text", rect: "Shape", image: "Picture", video: "Video", lottie: "Lottie animation", bracket: "Bracket", web: "Web page", ticker: "Ticker" }[l.type] || "Layer") + " layer"),
+      h("h3", {}, ({ text: "Text", rect: "Shape", image: "Picture", video: "Video", lottie: "Lottie animation", bracket: "Bracket", web: "Web page", ticker: "Ticker", rotator: "Rotator" }[l.type] || "Layer") + " layer"),
       lab("Name", bind(l, "name", "text")),
       h("label", { title: "Give it a name to change it from Control (and from data)" }, "Field (changed from Control)",
         h("div", { class: "row-gap" },
@@ -905,6 +945,8 @@
         l.show ? h("div", { class: "muted small" }, `Shown only while ${l.show} has something in it.`) : null));
     } else if (l.type === "ticker") {
       sections.push(tickerProps(l));
+    } else if (l.type === "rotator") {
+      sections.push(rotatorProps(l));
     } else if (l.type === "bracket") {
       sections.push(h("div", { class: "sect" }, h("h3", {}, "Bracket"),
         h("p", { class: "muted small" }, "The knockout bracket from Global > Tournament: 8 or 16 teams, single or double elimination (Control has the choice), drawn to fit this box."),
@@ -1034,7 +1076,7 @@
     };
     // One value for every picked layer that has it; blank when they differ.
     const same = (list, key) => list.every(o => o[key] === list[0][key]) ? list[0][key] : "";
-    const typed = layers.filter(o => o.type === "text" || o.type === "ticker");
+    const typed = layers.filter(o => o.type === "text" || o.type === "ticker" || o.type === "rotator");
     const num = (list, key, label, opt) => lab(label, h("input", Object.assign({ type: "number", value: same(list, key) ?? "", placeholder: "mixed",
       onchange: e => { if (e.target.value === "") return; const v = +e.target.value; snapshot(); list.forEach(o => { o[key] = v; }); changed({ props: true }); } }, opt)));
     props.replaceChildren(

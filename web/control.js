@@ -20,13 +20,29 @@ function h(tag, attrs, ...kids) {
 const $ = s => document.querySelector(s);
 const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 let toastTimer;
-function toast(msg, error) {
+// action: {label, run} adds a button to the message (Undo) and keeps it up longer.
+function toast(msg, error, action) {
   const t = $("#toast");
   t.textContent = msg;
+  if (action) t.append(" ", h("button", { class: "small", onclick: () => { t.hidden = true; action.run(); } }, action.label));
   t.className = "toast" + (error ? " error" : "");
   t.hidden = false;
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => (t.hidden = true), error ? 6000 : 2200);
+  toastTimer = setTimeout(() => (t.hidden = true), action ? 10000 : error ? 6000 : 2200);
+}
+// Renaming a graphic, from Composer or the Control rundown.
+async function renameGraphic(id) {
+  const c = App.comp(id);
+  if (!c) return;
+  const name = prompt("Rename the graphic", c.name);
+  if (name && name.trim() && name.trim() !== c.name) await api("/api/comp/rename", { id, name: name.trim() });
+}
+async function restoreGraphic(id) {
+  const r = await api("/api/comp/restore", id ? { id } : {});
+  toast(`Brought back "${r.comp.name}"`);
+  // (once the engine's update with it is here, so opening it doesn't fall back to another graphic)
+  for (let i = 0; i < 40 && !App.comp(r.comp.id); i++) await new Promise(res => setTimeout(res, 100));
+  return r.comp;
 }
 async function api(path, body) {
   const r = await fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body || {}) });
@@ -297,6 +313,8 @@ $("#update").addEventListener("click", () => api("/api/update/install"));
       class: `rd${onPvw ? " on-pvw" : ""}${onPgm ? " on-pgm" : ""}${c.id === selected ? " sel" : ""}`, draggable: true,
       onclick: () => select(c.id),
       ondblclick: () => api("/api/cue", { id: c.id, on: !onPvw }),
+      oncontextmenu: e => { e.preventDefault(); renameGraphic(c.id); },
+      title: "Double-click: on / off Preview. Right-click: rename",
       ondragstart: e => { dragId = c.id; e.dataTransfer.effectAllowed = "move"; },
       ondragover: e => { e.preventDefault(); },
       ondrop: e => {

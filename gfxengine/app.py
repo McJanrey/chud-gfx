@@ -29,7 +29,7 @@ import uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, quote, unquote, urlparse
 
-from . import appearance, companion, discover, export, globalcfg, media, pack, share, chudhud, ros, obs, streampart, builderpart
+from . import playlist, appearance, companion, discover, export, globalcfg, media, pack, share, chudhud, ros, obs, streampart, builderpart
 from .assets import Assets
 from .config import DATA_DIR, WEB_DIR, Settings, safe_join
 from .data import Sources
@@ -166,6 +166,9 @@ class Engine:
             live.listeners.append(self._program_changed)
             self._pgm_on = set(live.get()["program"]["on"])
             self.ws, self.live, self.assets, self.sources = ws, live, assets, sources
+            if getattr(self, "player", None):
+                self.player.close()
+            self.player = playlist.Player(ws, live, self.changed)
             self.stats = Stats(folder)
             if old[1]:
                 old[1].stop()
@@ -367,7 +370,8 @@ class Engine:
             "workspace": {"id": self.workspace_id, "name": project.get("name", ""),
                           "picture": bool(project.get("picture"))},
             "rev": self.ws.rev, "assets_rev": self.assets_rev,
-            "project": project, "live": self.live.get(), "data": self.data_snapshot(), "builder": {**self.builder.state(), "enabled": bool((self.settings.get().get("hudbuilder") or {}).get("enabled"))}, "stream": {**self.stream.state(), "enabled": bool((self.settings.get().get("multistream") or {}).get("enabled"))}, "obs": {**self.obs.public(), "follow": (self.settings.get().get("obs") or {}).get("follow") or []},
+            "project": project, "live": self.live.get(), "playlist": self.player.get(),
+            "trash": [{"id": t["comp"]["id"], "name": t["comp"].get("name", ""), "at": t["at"]} for t in self.ws.trash()], "data": self.data_snapshot(), "builder": {**self.builder.state(), "enabled": bool((self.settings.get().get("hudbuilder") or {}).get("enabled"))}, "stream": {**self.stream.state(), "enabled": bool((self.settings.get().get("multistream") or {}).get("enabled"))}, "obs": {**self.obs.public(), "follow": (self.settings.get().get("obs") or {}).get("follow") or []},
             "global": globalcfg.clean(project.get("global")),
             "teams": self.teams.list(),
             "games": list(GAMES.values()),   # (the games there are HUDs for)
@@ -1225,6 +1229,19 @@ def make_handler(engine):
                     result = {"comp": ws.duplicate_comp(body["id"])}
                 elif path == "/api/comp/delete":
                     engine.delete_comp(body["id"])
+                elif path == "/api/comp/restore":
+                    result = {"comp": ws.restore_comp(body.get("id"))}
+                elif path == "/api/comp/rename":
+                    ws.rename_comp(body.get("id"), body.get("name"))
+                elif path == "/api/playlists":
+                    ids = {c["id"] for c in ws.get()["compositions"]}
+                    ws.set_playlists(playlist.clean(body.get("playlists"), ids))
+                elif path == "/api/playlist/play":
+                    engine.player.play(body.get("id"), body.get("index") or 0)
+                elif path == "/api/playlist/step":
+                    engine.player.step(-1 if body.get("back") else 1)
+                elif path == "/api/playlist/stop":
+                    engine.player.stop()
                 elif path == "/api/comp/order":
                     ws.order_comps(body["ids"])
                 elif path == "/api/share/send":

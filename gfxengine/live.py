@@ -184,6 +184,23 @@ class Live:
             self._bump_take(t, [cid])
         self._changed()
 
+    def swap(self, off, on, transition="animate"):
+        """One graphic out and the next in, in a single change (a playlist's next item)."""
+        ids = self._ids()
+        t = self._quick(transition)
+        with self.lock:
+            now = [i for i in self.state["program"]["on"] if i != off]
+            changed = [off] if off else []
+            if on in ids:
+                now = self._with(now, [on])
+                if on in self.state["preview"]["values"]:
+                    self.state["program"]["values"][on] = copy.deepcopy(self.state["preview"]["values"][on])
+                changed.append(on)
+            self.state["program"]["on"] = now
+            self.state["program"]["seq"] += 1
+            self._bump_take(t, changed)
+        self._changed()
+
     def clear(self, bus="program", transition="animate"):
         with self.lock:
             if bus == "preview":

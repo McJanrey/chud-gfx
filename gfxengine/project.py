@@ -23,6 +23,7 @@ import os
 import secrets
 import shutil
 import threading
+import time
 
 from .log import log
 
@@ -63,6 +64,12 @@ def blank_layer(kind, **extra):
         layer.update({"x": 0, "y": 1000, "w": 1920, "h": 70, "items": [{"text": "Follow @SCCSaints", "img": ""}, {"text": "Thanks for watching", "img": ""}],
                       "source": "", "textCol": "", "imgCol": "", "speed": 120, "gap": 60, "sep": "•", "imgSize": 48, "fade": True,
                       "font": "Inter", "size": 36, "color": "#ffffff", "weight": 700, "caps": True, "tracking": 0, "italic": False})
+    elif kind == "rotator":
+        # One item at a time in place (sponsor logos, lines of text), swapping every few seconds.
+        layer.update({"x": 1500, "y": 960, "w": 360, "h": 100, "items": [{"text": "", "img": ""}],
+                      "source": "", "textCol": "", "imgCol": "", "secs": 8, "swap": "fade", "order": "in order",
+                      "imgSize": 80, "font": "Inter", "size": 36, "color": "#ffffff", "weight": 700, "caps": False,
+                      "tracking": 0, "italic": False})
     elif kind in ("image", "video", "lottie"):
         layer.update({"src": "", "fit": "contain", "loop": True})
     layer.update(extra)
@@ -177,8 +184,74 @@ class Workspace:
         return self.add_comp(comp, after=cid)
 
     def delete_comp(self, cid):
+        """Into the bin (trash.json, the last 30), so a graphic deleted by mistake can be brought back."""
         with self.lock:
-            self.data["compositions"] = [c for c in self.data["compositions"] if c["id"] != cid]
+            comps = self.data["compositions"]
+            i = next((i for i, c in enumerate(comps) if c["id"] == cid), None)
+            if i is None:
+                return
+            gone = comps.pop(i)
+            after = comps[i - 1]["id"] if i else None
+            trash = [t for t in self.trash() if t["comp"]["id"] != cid]
+            trash.insert(0, {"comp": gone, "after": after, "at": time.time()})
+            self._write_trash(trash[:30])
+            self.changed()
+
+    def _trash_path(self):
+        return os.path.join(self.folder, "trash.json")
+
+    def trash(self):
+        """[{"comp", "after" (the graphic it was under), "at"}], newest first."""
+        if getattr(self, "_trash", None) is not None:
+            return list(self._trash)
+        try:
+            with open(self._trash_path(), encoding="utf-8") as f:
+                t = json.load(f)
+            self._trash = t if isinstance(t, list) else []
+        except (OSError, ValueError):
+            self._trash = []
+        return list(self._trash)
+
+    def _write_trash(self, trash):
+        tmp = self._trash_path() + ".tmp"
+        with open(tmp, "w", encoding="utf-8") as f:
+            json.dump(trash, f)
+        os.replace(tmp, self._trash_path())
+        self._trash = list(trash)
+        self.trash_rev = getattr(self, "trash_rev", 0) + 1
+
+    def restore_comp(self, cid=None):
+        """Brings a deleted graphic back where it was (the last one deleted when no id is given)."""
+        with self.lock:
+            trash = self.trash()
+            t = next((t for t in trash if cid is None or t["comp"]["id"] == cid), None)
+            if not t:
+                raise KeyError("Nothing to bring back")
+            trash.remove(t)
+            self._write_trash(trash)
+            comps = self.data["compositions"]
+            idx = 0 if t["after"] is None else next((i + 1 for i, c in enumerate(comps) if c["id"] == t["after"]), len(comps))
+            comp = t["comp"]
+            if any(c["id"] == comp["id"] for c in comps):
+                comp["id"] = new_id("c")
+            comps.insert(idx, comp)
+            self.changed()
+            return comp
+
+    def rename_comp(self, cid, name):
+        name = str(name or "").strip()[:80]
+        if not name:
+            raise ValueError("A graphic needs a name")
+        with self.lock:
+            c = next((c for c in self.data["compositions"] if c["id"] == cid), None)
+            if not c:
+                raise KeyError("No such graphic")
+            c["name"] = name
+            self.changed()
+
+    def set_playlists(self, playlists):
+        with self.lock:
+            self.data["playlists"] = playlists
             self.changed()
 
     def order_comps(self, ids):

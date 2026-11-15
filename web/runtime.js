@@ -521,6 +521,14 @@
       if (!opts.still) tickers.add(box);
       return box;
     }
+    if (t === "rotator") {
+      const box = el("div", "gfx-rotator", { position: "relative", overflow: "hidden", width: "100%", height: "100%" });
+      box._layer = layer;
+      box._still = !!opts.still;
+      turnRotator(box);
+      if (!opts.still) itemRotators.add(box);
+      return box;
+    }
     if (t === "rect") {
       return el("div", "gfx-rect", {
         background: value || "transparent", borderRadius: (layer.radius || 0) + "px",
@@ -723,6 +731,59 @@
   }
   // New data or the clock: rebuild a ticker only when its items really changed.
   setInterval(() => { for (const b of tickers) { if (!b.isConnected) tickers.delete(b); else buildTicker(b); } }, 1000);
+  // --- rotator: one item at a time in place, swapping every few seconds ---
+  // Which item shows comes from the clock, so every output (Preview, Program, a
+  // second PC) shows the same one at the same time without talking to each other.
+  const itemRotators = new Set();
+  function rotatorIndex(layer, n, now) {
+    const ms = Math.max(1, +layer.secs || 8) * 1000, turn = Math.floor(now / ms);
+    if (layer.order !== "shuffle" || n < 3) return turn % n;
+    // Shuffled: a fresh order every round, the same on every output (seeded by the round).
+    const round = Math.floor(turn / n), order = [...Array(n).keys()];
+    let seed = round * 2654435761 % 4294967296;
+    for (let i = n - 1; i > 0; i--) { seed = (seed * 1664525 + 1013904223) % 4294967296; const j = seed % (i + 1); [order[i], order[j]] = [order[j], order[i]]; }
+    return order[turn % n];
+  }
+  GFX.rotatorIndex = rotatorIndex;
+  function rotatorItem(layer, it) {
+    const [family, weight] = GFX.fontFor(layer);
+    const item = el("div", "", { position: "absolute", inset: "0", display: "flex", alignItems: "center", justifyContent: layer.align === "left" ? "flex-start" : layer.align === "right" ? "flex-end" : "center", gap: "14px",
+      fontFamily: family, fontWeight: weight, fontStyle: layer.italic ? "italic" : "normal", fontSize: layer.size + "px", color: layer.color, whiteSpace: "nowrap",
+      letterSpacing: ((layer.tracking || 0) / 1000) + "em", textTransform: layer.caps ? "uppercase" : "none" });
+    if (it.img) {
+      // A picture on its own fills the box; next to text it's the set height.
+      const img = el("img", "", it.text ? { height: (layer.imgSize || 80) + "px", width: "auto", objectFit: "contain" } : { width: "100%", height: "100%", objectFit: "contain" });
+      img.draggable = false; img.src = url(encodeURI(it.img)); item.appendChild(img);
+    }
+    if (it.text) item.appendChild(Object.assign(el("span"), { textContent: it.text }));
+    return item;
+  }
+  const SWAPS = {
+    fade: [[{ opacity: 0 }, { opacity: 1 }], [{ opacity: 1 }, { opacity: 0 }]],
+    "slide up": [[{ transform: "translateY(100%)" }, { transform: "none" }], [{ transform: "none" }, { transform: "translateY(-100%)" }]],
+    "slide left": [[{ transform: "translateX(100%)" }, { transform: "none" }], [{ transform: "none" }, { transform: "translateX(-100%)" }]],
+    cut: null,
+  };
+  function turnRotator(box, now = GFX.now()) {
+    const layer = box._layer, items = tickerItems(layer);
+    const sig = JSON.stringify(items) + [layer.secs, layer.order, layer.size, layer.color, layer.font, layer.imgSize, layer.caps, layer.align];
+    if (!items.length) { box._sig = sig; box._i = -1; box.replaceChildren(); return; }
+    const i = box._still ? 0 : rotatorIndex(layer, items.length, now);
+    if (box._sig === sig && box._i === i) return;
+    const fresh = box._sig !== sig;
+    box._sig = sig; box._i = i;
+    const next = rotatorItem(layer, items[i]), old = [...box.children];
+    box.appendChild(next);
+    const swap = SWAPS[layer.swap || "fade"];
+    if (fresh || box._still || !swap) { old.forEach(o => o.remove()); return; }
+    const dur = Math.min(600, Math.max(1, +layer.secs || 8) * 300);
+    next.animate(swap[0], { duration: dur, easing: "cubic-bezier(.2,.7,.2,1)" });
+    old.forEach(o => o.animate(swap[1], { duration: dur, easing: "cubic-bezier(.4,0,.6,1)", fill: "forwards" }));
+    // (a timer, not the animation's end: paused or hidden pages never finish it)
+    setTimeout(() => old.forEach(o => o.remove()), dur + 50);
+  }
+  setInterval(() => { for (const b of itemRotators) { if (!b.isConnected && b._seen) itemRotators.delete(b); else if (b.isConnected) { b._seen = true; turnRotator(b); } } }, 200);
+
   // One run of a ticker's text. With a divider, the "|" between its lines is
   // drawn as a bar in the divider's colour.
   function tickerRun(layer, text) {

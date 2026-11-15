@@ -286,6 +286,10 @@
       </div>
       <div id="fields" class="fields-list"></div>
     </div>
+    <div class="playlist panel">
+      <div class="panel-head"><h3>Playlist</h3><span class="muted small">graphics on air one after another</span></div>
+      <div id="playlist" class="playlist-body"></div>
+    </div>
   </section>
   </div>
 </main>
@@ -325,6 +329,7 @@
     <div class="panel-head"><h3>Graphics</h3>
       <div class="row-gap"><button class="small" id="comp-import" title="A new graphic from a Photoshop file (layers and text come across), OpenRaster or picture; or from a video (.mov from After Effects keeps its transparency), Lottie animation (.json / .lottie) or After Effects project (.aep, rendered with After Effects on this PC). Affinity, Krita, GIMP, Procreate: save as .psd first. A .chudgfx file exported from another GFX Baby brings its graphics in with their files">Import</button>
         <button class="small" id="comp-new" title="New, empty graphic">+ New</button>
+        <select class="small" id="comp-trash" title="Graphics deleted lately: pick one to bring it back" hidden></select>
         <input type="file" id="comp-import-file" accept=".psd,.psb,.ora,.png,.jpg,.jpeg,.webp,.gif,.svg,.avif,.bmp,.afdesign,.afphoto,.afpub,.af,.kra,.xcf,.procreate,.clip,.ptg,.ai,.sketch,.fig,.mov,.mp4,.webm,.m4v,.mxf,.avi,.mkv,.json,.lottie,.zip,.aep,.aepx,.chudgfx,.sccgfx" hidden></div></div>
     <div id="comp-list" class="comp-list"></div>
     <div class="panel-head"><h3>Layers</h3>
@@ -335,13 +340,14 @@
         <button class="small" data-add="video" title="Add a video">▶</button>
         <button class="small" data-add="lottie" title="Add a Lottie (After Effects) animation">✦</button>
         <button class="small" data-add="ticker" title="Add a ticker (scrolling pictures and text)">≋</button>
+        <button class="small" data-add="rotator" title="Add a rotator (one logo or line at a time, swapping)">⟳</button>
         <select id="add-special" class="small" title="Special elements: the teams' logos, names and scores, the tournament logo, the sponsors… from Global"></select>
       </div></div>
     <div id="layer-list" class="layer-list"></div>
   </aside>
   <section class="canvas-wrap">
     <div class="canvas-bar">
-      <span id="canvas-name" class="strong"></span>
+      <span id="canvas-name" class="strong" title="Double-click to rename"></span>
       <span class="muted small" id="canvas-pos"></span>
       <div class="spacer"></div>
       <button class="small" id="canvas-zoom" title="Zoom: Ctrl + scroll wheel. Click (or Ctrl+0) to fit the whole graphic">Fit</button>
@@ -351,6 +357,7 @@
         <option value="checker">Checker</option><option value="black">Black</option><option value="grey">Grey</option><option value="white">White</option>
       </select>
       <button class="small" id="comp-export" title="This graphic and every file it uses (pictures, videos, fonts, data sources) as one .chudgfx file: send it to another PC and use Import in its GFX Baby">Export</button>
+      <button class="small" id="comp-rename" title="Rename this graphic (or double-click it in the list)">Rename</button>
       <button class="small" id="comp-dup">Duplicate</button>
       <button class="small danger" id="comp-del">Delete</button>
     </div>
@@ -499,6 +506,7 @@
 <script src="vendor/lottie.min.js"></script>
 <script src="runtime.js"></script>
 <script src="control.js"></script>
+<script src="playlist.js"></script>
 <script src="ros.js"></script>
 <script src="livedata.js"></script>
 <script src="composer.js"></script>
