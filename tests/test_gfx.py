@@ -136,6 +136,29 @@ class LiveTests(unittest.TestCase):
         self.assertEqual(set(state["program"]["on"]), {self.a["id"], lt2["id"], self.b["id"]})
         self.assertEqual(state["preview"]["on"], [])
 
+    def test_take_swaps_boards_like_a_vision_mixer(self):
+        live, ws = self.live, self.ws
+        ws.put_comp(dict(ws.comp(self.a["id"]), kind="board"))
+        board2 = ws.add_comp(dict(blank_comp("Board 2"), kind="board"))
+        live.cue(self.a["id"]); live.set_values(self.a["id"], {"Name": "Alex"})
+        live.take("cut")
+        live.cue(board2["id"]); live.cue(self.b["id"])          # (b: an overlay)
+        live.take("cut")
+        state = live.get()
+        self.assertEqual(set(state["program"]["on"]), {board2["id"], self.b["id"]})
+        self.assertEqual(state["preview"]["on"], [self.a["id"]])       # the old board, back on Preview
+        self.assertEqual(state["preview"]["values"][self.a["id"]], {"Name": "Alex"})
+        live.take("cut")                                               # and back again
+        state = live.get()
+        self.assertEqual(set(state["program"]["on"]), {self.a["id"], self.b["id"]})
+        self.assertEqual(state["preview"]["on"], [board2["id"]])
+
+    def test_graphics_saved_without_a_kind_get_one(self):
+        full = {"id": "l1", "type": "rect", "x": 0, "y": 0, "w": 1920, "h": 1080}
+        self.ws.add_comp({"id": "cx", "name": "Caster Box", "layers": [full]})
+        self.ws.close()
+        self.assertEqual(Workspace(self.dir, starter="").comp("cx")["kind"], "board")
+
     def test_delete_takes_it_off(self):
         self.live.cue(self.a["id"])
         self.live.take("cut")

@@ -146,17 +146,24 @@ class Live:
 
     def take(self, transition=None):
         """What's on Preview goes to Program with a transition (replacing the
-        board or lower third there), and comes off Preview."""
+        board or lower third there), and comes off Preview. Like a vision mixer,
+        the board it replaced swaps back onto Preview (ready to take again);
+        overlays just stack."""
         t = self._transition(transition)
         with self.lock:
             cued = list(self.state["preview"]["on"])
             if not cued:
                 return t
-            self.state["program"]["on"] = self._with(self.state["program"]["on"], cued)
+            was = self.state["program"]["on"]
+            self.state["program"]["on"] = self._with(was, cued)
+            kinds = {c["id"]: c.get("kind") or "overlay" for c in self.ws.get()["compositions"]}
+            back = [i for i in was if i not in self.state["program"]["on"] and kinds.get(i) == "board"]
+            for cid in back:
+                self.state["preview"]["values"][cid] = copy.deepcopy(self.state["program"]["values"].get(cid, {}))
             for cid in cued:
                 self.state["program"]["values"][cid] = copy.deepcopy(self.state["preview"]["values"].get(cid, {}))
             self.state["program"]["seq"] += 1
-            self.state["preview"]["on"] = []
+            self.state["preview"]["on"] = back
             self.state["preview"]["seq"] += 1
             self._bump_take(t, None)
         self._changed()

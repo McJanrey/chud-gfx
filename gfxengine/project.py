@@ -81,6 +81,17 @@ def blank_layer(kind, **extra):
     return layer
 
 
+def guess_kind(layers):
+    """A full-page board (something covers the screen), a lower third (all in
+    the bottom part) or an overlay."""
+    shown = [l for l in layers if l.get("visible", True)]
+    if any(l.get("w", 0) * l.get("h", 0) >= 1920 * 1080 * 0.8 for l in shown):
+        return "board"
+    if shown and min(l.get("y", 0) for l in shown) >= 1080 * 0.55 and max(l.get("x", 0) + l.get("w", 0) for l in shown) - min(l.get("x", 0) for l in shown) < 1920 * 0.8:
+        return "lower third"
+    return "overlay"
+
+
 def blank_comp(name="New graphic"):
     return {"id": new_id("c"), "name": name, "layer": 0, "layers": []}
 
@@ -102,6 +113,10 @@ class Workspace:
         if os.path.exists(self.path):
             with open(self.path, encoding="utf-8") as f:
                 self.data.update(json.load(f))
+        # (graphics saved without a kind were all treated as overlays: a full-page one is a board)
+        for c in self.data["compositions"]:
+            if not c.get("kind") and c.get("layers"):
+                c["kind"] = guess_kind(c["layers"])
         self._timer = None
 
     # --- reading -------------------------------------------------------

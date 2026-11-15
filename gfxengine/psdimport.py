@@ -12,7 +12,7 @@ import os
 import re
 
 from .log import log
-from .project import ANIM_NONE, blank_comp, new_id
+from .project import ANIM_NONE, blank_comp, guess_kind, new_id
 
 GENERIC = re.compile(r"^(layer|rectangle|ellipse|line|shape|group|polygon|path|vector|background|bg|color fill|"
                      r"gradient fill|pattern fill|brightness|levels|curves|hue|vibrance|exposure|copy)\b", re.I)
@@ -100,17 +100,6 @@ def _leaves(group, opacity=1.0, visible=True):
             yield from _leaves(layer, op, vis)
         else:
             yield layer, op, vis
-
-
-def guess_kind(layers):
-    """A full-page board (something covers the screen), a lower third (all in
-    the bottom part) or an overlay."""
-    shown = [l for l in layers if l.get("visible", True)]
-    if any(l["w"] * l["h"] >= 1920 * 1080 * 0.8 for l in shown):
-        return "board"
-    if shown and min(l["y"] for l in shown) >= 1080 * 0.55 and max(l["x"] + l["w"] for l in shown) - min(l["x"] for l in shown) < 1920 * 0.8:
-        return "lower third"
-    return "overlay"
 
 
 def import_psd(path, workspace, name=None):
