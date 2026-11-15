@@ -27,6 +27,29 @@ from .version import VERSION
 
 REPO = "McJanrey/chud-gfx"
 LATEST_URL = f"https://api.github.com/repos/{REPO}/releases/latest"
+_token = None
+
+
+def github_token():
+    """This PC's GitHub login for the private repo: GH_TOKEN / GITHUB_TOKEN, else the GitHub CLI's (gh auth token)."""
+    global _token
+    if _token is None:
+        _token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN") or ""
+        if not _token:
+            try:
+                _token = subprocess.run(["gh", "auth", "token"], capture_output=True, text=True, timeout=10,
+                                        creationflags=0x08000000 if os.name == "nt" else 0).stdout.strip()
+            except (OSError, subprocess.SubprocessError):
+                _token = ""
+    return _token or None
+
+
+def github_request(url, accept, user_agent):
+    """The login goes only to api.github.com (unredirected): release files redirect to signed storage links."""
+    req = urllib.request.Request(url, headers={"Accept": accept, "User-Agent": user_agent})
+    if github_token() and url.startswith("https://api.github.com/"):
+        req.add_unredirected_header("Authorization", "Bearer " + github_token())
+    return req
 ASSET_NAME = "ChudGFX-windows.zip"
 UPDATE_DIR = os.path.join(DATA_DIR, "_update")
 
@@ -71,8 +94,7 @@ class Updater:
     def check(self):
         self.status, self.error, self.check_error = "checking", None, None
         try:
-            request = urllib.request.Request(LATEST_URL, headers={
-                "Accept": "application/vnd.github+json", "User-Agent": f"Chud-GFX/{self.current}"})
+            request = github_request(LATEST_URL, "application/vnd.github+json", f"Chud-GFX/{self.current}")
             with urllib.request.urlopen(request, timeout=10) as r:
                 release = json.loads(r.read().decode("utf-8"))
         except urllib.error.HTTPError as e:
@@ -136,8 +158,8 @@ class Updater:
         path = os.path.join(self.work_dir, ASSET_NAME)
         total = self.asset.get("size") or 0
         digest = hashlib.sha256()
-        request = urllib.request.Request(self.asset["browser_download_url"],
-                                         headers={"User-Agent": f"Chud-GFX/{self.current}"})
+        request = github_request(self.asset.get("url") or self.asset["browser_download_url"], "application/octet-stream",
+                                 f"Chud-GFX/{self.current}")
         with urllib.request.urlopen(request, timeout=30) as r, open(path, "wb") as f:
             done = 0
             while True:
@@ -150,7 +172,9 @@ class Updater:
                 if total:
                     self.progress = min(99, int(done * 100 / total))
         expected = (self.asset.get("digest") or "").removeprefix("sha256:")
-        if expected and digest.hexdigest() != expected:
+        if not expected:
+            raise ValueError("GitHub gave no checksum for this update, so it wasn't installed")
+        if digest.hexdigest() != expected:
             raise ValueError("Download didn't match GitHub's checksum; try again")
         self.progress = 100
         return path

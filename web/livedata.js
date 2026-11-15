@@ -65,9 +65,9 @@ window.LiveData = (function () {
   function select(value, onChange, first) {
     const gs = groups();
     const found = gs.some(([, items]) => items.some(([v]) => v === value));
-    return h("select", { onchange: e => onChange(e.target.value) },
+    return h("select", { "aria-label": "Live data this shows", title: "Live data this shows", onchange: e => onChange(e.target.value) },
       h("option", { value: "" }, first || "(none)"),
-      value && !found ? h("option", { value, selected: true }, value) : null,
+      value && !found ? h("option", { value, selected: true }, friendly(value)) : null,   // never show a raw {{code}}
       gs.map(([group, items]) => h("optgroup", { label: group }, items.map(([v, t]) => h("option", { value: v, selected: v === value }, t)))));
   }
   return { groups, select, isToken, label, RL };

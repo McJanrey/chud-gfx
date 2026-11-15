@@ -202,6 +202,14 @@ const Ros = (() => {
     html += `<div class="row"><button data-badd="0">${icon("plus")}Block</button><button data-badd="1">↻ Repeat block</button>
       <button id="rb-dup">Duplicate template</button><button id="rb-del" class="danger">Delete template</button><span class="mut small" id="rb-saved"></span></div>`;
     ed.innerHTML = html;
+    // Titles and notes show their team / map / series codes as chips (same .value and data- attributes as the inputs).
+    ed.querySelectorAll("input.stitle, input.snotes").forEach(inp => {
+      const c = chipBox({ value: inp.value, placeholder: inp.placeholder });
+      c.classList.add(...inp.classList);
+      Object.assign(c.dataset, inp.dataset);
+      c.style.cssText = inp.style.cssText;
+      inp.replaceWith(c);
+    });
     renderTonight();
   }
 
