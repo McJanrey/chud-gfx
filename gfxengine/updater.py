@@ -79,6 +79,7 @@ class Updater:
         self.on_exit = None       # set by the window, to close it for the restart
         self.before_exit = None   # set by the engine: saves the workspace first
         self.work_dir = UPDATE_DIR
+        self._etag = None         # GitHub answers 304 (free, no rate limit) while nothing's new
         self._lock = threading.Lock()
 
     def info(self):
@@ -95,8 +96,9 @@ class Updater:
         def run():
             while True:
                 if self.status not in ("downloading", "installing"):
+                    was = self.info()
                     self.check()
-                    if on_change:
+                    if on_change and self.info() != was:
                         on_change()
                 if not every:
                     return
@@ -107,10 +109,15 @@ class Updater:
         self.status, self.error, self.check_error = "checking", None, None
         try:
             request = github_request(LATEST_URL, "application/vnd.github+json", f"Chud-GFX/{self.current}")
+            if self._etag:
+                request.add_header("If-None-Match", self._etag)
             with urllib.request.urlopen(request, timeout=10) as r:
                 release = json.loads(r.read().decode("utf-8"))
+                etag = r.headers.get("ETag")
         except urllib.error.HTTPError as e:
             self.status = "idle"
+            if e.code == 304:   # (same release as last time)
+                return
             if e.code == 404:
                 log("No releases published on GitHub yet")
             else:
@@ -125,6 +132,7 @@ class Updater:
         self.latest = release.get("tag_name")
         self.notes = (release.get("body") or "").strip()
         self.asset = next((a for a in release.get("assets", []) if a.get("name") == ASSET_NAME), None)
+        self._etag = etag if self.asset else None   # (no zip yet: CI still uploading, look again in full)
         self.status = "idle"
         if self.info()["available"]:
             log(f"Update available: {self.latest} (you have {self.current})")

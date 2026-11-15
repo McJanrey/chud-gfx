@@ -422,6 +422,30 @@ class UpdaterTests(unittest.TestCase):
         for kept in ("workspaces", "workspace", "library", "settings.json"):
             self.assertIn(" " + kept, copy)
 
+    def test_repeat_checks_ask_github_only_whats_new(self):
+        import io, urllib.error
+        from unittest import mock
+        from gfxengine import updater
+        u, sent = updater.Updater(), []
+        u.current = "v1.0.1"
+        body = json.dumps({"tag_name": "v1.0.2", "assets": [{"name": updater.ASSET_NAME}]}).encode()
+
+        class Reply(io.BytesIO):
+            headers = {"ETag": '"abc"'}
+            def __enter__(self): return self
+            def __exit__(self, *a): pass
+
+        def urlopen(req, timeout):
+            sent.append(req.get_header("If-none-match"))
+            if sent[-1]:
+                raise urllib.error.HTTPError(req.full_url, 304, "", {}, None)
+            return Reply(body)
+        with mock.patch.object(updater.urllib.request, "urlopen", urlopen):
+            u.check()
+            u.check()
+        self.assertEqual(sent, [None, '"abc"'])
+        self.assertTrue(u.info()["available"])   # (a 304 keeps what it knew)
+
 
 class GlobalTests(unittest.TestCase):
     def test_sponsors_rotate(self):
