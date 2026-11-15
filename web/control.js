@@ -41,7 +41,8 @@ function debounce(fn, ms) {
 // Plain-words names for the {{...}} codes, so nobody has to read or remember them.
 function codeLabel(code) {
   const c = code.slice(2, -2).trim(), low = c.toLowerCase();
-  const fixed = { time: "Time (12-hour)", time24: "Time (24-hour)", date: "Date", clock: "Clock (Global)", timer: "Timer (Global)" };
+  const fixed = { time: "Time (12-hour)", time24: "Time (24-hour)", date: "Date", clock: "Clock (Global)", timer: "Timer (Global)",
+    "match.teama": "Team A", "match.teamb": "Team B", "map.n": "Map number", "match.bestof": "Best of" };
   if (fixed[low]) return fixed[low];
   let m = c.match(/^countdown:\s*(\d{1,2}):(\d{2})$/i);
   if (m) { const hh = +m[1]; return `Countdown to ${(hh % 12) || 12}:${m[2]} ${hh < 12 ? "AM" : "PM"}`; }

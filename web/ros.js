@@ -175,7 +175,7 @@ const Ros = (() => {
     const bo = [1, 3, 5, 7].map(n => `<option value="${n}"${t.best_of === n ? " selected" : ""}>Best of ${n}</option>`).join("");
     let html = `<div class="rb-title"><input id="rb-name" value="${esc(t.name)}" spellcheck="false">
       <label class="sel">Game <select id="rb-game">${games}</select></label><label class="sel">Series <select id="rb-bo">${bo}</select></label></div>
-      <p class="mut small">Blocks group segments. Each segment and block has its own text colour. Fixed segments have a set length; <span style="color:var(--yellow)">game</span> segments last as long as the game does, and everything after them moves when they end. Text can use {{Match.TeamA}}, {{Match.TeamB}}, {{Map.N}}, {{Match.BestOf}}.</p>
+      <p class="mut small">Blocks group segments. Each segment and block has its own text colour. Fixed segments have a set length; <span style="color:var(--yellow)">game</span> segments last as long as the game does, and everything after them moves when they end. Titles and notes can name the teams, the map number and the series length: they fill in from tonight's match.</p>
       <datalist id="rb-gfx">${((R.engine && R.engine.graphics) || []).map(g => `<option value="${esc(g.name)}">`).join("")}</datalist>`;
     t.blocks.forEach((b, bi) => {
       const total = b.segments.reduce((n, s) => n + (+s.mins || 0), 0);
