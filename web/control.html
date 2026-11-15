@@ -13,19 +13,22 @@
 <header id="top">
   <button class="side-toggle" id="side-toggle" title="Hide the side panel (icons only)" aria-label="Hide the side panel" aria-expanded="true"></button>
   <button class="brand" id="brand" title="Workspaces"><img src="assets-ui/badge.png" alt=""><span><b>CHUD</b> GFX BABY</span></button>
-  <div class="ws-chip"><button id="ws-pic" class="ws-pic" title="Workspaces"></button><input id="project-name" class="project-name" title="The workspace's name" spellcheck="false"></div>
+  <div class="ws-chip"><button id="ws-pic" class="ws-pic" title="Workspaces"></button><div class="ws-text"><input id="project-name" class="project-name" title="The workspace's name" spellcheck="false"><small id="ws-sub" class="ws-sub"></small></div></div>
   <nav id="tabs">
     <button data-tab="home" hidden>Home</button>
+    <div class="nav-group">Live</div>
     <button data-tab="control">Control</button>
+    <button data-tab="ros">Run of show</button>
+    <button data-tab="cameras">Camera Control Room</button>
+    <button data-tab="stream">Stream</button>
+    <div class="nav-group">Build</div>
     <button data-tab="composer">Composer</button>
+    <button data-tab="builder">HUD Builder</button>
+    <div class="nav-group">Event setup</div>
     <button data-tab="global">Global</button>
     <button data-tab="teams">Teams</button>
     <button data-tab="tournament">Tournament</button>
     <button data-tab="schedule">Upcoming Schedule</button>
-    <button data-tab="ros">Run of show</button>
-    <button data-tab="cameras">Camera Control Room</button>
-    <button data-tab="stream">Stream</button>
-    <button data-tab="builder">HUD Builder</button>
     <div class="extras" id="extras">
       <button class="extras-btn" id="extras-btn" aria-haspopup="true" aria-expanded="false">Extras <span class="caret">▾</span></button>
       <div class="extras-menu" id="extras-menu" hidden>
@@ -45,6 +48,12 @@
     <span id="version" class="muted small"></span>
   </div>
 </header>
+<div id="crumb" class="crumb">
+  <span class="crumb-ic" id="crumb-ic" aria-hidden="true"></span>
+  <span class="crumb-ws" id="crumb-ws"></span><span class="crumb-sep" aria-hidden="true">/</span><b class="crumb-page" id="crumb-page"></b>
+  <span class="spacer"></span>
+  <span class="crumb-status" id="crumb-status" title="Graphics on the Program output"></span>
+</div>
 
 <!-- APPEARANCE: the look and highlight colour (appearance.js) -->
 <main id="page-appearance" class="page" hidden>

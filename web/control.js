@@ -195,6 +195,11 @@ function showTab(name) {
   $("#extras-btn").firstChild.textContent = extra ? extra.textContent + " " : "Extras ";
   extrasMenu(false);
   for (const p of document.querySelectorAll(".page")) p.hidden = p.id !== "page-" + name;
+  // The bar over the page: workspace / page, with the page's icon.
+  const tabBtn = document.querySelector(`#tabs button[data-tab="${name}"]`);
+  const label = tabBtn ? tabBtn.textContent.trim() : "";
+  $("#crumb-page").textContent = $("#ws-sub").textContent = label;
+  $("#crumb-ic").dataset.tab = name;
   try { localStorage.setItem("gfx-tab", name); } catch (e) { /* private window */ }
   if (pages[name] && pages[name].shown) pages[name].shown();
   if (location.hash !== "#" + name) history.replaceState(null, "", "#" + name);
@@ -220,6 +225,10 @@ const projectName = $("#project-name");
 projectName.addEventListener("change", () => api("/api/project", { name: projectName.value }));
 App.on(s => {
   if (document.activeElement !== projectName) projectName.value = s.project.name;
+  $("#crumb-ws").textContent = s.project.name;
+  const live = (s.live.program.on || []).length, st = $("#crumb-status");
+  st.textContent = live ? `${live} on air` : "Nothing on air";
+  st.classList.toggle("live", !!live);
   document.title = `${s.project.name} · Chud GFX Baby`;
   const net = $("#net");
   const addr = s.app.addresses[0];
