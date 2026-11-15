@@ -611,3 +611,11 @@ table.sheet td.c:hover { background: #1d3b5e; }
 .colours input { width: 30px; height: 26px; padding: 0; }
 .rb-right .li input { width: 70px; text-align: right; }
 .ws-pick { display: inline-flex; align-items: center; gap: 6px; } .ws-pick select { max-width: 200px; }
+
+/* OBS Studio */
+.obs-pill.live { color: var(--pgm); border-color: var(--pgm); }
+.obs-strip { display: flex; align-items: center; gap: 8px; padding: 6px 8px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; flex-wrap: wrap; }
+.obs-strip .obs-label { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: .06em; }
+.obs-scenes { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
+.obs-scenes button.pgm { border-color: var(--pgm); color: var(--pgm); }
+.obs-scenes button.pvw { border-color: var(--pvw); color: var(--pvw); }

@@ -710,3 +710,72 @@ $("#ws-pick").addEventListener("change", async e => {
 });
 $("#ws-pick").addEventListener("focus", fillWorkspacePicker);
 setTimeout(fillWorkspacePicker, 800);
+
+
+// --- OBS Studio: status, Control strip, Outputs settings -------------------------------
+(function obsPanel() {
+  const o = () => (App.state && App.state.obs) || {};
+  const post = (path, body) => api(path, body).catch(() => {});
+  function pill() {
+    const s = o(), el = $("#obs-pill");
+    el.hidden = !s.enabled;
+    el.textContent = !s.connected ? "OBS: not connected" : `OBS: ${s.program || "?"}` + (s.streaming ? "  ● LIVE" : "") + (s.recording ? "  ● REC" : "");
+    el.classList.toggle("live", !!s.streaming);
+    el.title = s.connected ? "OBS Studio" : (s.error || "OBS isn't connected");
+  }
+  function strip() {
+    const s = o(), box = $("#obs-strip");
+    box.hidden = !s.connected;
+    if (!s.connected) return;
+    const sig = JSON.stringify([s.scenes, s.program, s.preview, s.studio, s.streaming, s.recording]);
+    if (box.dataset.sig === sig) return;
+    box.dataset.sig = sig;
+    box.replaceChildren(
+      h("span", { class: "obs-label" }, "OBS"),
+      h("div", { class: "obs-scenes" }, (s.scenes || []).map(n => h("button", {
+        class: "small" + (n === s.program ? " pgm" : "") + (s.studio && n === s.preview ? " pvw" : ""),
+        title: s.studio ? "Put on OBS Preview (Studio Mode)" : "Switch OBS to this scene",
+        onclick: () => post("/api/obs/scene", { name: n, preview: !!s.studio }) }, n))),
+      s.studio ? h("button", { class: "small", onclick: () => post("/api/obs/transition", {}) }, "Transition") : null,
+      h("button", { class: "small" + (s.streaming ? " danger" : ""), onclick: () => { if (!s.streaming || confirm("Stop the stream in OBS?")) post("/api/obs/toggle", { what: "stream" }); } }, s.streaming ? "Stop stream" : "Start stream"),
+      h("button", { class: "small" + (s.recording ? " danger" : ""), onclick: () => post("/api/obs/toggle", { what: "record" }) }, s.recording ? "Stop recording" : "Record"));
+  }
+  let filled = false;
+  function settings() {
+    const s = o();
+    $("#obs-status").textContent = !s.enabled ? "Off" : s.connected ? `Connected · ${s.program}` : (s.error || "Connecting…");
+    if (!filled && App.state) {
+      filled = true;
+      $("#obs-on").checked = !!s.enabled;
+      $("#obs-host").value = s.host || "127.0.0.1";
+      $("#obs-port").value = s.port || 4455;
+      $("#obs-pass").placeholder = s.hasPassword ? "Saved (type to change)" : "From OBS's Show Connect Info";
+      follow();
+    }
+  }
+  function rules() { return o().follow || []; }
+  function follow() {
+    const list = window._obsFollow = (window._obsFollow || rules()).map(r => ({ ...r }));
+    const comps = App.state.project.compositions || [], scenes = o().scenes || [];
+    const save = () => post("/api/obs/settings", { follow: window._obsFollow });
+    $("#obs-follow").replaceChildren(...list.map((r, i) => h("div", { class: "row-gap", style: { marginBottom: "6px" } },
+      h("select", { onchange: e => { r.scene = e.target.value; save(); } }, h("option", { value: "" }, "OBS scene…"),
+        [...new Set([...scenes, r.scene].filter(Boolean))].map(n => h("option", { value: n, selected: r.scene === n }, n))),
+      h("select", { onchange: e => { r.action = e.target.value; save(); } }, [["in", "takes in"], ["out", "takes out"]].map(([v, t]) => h("option", { value: v, selected: (r.action || "in") === v }, t))),
+      h("select", { onchange: e => { r.comp = e.target.value; save(); } }, h("option", { value: "" }, "graphic…"),
+        comps.map(c => h("option", { value: c.id, selected: r.comp === c.id }, c.name))),
+      h("button", { class: "small danger", onclick: () => { list.splice(i, 1); save(); follow(); } }, "×"))));
+  }
+  $("#obs-follow-add").addEventListener("click", () => { window._obsFollow = [...(window._obsFollow || []), { scene: "", action: "in", comp: "" }]; follow(); });
+  $("#obs-save").addEventListener("click", async () => {
+    await api("/api/obs/settings", { enabled: $("#obs-on").checked, host: $("#obs-host").value.trim() || "127.0.0.1",
+      port: +$("#obs-port").value || 4455, password: $("#obs-pass").value });
+    $("#obs-pass").value = "";
+    toast("OBS settings saved");
+  });
+  $("#obs-add").addEventListener("click", async () => {
+    if (!o().connected) return toast("Connect to OBS first", true);
+    try { await api("/api/obs/add-source", {}); toast(`Added to OBS scene "${o().program}"`); } catch (e) { /* toast shown */ }
+  });
+  App.on(() => { pill(); strip(); settings(); });
+})();

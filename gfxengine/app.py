@@ -29,7 +29,7 @@ import uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, quote, unquote, urlparse
 
-from . import appearance, companion, discover, export, globalcfg, media, pack, share, chudhud, ros
+from . import appearance, companion, discover, export, globalcfg, media, pack, share, chudhud, ros, obs
 from .assets import Assets
 from .config import DATA_DIR, WEB_DIR, Settings, safe_join
 from .data import Sources
@@ -80,7 +80,10 @@ class Engine:
                                      legacy=config.LEGACY_WORKSPACE_DIR if legacy_dir is None else legacy_dir)
         self.library_dir = library_dir or config.LIBRARY_DIR
         self.teams = Teams(self.library_dir)
-        self.ros = ros.RunOfShow(os.path.join(DATA_DIR, "run-of-show.json"))   # the evening's segments (Control, left)
+        self.ros = ros.RunOfShow(os.path.join(DATA_DIR, "run-of-show.json"))
+        self.obs = obs.OBS(on_change=self.changed, on_scene=self._obs_scene)   # OBS Studio link (Outputs > OBS)
+        self.obs.configure(self.settings.get().get("obs") or {})
+        self._pgm_on = set()   # the evening's segments (Control, left)
         self.jobs = Jobs()
         self.updater = Updater()
         self.server = None
@@ -136,6 +139,8 @@ class Engine:
             sources = Sources(ws)
             for thing in (ws, live, sources):
                 thing.listeners.append(self.changed)
+            live.listeners.append(self._program_changed)
+            self._pgm_on = set(live.get()["program"]["on"])
             self.ws, self.live, self.assets, self.sources = ws, live, assets, sources
             self.stats = Stats(folder)
             if old[1]:
@@ -214,6 +219,63 @@ class Engine:
                          for name, f in self.feeds.items()}
         return snap
 
+    # --- OBS ---------------------------------------------------------------------
+    def _program_changed(self):
+        """A graphic that just went on Program switches OBS to its scene (Composer > graphic > OBS scene)."""
+        now = set(self.live.get()["program"]["on"])
+        new, self._pgm_on = now - self._pgm_on, now
+        if not new or not self.obs.state["connected"]:
+            return
+        scenes = {c["id"]: c.get("obsScene") for c in self.ws.get().get("compositions", [])}
+        for cid in new:
+            if scenes.get(cid):
+                threading.Thread(target=self._obs_try, args=(self.obs.set_scene, scenes[cid]), daemon=True).start()
+
+    def _obs_scene(self, scene):
+        """OBS switched scene: follow rules take graphics in or out (Outputs > OBS > When OBS shows a scene)."""
+        for rule in (self.settings.get().get("obs") or {}).get("follow") or []:
+            if rule.get("scene") == scene and rule.get("comp"):
+                try:
+                    self.live.program(rule["comp"], rule.get("action", "in") == "in")
+                except Exception as e:
+                    log(f"OBS scene follow: {e}")
+
+    def _obs_try(self, fn, *args):
+        try:
+            fn(*args)
+        except Exception as e:
+            log(f"OBS: {e}")
+
+    def obs_post(self, path, body, local):
+        o = self.obs
+        if path == "/api/obs/settings":
+            if not local:
+                raise ValueError("OBS settings can only be changed on the engine's own PC")
+            cur = dict(self.settings.get().get("obs") or {})
+            for k in ("enabled", "host", "port", "follow"):
+                if k in body:
+                    cur[k] = body[k]
+            if body.get("password"):            # blank keeps the saved one
+                cur["password"] = str(body["password"])
+            if body.get("forget_password"):
+                cur["password"] = ""
+            cur["port"] = int(cur.get("port") or 4455)
+            self.settings.update({"obs": cur})
+            o.configure(cur)
+        elif path == "/api/obs/scene":
+            o.set_scene(str(body.get("name", "")), bool(body.get("preview")))
+        elif path == "/api/obs/transition":
+            o.transition()
+        elif path == "/api/obs/toggle":
+            o.toggle(str(body.get("what")))
+        elif path == "/api/obs/add-source":
+            port = self.settings.get()["http_port"]
+            o.add_browser_source(f"http://127.0.0.1:{port}/output", body.get("scene") or None)
+        else:
+            raise KeyError(path)
+        self.changed()
+        return {"obs": o.public()}
+
     def ros_summary(self):
         """Tonight's match and the graphics, from this engine's own state (what Run of Show needs)."""
         s = self.state()
@@ -281,7 +343,7 @@ class Engine:
             "workspace": {"id": self.workspace_id, "name": project.get("name", ""),
                           "picture": bool(project.get("picture"))},
             "rev": self.ws.rev, "assets_rev": self.assets_rev,
-            "project": project, "live": self.live.get(), "data": self.data_snapshot(),
+            "project": project, "live": self.live.get(), "data": self.data_snapshot(), "obs": {**self.obs.public(), "follow": (self.settings.get().get("obs") or {}).get("follow") or []},
             "global": globalcfg.clean(project.get("global")),
             "teams": self.teams.list(),
             "games": list(GAMES.values()),   # (the games there are HUDs for)
@@ -1105,6 +1167,8 @@ def make_handler(engine):
                 ws, live = engine.ws, engine.live
                 if path.startswith("/api/ros/"):
                     return self._json(engine.ros_post(path, body))
+                if path.startswith("/api/obs/"):
+                    return self._json(engine.obs_post(path, body, local))
                 # --- graphics ---
                 if path == "/api/aep/render":
                     # (an After Effects project with several compositions: the one picked)

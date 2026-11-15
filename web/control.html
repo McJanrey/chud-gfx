@@ -35,6 +35,7 @@
     </div>
   </nav>
   <div class="top-right">
+    <span id="obs-pill" class="pill obs-pill" hidden title="OBS Studio"></span>
     <label class="ws-pick" title="Open another workspace"><span class="muted small">Workspace</span> <select id="ws-pick"></select></label>
     <span id="net" class="pill" title="Other PCs reach this engine at"></span>
     <button id="update" class="update" hidden></button>
@@ -249,6 +250,7 @@
 <main id="page-control" class="page" hidden>
   <aside class="ros-panel" id="ros-panel"></aside>
   <div class="ctl-main">
+  <section class="obs-strip" id="obs-strip" hidden></section>
   <section class="monitors">
     <div class="monitor pvw">
       <div class="mon-head"><span class="tally pvw">PREVIEW</span><span id="pvw-list" class="mon-list"></span>
@@ -386,6 +388,25 @@
 <!-- OUTPUTS -->
 <main id="page-outputs" class="page" hidden>
   <div class="out-grid">
+    <section class="panel" id="obs-box">
+      <div class="panel-head"><h3>OBS Studio</h3><span id="obs-status" class="muted small"></span></div>
+      <div class="pad">
+        <p class="muted small">Connect to OBS (Tools &rsaquo; WebSocket Server Settings in OBS: turn it on, then Show Connect Info for the password).
+          Then GFX Baby shows OBS's scene, LIVE and REC, switches scenes from Control, and can add itself to OBS.</p>
+        <label class="toggle"><input type="checkbox" id="obs-on"> Connect to OBS</label>
+        <div class="grid3" style="margin-top:8px">
+          <label>OBS PC<input id="obs-host" placeholder="127.0.0.1"></label>
+          <label>Port<input id="obs-port" type="number" placeholder="4455"></label>
+          <label>Password<input id="obs-pass" type="password" autocomplete="off"></label>
+        </div>
+        <div class="row-gap" style="margin-top:8px"><button class="primary" id="obs-save">Save and connect</button>
+          <button id="obs-add" title="A 1920x1080 browser source with GFX Baby's Program output, in OBS's current scene">Add GFX Baby to OBS</button></div>
+        <h4 style="margin:16px 0 4px">When OBS shows a scene</h4>
+        <p class="muted small">Take a graphic in or out by itself when OBS switches to a scene. (To switch OBS when a graphic goes on air, pick the scene in Composer &rsaquo; the graphic.)</p>
+        <div id="obs-follow"></div>
+        <button class="small" id="obs-follow-add">+ Add a rule</button>
+      </div>
+    </section>
     <section class="panel">
       <div class="panel-head"><h3>Outputs</h3></div>
       <p class="muted small">Add these as Browser sources (1920×1080) in OBS or vMix. They're see-through, and play the transitions.</p>
