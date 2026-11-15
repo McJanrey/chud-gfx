@@ -144,6 +144,30 @@ class Live:
 
     # --- Program -------------------------------------------------------
 
+    def _remember(self):
+        """Call with the lock held, before a TAKE or Clear Program changes the buses."""
+        self._before = {b: {"on": list(self.state[b]["on"]), "values": copy.deepcopy(self.state[b]["values"])} for b in BUSES}
+
+    def can_undo(self):
+        return getattr(self, "_before", None) is not None
+
+    def undo(self):
+        """Back to how Preview and Program were before the last TAKE or Clear Program (a cut).
+        Once: undoing again does nothing."""
+        with self.lock:
+            before = getattr(self, "_before", None)
+            if not before:
+                return False
+            self._before = None
+            ids = self._ids()
+            for b in BUSES:
+                self.state[b]["on"] = [i for i in before[b]["on"] if i in ids]
+                self.state[b]["values"] = before[b]["values"]
+                self.state[b]["seq"] += 1
+            self._bump_take({"id": "cut", "type": "cut"}, None)
+        self._changed()
+        return True
+
     def take(self, transition=None):
         """What's on Preview goes to Program with a transition (replacing the
         board or lower third there), and comes off Preview. Like a vision mixer,
@@ -154,6 +178,7 @@ class Live:
             cued = list(self.state["preview"]["on"])
             if not cued:
                 return t
+            self._remember()
             was = self.state["program"]["on"]
             self.state["program"]["on"] = self._with(was, cued)
             kinds = {c["id"]: c.get("kind") or "overlay" for c in self.ws.get()["compositions"]}
@@ -215,6 +240,8 @@ class Live:
                 self.state["preview"]["seq"] += 1
             else:
                 t = self._quick(transition)
+                if self.state["program"]["on"]:
+                    self._remember()
                 self.state["program"]["on"] = []
                 self.state["program"]["seq"] += 1
                 self._bump_take(t, None)
@@ -222,7 +249,7 @@ class Live:
 
     def _bump_take(self, t, comps):
         self.state["take"] = {"seq": self.state["take"]["seq"] + 1, "transition": copy.deepcopy(t),
-                              "comps": comps, "at": time.time()}
+                              "comps": comps, "at": time.time(), "undo": self.can_undo()}
 
     def forget(self, cid):
         """A graphic was deleted: take it off both buses."""

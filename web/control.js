@@ -354,7 +354,30 @@ App.on(s => {
   });
   $("#take").addEventListener("click", () => take());
   $("#cut").addEventListener("click", () => take("cut"));
-  $("#pgm-clear").addEventListener("click", () => api("/api/clear", { bus: "program", transition: chosen(App.state) }));
+  // Clearing Program is one click (no "are you sure" mid-show): Undo puts it all back.
+  const undoTake = () => api("/api/undo-take", {});
+  $("#take-undo").addEventListener("click", undoTake);
+  $("#pgm-clear").addEventListener("click", async () => {
+    const had = App.state.live.program.on.length;
+    await api("/api/clear", { bus: "program", transition: chosen(App.state) });
+    if (had) toast("Program cleared", false, { label: "Undo", run: undoTake });
+  });
+  // Time on air since the last TAKE (the engine's clock, so every PC shows the same).
+  // (when the TAKE reached this page; opened mid-show, from the engine's clock at load)
+  let takeSeq = null, takeAt = 0;
+  App.on(s => {
+    const t = s.live.take || {};
+    if (t.seq === takeSeq) return;
+    takeAt = takeSeq === null && t.at && s.data && s.data.now ? Date.now() - (s.data.now - t.at) * 1000 : Date.now();
+    takeSeq = t.seq;
+  });
+  setInterval(() => {
+    const s = App.state, el = $("#pgm-clock");
+    if (!s || App.tab !== "control") return;
+    if (!s.live.program.on.length) { el.textContent = ""; return; }
+    const secs = Math.max(0, Math.floor((Date.now() - takeAt) / 1000));
+    el.textContent = (secs >= 3600 ? Math.floor(secs / 3600) + ":" : "") + String(Math.floor(secs / 60) % 60).padStart(2, "0") + ":" + String(secs % 60).padStart(2, "0");
+  }, 500);
   $("#pvw-clear").addEventListener("click", () => api("/api/clear", { bus: "preview" }));
   // No keyboard shortcuts for TAKE, CUT or transitions (MJ): only the buttons (or a Stream Deck) put things on air.
 
@@ -792,6 +815,7 @@ App.on(s => {
     const names = ids => ids.map(id => (App.comp(id) || {}).name).filter(Boolean).join(", ") || "—";
     $("#pvw-list").textContent = names(s.live.preview.on);
     $("#pgm-list").textContent = names(s.live.program.on);
+    $("#take-undo").disabled = !(s.live.take || {}).undo;
   });
   pages.control = { shown() { if (App.state) { renderRundown(App.state, true); renderFields(App.state, true); } if (typeof Ros !== "undefined") Ros.show("panel", true); } };
 })();

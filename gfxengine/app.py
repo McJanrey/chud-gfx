@@ -1384,6 +1384,8 @@ def make_handler(engine):
                     live.program(body["id"], bool(body.get("on")), body.get("transition") or "animate")
                 elif path == "/api/clear":
                     live.clear(body.get("bus", "program"), body.get("transition") or "animate")
+                elif path == "/api/undo-take":
+                    result = {"undone": live.undo()}
                 # --- transitions, data ---
                 elif path == "/api/transitions":
                     ws.set_transitions(body["transitions"], body.get("default"))

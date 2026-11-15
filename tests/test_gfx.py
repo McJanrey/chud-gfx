@@ -159,6 +159,19 @@ class LiveTests(unittest.TestCase):
         self.ws.close()
         self.assertEqual(Workspace(self.dir, starter="").comp("cx")["kind"], "board")
 
+    def test_undo_last_take_and_clear(self):
+        live = self.live
+        live.cue(self.a["id"]); live.set_values(self.a["id"], {"Name": "Alex"})
+        live.take("cut")
+        live.clear()
+        self.assertEqual(live.get()["program"]["on"], [])
+        self.assertTrue(live.get()["take"]["undo"])
+        self.assertTrue(live.undo())                                  # the clear, undone
+        self.assertEqual(live.get()["program"]["on"], [self.a["id"]])
+        self.assertEqual(live.get()["program"]["values"][self.a["id"]], {"Name": "Alex"})
+        self.assertFalse(live.undo())                                 # once only
+        self.assertFalse(live.get()["take"]["undo"])
+
     def test_delete_takes_it_off(self):
         self.live.cue(self.a["id"])
         self.live.take("cut")

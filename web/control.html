@@ -276,10 +276,11 @@
         <span><input id="stinger-delay" type="number" min="0" max="60000" step="50" placeholder="0"> ms</span></label>
       <button id="take" class="take" title="Preview to Program with the transition above">TAKE</button>
       <button id="cut" class="cut" title="Preview to Program at once">CUT</button>
-      <button id="pgm-clear" class="ghost" title="Take everything off Program">Clear Program</button>
+      <div class="tb-row"><button id="pgm-clear" class="ghost small" title="Take everything off Program">Clear Program</button>
+      <button id="take-undo" class="ghost small" title="Program and Preview back to how they were before the last TAKE or Clear Program" disabled>Undo</button></div>
     </div>
     <div class="monitor pgm">
-      <div class="mon-head"><span class="tally pgm">PROGRAM</span><span id="pgm-list" class="mon-list"></span>
+      <div class="mon-head"><span class="tally pgm">PROGRAM</span><span id="pgm-list" class="mon-list"></span><span id="pgm-clock" class="mon-clock" title="Time since the last TAKE"></span>
         <a id="pgm-open" class="ghost small btn" target="_blank" title="Open the Program output in a window">Open ↗</a></div>
       <div class="mon-box"><iframe id="mon-pgm" title="Program"></iframe></div>
     </div>
