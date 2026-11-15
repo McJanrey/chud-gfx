@@ -230,6 +230,21 @@ label > input, label > select, label > textarea { margin-top: 3px; color: var(--
 .canvas.black { background: #000; } .canvas.grey { background: #555; } .canvas.white { background: #fff; }
 #canvas-stage { position: absolute; transform-origin: 0 0; outline: 1px dashed #ffffff40; }
 #canvas-sel { position: absolute; inset: 0; pointer-events: none; }
+/* rulers (in the graphic's pixels, following zoom) and guides */
+.ruler { position: absolute; z-index: 5; background: #17191c; display: none; }
+.ruler.rx { left: 20px; top: 0; width: calc(100% - 20px); height: 20px; cursor: row-resize; border-bottom: 1px solid var(--line); }
+.ruler.ry { top: 20px; left: 0; height: calc(100% - 20px); width: 20px; cursor: col-resize; border-right: 1px solid var(--line); }
+.ruler-corner { position: absolute; z-index: 6; left: 0; top: 0; width: 20px; height: 20px; padding: 0; border: 0; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  background: #17191c; display: none; cursor: pointer; }
+.canvas.rulers .ruler, .canvas.rulers .ruler-corner { display: block; }
+#canvas-guides { position: absolute; inset: 0; pointer-events: none; z-index: 3; }
+.gd { position: absolute; pointer-events: auto; }
+.gd::after { content: ""; position: absolute; background: #ff3ec8; }
+.gd.vx { top: 0; bottom: 0; width: 7px; margin-left: -3px; cursor: col-resize; }
+.gd.vx::after { left: 3px; top: 0; bottom: 0; width: 1px; }
+.gd.hy { left: 0; right: 0; height: 7px; margin-top: -3px; cursor: row-resize; }
+.gd.hy::after { top: 3px; left: 0; right: 0; height: 1px; }
+.gd-tip { position: absolute; z-index: 7; padding: 2px 6px; border-radius: 4px; background: #ff3ec8; color: #fff; font-size: 11px; pointer-events: none; white-space: nowrap; }
 .canvas.can-pan { cursor: grab; } .canvas.panning, .canvas.panning * { cursor: grabbing !important; }
 #canvas-zoom { min-width: 52px; font-variant-numeric: tabular-nums; }
 .sel-box { position: absolute; border: 1px solid var(--accent); pointer-events: none; }

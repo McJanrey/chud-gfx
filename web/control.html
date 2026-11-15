@@ -403,6 +403,7 @@
       <span id="canvas-name" class="strong" title="Double-click to rename"></span>
       <span class="muted small" id="canvas-pos"></span>
       <div class="spacer"></div>
+      <button class="small" id="canvas-rulers" title="Rulers on the canvas edges (Shift+R). Drag from a ruler to add a guide, drag a guide off the canvas to remove it">Rulers</button>
       <button class="small" id="canvas-zoom" title="Zoom: Ctrl + scroll wheel. Click (or Ctrl+0) to fit the whole graphic">Fit</button>
       <button class="small" id="anim-in" title="Play the layers' In animation">▶ In</button>
       <button class="small" id="anim-out" title="Play the layers' Out animation">Out</button>
@@ -414,7 +415,9 @@
       <button class="small" id="comp-dup">Duplicate</button>
       <button class="small danger" id="comp-del">Delete</button>
     </div>
-    <div id="canvas" class="canvas"><div id="canvas-stage" class="gfx-stage"></div><div id="canvas-sel"></div></div>
+    <div id="canvas" class="canvas"><div id="canvas-stage" class="gfx-stage"></div><div id="canvas-guides"></div><div id="canvas-sel"></div>
+      <canvas id="ruler-x" class="ruler rx" title="Drag down from here for a guide"></canvas><canvas id="ruler-y" class="ruler ry" title="Drag right from here for a guide"></canvas>
+      <button type="button" id="ruler-corner" class="ruler-corner" title="Clear the guides (Ctrl+Z brings them back)" aria-label="Clear the guides"></button></div>
   </section>
   <aside class="props panel" id="props"></aside>
 </main>

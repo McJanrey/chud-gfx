@@ -407,6 +407,147 @@
     changed({ props: true });
   }
 
+  // --- rulers and guides (Shift+R) -----------------------------------------------------
+  // Rulers along the top and left in the graphic's own pixels (1920 × 1080), following
+  // zoom and pan, the picked layer's extent marked on them and the mouse's place.
+  // Drag from a ruler for a guide (comp.guides {x: [], y: []}); layers snap to guides;
+  // drag a guide back onto a ruler or off the canvas to remove it.
+  const rx = $("#ruler-x"), ry = $("#ruler-y"), guidesEl = $("#canvas-guides");
+  let rulersOn = true, mouseAt = null;
+  try { rulersOn = localStorage.getItem("gfx-rulers") !== "0"; } catch (e) { /* */ }
+  function setRulers(on) {
+    rulersOn = on;
+    canvas.classList.toggle("rulers", on);
+    $("#canvas-rulers").classList.toggle("on", on);
+    try { localStorage.setItem("gfx-rulers", on ? "1" : "0"); } catch (e) { /* */ }
+    drawRulers();
+  }
+  $("#canvas-rulers").addEventListener("click", () => setRulers(!rulersOn));
+  function niceStep(px) {
+    for (const s of [1, 2, 5, 10, 20, 25, 50, 100, 200, 250, 500, 1000, 2000]) if (s * scale >= px) return s;
+    return 5000;
+  }
+  function drawRuler(cv, horiz) {
+    const dpr = window.devicePixelRatio || 1, W2 = cv.clientWidth, H2 = cv.clientHeight;
+    if (!W2 || !H2) return;
+    if (cv.width !== Math.round(W2 * dpr) || cv.height !== Math.round(H2 * dpr)) { cv.width = Math.round(W2 * dpr); cv.height = Math.round(H2 * dpr); }
+    const g = cv.getContext("2d");
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    g.clearRect(0, 0, W2, H2);
+    const len = horiz ? W2 : H2, origin = (horiz ? offX : offY) - 20;   // (the ruler starts 20 px in, past the corner)
+    const toPx = v => origin + v * scale;
+    // The graphic's own area, a little lighter.
+    g.fillStyle = "rgba(255,255,255,.04)";
+    const a0 = toPx(0), a1 = toPx(horiz ? GFX.W : GFX.H);
+    if (horiz) g.fillRect(a0, 0, a1 - a0, H2); else g.fillRect(0, a0, W2, a1 - a0);
+    // The picked layers' extent.
+    const ls = comp ? picked() : [];
+    if (ls.length) {
+      const lo = Math.min(...ls.map(o => horiz ? o.x : o.y)), hi = Math.max(...ls.map(o => horiz ? o.x + o.w : o.y + o.h));
+      g.fillStyle = "rgba(242,140,40,.28)";
+      if (horiz) g.fillRect(toPx(lo), 0, toPx(hi) - toPx(lo), H2); else g.fillRect(0, toPx(lo), W2, toPx(hi) - toPx(lo));
+    }
+    const step = niceStep(70), minor = step / (step % 5 === 0 ? 5 : step % 2 === 0 ? 2 : 1);
+    const first = Math.floor(-origin / scale / minor) * minor, last = (len - origin) / scale;
+    g.strokeStyle = "rgba(255,255,255,.28)";
+    g.fillStyle = "rgba(255,255,255,.62)";
+    g.font = "10px Inter, system-ui, sans-serif";
+    g.lineWidth = 1;
+    g.beginPath();
+    for (let v = first; v <= last; v += minor) {
+      const p = Math.round(toPx(v)) + 0.5, major = Math.abs(v / step - Math.round(v / step)) < 1e-6;
+      const t = major ? 20 : 5;
+      if (horiz) { g.moveTo(p, 20 - t); g.lineTo(p, 20); } else { g.moveTo(20 - t, p); g.lineTo(20, p); }
+      if (major) {
+        const label = String(Math.round(v));
+        if (horiz) g.fillText(label, p + 3, 10);
+        else { g.save(); g.translate(10, p - 3); g.rotate(-Math.PI / 2); g.fillText(label, 0, 0); g.restore(); }
+      }
+    }
+    g.stroke();
+    // Where the mouse is.
+    if (mouseAt) {
+      const p = Math.round(toPx(horiz ? mouseAt[0] : mouseAt[1])) + 0.5;
+      g.strokeStyle = "#f28c28";
+      g.beginPath();
+      if (horiz) { g.moveTo(p, 0); g.lineTo(p, 20); } else { g.moveTo(0, p); g.lineTo(20, p); }
+      g.stroke();
+    }
+  }
+  function drawRulers() {
+    if (rulersOn) { drawRuler(rx, true); drawRuler(ry, false); }
+    drawGuides();
+  }
+  const guidesOf = () => (comp && comp.guides) || { x: [], y: [] };
+  function drawGuides(tip) {
+    const gs = guidesOf();
+    guidesEl.replaceChildren(
+      ...(gs.x || []).map((v, i) => guideEl("x", v, i)),
+      ...(gs.y || []).map((v, i) => guideEl("y", v, i)),
+      tip || "");
+  }
+  function guideEl(axis, v, i) {
+    const [sx, sy] = toScreen(axis === "x" ? v : 0, axis === "y" ? v : 0);
+    const el2 = h("div", { class: "gd " + (axis === "x" ? "vx" : "hy"), title: `${Math.round(v)} px · drag to move, drag off the canvas to remove, right-click to remove`,
+      style: axis === "x" ? { left: sx + "px" } : { top: sy + "px" },
+      oncontextmenu: e => { e.preventDefault(); snapshot(); comp.guides[axis].splice(i, 1); changed({ keepList: true }); drawGuides(); },
+      onmousedown: e => { if (e.button !== 0) return; e.preventDefault(); e.stopPropagation(); dragGuide(axis, i, e); } });
+    return el2;
+  }
+  // Moving a guide (i: its index, or null for a new one off a ruler).
+  function dragGuide(axis, i, e0) {
+    if (!comp) return;
+    snapshot();
+    comp.guides = comp.guides || { x: [], y: [] };
+    comp.guides.x = comp.guides.x || []; comp.guides.y = comp.guides.y || [];
+    const list = comp.guides[axis];
+    if (i == null) { list.push(0); i = list.length - 1; }
+    const r = canvas.getBoundingClientRect();
+    const at = ev => {
+      let v = axis === "x" ? (ev.clientX - r.left - offX) / scale : (ev.clientY - r.top - offY) / scale;
+      // (snaps to the canvas' edges and middle and the picked layer's edges; Shift: whole tens)
+      const cands = axis === "x" ? [0, GFX.W / 2, GFX.W] : [0, GFX.H / 2, GFX.H];
+      for (const o of picked()) cands.push(...(axis === "x" ? [o.x, o.x + o.w / 2, o.x + o.w] : [o.y, o.y + o.h / 2, o.y + o.h]));
+      const near = cands.find(c => Math.abs(c - v) * scale < 6);
+      v = near != null ? near : ev.shiftKey ? Math.round(v / 10) * 10 : Math.round(v);
+      return v;
+    };
+    const off = ev => (axis === "x" ? ev.clientX < r.left + 20 || ev.clientX > r.right : ev.clientY < r.top + 20 || ev.clientY > r.bottom);
+    const move = ev => {
+      list[i] = at(ev);
+      const gone = off(ev);
+      drawGuides(h("div", { class: "gd-tip", style: axis === "x" ? { left: (ev.clientX - r.left + 10) + "px", top: "26px" } : { top: (ev.clientY - r.top + 8) + "px", left: "26px" } },
+        gone ? "Let go to remove" : `${axis === "x" ? "X" : "Y"} ${list[i]}`));
+    };
+    const up = ev => {
+      removeEventListener("mousemove", move);
+      removeEventListener("mouseup", up);
+      if (off(ev)) list.splice(i, 1);
+      changed({ keepList: true });
+      drawGuides();
+    };
+    move(e0);
+    addEventListener("mousemove", move);
+    addEventListener("mouseup", up);
+  }
+  rx.addEventListener("mousedown", e => { if (e.button === 0) { e.preventDefault(); e.stopPropagation(); dragGuide("y", null, e); } });
+  ry.addEventListener("mousedown", e => { if (e.button === 0) { e.preventDefault(); e.stopPropagation(); dragGuide("x", null, e); } });
+  $("#ruler-corner").addEventListener("click", () => {
+    if (!comp || !(guidesOf().x || []).length && !(guidesOf().y || []).length) return;
+    snapshot(); comp.guides = { x: [], y: [] }; changed({ keepList: true }); drawGuides();
+    toast("Guides cleared (Ctrl+Z brings them back)");
+  });
+  canvas.addEventListener("mousemove", e => {
+    const r = canvas.getBoundingClientRect();
+    mouseAt = [(e.clientX - r.left - offX) / scale, (e.clientY - r.top - offY) / scale];
+    if (rulersOn) { drawRuler(rx, true); drawRuler(ry, false); }
+  });
+  canvas.addEventListener("mouseleave", () => { mouseAt = null; if (rulersOn) { drawRuler(rx, true); drawRuler(ry, false); } });
+  addEventListener("keydown", e => {
+    if (e.shiftKey && !e.ctrlKey && !e.metaKey && !e.altKey && e.key.toLowerCase() === "r" && !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)
+        && !document.activeElement.isContentEditable && !$("#page-composer").hidden) { e.preventDefault(); setRulers(!rulersOn); }
+  });
+
   // --- the left side: a rail of panels, like Canva ----------------------------------
   const page = $("#page-composer");
   let pane = "layers";
@@ -930,6 +1071,7 @@
   const HANDLES = ["nw", "n", "ne", "e", "se", "s", "sw", "w"];
   function drawSelection(guides) {
     selLayer.replaceChildren();
+    if (typeof drawRulers === "function") drawRulers();
     for (const id of multi) {
       const o = layerById(id);
       if (!o || id === selected) continue;
@@ -967,7 +1109,7 @@
   // Snapping to the canvas' edges and middle and other layers' edges and middles.
   function snap(l, moving, resizing) {
     const tol = 6 / scale;
-    const xs = [0, GFX.W / 2, GFX.W], ys = [0, GFX.H / 2, GFX.H];
+    const xs = [0, GFX.W / 2, GFX.W, ...((comp.guides || {}).x || [])], ys = [0, GFX.H / 2, GFX.H, ...((comp.guides || {}).y || [])];
     for (const o of comp.layers) {
       if (o.id === l.id || o.visible === false || (moving && multi.has(o.id))) continue;   // never snap to layers moving along
       xs.push(o.x, o.x + o.w / 2, o.x + o.w);
@@ -1760,7 +1902,7 @@
       hudSection(),
       linksSection(),
       h("div", { class: "sect" }, h("h3", {}, "Shortcuts"),
-        h("p", { class: "muted small" }, "Drag to move (Shift: straight, Ctrl: no snapping), handles to resize (snaps too; Shift: keep shape, Ctrl: no snapping). Arrows nudge (Shift: 10). Ctrl+C / Ctrl+X copy or cut (Ctrl / Shift + click picks more) and Ctrl+V pastes, into this graphic or any other. Ctrl+D duplicates, Delete removes, Ctrl+Z / Ctrl+Shift+Z undo / redo. Alt+click picks the layer underneath (or one layer of a group; double-click goes inside a group). Ctrl+G groups, Ctrl+Shift+G ungroups. Ctrl+] / Ctrl+[ bring forward / send backward (with Alt: to front / to back). In the layers list: double-click renames, right-click opens the layer menu, the lock keeps a layer from being picked on the canvas. Ctrl+scroll zooms (Ctrl+0 fits, Ctrl+1 is 100%), scroll or middle-drag or Space+drag moves around while zoomed.")));
+        h("p", { class: "muted small" }, "Drag to move (Shift: straight, Ctrl: no snapping), handles to resize (snaps too; Shift: keep shape, Ctrl: no snapping). Arrows nudge (Shift: 10). Ctrl+C / Ctrl+X copy or cut (Ctrl / Shift + click picks more) and Ctrl+V pastes, into this graphic or any other. Ctrl+D duplicates, Delete removes, Ctrl+Z / Ctrl+Shift+Z undo / redo. Alt+click picks the layer underneath (or one layer of a group; double-click goes inside a group). Ctrl+G groups, Ctrl+Shift+G ungroups. Shift+R shows the rulers: drag from one for a guide (layers snap to it), drag it off the canvas to remove it. Ctrl+] / Ctrl+[ bring forward / send backward (with Alt: to front / to back). In the layers list: double-click renames, right-click opens the layer menu, the lock keeps a layer from being picked on the canvas. Ctrl+scroll zooms (Ctrl+0 fits, Ctrl+1 is 100%), scroll or middle-drag or Space+drag moves around while zoomed.")));
   }
   // --- Add to a HUD: this graphic as a game HUD's own overlay -------------------
   let hudGame = "rl";
@@ -1857,6 +1999,7 @@
     if (what === "assets") { if (selected) renderProps(); return; }
     adopt(false);
   });
+  setRulers(rulersOn);
   renderShapeTiles();
   renderFrameTiles();
   renderLiveTiles();

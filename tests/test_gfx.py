@@ -862,7 +862,7 @@ class ServerTests(unittest.TestCase):
         settings.update({"http_port": 8796})
         engine = Engine(settings, os.path.join(tmp, "workspaces"), starter=os.path.join(ROOT, "starter"),
                         library_dir=os.path.join(tmp, "library"), legacy_dir=os.path.join(tmp, "none"))
-        engine.updater.check_in_background = lambda: None
+        engine.updater.check_in_background = lambda **k: None
         start(engine)
         base = "http://127.0.0.1:8796"
 
@@ -1306,7 +1306,7 @@ class EnginePairingTests(unittest.TestCase):
         settings.update({"http_port": port})
         engine = Engine(settings, os.path.join(tmp, "workspaces"), starter=os.path.join(ROOT, "starter"),
                         library_dir=os.path.join(tmp, "library"), legacy_dir=os.path.join(tmp, "none"))
-        engine.updater.check_in_background = lambda: None
+        engine.updater.check_in_background = lambda **k: None
         start(engine)
         self.addCleanup(engine.server.stop)
         return engine, f"http://127.0.0.1:{port}"

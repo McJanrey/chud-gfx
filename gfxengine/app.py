@@ -1503,7 +1503,7 @@ def start(engine):
     port = s["http_port"]
     engine.server = Server(engine, port, s.get("network_address") or "")
     clean_up_old_update()
-    engine.updater.check_in_background()
+    engine.updater.check_in_background(every=600, on_change=engine.changed)
     threading.Thread(target=engine.sources.refresh, daemon=True).start()
     log(f"GFX Baby {engine.updater.current} running - control panel http://localhost:{port}/control")
     log(f"Program output (browser source, 1920x1080): http://localhost:{port}/output")

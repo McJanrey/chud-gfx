@@ -89,8 +89,19 @@ class Updater:
 
     # --- checking --------------------------------------------------------
 
-    def check_in_background(self):
-        threading.Thread(target=self.check, daemon=True).start()
+    def check_in_background(self, every=0, on_change=None):
+        """Checks now, and again every `every` seconds (so a new version is offered while the
+        app stays open); on_change() after each check, for the pages."""
+        def run():
+            while True:
+                if self.status not in ("downloading", "installing"):
+                    self.check()
+                    if on_change:
+                        on_change()
+                if not every:
+                    return
+                time.sleep(every)
+        threading.Thread(target=run, daemon=True).start()
 
     def check(self):
         self.status, self.error, self.check_error = "checking", None, None
