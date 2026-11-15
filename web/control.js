@@ -248,7 +248,7 @@ $("#update").addEventListener("click", () => api("/api/update/install"));
   $("#pgm-clear").addEventListener("click", () => api("/api/clear", { bus: "program", transition: chosen(App.state) }));
   $("#pvw-clear").addEventListener("click", () => api("/api/clear", { bus: "preview" }));
   addEventListener("keydown", e => {
-    if (App.tab !== "control" || /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (App.tab !== "control" || (/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) || document.activeElement.isContentEditable) || e.ctrlKey || e.metaKey || e.altKey) return;
     if (e.code === "Space") { e.preventDefault(); take(); }
     else if (e.key === "Enter") { e.preventDefault(); take("cut"); }
     else if (/^[1-9]$/.test(e.key)) {

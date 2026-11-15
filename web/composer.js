@@ -313,7 +313,7 @@
   }, true);
   canvas.addEventListener("auxclick", e => { if (e.button === 1) e.preventDefault(); });
   addEventListener("keydown", e => {
-    if (App.tab !== "composer" || /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
+    if (App.tab !== "composer" || (/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) || document.activeElement.isContentEditable)) return;
     const mod = e.ctrlKey || e.metaKey;
     if (e.key === " " && !mod) { e.preventDefault(); if (!spaceDown) { spaceDown = true; canvas.classList.add("can-pan"); } return; }
     if (!mod) return;
@@ -485,7 +485,7 @@
   });
 
   addEventListener("keydown", e => {
-    if (App.tab !== "composer" || !comp || /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
+    if (App.tab !== "composer" || !comp || (/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) || document.activeElement.isContentEditable)) return;
     const l = layerById(selected);
     const mod = e.ctrlKey || e.metaKey;
     if (mod && e.key.toLowerCase() === "z") {
