@@ -453,3 +453,8 @@ html.side-mini #tabs .nav-group { font-size: 0; margin: 8px 6px; gap: 0; }
 :is(html:not([data-look]), html[data-look="room"]) .drop, :is(html:not([data-look]), html[data-look="room"]) .logo-drop { border: 1px dashed var(--x-line2) !important; border-radius: 10px !important; }
 :is(html:not([data-look]), html[data-look="room"]) #top .project-name { min-height: 0 !important; background-color: transparent !important; border-color: transparent !important; }
 :is(html:not([data-look]), html[data-look="room"]) #top .project-name:focus { border-color: var(--x-line2) !important; }
+
+/* Output check in the page bar: green when Program is connected (OBS shows it), amber when not. */
+.crumb-outs.ok::before { background-color: var(--x-green); }
+.crumb-outs.warn { color: var(--warn, #e5a53a); }
+.crumb-outs.warn::before { background-color: var(--warn, #e5a53a); }

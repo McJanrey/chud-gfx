@@ -206,6 +206,17 @@ class Engine:
             self.version += 1
             self._cond.notify_all()
 
+    # --- outputs watching (OBS browser sources and the like) ------------------
+    # {"program": 2, "comp:c12": 1, ...}: how many of each are connected now.
+
+    def output_seen(self, kind, n):
+        with self._cond:
+            outs = self.__dict__.setdefault("outputs", {})
+            outs[kind] = outs.get(kind, 0) + n
+            if outs[kind] <= 0:
+                del outs[kind]
+        self.changed()
+
     def wait(self, timeout, version=None):
         """Waits for a change (or, given the version last seen, returns at once if it's already changed)."""
         with self._cond:
@@ -382,6 +393,7 @@ class Engine:
             "games": list(GAMES.values()),   # (the games there are HUDs for)
             "camera_looks": s.get("camera_looks") or [],
             "fonts": self._fonts(), "jobs": self.jobs.list(), "update": self.updater.info(),
+            "outputs": dict(getattr(self, "outputs", {})),
         }
 
     def _fonts(self):
@@ -1024,8 +1036,18 @@ def make_handler(engine):
                     self.wfile.write(chunk)
                     left -= len(chunk)
 
-        def _stream(self):
-            """Server-sent events: the whole state whenever it changes (at most 30 a second)."""
+        def _stream(self, out=""):
+            """Server-sent events: the whole state whenever it changes (at most 30 a second).
+            out: what's watching ("program", "preview", "comp:<id>", "hud:<game>"), counted while connected."""
+            if out:
+                engine.output_seen(out, 1)
+            try:
+                self._stream_loop()
+            finally:
+                if out:
+                    engine.output_seen(out, -1)
+
+        def _stream_loop(self):
             self.send_response(200)
             self.send_header("Content-Type", "text/event-stream")
             self.send_header("Cache-Control", "no-store")
@@ -1091,7 +1113,7 @@ def make_handler(engine):
             if path == "/api/state":
                 return self._send(engine.state_json())
             if path == "/api/stream":
-                return self._stream()
+                return self._stream((parse_qs(urlparse(self.path).query).get("out") or [""])[0][:60])
             if path == "/api/companion":
                 return self._json(companion.state(engine))
             if path == "/api/assets":

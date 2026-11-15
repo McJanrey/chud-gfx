@@ -129,5 +129,15 @@ class Parts(unittest.TestCase):
         self.assertEqual(ws.comp("c1")["layers"][0]["fill"], "#000")   # (the copy it was changed from: left alone)
 
 
+class OutputsWatching(unittest.TestCase):
+    def test_counts_each_kind_while_connected(self):
+        import threading, types
+        from gfxengine.app import Engine
+        e = types.SimpleNamespace(_cond=threading.Condition(), version=0, changed=lambda: None)
+        Engine.output_seen(e, "program", 1); Engine.output_seen(e, "program", 1); Engine.output_seen(e, "comp:c1", 1)
+        Engine.output_seen(e, "program", -1); Engine.output_seen(e, "comp:c1", -1)
+        self.assertEqual(e.outputs, {"program": 1})
+
+
 if __name__ == "__main__":
     unittest.main()

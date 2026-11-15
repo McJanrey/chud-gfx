@@ -59,7 +59,9 @@
   }
   let source;
   function connect() {
-    source = new EventSource(GFX.base + "/api/stream");
+    // (says what it is, so the control panel knows OBS is really showing it; the panel's own monitors don't count)
+    const out = q.get("monitor") === "1" || remote ? "" : q.get("comp") ? "comp:" + q.get("comp") : q.get("hud") ? "hud:" + q.get("hud") : (q.get("bus") || "program");
+    source = new EventSource(GFX.base + "/api/stream" + (out ? "?out=" + encodeURIComponent(out) : ""));
     source.onmessage = e => { try { apply(JSON.parse(e.data)); } catch (err) { console.error(err); } };
     source.onerror = () => { /* EventSource reconnects by itself */ };
   }

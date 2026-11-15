@@ -229,6 +229,12 @@ App.on(s => {
   const live = (s.live.program.on || []).length, st = $("#crumb-status");
   st.textContent = live ? `${live} on air` : "Nothing on air";
   st.classList.toggle("live", !!live);
+  // Is Program really being shown somewhere (OBS, vMix)? Warn before the show, not during it.
+  const outs = s.outputs || {}, pg = outs.program || 0, total = Object.values(outs).reduce((a, b) => a + b, 0), oc = $("#crumb-outs");
+  oc.textContent = pg ? `Program out ×${pg}` : "Program not connected";
+  oc.classList.toggle("ok", !!pg); oc.classList.toggle("warn", !pg);
+  oc.title = total ? "Connected now:\n" + Object.entries(outs).map(([k, n]) => `${k.replace(/^comp:(.*)$/, (m, id) => (s.project.compositions.find(c => c.id === id) || {}).name || id)} ×${n}`).join("\n")
+    : "No output is connected: add the Program link (Outputs page) to OBS as a browser source";
   document.title = `${s.project.name} · Chud GFX Baby`;
   const net = $("#net");
   const addr = s.app.addresses[0];

@@ -92,7 +92,13 @@ label > input, label > select, label > textarea { margin-top: 3px; color: var(--
 @keyframes busy { to { background: #ff5757; } }
 .cut { font-weight: 800; letter-spacing: .08em; }
 .control-bottom { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) minmax(0, .9fr); gap: 10px; }
-@media (max-width: 1400px) { .control-bottom { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); } .control-bottom .playlist { grid-column: 1 / -1; min-height: 220px; } }
+/* By the room it really has (not the window): tight, the playlist goes under the fields and Graphics keeps its height. */
+.ctl-main { container-type: inline-size; }
+@container (max-width: 1150px) {
+  .control-bottom { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); grid-template-rows: minmax(0, 1.3fr) minmax(0, 1fr); }
+  .control-bottom .rundown { grid-row: 1 / span 2; }
+  .rd { grid-template-columns: 4px 84px minmax(0, 1fr) auto !important; }
+}
 .playlist-body { overflow-y: auto; padding: 8px 10px; display: flex; flex-direction: column; gap: 8px; }
 .pl-head select { flex: 1; min-width: 0; }
 .pl-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 6px 8px; border: 1px solid var(--line2); border-radius: 8px; }
