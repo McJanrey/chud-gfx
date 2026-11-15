@@ -29,7 +29,7 @@ import uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, quote, unquote, urlparse
 
-from . import appearance, companion, discover, export, globalcfg, media, pack, share, chudhud, ros, obs, streampart
+from . import appearance, companion, discover, export, globalcfg, media, pack, share, chudhud, ros, obs, streampart, builderpart
 from .assets import Assets
 from .config import DATA_DIR, WEB_DIR, Settings, safe_join
 from .data import Sources
@@ -84,6 +84,9 @@ class Engine:
         self.obs = obs.OBS(on_change=self.changed, on_scene=self._obs_scene)   # OBS Studio link (Outputs > OBS)
         self.obs.configure(self.settings.get().get("obs") or {})
         self._pgm_on = set()
+        self.builder = builderpart.BuilderPart()   # HUD Builder (its page), on when the settings say so
+        if (self.settings.get().get("hudbuilder") or {}).get("enabled"):
+            threading.Thread(target=self.builder.start, daemon=True).start()
         self.stream = streampart.StreamPart()   # Multistream (Stream page), on when the settings say so
         if (self.settings.get().get("multistream") or {}).get("enabled"):
             threading.Thread(target=self.stream.start, daemon=True).start()
@@ -346,7 +349,7 @@ class Engine:
             "workspace": {"id": self.workspace_id, "name": project.get("name", ""),
                           "picture": bool(project.get("picture"))},
             "rev": self.ws.rev, "assets_rev": self.assets_rev,
-            "project": project, "live": self.live.get(), "data": self.data_snapshot(), "stream": {**self.stream.state(), "enabled": bool((self.settings.get().get("multistream") or {}).get("enabled"))}, "obs": {**self.obs.public(), "follow": (self.settings.get().get("obs") or {}).get("follow") or []},
+            "project": project, "live": self.live.get(), "data": self.data_snapshot(), "builder": {**self.builder.state(), "enabled": bool((self.settings.get().get("hudbuilder") or {}).get("enabled"))}, "stream": {**self.stream.state(), "enabled": bool((self.settings.get().get("multistream") or {}).get("enabled"))}, "obs": {**self.obs.public(), "follow": (self.settings.get().get("obs") or {}).get("follow") or []},
             "global": globalcfg.clean(project.get("global")),
             "teams": self.teams.list(),
             "games": list(GAMES.values()),   # (the games there are HUDs for)
@@ -1172,6 +1175,14 @@ def make_handler(engine):
                     return self._json(engine.ros_post(path, body))
                 if path.startswith("/api/obs/"):
                     return self._json(engine.obs_post(path, body, local))
+                if path == "/api/builder":   # HUD Builder on / off (its page)
+                    if not local:
+                        raise ValueError("HUD Builder can only be switched on the engine's own PC")
+                    on = bool(body.get("on"))
+                    engine.settings.update({"hudbuilder": {"enabled": on}})
+                    (engine.builder.start if on else engine.builder.stop)()
+                    engine.changed()
+                    return self._json({"builder": engine.builder.state()})
                 if path == "/api/stream":   # Multistream on / off (Stream page)
                     if not local:
                         raise ValueError("Multistream can only be switched on the engine's own PC")

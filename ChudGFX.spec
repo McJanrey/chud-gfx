@@ -17,9 +17,10 @@ hidden = []
 datas = [(os.path.join(root, "web"), "web"), (os.path.join(root, "starter"), "starter")]
 # Multistream (Stream page): its code is imported from these files at run time; bin/ has MediaMTX and FFmpeg
 # (python apps/multistream/tools/fetch_binaries.py, pinned and checked by SHA-256).
-for part in ("multistream", "web", "bin"):
-    if os.path.isdir(os.path.join(root, "apps", "multistream", part)):
-        datas.append((os.path.join(root, "apps", "multistream", part), os.path.join("apps", "multistream", part)))
+for app_name, parts in (("multistream", ("multistream", "web", "bin")), ("hudbuilder", ("hudbuilder", "web"))):
+    for part in parts:
+        if os.path.isdir(os.path.join(root, "apps", app_name, part)):
+            datas.append((os.path.join(root, "apps", app_name, part), os.path.join("apps", app_name, part)))
 binaries = []
 # FFmpeg (for converting video) and the PSD reader's data files.
 for package in ("imageio_ffmpeg", "psd_tools"):

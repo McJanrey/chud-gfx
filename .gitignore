@@ -14,3 +14,5 @@ appearance.json
 run-of-show.json
 apps/multistream/bin/
 apps/multistream/config.json
+apps/hudbuilder/config.json
+apps/hudbuilder/huds/

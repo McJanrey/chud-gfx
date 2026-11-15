@@ -548,7 +548,8 @@
     // (the newest copy, this window's or another Composer window's)
     let stored = null;
     try { stored = JSON.parse(localStorage.getItem(CLIP_KEY) || "null"); } catch (e) { /* */ }
-    if (stored && stored.kind === "chud-gfx-layers" && (!clip || stored.at > clip.at)) { clip = stored; pastes = {}; }
+    // A copy is kept for 30 minutes: an old one must not pop up in a paste much later.
+    if (stored && stored.kind === "chud-gfx-layers" && Date.now() - stored.at < 30 * 60e3 && (!clip || stored.at > clip.at)) { clip = stored; pastes = {}; }
     return clip;
   }
   async function pasteLayers() {

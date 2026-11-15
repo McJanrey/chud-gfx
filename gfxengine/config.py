@@ -52,6 +52,8 @@ DEFAULTS = {
     "obs": {},
     # Multistream (Stream page): {"enabled": bool}.
     "multistream": {},
+    # HUD Builder (its page): {"enabled": bool}.
+    "hudbuilder": {},
 }
 
 _lock = threading.Lock()

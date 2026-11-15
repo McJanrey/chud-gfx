@@ -796,3 +796,19 @@ $("#stream-on").addEventListener("change", async e => {
   try { await api("/api/stream", { on: e.target.checked }); } catch (err) { e.target.checked = !e.target.checked; }
 });
 App.on(() => { if (App.tab === "stream") streamPage(); });
+
+
+// --- HUD Builder: on / off, its own page below -----------------------------------------
+pages.builder = { shown() { builderPage(); } };
+function builderPage() {
+  const s = (App.state && App.state.builder) || {};
+  $("#builder-on").checked = !!s.enabled;
+  $("#builder-status").textContent = s.running ? "Running" : s.error ? s.error : s.enabled ? "Starting…" : "Off";
+  const f = $("#builder-frame"), want = s.running ? `http://${location.hostname}:${s.port}/` : "";
+  f.hidden = !s.running;
+  if (want && f.dataset.src !== want) { f.dataset.src = want; f.src = want; }
+}
+$("#builder-on").addEventListener("change", async e => {
+  try { await api("/api/builder", { on: e.target.checked }); } catch (err) { e.target.checked = !e.target.checked; }
+});
+App.on(() => { if (App.tab === "builder") builderPage(); });
