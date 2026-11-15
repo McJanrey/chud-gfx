@@ -248,7 +248,10 @@ $("#update").addEventListener("click", () => api("/api/update/install"));
   $("#pgm-clear").addEventListener("click", () => api("/api/clear", { bus: "program", transition: chosen(App.state) }));
   $("#pvw-clear").addEventListener("click", () => api("/api/clear", { bus: "preview" }));
   addEventListener("keydown", e => {
-    if (App.tab !== "control" || (/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) || document.activeElement.isContentEditable) || e.ctrlKey || e.metaKey || e.altKey) return;
+    // Space = TAKE, Enter = CUT, 1-9 = transition. Never while typing, in an open dialog, or from a held key (one TAKE per press).
+    const a = document.activeElement;
+    if (App.tab !== "control" || e.repeat || /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) || a.isContentEditable
+        || document.querySelector("dialog[open], .scrim:not([hidden])") || e.ctrlKey || e.metaKey || e.altKey) return;
     if (e.code === "Space") { e.preventDefault(); take(); }
     else if (e.key === "Enter") { e.preventDefault(); take("cut"); }
     else if (/^[1-9]$/.test(e.key)) {
