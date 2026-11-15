@@ -221,6 +221,28 @@ addEventListener("load", () => {
   showTab(start);
 });
 
+// Show check: everything that could go wrong on air, worst first.
+(function preflight() {
+  const dlg = $("#preflight"), list = $("#pf-list");
+  async function run() {
+    list.replaceChildren(h("li", { class: "muted" }, "Checking…"));
+    try {
+      const { checks } = await (await fetch("/api/preflight")).json();
+      list.replaceChildren(...checks.map(c => h("li", { class: "pf " + c.level },
+        h("span", { class: "pf-dot", "aria-hidden": "true" }),
+        h("div", {}, h("b", {}, c.label), c.detail ? h("small", {}, c.detail) : null))));
+      const bad = checks.filter(c => c.level === "bad").length, warn = checks.filter(c => c.level === "warn").length;
+      const btn = $("#preflight-btn");
+      btn.textContent = bad ? `Show check: ${bad} to fix` : warn ? `Show check: ${warn} to look at` : "Show check: ready";
+      btn.dataset.level = bad ? "bad" : warn ? "warn" : "ok";
+    } catch (e) { list.replaceChildren(h("li", { class: "pf bad" }, "Couldn't run the check: " + e.message)); }
+  }
+  $("#preflight-btn").addEventListener("click", () => { dlg.showModal(); run(); });
+  $("#pf-again").addEventListener("click", run);
+  $("#pf-close").addEventListener("click", () => dlg.close());
+  dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
+})();
+
 const projectName = $("#project-name");
 projectName.addEventListener("change", () => api("/api/project", { name: projectName.value }));
 App.on(s => {

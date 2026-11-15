@@ -48,10 +48,16 @@
     <span id="version" class="muted small"></span>
   </div>
 </header>
+<dialog id="preflight" class="preflight" aria-labelledby="pf-title">
+  <div class="pf-head"><h2 id="pf-title">Show check</h2><span class="spacer"></span>
+    <button class="small" id="pf-again">Check again</button><button class="small ghost" id="pf-close" aria-label="Close">Close</button></div>
+  <ul id="pf-list" class="pf-list"></ul>
+</dialog>
 <div id="crumb" class="crumb">
   <span class="crumb-ic" id="crumb-ic" aria-hidden="true"></span>
   <span class="crumb-ws" id="crumb-ws"></span><span class="crumb-sep" aria-hidden="true">/</span><b class="crumb-page" id="crumb-page"></b>
   <span class="spacer"></span>
+  <button class="small" id="preflight-btn" title="What could go wrong on air, checked now">Show check</button>
   <span class="crumb-status crumb-outs" id="crumb-outs"></span>
   <span class="crumb-status" id="crumb-status" title="Graphics on the Program output"></span>
 </div>

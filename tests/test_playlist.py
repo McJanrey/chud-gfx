@@ -129,6 +129,31 @@ class Parts(unittest.TestCase):
         self.assertEqual(ws.comp("c1")["layers"][0]["fill"], "#000")   # (the copy it was changed from: left alone)
 
 
+class ShowCheck(unittest.TestCase):
+    def test_finds_missing_files_fonts_and_no_program(self):
+        import types
+        from gfxengine import preflight
+        d = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, d, True)
+        ws = Workspace(d, starter="")
+        ws.add_comp({"id": "c1", "name": "Bug", "layers": [
+            {"id": "a", "type": "image", "src": "assets/gone.png", "x": 0, "y": 0, "w": 10, "h": 10},
+            {"id": "b", "type": "text", "font": "NoSuchFont-Bold", "x": 0, "y": 0, "w": 10, "h": 10},
+            {"id": "c", "type": "text", "font": "Anton", "x": 0, "y": 0, "w": 10, "h": 10}]})
+        e = types.SimpleNamespace(ws=ws, outputs={}, assets=types.SimpleNamespace(fonts=lambda: []),
+                                  obs=types.SimpleNamespace(public=lambda: {"enabled": False}),
+                                  updater=types.SimpleNamespace(info=lambda: {"available": False}))
+        by = {c["id"]: c for c in preflight.check(e)}
+        self.assertEqual(by["program"]["level"], "bad")
+        self.assertEqual(by["files"]["level"], "bad")
+        self.assertIn("gone.png", by["files"]["detail"])
+        self.assertEqual(by["fonts"]["level"], "warn")
+        self.assertIn("NoSuchFont-Bold", by["fonts"]["detail"])
+        self.assertNotIn("Anton", by["fonts"]["detail"])
+        e.outputs = {"program": 1}
+        self.assertEqual({c["id"]: c for c in preflight.check(e)}["program"]["level"], "ok")
+
+
 class OutputsWatching(unittest.TestCase):
     def test_counts_each_kind_while_connected(self):
         import threading, types

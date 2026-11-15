@@ -29,7 +29,7 @@ import uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, quote, unquote, urlparse
 
-from . import playlist, appearance, companion, discover, export, globalcfg, media, pack, share, chudhud, ros, obs, streampart, builderpart
+from . import playlist, appearance, companion, discover, export, globalcfg, media, pack, share, chudhud, ros, obs, streampart, builderpart, preflight
 from .assets import Assets
 from .config import DATA_DIR, WEB_DIR, Settings, safe_join
 from .data import Sources
@@ -1114,6 +1114,8 @@ def make_handler(engine):
                 return self._send(engine.state_json())
             if path == "/api/stream":
                 return self._stream((parse_qs(urlparse(self.path).query).get("out") or [""])[0][:60])
+            if path == "/api/preflight":
+                return self._json({"checks": preflight.check(engine)})
             if path == "/api/companion":
                 return self._json(companion.state(engine))
             if path == "/api/assets":
