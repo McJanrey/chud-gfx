@@ -109,5 +109,19 @@ class SettingsKept(unittest.TestCase):
         self.assertTrue(again["obs"]["enabled"] and again["multistream"]["enabled"])
 
 
+
+class OriginCheck(unittest.TestCase):
+    def test_only_own_pages_can_post(self):
+        from gfxengine.app import origin_ok
+        own = {7790, 7795, 7800}
+        self.assertTrue(origin_ok(None, "127.0.0.1:7790", own))                              # Companion, HUDs
+        self.assertTrue(origin_ok("http://127.0.0.1:7790", "127.0.0.1:7790", own))          # its own page
+        self.assertTrue(origin_ok("http://192.168.2.40:7790", "192.168.2.40:7790", own))    # control from another PC
+        self.assertTrue(origin_ok("http://localhost:7800", "127.0.0.1:7790", own))          # built-in HUD Builder
+        self.assertFalse(origin_ok("https://evil.example", "127.0.0.1:7790", own))          # any website
+        self.assertFalse(origin_ok("http://localhost:3000", "127.0.0.1:7790", own))         # another local app
+        self.assertFalse(origin_ok("null", "127.0.0.1:7790", own))                          # sandboxed / file pages
+
+
 if __name__ == "__main__":
     unittest.main()

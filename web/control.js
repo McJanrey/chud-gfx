@@ -223,9 +223,9 @@ $("#update").addEventListener("click", () => api("/api/update/install"));
     if (box.dataset.sig === sig) return;
     box.dataset.sig = sig;
     box.replaceChildren(...enabled.map((t, i) => h("button", {
-      class: t.id === cur ? "on" : "", title: `${t.name} (${i + 1})`,
+      class: t.id === cur ? "on" : "", title: t.name,
       onclick: () => { transition = t.id; try { localStorage.setItem("gfx-tr", t.id); } catch (e) { /* */ } renderChips(App.state); },
-    }, t.name, h("span", { class: "k" }, i < 9 ? String(i + 1) : ""))));
+    }, t.name)));
   }
   async function take(tid) {
     const btn = $("#take");
@@ -247,18 +247,7 @@ $("#update").addEventListener("click", () => api("/api/update/install"));
   $("#cut").addEventListener("click", () => take("cut"));
   $("#pgm-clear").addEventListener("click", () => api("/api/clear", { bus: "program", transition: chosen(App.state) }));
   $("#pvw-clear").addEventListener("click", () => api("/api/clear", { bus: "preview" }));
-  addEventListener("keydown", e => {
-    // Space = TAKE, Enter = CUT, 1-9 = transition. Never while typing, in an open dialog, or from a held key (one TAKE per press).
-    const a = document.activeElement;
-    if (App.tab !== "control" || e.repeat || /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) || a.isContentEditable
-        || document.querySelector("dialog[open], .scrim:not([hidden])") || e.ctrlKey || e.metaKey || e.altKey) return;
-    if (e.code === "Space") { e.preventDefault(); take(); }
-    else if (e.key === "Enter") { e.preventDefault(); take("cut"); }
-    else if (/^[1-9]$/.test(e.key)) {
-      const t = App.state.project.transitions.filter(t => t.enabled !== false)[+e.key - 1];
-      if (t) { transition = t.id; renderChips(App.state); }
-    }
-  });
+  // No keyboard shortcuts for TAKE, CUT or transitions (MJ): only the buttons (or a Stream Deck) put things on air.
 
   // The rundown.
   const KIND_TITLES = [["board", "Full-page boards"], ["lower third", "Lower thirds"], ["overlay", "Overlays"]];

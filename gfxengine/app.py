@@ -67,6 +67,24 @@ class Paired(ValueError):
         self.code = code
 
 
+def origin_ok(origin, host, own_ports):
+    """A browser POST must come from this engine's own pages: the same address it was sent to, or this PC
+    on one of the engine's own ports (its Stream and HUD Builder pages). Any other website is refused,
+    so a page open in a browser can't TAKE, clear Program or stop the OBS stream."""
+    if not origin:
+        return True            # Companion, game HUDs, other engines, curl: no browser, no Origin
+    try:
+        o = urlparse(origin)
+    except ValueError:
+        return False
+    if o.scheme not in ("http", "https") or not o.hostname:
+        return False
+    if o.netloc.lower() == (host or "").lower():
+        return True
+    same_pc = o.hostname in ("localhost", "127.0.0.1", "::1") or o.hostname == (host or "").rsplit(":", 1)[0].strip("[]")
+    return same_pc and (o.port or 80) in own_ports
+
+
 def _is_local(ip):
     return ip in ("127.0.0.1", "::1", "::ffff:127.0.0.1")
 
@@ -1134,6 +1152,9 @@ def make_handler(engine):
         def do_POST(self):
             if not self._allowed():
                 return self._json({"error": "This engine doesn't allow other PCs (Outputs > Network)"}, 403)
+            own = {engine.settings.get()["http_port"], streampart.PORT, builderpart.PORT}
+            if not origin_ok(self.headers.get("Origin"), self.headers.get("Host", ""), own):
+                return self._json({"error": "Only GFX Baby's own pages can control it"}, 403)
             path = urlparse(self.path).path
             if appearance.handle(self, "POST", path, DATA_DIR):
                 return
