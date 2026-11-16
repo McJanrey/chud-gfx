@@ -28,8 +28,9 @@ function render() {
   const card = c => el("section", { class: "card cam-card" },
     el("div", { class: "row" }, el("input", { value: c.name, "aria-label": "Camera name", class: "title-in", onchange: e => { c.name = e.target.value; save(); } }),
       el("button", { class: "small ghost", "aria-label": `Remove ${c.name}`, onclick: () => { if (confirm(`Remove the camera "${c.name}"? Its guest link stops working.`)) { all.splice(all.indexOf(c), 1); save(); } } }, "✕")),
+    el("div", { class: "cam-slot", "data-slot": c.id }),   // (the live picture is drawn here: camdock.js)
     (() => { const st = ((App.state.cam_status || {})[c.id] || {}).state || "waiting";
-      return el("span", { class: "pill cam-state " + st }, { live: "● Live", lost: "● Connection lost", waiting: "○ Waiting for the guest" }[st]); })(),
+      return el("span", { class: "cam-state st-" + st }, { live: "● Live", lost: "● Connection lost", waiting: "○ Waiting for the guest" }[st]); })(),
     el("div", { class: "row" },
       el("button", { class: "small primary", onclick: () => copy(guestUrl(c, pw), "the guest link") }, "Copy guest link"),
       el("button", { class: "small", onclick: () => copy(`http://127.0.0.1:${port}/cam?id=${c.id}`, "the output link") }, "Copy output link"),
@@ -50,7 +51,7 @@ function render() {
         el("button", { class: "small ghost", onclick: () => lookSel.value && confirm(`Delete the look "${lookSel.value}"?`) && api("/api/cams/look", { action: "delete", name: lookSel.value }) }, "Delete"),
         el("span", { class: "spacer" }),
         el("button", { class: "small primary", onclick: () => { all.push({ name: `Camera ${all.length + 1}` }); save(); } }, "+ Camera")),
-      el("p", { class: "muted small" }, "Send each guest their link: they open it, pick their camera and mic, and press Start. Graphics show a camera with a Camera layer (Composer › Live), or add its output link to OBS as a browser source (tick Control audio via OBS). The live previews above show every camera with whether it's connected (the status keeps updating on the other pages too). Every other place showing a camera (OBS sources) is one more upload for the guest.")),
+      el("p", { class: "muted small" }, "Send each guest their link: they open it, pick their camera and mic, and press Start. Graphics show a camera with a Camera layer (Composer › Live), or add its output link to OBS as a browser source (tick Control audio via OBS). Each card shows its camera live, with whether it's connected (the status keeps updating on the other pages too). Every other place showing a camera (OBS sources) is one more upload for the guest.")),
     ...(all.length ? all.map(card) : [el("p", { class: "muted empty" }, "No cameras yet: + Camera makes one with its own guest link. Name them Caster 1-4 for the caster boxes.")]));
 }
 pages.cams = { shown: render };

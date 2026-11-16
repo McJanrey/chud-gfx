@@ -36,7 +36,9 @@ addEventListener("message", e => {
 function render() {
   const dock = $("#cam-dock");
   const P = App.state.project, cams = P.cams || [];
+  // On the Cameras page each picture is drawn over its camera's card; elsewhere the dock is hidden (still connected).
   dock.hidden = !cams.length || App.page !== "cams";
+  dock.classList.toggle("float", App.page === "cams");
   dock.classList.toggle("min", collapsed);
   for (const [id, t] of tiles) if (!cams.some(c => c.id === id)) { t.tile.remove(); tiles.delete(id); }
   for (const c of cams) {
@@ -69,6 +71,23 @@ $("#cam-dock-toggle").addEventListener("click", () => {
   render();
 });
 setInterval(() => { for (const t of tiles.values()) if (t.state === "lost") paint(t); }, 1000);
+
+// Each picture sits exactly on its card's picture spot and follows it as the page scrolls; cut off where the
+// page ends (the pictures stay in the dock: moving an iframe would reconnect it).
+function place() {
+  if (App.page === "cams") {
+    const page = $("#page-cams"), pr = page && page.getBoundingClientRect();
+    for (const [id, t] of tiles) {
+      const slot = document.querySelector(`.cam-slot[data-slot="${id}"]`);
+      if (!slot || !pr) { t.tile.style.visibility = "hidden"; continue; }
+      const r = slot.getBoundingClientRect();
+      Object.assign(t.tile.style, { visibility: "", left: r.left + "px", top: r.top + "px", width: r.width + "px", height: r.height + "px",
+        clipPath: `inset(${Math.max(0, pr.top - r.top)}px ${Math.max(0, r.right - pr.right)}px ${Math.max(0, r.bottom - pr.bottom)}px ${Math.max(0, pr.left - r.left)}px)` });
+    }
+  }
+  requestAnimationFrame(place);
+}
+requestAnimationFrame(place);
 App.on((st, msg) => { if (!msg || msg.project) render(); });
 document.addEventListener("click", e => { if (e.target.closest("#nav button[data-page]")) setTimeout(render, 0); });   // (show / hide with the page)
 addEventListener("load", () => setTimeout(() => App.state && render(), 0));   // (opening straight onto the Cameras page)
