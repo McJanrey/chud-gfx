@@ -15,6 +15,42 @@ const KIND_ORDER = { board: 0, overlay: 1, "lower third": 2 };
 export const W = 1920, H = 1080;
 const truthy = v => { const t = String(v).trim().toLowerCase(); return t !== "" && t !== "0" && t !== "false" && t !== "off" && t !== "no"; };
 
+// Slots: a graphic that shows as many as there are (casters: 1-4). comp.slots = {on, count, axis: "x" | "y", step}.
+// count blank: the slots with something typed in (any of their words, after live data); or a number / live data,
+// e.g. "{{Global!Caster boxes}}". A layer's "slot": 1, 2, 3... (that slot's parts), "stretch" (a bar behind
+// them all: shrinks to fit) or "follow" (moves with the bar's edge, a logo). The slots that show close up in
+// order (1, 2, 4 -> three in a row) and the row moves to the middle.
+export function slotFit(comp, tables, values = {}) {
+  const S = comp.slots;
+  if (!S || !S.on) return l => l;
+  const ls = comp.layers || [], max = Math.max(0, ...ls.map(l => +l.slot || 0));
+  if (max < 2) return l => l;
+  const words = l => String(resolve(String(l.field && values[l.field] != null ? values[l.field] : (l.text ?? "")), tables)).trim();
+  let shown;
+  if (S.count && String(S.count).trim()) {
+    const n = parseInt(resolve(String(S.count), tables), 10);
+    const c = Math.max(1, Math.min(max, Number.isFinite(n) ? n : max));
+    shown = Array.from({ length: c }, (_, i) => i + 1);
+  } else {
+    shown = Array.from({ length: max }, (_, i) => i + 1).filter(k => ls.some(l => +l.slot === k && l.type === "text" && words(l)));
+    if (!shown.length) shown = [1];
+  }
+  const y = S.axis === "y", P = y ? "y" : "x", D = y ? "h" : "w";
+  const at = k => Math.min(...ls.filter(l => +l.slot === k).map(l => +l[P] || 0));
+  const step = +S.step || (at(2) - at(1)) || 0, shift = (max - shown.length) * step / 2;
+  return l => {
+    const k = +l.slot || 0;
+    if (k) {
+      const j = shown.indexOf(k);
+      if (j < 0) return null;
+      return { ...l, [P]: (+l[P] || 0) + (j + 1 - k) * step + shift };
+    }
+    if (l.slot === "follow") return { ...l, [P]: (+l[P] || 0) + shift };
+    if (l.slot === "stretch") return { ...l, [P]: (+l[P] || 0) + shift, [D]: Math.max(1, (+l[D] || 0) - 2 * shift) };
+    return l;
+  };
+}
+
 export class Stage {
   constructor(root, { bus = "program", comp = null, muted = false, base = "", editor = false } = {}) {
     this.root = root;
@@ -53,7 +89,10 @@ export class Stage {
       table: name => tables[name], now: () => Date.now() + nowSkew(),
       cams: this.cams || [], camPassword: this.camPassword, liveCams: !this.opts.editor, cardCams: !!this.opts.editor, camBitrate: this.opts.muted ? 800 : 0,
       hold: layer => { const a = (layer.anim || {}).in || {}; return entering && a.type && a.type !== "none" ? (+a.delay || 0) + (+a.dur || 400) : 0; } };
-    for (const layer of comp.layers || []) {
+    const fit = slotFit(comp, tables, values || {});
+    for (const raw of comp.layers || []) {
+      const layer = fit(raw);
+      if (!layer) continue;   // (a slot past the count: e.g. caster 3 with 2 casters)
       const draw = DRAW[layer.type];
       if (!draw || layer.reference) continue;
       // show: the layer is there only while this has a value (e.g. "{{Roster!Player 1 headshot}}")
@@ -63,6 +102,7 @@ export class Stage {
       draw(lel, layer, ctx);
       effects(lel, layer, ctx.resolve);
       lel._layer = layer;
+      if (layer !== raw) { lel._shift = [layer.x - raw.x, layer.y - raw.y, layer.w - raw.w, layer.h - raw.h]; lel._layer = raw; }
       el.appendChild(lel);
     }
     el._later = later;

@@ -212,7 +212,8 @@ view.addEventListener("mousedown", e => {
     const node = sheet.firstChild;
     for (const s of start) {
       const e = node && [...node.children].find(c => c._layer && c._layer.id === s.l.id);
-      if (e) Object.assign(e.style, { left: s.l.x + "px", top: s.l.y + "px", width: s.l.w + "px", height: s.l.h + "px" });
+      const k = (e && e._shift) || [0, 0, 0, 0];   // (a slot moved to the middle: drawn shifted)
+      if (e) Object.assign(e.style, { left: s.l.x + k[0] + "px", top: s.l.y + k[1] + "px", width: s.l.w + k[2] + "px", height: s.l.h + k[3] + "px" });
     }
     drawSelection();
     renderPropsNumbers();
@@ -318,6 +319,40 @@ function animSect(l) {
     lab(dir === "in" ? "In" : "Out", bind(d, "type", "select", { options: ANIMS, def: "none" })), lab("Length (ms)", bind(d, "dur", "number", { def: 400, step: 50 })), lab("Delay (ms)", bind(d, "delay", "number", { def: 0, step: 50 }))); };
   return el("section", { class: "sect" }, el("h4", {}, "Animation"), row("in"), row("out"));
 }
+// Slots: shows as many as there are (casters). Each layer's slot is set in its own settings.
+function slotsSect() {
+  const S = comp.slots = comp.slots || {};
+  const used = comp.layers.filter(l => l.slot).length;
+  return el("div", { class: "stack" }, el("h4", {}, "Shows as many as there are"),
+    el("label", { class: "switch" }, el("input", { type: "checkbox", checked: !!S.on, onchange: e => { snapshot(); S.on = e.target.checked; changed(); } }), "On (like the caster lower third)"),
+    S.on ? el("div", { class: "stack" },
+      lab("How many (blank: the ones with a name typed in)", bind(S, "count", "text", { placeholder: "the filled ones, or e.g. {{Global!Caster boxes}}" })),
+      el("div", { class: "two" }, lab("Slots go", bind(S, "axis", "select", { options: [["x", "Across"], ["y", "Down"]], def: "x" })), lab("Slot to slot (px, blank: measured)", bind(S, "step", "text", { placeholder: "auto" }))),
+      el("p", { class: "muted small" }, `${used} layers have a slot. Give each layer its slot (1, 2, 3, 4) in its settings, the bar behind them "Stretch", and things on the bar's edge (a logo) "Follow". A slot with nothing typed in hides; the rest close up and move to the middle.`),
+      el("button", { class: "small", onclick: autoSlots }, "Guess the slots from the layout")) : "");
+}
+// The repeated columns (or rows) of a design become slots 1, 2, 3...; wide layers across them stretch; the rest at an edge follow.
+function autoSlots() {
+  const S = comp.slots, P = S.axis === "y" ? "y" : "x", D = S.axis === "y" ? "h" : "w";
+  const small = comp.layers.filter(l => l[D] < (S.axis === "y" ? 1080 : 1920) * 0.4);
+  const starts = [...new Set(small.map(l => Math.round(l[P])))].sort((a, b) => a - b);
+  // columns that repeat: starts with at least 2 layers each, evenly spaced
+  const cols = starts.filter(x => small.filter(l => Math.abs(l[P] - x) < 4).length >= 2);
+  if (cols.length < 2) return toast("Couldn't find repeated slots: set each layer's slot by hand");
+  snapshot();
+  const step = cols[1] - cols[0];
+  const lo = cols[0], hi = cols[cols.length - 1] + step;
+  for (const l of comp.layers) {
+    const i = cols.findIndex(x => Math.abs(l[P] - x) < 4);
+    if (i >= 0 && l[D] <= step * 1.05) l.slot = i + 1;
+    else if (l[P] <= lo && l[P] + l[D] >= hi - 4) l.slot = "stretch";
+    else if (l[P] + l[D] <= lo + 4) l.slot = "follow";
+    else if (l[P] >= hi - 4) l.slot = "follow";
+    else delete l.slot;
+  }
+  changed();
+  toast(`${cols.length} slots, ${step} px apart: clear a caster's name on Control and that slot goes`);
+}
 function setAll(stagger) {
   const type = $("#cmp-all-anim").value;
   snapshot();
@@ -339,6 +374,7 @@ function renderProps() {
       lab("Stacking on the output", bind(comp, "layer", "select", { options: [[-10, "Behind others"], [0, "Normal"], [10, "In front"], [100, "Always on top"]], def: 0, num: true })),
       App.state.obs && App.state.obs.on ? lab("When it goes on air, switch OBS to", bind(comp, "obs_scene", "select", { options: [["", "(don't switch)"], ...[...new Set([comp.obs_scene, ...((App.state.obs.status || {}).scenes || [])])].filter(Boolean).map(s => [s, s])], def: "" })) : null,
       el("p", { class: "muted small" }, `${comp.layers.length} layers, ${comp.layers.filter(l => l.field).length} fields. Click a layer to change it.`),
+      slotsSect(),
       el("h4", {}, "Animation"),
       el("p", { class: "muted small" }, "Every layer has its own In and Out animation. Set them all at once:"),
       el("div", { class: "row" }, el("select", { id: "cmp-all-anim" }, ...ANIMS.map(a => el("option", { value: a, selected: a === "fade" }, a))),
@@ -379,7 +415,8 @@ function renderProps() {
     el("div", { class: "four" }, ...["x", "y", "w", "h"].map(k => lab(k.toUpperCase(), bind(l, k, "number")))),
     el("div", { class: "three" }, lab("Opacity", bind(l, "opacity", "number", { def: 1, step: 0.05, min: 0 })), lab("Rotate °", bind(l, "rotation", "number")),
       lab("Blend", bind(l, "blend", "select", { options: ["normal", "multiply", "screen", "overlay", "darken", "lighten", "soft-light", "difference"], def: "normal" }))),
-    lab("Only shows while this has a value", bind(l, "show", "text", { placeholder: "e.g. {{Roster!Player 1 headshot}}" })))];
+    lab("Only shows while this has a value", bind(l, "show", "text", { placeholder: "e.g. {{Roster!Player 1 headshot}}" })),
+    comp.slots && comp.slots.on ? lab("Slot (shows as many as there are)", bind(l, "slot", "select", { options: [["", "None"], ...[1, 2, 3, 4, 5, 6, 7, 8].map(n => [n, `Slot ${n}`]), ["stretch", "Stretch (the bar behind)"], ["follow", "Follow (moves with the bar's edge)"]], def: "" })) : "")];
   if (T === "text") sects.push(el("section", { class: "sect" }, el("h4", {}, "Words"),
     lab("Text ({{Table!Field}} shows live data)", bind(l, "text", "area")),
     el("div", { class: "two" }, lab("Font", bind(l, "font", "select", { options: [...new Set([...FONTS, ...(App.state.fonts || []).map(f => f.name), l.font].filter(Boolean))], def: "Inter" })), lab("Size", bind(l, "size", "number", { def: 32 }))),
