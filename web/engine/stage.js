@@ -285,13 +285,23 @@ export class Stage {
     const cut = state.live.cut || { seq: 0 };
     const first = this.cutSeq === null, took = !first && cut.seq !== this.cutSeq && this.opts.bus === "program" && !this.opts.comp;
     this.cutSeq = cut.seq;
+    // (while a dip / stinger / delay hasn't swapped yet, other updates wait: the new graphic mustn't show before the cover)
+    if (!took && this.hold && this.hold === this.gen) { this.latest = state; return; }
     if (!took) return this.sync(state, first ? "cut" : "animate");
     this.settle();
     const t = cut.transition || { type: "cut" };
+    this.latest = state;
+    if (["dip", "delay", "stinger"].includes(t.type) && (t.type !== "stinger" || t.src)) this.hold = this.gen;
     if (t.type === "dip") return this.dip(state, t);
-    if (t.type === "delay") return this.later(() => this.sync(state, "cut"), +t.ms || 0);
+    if (t.type === "delay") return this.later(() => this.swapIn(), +t.ms || 0);
     if (t.type === "stinger") return this.stinger(state, t);
     this.sync(state, ["cut", "fade", "wipe", "merge"].includes(t.type) ? t.type : "animate", t);
+  }
+
+  // The held TAKE goes on (with the newest state that came while it waited).
+  swapIn() {
+    this.hold = null;
+    this.sync(this.latest, "cut");
   }
 
   dip(state, t) {
@@ -300,9 +310,10 @@ export class Stage {
     cover.style.background = t.color || "#000";
     this.root.appendChild(cover);
     const half = (+t.dur || 800) / 2, gen = this.gen;
+    this.later(() => { if (this.hold === gen) this.swapIn(); }, half + 400);   // (if the cover's animation never finishes, the TAKE still goes on)
     cover.animate([{ opacity: 0 }, { opacity: 1 }], { duration: half, fill: "forwards" }).finished.then(() => {
       if (gen !== this.gen) return;
-      this.sync(state, "cut");
+      this.swapIn();
       return cover.animate([{ opacity: 1 }, { opacity: 0 }], { duration: half, fill: "forwards" }).finished;
     }).finally(() => cover.remove());
   }
@@ -318,7 +329,7 @@ export class Stage {
     this.root.appendChild(v);
     let swapped = false;
     const gen = this.gen;
-    const swap = () => { if (!swapped && gen === this.gen) { swapped = true; this.sync(state, "cut"); } };
+    const swap = () => { if (!swapped && gen === this.gen) { swapped = true; this.swapIn(); } };
     this.later(swap, Math.max(0, +t.cut || 0));
     v.onended = () => { swap(); v.remove(); };
     v.play().catch(() => { swap(); v.remove(); });
