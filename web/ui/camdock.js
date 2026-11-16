@@ -16,6 +16,7 @@ function setState(t, id, state) {
   t.since = Date.now();
   t.tile.dataset.state = state;
   paint(t);
+  count();
   api("/api/cams/status", { id, state }).catch(() => {});
 }
 function paint(t) {
@@ -56,8 +57,9 @@ function render() {
     styleCam(t.frame, t.wash, c);
     frame_order(c, t);
   }
-  $("#cam-dock-count").textContent = `${[...tiles.values()].filter(t => t.state === "live").length} / ${tiles.size} live`;
+  count();
 }
+function count() { $("#cam-dock-count").textContent = `${[...tiles.values()].filter(t => t.state === "live").length} / ${tiles.size} live`; }
 function frame_order(c, t) { t.tile.style.order = String((App.state.project.cams || []).findIndex(x => x.id === c.id)); }
 
 $("#cam-dock-toggle").addEventListener("click", () => {
