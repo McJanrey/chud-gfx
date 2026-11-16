@@ -223,7 +223,7 @@ textarea { font: inherit; color: var(--text); background: var(--input); border: 
 
 /* --- home ---------------------------------------------------------------- */
 .ws-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
-.ws-card { display: flex; flex-direction: column; gap: 8px; padding: 16px; border-radius: 12px; background: var(--panel, var(--surface)); border: 1px solid rgb(var(--ink) / .07); text-align: left; }
+.ws-card { display: flex; flex-direction: column; justify-content: space-between; gap: 16px; padding: 16px 20px; border-radius: 12px; background: var(--panel, var(--surface)); border: 1px solid rgb(var(--ink) / .07); text-align: left; }
 .ws-card.open { border-color: rgba(200,240,60,.5); }
 .ws-card .name { font-size: 15px; font-weight: 600; }
 .ws-card.new { align-items: center; justify-content: center; min-height: 112px; color: inherit; cursor: pointer; border-style: dashed; }
@@ -337,3 +337,11 @@ code { font-family: var(--mono); font-size: 12px; background: var(--fill); paddi
 .dlg.ask p { margin: 0; }
 .row.end { justify-content: flex-end; }
 button.danger { background: var(--red); color: #fff; box-shadow: none; font-weight: 600; }
+
+/* home: the tabs fit their two tabs; each card is a name group, then its actions (wrapping, never cut off) */
+#home-body { gap: 16px; }
+#home-body > .seg { align-self: flex-start; }
+.ws-head { display: flex; flex-direction: column; gap: 4px; }
+.ws-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+.ws-actions .ghost { padding-inline: 0; }
+.ws-current { font-size: 12px; font-weight: 600; color: var(--accent); padding-block: 3px; }

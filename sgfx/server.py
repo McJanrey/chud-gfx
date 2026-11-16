@@ -585,40 +585,6 @@ class Engine:
         os.makedirs(bin_, exist_ok=True)
         os.replace(path, os.path.join(bin_, os.path.basename(path) + time.strftime("-%Y%m%d-%H%M%S")))
 
-    def import_gfx_baby(self, path):
-        """Copy GFX Baby's workspaces, fonts and run of show in (its folder is only read). Workspaces already here
-        by that name are kept; passwords and stream keys aren't copied (type them again)."""
-        import shutil
-        src = os.path.abspath(str(path or ""))
-        if not os.path.isdir(os.path.join(src, "workspaces")):
-            raise ValueError("No GFX Baby there (looking for its workspaces folder)")
-        got = {"workspaces": [], "fonts": 0, "run_of_show": False}
-        for name in sorted(os.listdir(os.path.join(src, "workspaces"))):
-            ws = os.path.join(src, "workspaces", name)
-            if not os.path.isfile(os.path.join(ws, "project.json")) or os.path.exists(os.path.join(self._root(), name)):
-                continue
-            shutil.copytree(ws, os.path.join(self._root(), name), ignore=shutil.ignore_patterns("live.json"))
-            got["workspaces"].append(name)
-        fonts = os.path.join(src, "library", "fonts")
-        if os.path.isdir(fonts) and self.library:
-            dst = os.path.join(self.library, "fonts")
-            os.makedirs(dst, exist_ok=True)
-            for f in os.listdir(fonts):
-                if f.lower().endswith((".otf", ".ttf", ".woff", ".woff2")) and not os.path.exists(os.path.join(dst, f)):
-                    shutil.copy2(os.path.join(fonts, f), dst)
-                    got["fonts"] += 1
-        r = self.ros()
-        if not r["templates"]:
-            try:
-                with open(os.path.join(src, "run-of-show.json"), encoding="utf-8") as f:
-                    old = json.load(f)
-                r["templates"] = old.get("templates") or []
-                got["run_of_show"] = bool(r["templates"])
-                self._ros_save()
-            except (OSError, ValueError):
-                pass
-        return got
-
     def timer(self, body):
         """The Global timer: secs = time counted so far, started = when it began running (0: stopped), from = where Reset goes."""
         t = dict((self.project.get("global") or {}).get("timer") or {})
@@ -1018,8 +984,6 @@ class Engine:
             self.ws_rename(body.get("folder"), body.get("name"))
         elif path == "/api/workspace/remove":
             self.ws_remove(body.get("folder"))
-        elif path == "/api/import/gfxbaby":
-            result = self.import_gfx_baby(body.get("path") or r"C:\Chud GFX Baby")
         elif path == "/api/part/make":
             part = partsmod.make(body.get("name"), body.get("layers") or [])
             self.project.setdefault("parts", []).append(part)

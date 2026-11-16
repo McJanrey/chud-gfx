@@ -47,27 +47,6 @@ if __name__ == "__main__":
     unittest.main()
 
 
-class FromGFXBaby(unittest.TestCase):
-    def test_copies_workspaces_fonts_and_run_of_show(self):
-        root = tempfile.mkdtemp()
-        self.addCleanup(shutil.rmtree, root, True)
-        old = os.path.join(root, "old")
-        for ws in ("show-a", "first"):
-            os.makedirs(os.path.join(old, "workspaces", ws))
-            json.dump({"name": ws, "compositions": []}, open(os.path.join(old, "workspaces", ws, "project.json"), "w"))
-        os.makedirs(os.path.join(old, "library", "fonts"))
-        open(os.path.join(old, "library", "fonts", "Gotham-Bold.otf"), "wb").write(b"f")
-        json.dump({"templates": [{"id": "t1", "name": "LoL", "blocks": []}]}, open(os.path.join(old, "run-of-show.json"), "w"))
-        new = os.path.join(root, "new", "first")
-        os.makedirs(new)
-        json.dump({"name": "Mine", "global": {}, "compositions": [], "transitions": []}, open(os.path.join(new, "project.json"), "w"))
-        e = Engine(new, os.path.join(root, "lib"))
-        got = e.act("/api/import/gfxbaby", {"path": old})
-        self.assertEqual(got, {"workspaces": ["show-a"], "fonts": 1, "run_of_show": True})
-        self.assertEqual(json.load(open(os.path.join(new, "project.json")))["name"], "Mine")   # (same name: kept)
-        self.assertEqual(e.ros()["templates"][0]["name"], "LoL")
-
-
 class Migrate(unittest.TestCase):
     def test_gfx_baby_folder(self):
         from pathlib import Path

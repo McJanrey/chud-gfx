@@ -14,21 +14,15 @@ function render() {
   if (tab === "ws") {
     body = el("div", { class: "ws-grid" },
       ...list.map(w => el("div", { class: "ws-card" + (w.open ? " open" : "") },
-        el("div", { class: "name" }, w.name), el("div", { class: "muted small" }, `${w.graphics} graphics · ${ago(w.changed)}`),
-        el("div", { class: "row" },
-          w.open ? el("span", { class: "pill" }, "Open") : el("button", { class: "small primary", onclick: () => api("/api/workspace/open", { folder: w.folder }).then(() => toast(`Opened ${w.name}`)) }, "Open"),
-          el("span", { class: "spacer" }),
+        el("div", { class: "ws-head" }, el("div", { class: "name" }, w.name), el("div", { class: "muted small" }, `${w.graphics} graphics · ${ago(w.changed)}`)),
+        el("div", { class: "ws-actions" },
+          w.open ? el("span", { class: "ws-current" }, "● Open now") : el("button", { class: "small primary", onclick: () => api("/api/workspace/open", { folder: w.folder }).then(() => toast(`Opened ${w.name}`)) }, "Open"),
           el("button", { class: "small ghost", onclick: async () => { const n = await askText("Name", w.name); if (n) api("/api/workspace/rename", { folder: w.folder, name: n }); } }, "Rename"),
           el("button", { class: "small ghost", onclick: () => api("/api/workspace/copy", { folder: w.folder }) }, "Duplicate"),
           w.open ? el("a", { class: "small ghost btn", href: "/api/export", download: "" }, "Export pack") : null,
           w.open ? null : el("button", { class: "small ghost", onclick: async () => { if (await ask(`Remove "${w.name}"? It's moved to the .removed folder, not deleted.`)) api("/api/workspace/remove", { folder: w.folder }); } }, "Remove")))),
-      el("button", { class: "ws-card new", onclick: async () => { const n = await askText("Name of the new workspace", "New workspace"); if (n) api("/api/workspace/new", { name: n }); } }, "+ New workspace"),
-      el("button", { class: "ws-card new", onclick: async () => {
-        const path = await askText("Where GFX Baby is installed", "C:\\Chud GFX Baby");
-        if (!path) return;
-        const r = await api("/api/import/gfxbaby", { path });
-        toast(`Brought in ${r.workspaces.length} workspaces (${r.workspaces.join(", ") || "none new"}), ${r.fonts} fonts${r.run_of_show ? ", the run of show" : ""}. Retype OBS and stream passwords.`);
-      } }, "Bring in from GFX Baby"));
+      el("button", { class: "ws-card new", onclick: async () => { const n = await askText("Name of the new workspace", "New workspace"); if (n) api("/api/workspace/new", { name: n }); } }, "+ New workspace"));
+
   } else {
     const bk = st.backups || [];
     body = el("div", { class: "panel" }, el("div", { class: "list" },
@@ -38,7 +32,7 @@ function render() {
         el("button", { class: "small", onclick: async () => { if (await ask(`Go back to the ${when(b.name)} copy?`)) api("/api/backup/restore", { name: b.name }).then(() => toast("Restored")); } }, "Restore")))
         : [el("p", { class: "muted empty" }, "No backups yet.")])));
   }
-  $("#home-body").replaceChildren(tabs, el("p", { class: "muted" }, "One per event or show: its own graphics, files, data, transitions and global settings. Fonts and teams are shared."), body);
+  $("#home-body").replaceChildren(tabs, body);
 }
 pages.home = { shown: render };
 App.on((st, msg) => {
