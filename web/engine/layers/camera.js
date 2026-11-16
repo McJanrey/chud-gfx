@@ -19,12 +19,20 @@ export function findCam(cams, want) {
   return w ? (cams || []).find(c => c.id === w || (c.name || "").trim().toLowerCase() === w) : null;
 }
 
-// the look and framing on the iframe (and the warmth wash over it)
-export function styleCam(frame, wash, cam) {
+// the look and framing on the iframe (and the warmth wash over it). box = {w, h, fit}: "cover" fills a frame of
+// any shape with the 16:9 picture (the sides or top cropped, no black bars); otherwise the whole picture shows.
+export function styleCam(frame, wash, cam, box) {
   const z = +cam.zoom || 1, x = +cam.x || 0, y = +cam.y || 0;
+  let W = 100, H = 100, unit = "%";
+  if (box && box.fit !== "contain" && box.w && box.h) {
+    unit = "px";
+    [W, H] = box.w / box.h < 16 / 9 ? [box.h * 16 / 9, box.h] : [box.w, box.w * 9 / 16];
+  }
+  const bw = unit === "px" ? box.w : 100, bh = unit === "px" ? box.h : 100;
+  W *= z; H *= z;
   Object.assign(frame.style, {
-    position: "absolute", border: "0", width: z * 100 + "%", height: z * 100 + "%",
-    left: (-(z - 1) / 2 * 100 + x * (z - 1) / 2) + "%", top: (-(z - 1) / 2 * 100 + y * (z - 1) / 2) + "%",
+    position: "absolute", border: "0", width: W + unit, height: H + unit,
+    left: ((bw - W) / 2 + x / 100 * (W - bw) / 2) + unit, top: ((bh - H) / 2 + y / 100 * (H - bh) / 2) + unit,
     transform: cam.mirror ? "scaleX(-1)" : "", pointerEvents: "none",
     filter: `brightness(${cam.bright ?? 100}%) contrast(${cam.contrast ?? 100}%) saturate(${cam.sat ?? 100}%)`,
   });
@@ -48,7 +56,7 @@ export function camera(el, layer, ctx) {
   frame.setAttribute("allow", "autoplay");
   frame.src = viewUrl(cam, ctx.camPassword, ctx.camBitrate);
   const wash = document.createElement("div");
-  styleCam(frame, wash, cam);
+  styleCam(frame, wash, cam, { w: layer.w, h: layer.h, fit: layer.fit });
   el.append(frame, wash);
   el._keep = `${layer.id}|${frame.src}`;   // (kept when the graphic redraws: a new iframe would reconnect)
 }

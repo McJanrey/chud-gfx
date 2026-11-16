@@ -454,6 +454,7 @@ function renderProps() {
       lab("Camera", bind(l, "cam", "select", { options: [["", "(pick one)"], ...cams.map(c => [c.name, c.name]), ...(l.cam && !cams.some(c => c.name === l.cam) ? [[l.cam, l.cam]] : [])], def: "" })),
       lab("Or the camera named by live data", bind(l, "cam", "text", { placeholder: "e.g. {{Roster!Player 1 name}}" })),
       el("p", { class: "muted small" }, "Cameras are set up on the Cameras page (a VDO.Ninja link per guest). Their look and framing apply everywhere they show. Here the canvas shows a card; outputs show the live picture."),
+      lab("Picture", bind(l, "fit", "select", { options: [["cover", "Fill the box (crop the sides)"], ["contain", "Whole picture (bars)"]], def: "cover" })),
       lab("Behind the picture", bind(l, "bg", "text", { placeholder: "transparent" }))));
   }
   if (T === "lottie") sects.push(el("section", { class: "sect" }, el("h4", {}, "Lottie"),

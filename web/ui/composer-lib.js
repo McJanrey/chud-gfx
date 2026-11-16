@@ -93,7 +93,14 @@ function casterCams() {
     addLayers(made, { keepPlace: true });
     return toast(`Added ${made.length} caster cameras on the caster boxes: name the cameras Caster 1-${made.length} on the Cameras page`);
   }
-  // (no caster boxes here: two cameras side by side to drag onto the design's frames)
+  // (no caster lower-third boxes: the design's own caster frames, named "caster", filled left to right)
+  const frames = c.layers.filter(l => /caster/i.test(l.name || "") && l.type !== "text" && l.type !== "camera" && l.w >= 200 && l.h >= 150)
+    .sort((a, b) => a.x - b.x || a.y - b.y);
+  if (frames.length) {
+    addLayers(frames.map((f, i) => ({ type: "camera", name: `Caster ${i + 1} camera`, cam: `Caster ${i + 1}`, x: f.x, y: f.y, w: f.w, h: f.h, fit: "cover", clip: f.clip || "" })), { keepPlace: true });
+    return toast(`Put Caster 1-${frames.length} cameras in the ${frames.length} caster frames`);
+  }
+  // (nothing to go by: two cameras side by side to drag onto the design)
   addLayers([1, 2].map(n => ({ type: "camera", name: `Caster ${n} camera`, cam: `Caster ${n}`, x: n === 1 ? 120 : 1020, y: 200, w: 780, h: 439 })), { keepPlace: true });
   toast("No caster boxes in this graphic: added Caster 1 and 2 cameras to place on your design");
 }
