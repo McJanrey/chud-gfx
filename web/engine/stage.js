@@ -125,14 +125,37 @@ export class Stage {
     if (mode === "cut") return;
     if (mode === "fade") return el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: +t.dur || 500 }).finished.catch(() => {});
     if (mode === "wipe") return el.animate(wipeFrames(t.direction, true), { duration: +t.dur || 600, easing: "ease-in-out" }).finished.catch(() => {});
-    await Promise.all([...el.children].map(l => play(l, l._layer, "in")));
+    await Promise.all([...el.children].filter(l => l._layer).map(l => play(l, l._layer, "in")));
   }
   async goOut(el, mode, t) {
+    (this.leaving = this.leaving || new Set()).add(el);
     if (mode === "fade") await el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: +t.dur || 500, fill: "forwards" }).finished.catch(() => {});
     else if (mode === "wipe") await el.animate(wipeFrames(t.direction, false), { duration: +t.dur || 600, easing: "ease-in-out", fill: "forwards" }).finished.catch(() => {});
-    else if (mode !== "cut") await Promise.all([...el.children].map(l => play(l, l._layer, "out")));
+    else if (mode !== "cut") await Promise.all([...el.children].filter(l => l._layer).map(l => play(l, l._layer, "out")));
     el.remove();
+    this.leaving.delete(el);
   }
+
+  // A new TAKE while the last one is still playing: that one ends at once (its animations jump to the end,
+  // what was leaving is gone, a dip or stinger stops), so TAKE always answers straight away, however fast.
+  settle() {
+    this.gen = (this.gen || 0) + 1;   // (a dip / stinger still on its way does nothing once a newer TAKE came)
+    for (const id of this.timers || []) clearTimeout(id);
+    this.timers = [];
+    for (const el of this.leaving || []) el.remove();
+    this.leaving = new Set();
+    for (const c of [...this.root.children]) if (c.classList.contains("sg-cover") || c.classList.contains("sg-stinger")) c.remove();
+    for (const { el } of this.on.values()) {
+      for (const g of el.querySelectorAll(".sg-ghost")) g.remove();
+      for (const a of el.getAnimations({ subtree: true })) {
+        const iters = a.effect && a.effect.getComputedTiming ? a.effect.getComputedTiming().iterations : 1;
+        if (iters !== Infinity) { try { a.finish(); } catch (e) { a.cancel(); } }   // (tickers keep running)
+      }
+      for (const l of el.children) if (l._layer && l.style.visibility === "hidden") l.style.visibility = "";
+      el.style.visibility = "";
+    }
+  }
+  later(fn, ms) { (this.timers = this.timers || []).push(setTimeout(fn, ms)); }
 
   // Shows exactly what's wanted: new graphics in, gone ones out, the rest redrawn only when they changed.
   sync(state, mode = "cut", t = {}) {
@@ -194,13 +217,14 @@ export class Stage {
     const key = l => `${(l._layer.name || "").trim().toLowerCase()}|${l._layer.type}`;
     const same = (a, b) => JSON.stringify({ ...a, id: 0, anim: 0 }) === JSON.stringify({ ...b, id: 0, anim: 0 });
     const olds = new Map();
-    for (const g of going) for (const l of g.children) { const k = key(l); if (!olds.has(k)) olds.set(k, []); olds.get(k).push(l); }
+    for (const g of going) for (const l of g.children) { if (!l._layer) continue; const k = key(l); if (!olds.has(k)) olds.set(k, []); olds.get(k).push(l); }
     const box = l => { const L = l._layer; return { left: (L.x || 0) + "px", top: (L.y || 0) + "px", width: (L.w || 0) + "px", height: (L.h || 0) + "px", opacity: getComputedStyle(l).opacity }; };
     for (const el of fresh) {
       if (el.parentNode !== this.root) this.root.appendChild(el);
       el.style.visibility = "";
       el._later.forEach(fn => fn());
-      for (const l of el.children) {
+      for (const l of [...el.children]) {
+        if (!l._layer) continue;
         const old = (olds.get(key(l)) || []).shift();
         if (!old) { play(l, l._layer, "in"); continue; }
         old._merged = true;
@@ -214,6 +238,7 @@ export class Stage {
         l.animate([from, to], { duration: dur, easing });
         if (old.textContent !== l.textContent && l._layer.type === "text") {   // (new words: the old ones fade out where they move)
           const ghost = old.cloneNode(true);
+          ghost.classList.add("sg-ghost");
           ghost.style.visibility = "visible";
           el.appendChild(ghost);
           ghost.animate([{ ...from, opacity: 1 }, { ...to, opacity: 0 }], { duration: dur, easing, fill: "forwards" }).finished.then(() => ghost.remove(), () => ghost.remove());
@@ -223,8 +248,9 @@ export class Stage {
     }
     for (const el of fresh) for (const l of el.children) l._merged = false;
     for (const g of going) {
-      Promise.all([...g.children].filter(l => !l._merged).map(l => play(l, l._layer, "out")))
-        .then(() => setTimeout(() => g.remove(), Math.max(0, dur - 300)), () => g.remove());
+      (this.leaving = this.leaving || new Set()).add(g);
+      Promise.all([...g.children].filter(l => l._layer && !l._merged).map(l => play(l, l._layer, "out")))
+        .then(() => this.later(() => { g.remove(); this.leaving.delete(g); }, Math.max(0, dur - 300)), () => g.remove());
     }
   }
 
@@ -260,9 +286,10 @@ export class Stage {
     const first = this.cutSeq === null, took = !first && cut.seq !== this.cutSeq && this.opts.bus === "program" && !this.opts.comp;
     this.cutSeq = cut.seq;
     if (!took) return this.sync(state, first ? "cut" : "animate");
+    this.settle();
     const t = cut.transition || { type: "cut" };
     if (t.type === "dip") return this.dip(state, t);
-    if (t.type === "delay") return setTimeout(() => this.sync(state, "cut"), +t.ms || 0);
+    if (t.type === "delay") return this.later(() => this.sync(state, "cut"), +t.ms || 0);
     if (t.type === "stinger") return this.stinger(state, t);
     this.sync(state, ["cut", "fade", "wipe", "merge"].includes(t.type) ? t.type : "animate", t);
   }
@@ -272,8 +299,9 @@ export class Stage {
     cover.className = "sg-cover";
     cover.style.background = t.color || "#000";
     this.root.appendChild(cover);
-    const half = (+t.dur || 800) / 2;
+    const half = (+t.dur || 800) / 2, gen = this.gen;
     cover.animate([{ opacity: 0 }, { opacity: 1 }], { duration: half, fill: "forwards" }).finished.then(() => {
+      if (gen !== this.gen) return;
       this.sync(state, "cut");
       return cover.animate([{ opacity: 1 }, { opacity: 0 }], { duration: half, fill: "forwards" }).finished;
     }).finally(() => cover.remove());
@@ -289,8 +317,9 @@ export class Stage {
     v.playsInline = true;
     this.root.appendChild(v);
     let swapped = false;
-    const swap = () => { if (!swapped) { swapped = true; this.sync(state, "cut"); } };
-    setTimeout(swap, Math.max(0, +t.cut || 0));
+    const gen = this.gen;
+    const swap = () => { if (!swapped && gen === this.gen) { swapped = true; this.sync(state, "cut"); } };
+    this.later(swap, Math.max(0, +t.cut || 0));
     v.onended = () => { swap(); v.remove(); };
     v.play().catch(() => { swap(); v.remove(); });
   }

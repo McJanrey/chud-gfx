@@ -1,5 +1,5 @@
 // The Control page: Preview / Program, transitions, TAKE, the graphics list and each graphic's fields.
-import { $, el, api, toast, App, pages } from "./lib.js";
+import { $, el, api, toast, App, pages, typingIn } from "./lib.js";
 
 let S = null, selected = null, transition = null, filter = "";
 const KINDS = [["board", "Full-page boards"], ["lower third", "Lower thirds"], ["overlay", "Overlays"]];
@@ -70,7 +70,7 @@ let fieldsSig = "";
 function renderFields() {
   const c = selected && comp(selected);
   const sig = JSON.stringify([selected, c && c.layers.map(l => l.field), S.live.preview.values[selected], S.live.program.values[selected], (S.project.global || {}).timer]);
-  if (sig === fieldsSig || (document.activeElement && $("#fields").contains(document.activeElement))) return;
+  if (sig === fieldsSig || typingIn($("#fields"))) return;
   fieldsSig = sig;
   $("#send").hidden = !c || !S.live.program.on.includes(selected);
   $("#fields-title").textContent = c ? c.name : "Fields";

@@ -138,3 +138,8 @@ export const ask = (title, body, opts) => {
   return i > 0 ? dialog(title.slice(0, i + 1), title.slice(i + 2), opts) : dialog(title, body, opts);
 };
 export const askText = (title, value = "", opts = {}) => dialog(title, opts.body, { ...opts, input: { value, placeholder: opts.placeholder } });
+
+// Is the person typing in this part of the page (a text box, a dropdown, a slider)? Then a redraw waits.
+// A button or a switch they just clicked doesn't count: the page must show what the click did.
+export const typingIn = box => !!box && box.contains(document.activeElement) &&
+  document.activeElement.matches("input:not([type=checkbox]):not([type=radio]):not([type=button]):not([type=color]), textarea, select");

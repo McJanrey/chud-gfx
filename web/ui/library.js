@@ -1,7 +1,7 @@
 // Assets (the workspace's files), Data (sources -> tables) and Appearance (this PC's look).
-import { $, el, api, upload, App, pages, assets, toast, ask } from "./lib.js";
+import { $, el, api, upload, App, pages, assets, toast, ask, typingIn } from "./lib.js";
 
-const busy = id => { const p = $(id); return p && p.contains(document.activeElement) && document.activeElement.matches("input, textarea, select"); };
+const busy = id => typingIn($(id));
 const kb = n => n < 1024 * 1024 ? `${Math.max(1, Math.round(n / 1024))} KB` : `${(n / 1048576).toFixed(1)} MB`;
 const copyText = (t, what) => navigator.clipboard.writeText(t).then(() => toast(`Copied ${what || t}`), () => toast(t));
 

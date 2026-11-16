@@ -1,7 +1,7 @@
 // Stream: multistream (OBS once to this PC, copied to every platform turned on).
-import { $, el, api, App, pages } from "./lib.js";
+import { $, el, api, App, pages, typingIn } from "./lib.js";
 
-const busy = () => { const p = $("#page-stream"); return p && p.contains(document.activeElement) && document.activeElement.matches("input, select"); };
+const busy = () => typingIn($("#page-stream"));
 const STATE = { off: "Off", waiting: "Waiting for OBS", live: "Live", error: "Problem" };
 
 function render() {

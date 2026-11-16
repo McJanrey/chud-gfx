@@ -1,9 +1,9 @@
 // Cameras: guests' webcams through VDO.Ninja. Each camera has a guest link (they open it and pick their camera)
 // and is shown by Camera layers and its own output page. Look (colour) and framing are set here, once.
-import { $, el, api, App, pages, toast, ask, askText } from "./lib.js";
+import { $, el, api, App, pages, toast, ask, askText, typingIn } from "./lib.js";
 
 
-const busy = () => { const p = $("#page-cams"); return p && p.contains(document.activeElement) && document.activeElement.matches("input, select"); };
+const busy = () => typingIn($("#page-cams"));
 const copy = (t, what) => navigator.clipboard.writeText(t).then(() => toast(`Copied ${what}`), () => toast(t));
 export function guestUrl(cam, pw) {
   const q = new URLSearchParams({ push: cam.stream, label: cam.name });

@@ -1,6 +1,6 @@
 // Composer: make and change graphics. Graphics list + layers on the left, the canvas in the middle,
 // the picked layer's (or graphic's) settings on the right. Changes save as they're made; Ctrl+Z / Ctrl+Y undo / redo.
-import { $, el, api, App, pages, picker, toast, upload, askText } from "./lib.js";
+import { $, el, api, App, pages, picker, toast, upload, askText, typingIn } from "./lib.js";
 import { Stage, W, H } from "../engine/stage.js";
 import { play } from "../engine/anim.js";
 import { clipShapes } from "../engine/layers/box.js";
@@ -92,16 +92,64 @@ $("#cmp-import").addEventListener("change", async e => {
 // --- canvas -----------------------------------------------------------------------
 const view = $("#cmp-view"), sheet = $("#cmp-sheet"), box = $("#cmp-sel");
 const stage = new Stage(sheet, { muted: true, editor: true });
-let scale = 0.5;
+// Zoom: "fit" (the whole page in view) or a fixed scale; zoomed in, the page pans (scroll, or drag with the
+// middle button / Space held). Ctrl + scroll zooms at the pointer; the toolbar has - / % / + / Fit.
+let scale = 0.5, zoom = "fit", panX = 0, panY = 0;
 function fit() {
   const r = view.getBoundingClientRect();
-  scale = Math.min((r.width - 40) / W, (r.height - 40) / H);
+  if (zoom === "fit") {
+    scale = Math.min((r.width - 40) / W, (r.height - 40) / H);
+    panX = Math.round((r.width - W * scale) / 2);
+    panY = Math.round((r.height - H * scale) / 2);
+  } else {
+    scale = zoom;
+    // (keep some of the page in view)
+    panX = Math.min(r.width - 80, Math.max(80 - W * scale, panX));
+    panY = Math.min(r.height - 80, Math.max(80 - H * scale, panY));
+  }
   sheet.style.transform = `scale(${scale})`;
-  sheet.style.left = Math.round((r.width - W * scale) / 2) + "px";
-  sheet.style.top = Math.round((r.height - H * scale) / 2) + "px";
+  sheet.style.left = Math.round(panX) + "px";
+  sheet.style.top = Math.round(panY) + "px";
+  const z = document.getElementById("cmp-zoom");
+  if (z) z.textContent = Math.round(scale * 100) + "%";
   drawSelection();
+  if (typeof drawRulers === "function") drawRulers();
 }
 new ResizeObserver(fit).observe(view);
+function zoomTo(next, cx, cy) {   // (cx, cy: the point in the view that stays put)
+  const r = view.getBoundingClientRect();
+  next = Math.max(0.1, Math.min(4, next));
+  if (cx == null) { cx = r.width / 2; cy = r.height / 2; }
+  const sx = (cx - panX) / scale, sy = (cy - panY) / scale;
+  zoom = next;
+  panX = cx - sx * next;
+  panY = cy - sy * next;
+  fit();
+}
+const STEPS = [0.1, 0.25, 0.33, 0.5, 0.67, 0.75, 1, 1.25, 1.5, 2, 3, 4];
+const stepZoom = dir => zoomTo(dir > 0 ? (STEPS.find(z => z > scale + 0.001) || 4) : ([...STEPS].reverse().find(z => z < scale - 0.001) || 0.1));
+view.addEventListener("wheel", e => {
+  if (!comp) return;
+  e.preventDefault();
+  const r = view.getBoundingClientRect();
+  if (e.ctrlKey || e.metaKey) return zoomTo(scale * Math.exp(-e.deltaY * 0.0015), e.clientX - r.left, e.clientY - r.top);
+  if (zoom === "fit") return;
+  panX -= e.shiftKey ? e.deltaY : e.deltaX;
+  panY -= e.shiftKey ? 0 : e.deltaY;
+  fit();
+}, { passive: false });
+let spaceDown = false;
+addEventListener("keydown", e => { if (e.code === "Space" && App.page === "composer" && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) { spaceDown = true; view.classList.add("grab"); e.preventDefault(); } });
+addEventListener("keyup", e => { if (e.code === "Space") { spaceDown = false; view.classList.remove("grab"); } });
+view.addEventListener("mousedown", e => {   // (pan: middle button, or Space + drag)
+  if (!(e.button === 1 || (e.button === 0 && spaceDown))) return;
+  e.preventDefault(); e.stopImmediatePropagation();
+  if (zoom === "fit") zoom = scale;
+  const sx = e.clientX - panX, sy = e.clientY - panY;
+  const move = ev => { panX = ev.clientX - sx; panY = ev.clientY - sy; fit(); };
+  const up = () => { removeEventListener("mousemove", move); removeEventListener("mouseup", up); };
+  addEventListener("mousemove", move); addEventListener("mouseup", up);
+}, true);
 function drawCanvas() {
   if (!comp) return sheet.replaceChildren();
   const tables = (App.state.data && App.state.data.tables) || {};
@@ -236,7 +284,8 @@ addEventListener("keydown", e => {
 });
 
 // --- canvas tools -----------------------------------------------------------------
-let rulers = false;
+let rulers = true;
+try { rulers = localStorage.getItem("sg-rulers") !== "off"; } catch (e) { /* */ }   // (on unless turned off on this PC)
 const rulerX = el("div", { class: "cmp-ruler x" }), rulerY = el("div", { class: "cmp-ruler y" }), guideBox = el("div", { class: "cmp-guides" });
 view.append(rulerX, rulerY, guideBox);
 function drawRulers() {
@@ -267,8 +316,12 @@ function canvasTools() {
   const paint = () => { view.dataset.bg = bg === "checker" ? "checker" : ""; view.style.setProperty("--cmp-bg", bg === "checker" ? "" : bg); };
   paint();
   t.replaceChildren(
-    el("button", { class: "small" + (rulers ? " on" : ""), onclick: e => { rulers = !rulers; e.target.classList.toggle("on", rulers); drawRulers(); } }, "Rulers"),
-    el("button", { class: "small", onclick: () => fit() }, "Fit"),
+    el("button", { class: "small" + (rulers ? " on" : ""), onclick: e => { rulers = !rulers; try { localStorage.setItem("sg-rulers", rulers ? "on" : "off"); } catch (x) { /* */ } e.target.classList.toggle("on", rulers); drawRulers(); } }, "Rulers"),
+    el("div", { class: "seg zoom" },
+      el("button", { class: "small", "aria-label": "Zoom out", onclick: () => stepZoom(-1) }, "−"),
+      el("button", { class: "small", id: "cmp-zoom", title: "100%", onclick: () => zoomTo(1) }, Math.round(scale * 100) + "%"),
+      el("button", { class: "small", "aria-label": "Zoom in", onclick: () => stepZoom(1) }, "+")),
+    el("button", { class: "small", onclick: () => { zoom = "fit"; fit(); } }, "Fit"),
     el("button", { class: "small", onclick: () => { const n = sheet.firstChild; if (n) [...n.children].forEach(l => play(l, l._layer, "in")); } }, "▶ In"),
     el("button", { class: "small", onclick: () => { const n = sheet.firstChild; if (n) Promise.all([...n.children].map(l => play(l, l._layer, "out"))).then(() => setTimeout(drawCanvas, 400)); } }, "Out"),
     el("span", { class: "spacer" }),
@@ -531,6 +584,6 @@ App.on(st => {
   if (sig !== listSig) { listSig = sig; renderGraphics(); }
   // someone else changed the graphic we're on (and we've nothing unsaved): take theirs
   const c = compId && st.project.compositions.find(x => x.id === compId);
-  if (c && !dirty && JSON.stringify(c) !== JSON.stringify(comp) && !$("#page-composer").contains(document.activeElement)) { comp = JSON.parse(JSON.stringify(c)); renderLayers(); drawCanvas(); renderProps(); }
+  if (c && !dirty && JSON.stringify(c) !== JSON.stringify(comp) && !typingIn($("#page-composer"))) { comp = JSON.parse(JSON.stringify(c)); renderLayers(); drawCanvas(); renderProps(); }
 });
 pages.composer = { shown() { listSig = ""; renderGraphics(); if (!compId && App.state.project.compositions[0]) openComp(App.state.project.compositions[0].id); setTimeout(fit, 0); } };

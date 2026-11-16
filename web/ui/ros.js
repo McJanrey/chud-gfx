@@ -1,6 +1,6 @@
 // Run of show: templates per game (blocks of segments) on the left, the picked template in the middle,
 // tonight's show (live times) on the right. On Control: the show strip (now / next / Next) and the playlists.
-import { $, el, api, App, pages, toast, ask } from "./lib.js";
+import { $, el, api, App, pages, toast, ask, typingIn } from "./lib.js";
 
 let skew = 0;
 const now = () => Date.now() / 1000 + skew;
@@ -10,7 +10,7 @@ const nid = () => Math.random().toString(16).slice(2, 12);
 const hm = t => { if (t == null) return "—"; const d = new Date(t * 1000); return String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0"); };
 const mmss = s => { s = Math.max(0, Math.round(s)); return (s >= 3600 ? Math.floor(s / 3600) + ":" : "") + String(Math.floor(s / 60) % 60).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0"); };
 const lab = (t, input) => el("label", { class: "f" }, el("span", {}, t), input);
-const busy = id => { const p = $(id); return p && p.contains(document.activeElement) && document.activeElement.matches("input, textarea"); };
+const busy = id => typingIn($(id));
 const gameName = k => (R().games.find(g => g[0] === k) || [k, "Any game"])[1];
 
 // --- the page ------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 // Transitions and Outputs pages, and the "Program connected" check in the page bar.
-import { $, el, api, App, pages, picker, toast } from "./lib.js";
+import { $, el, api, App, pages, picker, toast, typingIn } from "./lib.js";
 import { obsCard } from "./obs.js";
 
 // --- Transitions ----------------------------------------------------------------
@@ -44,7 +44,7 @@ function tCard(t, i, items) {
 let tSig = "";
 function renderTransitions() {
   const s = JSON.stringify([App.state.project.transitions, App.state.project.default_transition]);
-  if (s === tSig || $("#page-transitions").contains(document.activeElement)) return;
+  if (s === tSig || typingIn($("#page-transitions"))) return;
   tSig = s;
   const items = list();
   const own = t => t.type === "animate" || t.type === "cut";

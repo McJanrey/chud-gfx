@@ -1,5 +1,5 @@
 // OBS Studio: connection + rules (Outputs page) and the scene bar on Control.
-import { $, el, api, App, pages, toast } from "./lib.js";
+import { $, el, api, App, pages, toast, typingIn } from "./lib.js";
 
 const O = () => App.state.obs || { status: {}, rules: [] };
 const STATE = { off: "Off", connecting: "Connecting…", on: "Connected", error: "Not connected" };
@@ -48,6 +48,6 @@ function bar() {
 App.on((st, msg) => {
   if (!msg || msg.obs) {
     bar();
-    if (App.page === "outputs") { const c = $("#obs-card"), f = c && c.contains(document.activeElement); if (c && !f) c.replaceWith(obsCard()); }
+    if (App.page === "outputs") { const c = $("#obs-card"), f = typingIn(c); if (c && !f) c.replaceWith(obsCard()); }
   }
 });

@@ -1,5 +1,5 @@
 // Global: set once, used by every graphic (teams, series, sponsors, background loop, ticker, clock, casters).
-import { $, el, api, App, pages, picker } from "./lib.js";
+import { $, el, api, App, pages, picker, typingIn } from "./lib.js";
 
 const save = change => api("/api/global", { global: change });
 const G = () => App.state.project.global || {};
@@ -96,9 +96,15 @@ let sig = "";
 function render() {
   const g = G();
   const s = JSON.stringify(g);
-  if (s === sig || $("#page-global").contains(document.activeElement)) return;
+  if (s === sig || typingIn($("#page-global"))) return;
   sig = s;
-  $("#global-grid").replaceChildren(team("left"), series(), team("right"), sponsors(), loop(), ticker(), clock(), casters());
+  // Match (the teams and the series, side by side), then what's on screen (sponsors down the side).
+  const tag = (node, cls) => { node.classList.add(cls); return node; };
+  $("#global-grid").replaceChildren(
+    el("h4", { class: "g-head" }, "Match"),
+    tag(team("left"), "g-match"), tag(series(), "g-match"), tag(team("right"), "g-match"),
+    el("h4", { class: "g-head" }, "On screen"),
+    tag(sponsors(), "g-sponsors"), ticker(), clock(), loop(), casters());
 }
 App.on(() => { if (App.page === "global") render(); });
 pages.global = { shown() { sig = ""; if (App.state) render(); } };

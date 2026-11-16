@@ -1,5 +1,5 @@
 // Event setup: Teams (shared by every workspace), Tournament (standings, knockout bracket, groups), Upcoming Schedule.
-import { $, el, api, App, pages, picker, ask } from "./lib.js";
+import { $, el, api, App, pages, picker, ask, typingIn } from "./lib.js";
 
 const G = () => App.state.project.global || {};
 const saveG = change => api("/api/global", { global: change });
@@ -7,7 +7,7 @@ const teams = () => (App.state.teams || []).map(t => ({ ...t, players: (t.player
 const lab = (t, input) => el("label", { class: "f" }, el("span", {}, t), input);
 const inp = (value, onSave, attrs = {}) => el("input", { value: value ?? "", ...attrs, onchange: e => onSave(e.target.value) });
 const head = (cls, ...labels) => el("div", { class: "phead " + cls }, ...labels.map(t => el("span", {}, t)));
-const busy = page => $("#page-" + page).contains(document.activeElement);
+const busy = page => typingIn($("#page-" + page));
 const teamList = () => el("datalist", { id: "team-names" }, ...(App.state.teams || []).map(t => el("option", { value: t.name })));
 
 // --- Teams ----------------------------------------------------------------------

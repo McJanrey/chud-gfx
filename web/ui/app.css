@@ -349,3 +349,14 @@ button.danger { background: var(--red); color: #fff; box-shadow: none; font-weig
 
 /* a lone button in a stacked card or form keeps its own width (not stretched across) */
 .card > button, .card > a.btn, .stack > button, .form > button, .list > button, .sect > button, .cam-card > button, .ros-block > button { align-self: flex-start; }
+.cmp-view.grab { cursor: grab; }
+.seg.zoom #cmp-zoom { min-width: 52px; font-variant-numeric: tabular-nums; }
+
+/* Global: Match (teams + series, same height), then On screen (sponsors down the side) */
+#global-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; }
+#global-grid .g-head { grid-column: 1 / -1; margin: 8px 0 -4px; font-size: 12px; font-weight: 600; letter-spacing: .04em; color: var(--muted); }
+#global-grid .g-head:first-child { margin-top: 0; }
+#global-grid .g-match { align-self: stretch; }
+#global-grid .g-sponsors { grid-row: span 2; }
+@media (max-width: 1100px) { #global-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } #global-grid .g-sponsors { grid-row: auto; } }
+@media (max-width: 720px) { #global-grid { grid-template-columns: minmax(0, 1fr); } }
