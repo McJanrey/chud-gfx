@@ -74,6 +74,7 @@ class Engine:
     def __init__(self, workspace, library=None):
         self.library = library
         self.version, self.cond = 0, threading.Condition()
+        self.lock = threading.RLock()   # (requests, the playlist, OBS and data threads all change the project: one at a time)
         self._load(workspace)
         self.playing = None   # {id, i, until}: a playlist running on Program
         threading.Thread(target=self._playlist_loop, daemon=True).start()
@@ -198,8 +199,9 @@ class Engine:
                 rows = srcmod.fetch(src)
                 status[sid] = {"at": time.time(), "error": ""}
                 if self._remote.get(sid) != rows:
-                    self._remote[sid] = rows
-                    self.changed()
+                    with self.lock:
+                        self._remote[sid] = rows
+                        self.changed()
             except Exception as e:   # (network, bad sheet: shown on the Data page, the old table stays)
                 status[sid] = {"at": time.time(), "error": str(e)[:200] or "Couldn't read it"}
 
@@ -256,6 +258,10 @@ class Engine:
 
     def _obs_scene(self, scene):
         """OBS switched scene: the rules for it take graphics in / out."""
+        with self.lock:
+            self._obs_rules(scene)
+
+    def _obs_rules(self, scene):
         ids = {c["id"] for c in self.comps()}
         hit = False
         for r in self.obs.cfg.get("rules") or []:
@@ -284,9 +290,12 @@ class Engine:
             pass
 
     def changed(self):
-        self._on_air_scenes()
-        with open(os.path.join(self.folder, "live.json"), "w", encoding="utf-8") as f:
-            json.dump(self.buses.saved(), f)
+        with self.lock:
+            self._on_air_scenes()
+            path = os.path.join(self.folder, "live.json")
+            with open(path + ".tmp", "w", encoding="utf-8") as f:
+                json.dump(self.buses.saved(), f)
+            os.replace(path + ".tmp", path)
         with self.cond:
             self.version += 1
             self.cond.notify_all()
@@ -310,6 +319,10 @@ class Engine:
         return sorted(found)
 
     def save_project(self):
+        with self.lock:
+            self._save_project()
+
+    def _save_project(self):
         text = json.dumps(self.project, indent=1)
         path = os.path.join(self.folder, "project.json")
         with open(path + ".tmp", "w", encoding="utf-8") as f:
@@ -827,22 +840,32 @@ class Engine:
             p = self.playing
             if not p or time.time() < p["until"]:
                 continue
-            pl, items = self._playlist_items(p["id"])
-            if not items:
+            try:
+                with self.lock:
+                    self._playlist_next(p)
+            except Exception as e:   # (a bad item must not stop playlists for good)
+                print("playlist:", e, file=sys.stderr)
                 self.playing = None
-                continue
-            nxt = p["i"] + 1
-            if nxt >= len(items) and not pl.get("loop"):
-                self.playlist_stop()
-                self.changed()
-                continue
-            nxt %= len(items)
-            tr = self.transition(None)
-            if 0 <= p["i"] < len(items) and items[p["i"]]["comp"] != items[nxt]["comp"]:
-                self.buses.program(items[p["i"]]["comp"], False, tr)
-            self.buses.program(items[nxt]["comp"], True, tr)
-            p["i"], p["until"] = nxt, time.time() + max(1.0, float(items[nxt].get("secs") or 5))
+
+    def _playlist_next(self, p):
+        if self.playing is not p:
+            return
+        pl, items = self._playlist_items(p["id"])
+        if not items:
+            self.playing = None
+            return
+        nxt = p["i"] + 1
+        if nxt >= len(items) and not pl.get("loop"):
+            self.playlist_stop()
             self.changed()
+            return
+        nxt %= len(items)
+        tr = self.transition(None)
+        if 0 <= p["i"] < len(items) and items[p["i"]]["comp"] != items[nxt]["comp"]:
+            self.buses.program(items[p["i"]]["comp"], False, tr)
+        self.buses.program(items[nxt]["comp"], True, tr)
+        p["i"], p["until"] = nxt, time.time() + max(1.0, float(items[nxt].get("secs") or 5))
+        self.changed()
 
     def set_playlists(self, pls):
         out = []
@@ -1062,6 +1085,28 @@ class Engine:
         return result
 
 
+UNLOCKED = ("/api/obs", "/api/network/scan", "/api/stream/")
+
+
+def good_host(host):
+    """The Host a page used: an IP address, localhost, or this PC's own name. Anything else is a page from
+    another site that got its name pointed at this PC (DNS rebinding), so it is refused."""
+    if not host:
+        return True
+    name = urlparse("//" + host).hostname or ""
+    if "." not in name or name.endswith((".localhost", ".local", ".lan", ".home.arpa", ".internal")):
+        return True   # (localhost, a PC's own name on the network: rebinding needs a real internet domain)
+    try:
+        import ipaddress
+        ipaddress.ip_address(name)
+        return True
+    except ValueError:
+        pass
+    import socket
+    me = socket.gethostname().lower()
+    return name.lower() in (me, me + ".local", me + ".lan")
+
+
 def handler(engine):
     class H(BaseHTTPRequestHandler):
         def log_message(self, *a):
@@ -1083,7 +1128,11 @@ def handler(engine):
                 self._send(200, f.read(), mimetypes.guess_type(path)[0] or "application/octet-stream")
 
         def _refused(self):
-            """Another PC while this engine isn't shared (or on another network than the picked one)."""
+            """Another PC while this engine isn't shared (or on another network than the picked one), or a page
+            reaching it under some other site's name (DNS rebinding: Host is then that site's name)."""
+            if not good_host(self.headers.get("Host")):
+                self._send(403, b'{"error": "Open the engine by its address (127.0.0.1 or this PC IP address)"}')
+                return True
             if engine.net.allowed(self.client_address[0], self.connection.getsockname()[0]):
                 return False
             self._send(403, b'{"error": "This engine is not shared on the network (Outputs > Network)"}')
@@ -1096,12 +1145,18 @@ def handler(engine):
             if path == "/api/assets":
                 return self._send(200, json.dumps({"assets": engine.assets()}))
             if path == "/api/state":
-                return self._send(200, json.dumps(engine.state()))
+                with engine.lock:
+                    st = json.dumps(engine.state())
+                return self._send(200, st)
             if path == "/api/stream":
                 return self._stream()
             if path == "/api/export/html":
                 ids = [i for i in (parse_qs(urlparse(self.path).query).get("ids") or [""])[0].split(",") if i]
-                name, data = engine.html_export(ids)
+                try:
+                    with engine.lock:
+                        name, data = engine.html_export(ids)
+                except (KeyError, ValueError, OSError) as e:
+                    return self._send(400, json.dumps({"error": str(e)}))
                 fname = re.sub(r"[^\w ()-]+", "_", name).strip() or "graphics"
                 self.send_response(200)
                 self.send_header("Content-Type", "application/zip")
@@ -1111,7 +1166,8 @@ def handler(engine):
                 return self.wfile.write(data)
             if path == "/api/export":
                 ids = [i for i in (parse_qs(urlparse(self.path).query).get("ids") or [""])[0].split(",") if i]
-                name, data = engine.pack_export(ids)
+                with engine.lock:
+                    name, data = engine.pack_export(ids)
                 fname = re.sub(r"[^\w ()-]+", "_", name).strip() or "graphics"
                 self.send_response(200)
                 self.send_header("Content-Type", "application/zip")
@@ -1145,21 +1201,34 @@ def handler(engine):
                     if length > 400 << 20:
                         raise ValueError("That file is too big (400 MB at most)")
                     name = unquote((q.get("name") or [""])[0])
-                    if name.lower().endswith(convert.NEEDS + (".zip",)):
-                        fps = max(1.0, min(120.0, float((q.get("fps") or ["30"])[0] or 30)))
-                        return self._send(200, json.dumps({"job": engine.convert_upload(name, self.rfile.read(length), (q.get("folder") or [""])[0], fps)}))
-                    if name.lower().endswith((".chudgfx", ".sgfx")):
-                        got = engine.pack_import(self.rfile.read(length))
-                        return self._send(200, json.dumps({"comps": [{"id": c["id"], "name": c["name"]} for c in got]}))
-                    if name.lower().endswith(".psd"):
-                        return self._send(200, json.dumps({"comp": engine.import_psd(name, self.rfile.read(length))}))
-                    rel = engine.upload(name, self.rfile.read(length), (q.get("folder") or [""])[0])
-                    return self._send(200, json.dumps({"path": rel}))
+                    data = self.rfile.read(length)
+                    with engine.lock:
+                        return self._upload(q, name, data)
                 body = json.loads(self.rfile.read(int(self.headers.get("Content-Length") or 0)) or b"{}")
-                result = engine.act(urlparse(self.path).path, body)
+                path = urlparse(self.path).path
+                if path.startswith(UNLOCKED):   # (these wait on OBS or the network: they keep their own locks, and must not hold up a TAKE)
+                    result = engine.act(path, body)
+                else:
+                    with engine.lock:
+                        result = engine.act(path, body)
                 self._send(200, json.dumps(result or {"ok": True}))
             except (KeyError, ValueError) as e:
                 self._send(400, json.dumps({"error": str(e)}))
+            except Exception as e:
+                print("POST", self.path, repr(e), file=sys.stderr)
+                self._send(500, json.dumps({"error": f"Something failed here ({e.__class__.__name__}): {str(e)[:160]}"}))
+
+        def _upload(self, q, name, data):
+            if name.lower().endswith(convert.NEEDS + (".zip",)):
+                fps = max(1.0, min(120.0, float((q.get("fps") or ["30"])[0] or 30)))
+                return self._send(200, json.dumps({"job": engine.convert_upload(name, data, (q.get("folder") or [""])[0], fps)}))
+            if name.lower().endswith((".chudgfx", ".sgfx")):
+                got = engine.pack_import(data)
+                return self._send(200, json.dumps({"comps": [{"id": c["id"], "name": c["name"]} for c in got]}))
+            if name.lower().endswith(".psd"):
+                return self._send(200, json.dumps({"comp": engine.import_psd(name, data)}))
+            rel = engine.upload(name, data, (q.get("folder") or [""])[0])
+            return self._send(200, json.dumps({"path": rel}))
 
         def _stream(self):
             out = (parse_qs(urlparse(self.path).query).get("out") or [""])[0][:60]
@@ -1188,7 +1257,8 @@ def handler(engine):
                     else:
                         seen = now
                         # only the parts that changed (a TAKE is the buses, not the whole workspace)
-                        parts = {k: json.dumps(v) for k, v in engine.state().items()}
+                        with engine.lock:
+                            parts = {k: json.dumps(v) for k, v in engine.state().items()}
                         changed = {k: v for k, v in parts.items() if had.get(k) != v}
                         had = parts
                         if changed:
