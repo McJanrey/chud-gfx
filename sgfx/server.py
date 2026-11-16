@@ -1145,10 +1145,49 @@ def handler(engine):
             self.wfile.write(data)
 
         def _file(self, path):
+            """A file, the browser allowed to keep it (it asks again with its tag and gets "not changed" back,
+            a few bytes), and parts of it on request (videos are read in pieces). Without this, every TAKE had
+            every output re-download each video and picture, and the page's requests queued behind them."""
             if not path or not os.path.isfile(path):
                 return self._send(404, b"not found", "text/plain")
+            st = os.stat(path)
+            tag = f'"{int(st.st_mtime)}-{st.st_size}"'
+            ctype = mimetypes.guess_type(path)[0] or "application/octet-stream"
+            if self.headers.get("If-None-Match") == tag:
+                self.send_response(304)
+                self.send_header("ETag", tag)
+                self.send_header("Cache-Control", "no-cache")
+                return self.end_headers()
+            size, start, end = st.st_size, 0, st.st_size - 1
+            m = re.match(r"bytes=(\d*)-(\d*)$", self.headers.get("Range") or "")
+            if m and (m.group(1) or m.group(2)):
+                if m.group(1):
+                    start, end = int(m.group(1)), min(int(m.group(2) or size - 1), size - 1)
+                else:   # (the last N bytes)
+                    start = max(0, size - int(m.group(2)))
+                if start > end or start >= size:
+                    self.send_response(416)
+                    self.send_header("Content-Range", f"bytes */{size}")
+                    return self.end_headers()
+                self.send_response(206)
+                self.send_header("Content-Range", f"bytes {start}-{end}/{size}")
+            else:
+                self.send_response(200)
+            self.send_header("Content-Type", ctype)
+            self.send_header("Content-Length", str(end - start + 1))
+            self.send_header("Accept-Ranges", "bytes")
+            self.send_header("ETag", tag)
+            self.send_header("Cache-Control", "no-cache")
+            self.end_headers()
             with open(path, "rb") as f:
-                self._send(200, f.read(), mimetypes.guess_type(path)[0] or "application/octet-stream")
+                f.seek(start)
+                left = end - start + 1
+                while left > 0:
+                    chunk = f.read(min(left, 1 << 16))
+                    if not chunk:
+                        break
+                    self.wfile.write(chunk)
+                    left -= len(chunk)
 
         def _base(self):
             """This engine's address as the asker reached it (for full picture addresses)."""
