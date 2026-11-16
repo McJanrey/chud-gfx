@@ -80,9 +80,31 @@ function pick(id, add) {
   renderLayers(); drawSelection(); renderProps();
 }
 
-// Import: graphic packs (.sgfx, GFX Baby .chudgfx) and Photoshop files become graphics here.
+// Import: graphic packs (.sgfx, GFX Baby .chudgfx) and Photoshop files become graphics here; so does a video
+// or a Lottie animation, as a graphic of its own with one layer playing it (see-through video plays once and
+// holds on its last frame, other video loops). Videos that need converting (.mov...) wait for their job.
+const waitJob = id => new Promise((ok, fail) => {
+  const look = () => { const j = (App.state.jobs || []).find(x => x.id === id); if (j && j.state === "done") return ok(j.result); if (j && j.state === "error") return fail(new Error(j.detail)); setTimeout(look, 500); };
+  look();
+});
+async function importMedia(f) {
+  const ext = (f.name.match(/\.[^.]+$/) || [""])[0].toLowerCase(), stem = f.name.replace(/\.[^.]+$/, "");
+  if (ext === ".aep") return toast("After Effects: export the composition as Lottie (.json, Bodymovin) or render a .mov with alpha, then import that");
+  const lottie = ext === ".json";
+  toast(`Adding ${f.name}…`);
+  let path = await upload(f, lottie ? "lottie" : "video");
+  if (path && path.job) path = await waitJob(path.job).catch(e => { toast(`Couldn't convert ${f.name}: ${e.message}`); return null; });
+  if (!path || typeof path !== "string") return;
+  const alpha = /\.webm$/i.test(path);   // (converted see-through video is WebM: plays once and holds)
+  const layer = { id: "l" + Math.random().toString(16).slice(2, 10), name: stem, type: lottie ? "lottie" : "video", src: path, x: 0, y: 0, w: 1920, h: 1080,
+    opacity: 1, visible: true, fit: "contain", loop: lottie ? true : !alpha };
+  const { comp: made } = await api("/api/comp", { comp: { name: stem, kind: "overlay", layers: [layer] } });
+  toast(`Made "${made.name}" from ${f.name}`);
+  setTimeout(() => openComp(made.id), 300);
+}
 $("#cmp-import").addEventListener("change", async e => {
   for (const f of e.target.files) {
+    if (/\.(mp4|webm|mov|avi|mkv|m4v|wmv|flv|json|aep)$/i.test(f.name)) { await importMedia(f); continue; }
     const r = await upload(f);
     if (r && r.comps) toast(`Added ${r.comps.map(c => c.name).join(", ")}`);
     if (r && r.comp) { toast(`Made "${r.comp.name}" from ${f.name}`); setTimeout(() => openComp(r.comp.id), 300); }
