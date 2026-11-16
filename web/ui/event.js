@@ -1,5 +1,5 @@
 // Event setup: Teams (shared by every workspace), Tournament (standings, knockout bracket, groups), Upcoming Schedule.
-import { $, el, api, App, pages, picker, ask, typingIn } from "./lib.js";
+import { $, el, api, App, pages, picker, ask, toast, typingIn } from "./lib.js";
 
 const G = () => App.state.project.global || {};
 const saveG = change => api("/api/global", { global: change });
@@ -17,7 +17,13 @@ function renderTeams() {
   const cur = all.find(t => t.id === pickTeam) || null;
   const left = el("div", { class: "panel" }, el("div", { class: "panel-head" }, el("h3", {}, `Teams (${all.length})`),
       inp(teamFind, v => { teamFind = v.toLowerCase(); renderTeams(); }, { placeholder: "Find…", class: "search" }),
-      el("button", { class: "small primary", onclick: () => { all.push({ name: "New team", short: "", players: [] }); pickTeam = null; saveAll(); } }, "+ Team")),
+      el("button", { class: "small primary", onclick: () => { all.push({ name: "New team", short: "", players: [] }); pickTeam = null; saveAll(); } }, "+ Team"),
+      el("button", { class: "small ghost", title: "Name, Short name, Logo, Colour, Game, Player 1, Player 1 ID, Player 1 country, Player 1 headshot, Player 2…", onclick: () => {
+        const f = el("input", { type: "file", accept: ".csv,text/csv" });
+        f.addEventListener("change", async () => { if (!f.files[0]) return; const r = await api("/api/teams/import", { csv: await f.files[0].text() }); toast(`Teams: ${r.added} added, ${r.updated} updated`); });
+        f.click();
+      } }, "Import CSV"),
+      el("button", { class: "small ghost", onclick: () => { location.href = "/api/teams.csv"; } }, "Export CSV")),
     el("div", { class: "list" }, ...all.filter(t => t.name.toLowerCase().includes(teamFind)).map(t =>
       el("div", { class: "gfx" + (t.id === pickTeam ? " sel" : ""), onclick: () => { pickTeam = t.id; renderTeams(); } },
         el("span", { class: "bar-ind", style: `background:${t.color || "transparent"}` }),

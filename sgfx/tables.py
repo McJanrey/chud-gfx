@@ -180,3 +180,67 @@ def teams_rows(teams=()):
     for t in teams:
         rows.append([t.get("name", ""), t.get("short", ""), t.get("logo", ""), t.get("color", ""), t.get("game", ""), _s(len(t.get("players") or []))])
     return rows
+
+
+# --- the team list as CSV (as GFX Baby's teams.csv): Name, Short name, Logo, Colour, Game, then per player:
+# Player N (name), Player N ID (in-game ID), Player N country, Player N headshot ---
+TEAM_COLS = ["Name", "Short name", "Logo", "Colour", "Game"]
+PLAYER_COLS = [("", "name"), (" ID", "id"), (" country", "country"), (" headshot", "photo")]
+
+
+def teams_csv(teams):
+    import csv
+    import io
+    n = max([len(t.get("players") or []) for t in teams] + [5])
+    head = TEAM_COLS + [f"Player {i}{suffix}" for i in range(1, n + 1) for suffix, _ in PLAYER_COLS]
+    out = io.StringIO()
+    w = csv.writer(out)
+    w.writerow(head)
+    for t in teams:
+        row = [t.get("name", ""), t.get("short", ""), t.get("logo", ""), t.get("color", ""), t.get("game", "")]
+        ps = t.get("players") or []
+        for i in range(n):
+            p = ps[i] if i < len(ps) else {}
+            row += [p.get(k, "") for _, k in PLAYER_COLS]
+        w.writerow(row)
+    return out.getvalue()
+
+
+def teams_from_csv(text, teams):
+    """Teams from a CSV merged into the list: a team with the same name (any case) is updated, the rest are added.
+    Returns (teams, added, updated)."""
+    import csv
+    import io
+    rows = list(csv.reader(io.StringIO(text.lstrip("\ufeff"))))
+    if not rows:
+        raise ValueError("That CSV is empty")
+    head = [h.strip().lower() for h in rows[0]]
+    col = lambda name: head.index(name.lower()) if name.lower() in head else -1
+    if col("Name") < 0:
+        raise ValueError('The first row needs a "Name" column')
+    teams = [dict(t) for t in teams]
+    by = {t.get("name", "").strip().lower(): t for t in teams}
+    added = updated = 0
+    for r in rows[1:]:
+        get = lambda name: (r[col(name)].strip() if 0 <= col(name) < len(r) else "")
+        name = get("Name")
+        if not name:
+            continue
+        players, i = [], 1
+        while col(f"Player {i}") >= 0:
+            p = {k: get(f"Player {i}{suffix}") for suffix, k in PLAYER_COLS}
+            if any(p.values()):
+                players.append(dict(p, tag=""))
+            i += 1
+        t = by.get(name.lower())
+        fields = {"name": name, "short": get("Short name"), "logo": get("Logo"), "color": get("Colour") or get("Color"), "game": get("Game")}
+        if t:
+            t.update({k: v for k, v in fields.items() if v})
+            if players:
+                t["players"] = players
+            updated += 1
+        else:
+            teams.append(dict(fields, players=players))
+            by[name.lower()] = teams[-1]
+            added += 1
+    return teams, added, updated

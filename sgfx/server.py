@@ -1012,6 +1012,10 @@ class Engine:
             self.comp_order(body.get("ids") or [])
         elif path == "/api/teams":
             self.set_teams(body.get("teams"))
+        elif path == "/api/teams/import":
+            merged, added, updated = tables.teams_from_csv(str(body.get("csv") or ""), self.teams())
+            self.set_teams(merged)
+            result = {"added": added, "updated": updated}
         elif path == "/api/workspace/open":
             self.ws_open(body.get("folder"))
         elif path == "/api/workspace/new":
@@ -1187,6 +1191,14 @@ def handler(engine):
                 with engine.lock:
                     g = json.dumps(hudlink.global_for_hud(engine, self._base()))
                 return self._send(200, g)
+            if path == "/api/teams.csv":
+                data = tables.teams_csv(engine.teams()).encode("utf-8-sig")
+                self.send_response(200)
+                self.send_header("Content-Type", "text/csv; charset=utf-8")
+                self.send_header("Content-Disposition", 'attachment; filename="teams.csv"')
+                self.send_header("Content-Length", str(len(data)))
+                self.end_headers()
+                return self.wfile.write(data)
             if path == "/api/assets":
                 return self._send(200, json.dumps({"assets": engine.assets()}))
             if path == "/api/state":
