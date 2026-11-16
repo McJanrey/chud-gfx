@@ -1,34 +1,17 @@
 {
-	"$schema": "../node_modules/@companion-module/base/assets/manifest.schema.json",
-	"id": "chud-gfx-baby",
-	"name": "chud-gfx-baby",
-	"shortname": "chud-gfx-baby",
-	"description": "Chud GFX Baby: graphics to Preview and Program, Take, Clear, and quick functions (score, clock, background loop)",
-	"version": "0.0.0",
-	"license": "MIT",
-	"repository": "git+https://github.com/McJanrey/chud-gfx.git",
-	"bugs": "https://github.com/McJanrey/chud-gfx/issues",
-	"maintainers": [
-		{
-			"name": "Chud"
-		}
-	],
-	"runtime": {
-		"type": "node22",
-		"api": "nodejs-ipc",
-		"apiVersion": "0.0.0",
-		"entrypoint": "../src/main.js"
-	},
-	"legacyIds": [],
-	"manufacturer": "Chud",
-	"products": [
-		"GFX Baby"
-	],
-	"keywords": [
-		"graphics",
-		"broadcast",
-		"esports",
-		"preview",
-		"program"
-	]
+  "$schema": "../node_modules/@companion-module/base/assets/manifest.schema.json",
+  "id": "standby-gfx",
+  "name": "standby-gfx",
+  "shortname": "StandBy GFX",
+  "description": "Take graphics, run the show and switch OBS from StandBy GFX",
+  "version": "0.0.0",
+  "license": "UNLICENSED",
+  "repository": "git+https://github.com/McJanrey/standby-gfx.git",
+  "bugs": "https://github.com/McJanrey/standby-gfx/issues",
+  "maintainers": [{ "name": "StandBy" }],
+  "legacyIds": [],
+  "runtime": { "type": "node22", "api": "nodejs-ipc", "apiVersion": "0.0.0", "entrypoint": "../main.js" },
+  "manufacturer": "StandBy",
+  "products": ["StandBy GFX"],
+  "keywords": ["graphics", "broadcast", "esports", "obs"]
 }

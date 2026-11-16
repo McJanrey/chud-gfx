@@ -1,0 +1,264 @@
+// The stage: draws what a bus has on (Spec 01 sections 5-7) and plays transitions.
+import { box, placeMove, effects } from "./layers/box.js";
+import { rect, image, video, web } from "./layers/basic.js";
+import { text } from "./layers/text.js";
+import { shape } from "./layers/shape.js";
+import { bracket } from "./layers/bracket.js";
+import { rotator, ticker } from "./layers/rotator.js";
+import { lottie } from "./layers/lottie.js";
+import { camera } from "./layers/camera.js";
+import { play } from "./anim.js";
+import { resolve, setNow, ticks, nowSkew } from "./data.js";
+
+const DRAW = { rect, image, video, web, text, shape, bracket, rotator, ticker, lottie, camera };
+const KIND_ORDER = { board: 0, overlay: 1, "lower third": 2 };
+export const W = 1920, H = 1080;
+const truthy = v => { const t = String(v).trim().toLowerCase(); return t !== "" && t !== "0" && t !== "false" && t !== "off" && t !== "no"; };
+
+export class Stage {
+  constructor(root, { bus = "program", comp = null, muted = false, base = "", editor = false } = {}) {
+    this.root = root;
+    this.opts = { bus, comp, muted, base, editor };
+    this.on = new Map();          // comp id -> {el, sig}
+    this.cutSeq = null;
+    root.classList.add("sg-stage");
+    setInterval(() => { for (const o of this.on.values()) (o.el._ticks || []).forEach(fn => fn()); }, 1000);
+  }
+
+  url(src) { return /^(https?:|data:|blob:)/.test(src) ? src : this.opts.base + "/" + encodeURI(src.replace(/^\/+/, "")); }
+
+  // What this output should show now: [ids], and each one's values.
+  wanted(state) {
+    const comps = new Map(state.project.compositions.map(c => [c.id, c]));
+    const c = this.opts.comp;
+    if (c) return { ids: comps.has(c) ? [c] : [], comps, values: { [c]: Object.assign({}, state.live.preview.values[c], state.live.program.values[c]) } };
+    const bus = state.live[this.opts.bus];
+    return { ids: bus.on.filter(id => comps.has(id)), comps, values: bus.values || {} };
+  }
+
+  tables(state) {
+    if (state.now) setNow(state.now);
+    this.cams = (state.project && state.project.cams) || this.cams || [];
+    this.camPassword = (state.project && state.project.cam_password) || "";
+    return (state.data && state.data.tables) || {};
+  }
+
+  // entering: the graphic is coming in (tickers wait for their layer's In animation, from their start)
+  build(comp, values, tables, entering = false) {
+    const el = document.createElement("div");
+    el.className = "sg-comp";
+    const later = [];
+    const ticking = [];
+    const ctx = { values: values || {}, resolve: v => resolve(v, tables), url: s => this.url(s), muted: this.opts.muted, later: fn => later.push(fn), tick: fn => ticking.push(fn),
+      table: name => tables[name], now: () => Date.now() + nowSkew(),
+      cams: this.cams || [], camPassword: this.camPassword, liveCams: !this.opts.editor, cardCams: !!this.opts.editor, camBitrate: this.opts.muted ? 800 : 0,
+      hold: layer => { const a = (layer.anim || {}).in || {}; return entering && a.type && a.type !== "none" ? (+a.delay || 0) + (+a.dur || 400) : 0; } };
+    for (const layer of comp.layers || []) {
+      const draw = DRAW[layer.type];
+      if (!draw || layer.reference) continue;
+      // show: the layer is there only while this has a value (e.g. "{{Roster!Player 1 headshot}}")
+      if (layer.show != null && layer.show !== "" && !truthy(resolve(String(layer.show), tables))) continue;
+      const lel = box(layer);
+      placeMove(lel, layer, ctx.resolve);
+      draw(lel, layer, ctx);
+      effects(lel, layer, ctx.resolve);
+      lel._layer = layer;
+      el.appendChild(lel);
+    }
+    el._later = later;
+    el._ticks = ticking;
+    return el;
+  }
+
+  order(want) {
+    want.ids.forEach((id, i) => {
+      const c = want.comps.get(id), o = this.on.get(id);
+      if (o) o.el.style.zIndex = String(10 + (+c.layer || 0) * 1000 + (KIND_ORDER[c.kind] ?? 1) * 300 + i);
+    });
+  }
+
+  // in / out: every layer plays its own animation (or the transition's effect for the whole graphic).
+  async goIn(el, mode, t) {
+    if (el.parentNode !== this.root) this.root.appendChild(el);   // (a warmed-up graphic is there already: moving it would reconnect its cameras)
+    el.style.visibility = "";
+    el._later.forEach(fn => fn());
+    if (mode === "cut") return;
+    if (mode === "fade") return el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: +t.dur || 500 }).finished.catch(() => {});
+    if (mode === "wipe") return el.animate(wipeFrames(t.direction, true), { duration: +t.dur || 600, easing: "ease-in-out" }).finished.catch(() => {});
+    await Promise.all([...el.children].map(l => play(l, l._layer, "in")));
+  }
+  async goOut(el, mode, t) {
+    if (mode === "fade") await el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: +t.dur || 500, fill: "forwards" }).finished.catch(() => {});
+    else if (mode === "wipe") await el.animate(wipeFrames(t.direction, false), { duration: +t.dur || 600, easing: "ease-in-out", fill: "forwards" }).finished.catch(() => {});
+    else if (mode !== "cut") await Promise.all([...el.children].map(l => play(l, l._layer, "out")));
+    el.remove();
+  }
+
+  // Shows exactly what's wanted: new graphics in, gone ones out, the rest redrawn only when they changed.
+  sync(state, mode = "cut", t = {}) {
+    const want = this.wanted(state), tables = this.tables(state), keep = new Set(want.ids);
+    const fresh = [];
+    for (const id of want.ids) {
+      const comp = want.comps.get(id), hasCam = (comp.layers || []).some(l => l.type === "camera");
+      const sig = JSON.stringify([comp, want.values[id], tables, hasCam ? [this.cams, this.camPassword] : 0]);
+      const o = this.on.get(id);
+      if (o && o.sig === sig) continue;
+      const el = this.build(comp, want.values[id], tables, !o);
+      if (o && [...o.el.children].some(c => c._camKey)) { this.patch(o.el, el); this.on.set(id, { el: o.el, sig }); }
+      else if (o) { o.el.replaceWith(el); el._later.forEach(fn => fn()); this.on.set(id, { el, sig }); }
+      else if (this.warm && this.warm.has(id)) {   // (it was waiting, hidden, with its cameras connected)
+        const w = this.warm.get(id);
+        this.warm.delete(id);
+        this.patch(w.el, el);
+        this.on.set(id, { el: w.el, sig });
+        fresh.push(w.el);
+      }
+      else { this.on.set(id, { el, sig }); fresh.push(el); }
+    }
+    const going = [];
+    for (const [id, o] of this.on) if (!keep.has(id)) { this.on.delete(id); going.push(o.el); }
+    this.order(want);
+    if (mode === "merge" && fresh.length && going.length) { this.merge(fresh, going, t); return this.warmUp(state, tables); }
+    // (a wipe or fade moves old and new together: both start in the same frame)
+    for (const el of fresh) this.goIn(el, mode, t);
+    for (const el of going) this.goOut(el, mode, t);
+    this.warmUp(state, tables);
+  }
+
+  // Graphics with cameras waiting on Preview are built here too, hidden, so their cameras are already
+  // connected when TAKE puts them on (a camera connecting on air would show black for a second or two).
+  warmUp(state, tables) {
+    if (this.opts.bus !== "program" || this.opts.comp || !state.live.preview) return;
+    this.warm = this.warm || new Map();
+    const comps = new Map(state.project.compositions.map(c => [c.id, c]));
+    const want = new Set((state.live.preview.on || []).filter(id => !this.on.has(id) && ((comps.get(id) || {}).layers || []).some(l => l.type === "camera")));
+    for (const [id, w] of this.warm) if (!want.has(id)) { w.el.remove(); this.warm.delete(id); }
+    for (const id of want) {
+      const comp = comps.get(id), values = (state.live.preview.values || {})[id];
+      const sig = JSON.stringify([comp, values, tables, [this.cams, this.camPassword]]), w = this.warm.get(id);
+      if (w && w.sig === sig) continue;
+      const el = this.build(comp, values, tables, true);
+      if (w) { this.patch(w.el, el); w.sig = sig; continue; }
+      el.style.visibility = "hidden";
+      el.style.zIndex = "-1";
+      this.root.appendChild(el);
+      el._later.forEach(fn => fn());
+      this.warm.set(id, { el, sig });
+    }
+  }
+
+  // Merge: what both graphics have (the same layer name) glides from where it was to where it goes and stays
+  // on screen; the rest of the old one plays its Out, the rest of the new one its In (a scene "morph").
+  merge(fresh, going, t) {
+    const dur = +t.dur || 700, easing = "cubic-bezier(.65, 0, .35, 1)";
+    const key = l => `${(l._layer.name || "").trim().toLowerCase()}|${l._layer.type}`;
+    const same = (a, b) => JSON.stringify({ ...a, id: 0, anim: 0 }) === JSON.stringify({ ...b, id: 0, anim: 0 });
+    const olds = new Map();
+    for (const g of going) for (const l of g.children) { const k = key(l); if (!olds.has(k)) olds.set(k, []); olds.get(k).push(l); }
+    const box = l => { const L = l._layer; return { left: (L.x || 0) + "px", top: (L.y || 0) + "px", width: (L.w || 0) + "px", height: (L.h || 0) + "px", opacity: getComputedStyle(l).opacity }; };
+    for (const el of fresh) {
+      if (el.parentNode !== this.root) this.root.appendChild(el);
+      el.style.visibility = "";
+      el._later.forEach(fn => fn());
+      for (const l of el.children) {
+        const old = (olds.get(key(l)) || []).shift();
+        if (!old) { play(l, l._layer, "in"); continue; }
+        old._merged = true;
+        old.style.visibility = "hidden";
+        const from = box(old), to = box(l);
+        if (JSON.stringify(from) === JSON.stringify(to) && old.textContent === l.textContent && same(old._layer, l._layer)) {
+          old.style.visibility = "";   // (the very same layer: the one on screen moves over and keeps playing, a loop or a ticker doesn't restart)
+          l.replaceWith(old);
+          continue;
+        }
+        l.animate([from, to], { duration: dur, easing });
+        if (old.textContent !== l.textContent && l._layer.type === "text") {   // (new words: the old ones fade out where they move)
+          const ghost = old.cloneNode(true);
+          ghost.style.visibility = "visible";
+          el.appendChild(ghost);
+          ghost.animate([{ ...from, opacity: 1 }, { ...to, opacity: 0 }], { duration: dur, easing, fill: "forwards" }).finished.then(() => ghost.remove(), () => ghost.remove());
+          l.animate([{ opacity: 0 }, { opacity: 0, offset: 0.3 }, { opacity: 1 }], { duration: dur });
+        }
+      }
+    }
+    for (const el of fresh) for (const l of el.children) l._merged = false;
+    for (const g of going) {
+      Promise.all([...g.children].filter(l => !l._merged).map(l => play(l, l._layer, "out")))
+        .then(() => setTimeout(() => g.remove(), Math.max(0, dur - 300)), () => g.remove());
+    }
+  }
+
+  // Redraw a graphic that shows cameras without touching their iframes (a moved iframe reconnects):
+  // the new layers go in around the cameras that stay.
+  patch(oldEl, newEl) {
+    const keep = new Map([...oldEl.children].filter(c => c._camKey).map(c => [c._camKey, c]));
+    const stay = new Set();
+    let cursor = null;
+    for (const n of [...newEl.children]) {
+      const old = n._camKey && keep.get(n._camKey);
+      if (old) {
+        old.style.cssText = n.style.cssText;
+        old._layer = n._layer;
+        const [f, w] = n.children;
+        if (f && old.children[0]) { old.children[0].style.cssText = f.style.cssText; old.children[1].style.cssText = w.style.cssText; }
+        keep.delete(n._camKey);
+        stay.add(old);
+        cursor = old;
+        continue;
+      }
+      if (cursor) cursor.after(n); else oldEl.prepend(n);
+      stay.add(n);
+      cursor = n;
+    }
+    for (const c of [...oldEl.children]) if (!stay.has(c)) c.remove();
+    oldEl._ticks = newEl._ticks;
+    newEl._later.forEach(fn => fn());
+  }
+
+  // A new state from the engine: a TAKE plays its transition, anything else updates in place.
+  apply(state) {
+    const cut = state.live.cut || { seq: 0 };
+    const first = this.cutSeq === null, took = !first && cut.seq !== this.cutSeq && this.opts.bus === "program" && !this.opts.comp;
+    this.cutSeq = cut.seq;
+    if (!took) return this.sync(state, first ? "cut" : "animate");
+    const t = cut.transition || { type: "cut" };
+    if (t.type === "dip") return this.dip(state, t);
+    if (t.type === "delay") return setTimeout(() => this.sync(state, "cut"), +t.ms || 0);
+    if (t.type === "stinger") return this.stinger(state, t);
+    this.sync(state, ["cut", "fade", "wipe", "merge"].includes(t.type) ? t.type : "animate", t);
+  }
+
+  dip(state, t) {
+    const cover = document.createElement("div");
+    cover.className = "sg-cover";
+    cover.style.background = t.color || "#000";
+    this.root.appendChild(cover);
+    const half = (+t.dur || 800) / 2;
+    cover.animate([{ opacity: 0 }, { opacity: 1 }], { duration: half, fill: "forwards" }).finished.then(() => {
+      this.sync(state, "cut");
+      return cover.animate([{ opacity: 1 }, { opacity: 0 }], { duration: half, fill: "forwards" }).finished;
+    }).finally(() => cover.remove());
+  }
+
+  stinger(state, t) {
+    if (!t.src) return this.sync(state, "cut");
+    const v = document.createElement("video");
+    v.className = "sg-stinger";
+    v.src = this.url(t.src);
+    v.muted = this.opts.muted || t.audio === false;
+    v.volume = t.volume == null ? 1 : +t.volume;
+    v.playsInline = true;
+    this.root.appendChild(v);
+    let swapped = false;
+    const swap = () => { if (!swapped) { swapped = true; this.sync(state, "cut"); } };
+    setTimeout(swap, Math.max(0, +t.cut || 0));
+    v.onended = () => { swap(); v.remove(); };
+    v.play().catch(() => { swap(); v.remove(); });
+  }
+}
+
+function wipeFrames(direction, entering) {
+  const hidden = { left: ["inset(0 0 0 100%)", "inset(0 100% 0 0)"], right: ["inset(0 100% 0 0)", "inset(0 0 0 100%)"],
+    up: ["inset(100% 0 0 0)", "inset(0 0 100% 0)"], down: ["inset(0 0 100% 0)", "inset(100% 0 0 0)"] }[direction || "left"];
+  return entering ? [{ clipPath: hidden[0] }, { clipPath: "inset(0 0 0 0)" }] : [{ clipPath: "inset(0 0 0 0)" }, { clipPath: hidden[1] }];
+}

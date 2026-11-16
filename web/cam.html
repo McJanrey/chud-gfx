@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>StandBy GFX camera</title>
+<style>
+  html, body { margin: 0; height: 100%; background: transparent; overflow: hidden; }
+  #box { position: absolute; inset: 0; overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="box"></div>
+<script type="module">
+// One camera, full window, with its look and framing (for an OBS / vMix browser source): /cam?id=<camera id or name>
+import { viewUrl, styleCam, findCam } from "./engine/layers/camera.js";
+const want = new URLSearchParams(location.search).get("id");
+const box = document.getElementById("box");
+let frame = null, wash = null, src = "";
+function apply(st) {
+  const P = st.project || {}, cam = findCam(P.cams, want);
+  if (!cam) { box.replaceChildren(); frame = null; src = ""; return; }
+  const url = viewUrl(cam, P.cam_password);
+  if (url !== src) {   // (a new iframe only when the link changes: a new one reconnects)
+    frame = document.createElement("iframe");
+    frame.setAttribute("allow", "autoplay");
+    frame.src = src = url;
+    wash = document.createElement("div");
+    box.replaceChildren(frame, wash);
+  }
+  styleCam(frame, wash, cam);
+}
+let state = {};
+fetch("/api/state").then(r => r.json()).then(s => { state = s; apply(state); }).finally(() => {
+  const es = new EventSource("/api/stream?out=" + encodeURIComponent("cam:" + want));
+  es.onmessage = e => { const m = JSON.parse(e.data); state = Object.assign({}, state, m); if (m.project) apply(state); };
+});
+</script>
+</body>
+</html>

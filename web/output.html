@@ -2,116 +2,60 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>GFX Output</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>StandBy GFX output</title>
 <style>
-  html, body { margin: 0; height: 100%; background: transparent; overflow: hidden; }
-  body.checker { background: repeating-conic-gradient(#2a2d31 0 25%, #1f2225 0 50%) 0 0 / 24px 24px; }
-  body.black { background: #000; }
-  body.green { background: #00b140; }
-  #stage { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+  html, body { margin: 0; background: transparent; overflow: hidden; }
+  body.checker { background: repeating-conic-gradient(#2a2a2e 0 25%, #1f1f22 0 50%) 0 0 / 20px 20px; }
+  .sg-stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; transform-origin: 0 0; }
+  .sg-comp, .sg-cover, .sg-stinger { position: absolute; inset: 0; }
+  .sg-cover { z-index: 9000; }
+  .sg-stinger { z-index: 9500; width: 100%; height: 100%; object-fit: cover; }
+  .sg-layer { position: absolute; box-sizing: border-box; }
+  .sg-fill { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .sg-text { white-space: pre; display: inline-block; }
 </style>
 </head>
 <body>
-<div id="stage" class="gfx-stage"></div>
-<!--export-->
-<script src="vendor/lottie.min.js"></script>
-<script src="runtime.js"></script>
-<script>
-// The output: Program (or Preview, or one graphic) at 1920x1080, scaled to
-// fit the window. Address options:
-//   ?bus=preview         Preview instead of Program
-//   ?comp=<id>           just that graphic, as it is on Program
-//   ?monitor=1           muted (the control panel's monitors)
-//   ?hud=lol             that game's HUD overlay (the graphic added to it in Composer), always on
-//   ?bg=checker|black|green
-//   ?live=http://PC:7790 another engine's output (exported graphics too)
-//   ?autoplay=0          exported graphics: wait for play()
-(function () {
-  "use strict";
-  const q = new URLSearchParams(location.search);
-  const stage = document.getElementById("stage");
-  if (q.get("bg")) document.body.classList.add(q.get("bg"));
-  function scale() {
-    const k = Math.min(innerWidth / GFX.W, innerHeight / GFX.H);
-    stage.style.transform = `translate(${(innerWidth - GFX.W * k) / 2}px, ${(innerHeight - GFX.H * k) / 2}px) scale(${k})`;
-  }
-  addEventListener("resize", scale);
-  scale();
-
-  const bus = new GFX.Bus(stage, { bus: q.get("bus") || "program", comp: q.get("comp") || null, hud: q.get("hud") || null,
-    monitor: q.get("monitor") === "1", stingers: q.get("stingers") === "1" });
-  window.gfxBus = bus;
-
-  const exported = window.GFX_EXPORT;
-  const remote = q.get("live");
-  if (exported && !remote) return standalone(exported);
-
-  // Following an engine.
-  GFX.base = remote ? remote.replace(/\/+$/, "") : "";
-  let dataRev = null, state = {};
-  // Each message has only what changed (the rest is as it was).
-  function apply(msg) {
-    state = Object.assign({}, state, msg);
-    if (msg.data) GFX.setClock(msg.data.now);
-    if (msg.data && msg.data.rev !== dataRev) { dataRev = msg.data.rev; GFX.setData(msg.data.tables); }
-    if (state.project && state.live) bus.apply(state);
-  }
-  let source;
-  function connect() {
-    // (says what it is, so the control panel knows OBS is really showing it; the panel's own monitors don't count)
-    const out = q.get("monitor") === "1" || remote ? "" : q.get("comp") ? "comp:" + q.get("comp") : q.get("hud") ? "hud:" + q.get("hud") : (q.get("bus") || "program");
-    source = new EventSource(GFX.base + "/api/stream" + (out ? "?out=" + encodeURIComponent(out) : ""));
-    source.onmessage = e => { try { apply(JSON.parse(e.data)); } catch (err) { console.error(err); } };
-    source.onerror = () => { /* EventSource reconnects by itself */ };
-  }
-  fetch(GFX.base + "/api/state").then(r => r.json()).then(apply).catch(() => {}).finally(connect);
-
-  // --- exported graphics, on their own --------------------------------------
-  function standalone(data) {
-    const ids = data.compositions.map(c => c.id);
-    const values = JSON.parse(JSON.stringify(data.values || {}));
-    // ?Field=Value sets that field on every graphic that has it.
-    for (const [k, v] of q) {
-      if (["bus", "comp", "hud", "monitor", "bg", "live", "autoplay", "stingers"].includes(k)) continue;
-      for (const id of ids) (values[id] = values[id] || {})[k] = v;
-    }
-    let on = [], seq = 0;
-    GFX.setData(data.tables);
-    const state = () => ({ rev: 0, fonts: data.fonts, project: { compositions: data.compositions, transitions: [] },
-      live: { program: { on, values, seq }, preview: { on: [], values: {} }, take: { seq, transition: { type: "animate" } } } });
-    function show(list) { on = list; seq++; bus.apply(state()); }
-    bus.apply(state());
-    // CasparCG / SPX template functions.
-    window.play = () => show(ids.slice());
-    window.stop = () => show([]);
-    window.remove = window.stop;
-    window.next = () => { show([]); setTimeout(() => show(ids.slice()), 50); };
-    window.update = function (raw) {
-      let fields = {};
-      if (typeof raw === "string" && raw.trim().startsWith("<")) {
-        // CasparCG: <templateData><componentData id="Field"><data id="text" value="..."/></componentData>...
-        const xml = new DOMParser().parseFromString(raw, "text/xml");
-        for (const c of xml.querySelectorAll("componentData")) {
-          const d = c.querySelector("data");
-          if (d) fields[c.getAttribute("id")] = d.getAttribute("value");
-        }
-      } else {
-        try { fields = typeof raw === "string" ? JSON.parse(raw) : raw || {}; } catch (e) { return; }
-      }
-      for (const id of ids) values[id] = Object.assign(values[id] || {}, fields);
-      bus.sync(bus.wanted(state()), "update");
-    };
-    // Live data from a game HUD the graphic was added to (its own page feeds it).
-    window.setData = function (tables, now) {
-      GFX.setClock(now);
-      GFX.setData(Object.assign({}, data.tables, tables));
-      bus.sync(bus.wanted(state()), "update");
-    };
-    if (window.GFX_FEED) window.GFX_FEED(window.setData);
-    if (q.get("autoplay") !== "0") (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => setTimeout(window.play, 100));
-  }
-})();
+<div id="stage"></div>
+<script type="module">
+import { Stage, W, H } from "./engine/stage.js";
+// ?bus=preview, ?comp=<id> (that graphic only, always on), ?monitor=1 (muted, not counted), ?bg=checker
+const q = new URLSearchParams(location.search);
+if (q.get("bg")) document.body.classList.add(q.get("bg"));
+const root = document.getElementById("stage");
+const stage = new Stage(root, { bus: q.get("bus") || "program", comp: q.get("comp"), muted: q.get("monitor") === "1" });
+// fit the 1920x1080 stage to the window
+const fit = () => { const k = Math.min(innerWidth / W, innerHeight / H); root.style.transform = `scale(${k})`; };
+addEventListener("resize", fit); fit();
+let state = null;
+// Fonts: the built-in ones, then every font file the engine has (known by its file name).
+const BUILTIN = [["Inter", "Inter.ttf", "100 900"], ["Anton", "Anton-Regular.ttf"], ["Bebas Neue", "BebasNeue.ttf"], ["Permanent Marker", "PermanentMarker-Regular.ttf"],
+  ["Montserrat", "Montserrat-400.woff2", "400"], ["Montserrat", "Montserrat-500.woff2", "500"], ["Montserrat", "Montserrat-700.woff2", "700"], ["Montserrat", "Montserrat-800.woff2", "800"], ["Montserrat", "Montserrat-900.woff2", "900"],
+  ["Barlow Condensed", "BarlowCondensed-500.woff2", "500"], ["Barlow Condensed", "BarlowCondensed-600.woff2", "600"], ["Barlow Condensed", "BarlowCondensed-700.woff2", "700"],
+  ["Vazirmatn", "Vazirmatn-700.woff2", "700"], ["Vazirmatn", "Vazirmatn-900.woff2", "900"]];
+const fontCss = document.createElement("style");
+document.head.appendChild(fontCss);
+let fontSig = "";
+function loadFonts(list) {
+  const sig = JSON.stringify(list || []);
+  if (sig === fontSig) return;
+  fontSig = sig;
+  const face = (name, url, weight) => `@font-face{font-family:"${name.replace(/"/g, "")}";src:url("${encodeURI(url)}");${weight ? `font-weight:${weight};` : ""}font-display:block}`;
+  fontCss.textContent = [...BUILTIN.map(([n, f, w]) => face(n, "fonts/" + f, w)), ...(list || []).map(f => face(f.name, f.url))].join(String.fromCharCode(10));
+}
+const apply = msg => { if (msg.fonts) loadFonts(msg.fonts); state = Object.assign({}, state, msg); if (state.project && state.live) stage.apply(state); };
+const out = q.get("monitor") === "1" ? "" : q.get("comp") ? "comp:" + q.get("comp") : (q.get("bus") || "program");
+// A monitor inside the control page gets the state from the page (one connection, not one per monitor).
+const fed = q.get("monitor") === "1" && window.parent !== window;
+if (fed) {
+  addEventListener("message", e => { if (e.origin === location.origin && e.data && e.data.sgState) apply(e.data.sgState); });
+  window.parent.postMessage({ sgReady: true }, location.origin);
+} else {
+  fetch("/api/state").then(r => r.json()).then(apply).finally(() => {
+    const es = new EventSource("/api/stream" + (out ? "?out=" + encodeURIComponent(out) : ""));
+    es.onmessage = e => apply(JSON.parse(e.data));
+  });
+}
 </script>
 </body>
 </html>

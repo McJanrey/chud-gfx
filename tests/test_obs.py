@@ -1,126 +1,107 @@
+import base64
+import hashlib
 import json
+import os
+import shutil
+import socket
 import struct
+import tempfile
+import threading
+import time
 import unittest
 
-from gfxengine import obs
+from sgfx.obs import auth
+from sgfx.server import Engine
 
 
-class FakeSock:
-    """Feeds bytes to WS.recv and records what WS.send writes."""
-    def __init__(self, data=b""):
-        self.data, self.sent = data, b""
-
-    def recv(self, n):
-        out, self.data = self.data[:n], self.data[n:]
-        return out
-
-    def sendall(self, b):
-        self.sent += b
+def frame(obj):
+    data = json.dumps(obj).encode()
+    n = len(data)
+    return bytes([0x81]) + (bytes([n]) if n < 126 else bytes([126]) + struct.pack(">H", n)) + data
 
 
-def ws_with(data=b""):
-    w = obs.WS.__new__(obs.WS)
-    w.sock, w.buf = FakeSock(data), b""
-    import threading
-    w.wlock = threading.Lock()
-    return w
+def read_frame(conn):
+    b0, b1 = conn.recv(2)
+    n = b1 & 0x7F
+    if n == 126:
+        n = struct.unpack(">H", conn.recv(2))[0]
+    mask = conn.recv(4)
+    data = b""
+    while len(data) < n:
+        data += conn.recv(n - len(data))
+    return json.loads(bytes(b ^ mask[i % 4] for i, b in enumerate(data)))
 
 
-class Auth(unittest.TestCase):
-    def test_spec_example(self):
-        # obs-websocket v5 protocol docs, "Creating an authentication string"
-        self.assertEqual(obs.auth_string("supersecretpassword", "lM1GncleQOaCu9lT1yeUZhFYnqhsLLP1G5lAGo3ixaI=",
-                                         "+IxH4CnCiqpX1rM9scsNynZzbOe4KhDeYcTNS3PDaeY="),
+class FakeOBS(threading.Thread):
+    """Just enough obs-websocket 5: hello (no password), identify, three requests, one scene event."""
+    def __init__(self):
+        super().__init__(daemon=True)
+        self.srv = socket.socket()
+        self.srv.bind(("127.0.0.1", 0))
+        self.srv.listen(1)
+        self.port = self.srv.getsockname()[1]
+        self.switched = []
+        self.conn = None
+
+    def run(self):
+        conn, _ = self.srv.accept()
+        self.conn = conn
+        req = conn.recv(4096).decode()
+        key = [l.split(": ")[1] for l in req.split("\r\n") if l.lower().startswith("sec-websocket-key")][0]
+        acc = base64.b64encode(hashlib.sha1((key + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11").encode()).digest()).decode()
+        conn.sendall(f"HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: {acc}\r\n\r\n".encode())
+        conn.sendall(frame({"op": 0, "d": {"rpcVersion": 1}}))
+        assert read_frame(conn)["op"] == 1
+        conn.sendall(frame({"op": 2, "d": {"negotiatedRpcVersion": 1}}))
+        answers = {"GetSceneList": {"currentProgramSceneName": "Gameplay", "scenes": [{"sceneName": "Break"}, {"sceneName": "Gameplay"}]},
+                   "GetStreamStatus": {"outputActive": True}, "GetRecordStatus": {"outputActive": False}}
+        try:
+            while True:
+                m = read_frame(conn)["d"]
+                if m["requestType"] == "SetCurrentProgramScene":
+                    self.switched.append(m["requestData"]["sceneName"])
+                conn.sendall(frame({"op": 7, "d": {"requestId": m["requestId"], "requestType": m["requestType"], "requestStatus": {"result": True, "code": 100},
+                                                    "responseData": answers.get(m["requestType"], {})}}))
+        except (OSError, ValueError):
+            pass
+
+    def event(self, scene):
+        self.conn.sendall(frame({"op": 5, "d": {"eventType": "CurrentProgramSceneChanged", "eventData": {"sceneName": scene}}}))
+
+
+class Obs(unittest.TestCase):
+    def test_auth_matches_the_obs_websocket_docs(self):
+        self.assertEqual(auth("supersecretpassword", "lM1GncleQOaCu9lT1yeUZhFYnqhsLLP1G5lAGo3ixaI=", "+IxH4CnCiqpX1rM9scsNynZzbOe4KhDeYcTNS3PDaeY="),
                          "1Ct943GAT+6YQUUX47Ia/ncufilbe6+oD6lY+5kaCu4=")
 
-
-class Frames(unittest.TestCase):
-    def test_reads_text_answers_ping(self):
-        ping = bytes([0x89, 2]) + b"hi"
-        text = b'{"op":0}'
-        w = ws_with(ping + bytes([0x81, len(text)]) + text)
-        self.assertEqual(w.recv(), '{"op":0}')
-        self.assertEqual(w.sock.sent[0], 0x8A)            # pong went back, masked
-        self.assertTrue(w.sock.sent[1] & 0x80)
-
-    def test_reads_long_and_fragmented(self):
-        big = b"x" * 300
-        w = ws_with(bytes([0x01, 126]) + struct.pack(">H", 300) + big + bytes([0x80, 1]) + b"y")
-        self.assertEqual(w.recv(), "x" * 300 + "y")
-
-    def test_send_is_masked_and_round_trips(self):
-        w = ws_with()
-        w.send(0x1, json.dumps({"op": 1}))
-        raw = w.sock.sent
-        self.assertEqual(raw[0], 0x81)
-        n = raw[1] & 0x7F
-        mask, body = raw[2:6], raw[6:6 + n]
-        self.assertEqual(bytes(b ^ mask[i % 4] for i, b in enumerate(body)), b'{"op": 1}')
-
-    def test_close_returns_none(self):
-        self.assertIsNone(ws_with(bytes([0x88, 0])).recv())
-
-
-class FakeOBS:
-    def __init__(self):
-        self.state, self.scenes = {"connected": True}, []
-
-    def set_scene(self, name, preview=False):
-        self.scenes.append(name)
-
-
-class TakeSwitchesScene(unittest.TestCase):
-    def test_graphic_going_on_air_switches_obs(self):
-        import threading
-        from gfxengine import app
-
-        class Live:
-            on = []
-            def get(self):
-                return {"program": {"on": list(self.on)}}
-
-        class WS:
-            def get(self):
-                return {"compositions": [{"id": "a", "obsScene": "Starting Soon"}, {"id": "b"}]}
-
-        e = app.Engine.__new__(app.Engine)
-        e.obs, e.live, e.ws, e._pgm_on = FakeOBS(), Live(), WS(), set()
-        started = []
-        real = threading.Thread
-        threading.Thread = lambda target, args, daemon: type("T", (), {"start": lambda self: started.append(target(*args))})()
-        try:
-            Live.on = ["b"]; e._program_changed()          # no scene set for b
-            Live.on = ["b", "a"]; e._program_changed()     # a goes on air
-            e._program_changed()                           # still on: no second switch
-        finally:
-            threading.Thread = real
-        self.assertEqual(e.obs.scenes, ["Starting Soon"])
-
-
-
-class SettingsKept(unittest.TestCase):
-    def test_obs_and_multistream_settings_are_saved(self):
-        import os
-        import tempfile
-        from gfxengine.config import Settings
-        p = os.path.join(tempfile.mkdtemp(), "s.json")
-        Settings(p).update({"obs": {"enabled": True, "port": 4455}, "multistream": {"enabled": True}})
-        again = Settings(p).get()
-        self.assertTrue(again["obs"]["enabled"] and again["multistream"]["enabled"])
-
-
-
-class OriginCheck(unittest.TestCase):
-    def test_only_own_pages_can_post(self):
-        from gfxengine.app import origin_ok
-        own = {7790, 7795, 7800}
-        self.assertTrue(origin_ok(None, "127.0.0.1:7790", own))                              # Companion, HUDs
-        self.assertTrue(origin_ok("http://127.0.0.1:7790", "127.0.0.1:7790", own))          # its own page
-        self.assertTrue(origin_ok("http://192.168.2.40:7790", "192.168.2.40:7790", own))    # control from another PC
-        self.assertTrue(origin_ok("http://localhost:7800", "127.0.0.1:7790", own))          # built-in HUD Builder
-        self.assertFalse(origin_ok("https://evil.example", "127.0.0.1:7790", own))          # any website
-        self.assertFalse(origin_ok("http://localhost:3000", "127.0.0.1:7790", own))         # another local app
-        self.assertFalse(origin_ok("null", "127.0.0.1:7790", own))                          # sandboxed / file pages
+    def test_scenes_rules_and_on_air_switch(self):
+        fake = FakeOBS()
+        fake.start()
+        d = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, d, True)
+        comps = [{"id": "c1", "name": "Break board", "kind": "board", "layers": [], "obs_scene": "Break"}, {"id": "c2", "name": "Bug", "layers": []}]
+        json.dump({"name": "T", "global": {}, "compositions": comps, "transitions": []}, open(os.path.join(d, "project.json"), "w"))
+        e = Engine(d, os.path.join(d, "lib"))
+        e.obs.save({"host": "127.0.0.1", "port": fake.port, "on": True, "rules": [{"scene": "Break", "comp": "c2", "action": "in"}]})
+        for _ in range(50):
+            if e.obs.status["scenes"]:
+                break
+            time.sleep(0.1)
+        self.assertEqual((e.obs.status["scene"], e.obs.status["scenes"], e.obs.status["live"]), ("Gameplay", ["Gameplay", "Break"], True))
+        fake.event("Break")
+        for _ in range(30):
+            if "c2" in e.buses.state["program"]["on"]:
+                break
+            time.sleep(0.1)
+        self.assertIn("c2", e.buses.state["program"]["on"])
+        e.obs.status["scene"] = "Gameplay"
+        e.act("/api/program", {"id": "c1", "on": True})
+        for _ in range(30):
+            if fake.switched:
+                break
+            time.sleep(0.1)
+        self.assertEqual(fake.switched, ["Break"])
+        e.obs.save({"on": False})
 
 
 if __name__ == "__main__":

@@ -1,0 +1,10530 @@
+[
+ {
+  "change": {},
+  "global": {
+   "event": "NACE VARSITY",
+   "stage": "PLAYOFFS",
+   "best_of": 3,
+   "game": "",
+   "left": {
+    "name": "St. Clair Saints",
+    "short": "SCC",
+    "logo": "assets/logos/St Clair Saints.png",
+    "color": "#0b6b3a",
+    "score": 0,
+    "game": ""
+   },
+   "right": {
+    "name": "Opponent",
+    "short": "OPP",
+    "logo": "",
+    "color": "#b8191c",
+    "score": 0,
+    "game": ""
+   },
+   "custom": [
+    [
+     "Game title",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ]
+   ],
+   "tournament_logo": "",
+   "sponsors": [
+    {
+     "logo": "assets/sponsors/Alienware logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/SCC Alumni logo.png",
+     "secs": 10.0,
+     "white": false
+    },
+    {
+     "logo": "assets/sponsors/Tim Hortons logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/SRC logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Subway logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Intel logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Prefire logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Pulsar logo.png",
+     "secs": 10.0,
+     "white": true
+    }
+   ],
+   "sponsor_epoch": 0,
+   "bgloop": {
+    "on": true,
+    "src": "",
+    "color": "#2fa85a",
+    "brightness": 1.6,
+    "speed": 1.0
+   },
+   "ticker": [
+    "WELCOME TO ST. CLAIR SAINTS ESPORTS",
+    "FOLLOW @SCCSAINTS FOR HIGHLIGHTS",
+    "THANKS FOR WATCHING!"
+   ],
+   "tournament": {
+    "top": {
+     "size": 8,
+     "format": "single",
+     "reset": true,
+     "short": false,
+     "teams": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ],
+     "scores": {}
+    },
+    "groups": [
+     {
+      "name": "GROUP A",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP B",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP C",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP D",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     }
+    ]
+   },
+   "schedule": {
+    "count": 3,
+    "matches": [
+     {
+      "tournament": "NACE VARSITY",
+      "game": "ROCKET LEAGUE",
+      "type": "PLAYOFFS",
+      "team1": "George Mason University",
+      "team2": "St. Clair College",
+      "date": "2026-11-11",
+      "time": "19:30"
+     },
+     {
+      "tournament": "NACE VARSITY",
+      "game": "PREMIER LEAGUE OF LEGENDS",
+      "type": "SEMI-FINALS",
+      "team1": "Maryville University",
+      "team2": "St. Clair College",
+      "date": "2026-11-19",
+      "time": "20:00"
+     },
+     {
+      "tournament": "CANADIAN ESPORTS NATIONALS",
+      "game": "VALORANT",
+      "type": "",
+      "team1": "Universit\u00e9 de Montr\u00e9al",
+      "team2": "St. Clair College",
+      "date": "2026-11-25",
+      "time": "20:30"
+     }
+    ]
+   },
+   "standings": {
+    "title": "",
+    "subtitle": "LEADERBOARD",
+    "count": 8,
+    "stat": "record",
+    "stat2": "",
+    "teams": [
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     }
+    ]
+   },
+   "clock": {
+    "mode": "time",
+    "until": "",
+    "zone": ""
+   },
+   "timer": {
+    "secs": 0,
+    "from": 0,
+    "down": false,
+    "started": 0
+   },
+   "roster": "left",
+   "player_stats": "auto",
+   "caster": {
+    "count": 1,
+    "primary": "#c2bdff",
+    "secondary": "#001a1a",
+    "text": "#001a1a"
+   },
+   "outputs_on": [],
+   "pictures": {
+    "team": {
+     "left": "headshot",
+     "right": "headshot"
+    },
+    "player": {
+     "left": "headshot",
+     "right": "headshot"
+    }
+   }
+  },
+  "tables": {
+   "Global": [
+    [
+     "Field",
+     "Value"
+    ],
+    [
+     "Event",
+     "NACE VARSITY"
+    ],
+    [
+     "Stage",
+     "PLAYOFFS"
+    ],
+    [
+     "Best of",
+     "3"
+    ],
+    [
+     "Game",
+     "1"
+    ],
+    [
+     "Left name",
+     "St. Clair Saints"
+    ],
+    [
+     "Left short",
+     "SCC"
+    ],
+    [
+     "Left logo",
+     "assets/logos/St Clair Saints.png"
+    ],
+    [
+     "Left color",
+     "#0b6b3a"
+    ],
+    [
+     "Left score",
+     "0"
+    ],
+    [
+     "Left game",
+     ""
+    ],
+    [
+     "Left won 1",
+     ""
+    ],
+    [
+     "Left won 2",
+     ""
+    ],
+    [
+     "Left won 3",
+     ""
+    ],
+    [
+     "Left won 4",
+     ""
+    ],
+    [
+     "Right name",
+     "Opponent"
+    ],
+    [
+     "Right short",
+     "OPP"
+    ],
+    [
+     "Right logo",
+     ""
+    ],
+    [
+     "Right color",
+     "#b8191c"
+    ],
+    [
+     "Right score",
+     "0"
+    ],
+    [
+     "Right game",
+     ""
+    ],
+    [
+     "Right won 1",
+     ""
+    ],
+    [
+     "Right won 2",
+     ""
+    ],
+    [
+     "Right won 3",
+     ""
+    ],
+    [
+     "Right won 4",
+     ""
+    ],
+    [
+     "Game box 1",
+     "1"
+    ],
+    [
+     "Game box 2",
+     "1"
+    ],
+    [
+     "Game box 3",
+     ""
+    ],
+    [
+     "Game box 4",
+     ""
+    ],
+    [
+     "Tournament logo",
+     ""
+    ],
+    [
+     "Sponsor logo",
+     "assets/sponsors/Alienware logo.png"
+    ],
+    [
+     "Sponsors",
+     "8"
+    ],
+    [
+     "BG loop",
+     "loops/scc-bg-loop.webm"
+    ],
+    [
+     "BG loop colour",
+     "#2fa85a"
+    ],
+    [
+     "BG loop brightness",
+     "1.6"
+    ],
+    [
+     "BG loop speed",
+     "1.0"
+    ],
+    [
+     "Ticker",
+     "WELCOME TO ST. CLAIR SAINTS ESPORTS  |  FOLLOW @SCCSAINTS FOR HIGHLIGHTS  |  THANKS FOR WATCHING!  |  "
+    ],
+    [
+     "Clock mode",
+     "time"
+    ],
+    [
+     "Clock until",
+     ""
+    ],
+    [
+     "Clock zone",
+     ""
+    ],
+    [
+     "Clock label",
+     "LOCAL TIME"
+    ],
+    [
+     "Timer secs",
+     "0"
+    ],
+    [
+     "Timer started",
+     "0"
+    ],
+    [
+     "Timer down",
+     ""
+    ],
+    [
+     "Caster boxes",
+     "1"
+    ],
+    [
+     "Caster primary",
+     "#c2bdff"
+    ],
+    [
+     "Caster secondary",
+     "#001a1a"
+    ],
+    [
+     "Caster text",
+     "#001a1a"
+    ],
+    [
+     "Caster 1 shown",
+     "1"
+    ],
+    [
+     "Caster 1 move",
+     "0 346 1"
+    ],
+    [
+     "Caster 2 shown",
+     ""
+    ],
+    [
+     "Caster 2 move",
+     ""
+    ],
+    [
+     "Caster 3 shown",
+     ""
+    ],
+    [
+     "Caster 3 move",
+     ""
+    ],
+    [
+     "Caster 4 shown",
+     ""
+    ],
+    [
+     "Caster 4 move",
+     ""
+    ],
+    [
+     "Game title",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ]
+   ],
+   "Sponsors": [
+    [
+     "Logo",
+     "Seconds",
+     "Epoch",
+     "White"
+    ],
+    [
+     "assets/sponsors/Alienware logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/SCC Alumni logo.png",
+     "10.0",
+     "0",
+     ""
+    ],
+    [
+     "assets/sponsors/Tim Hortons logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/SRC logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Subway logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Intel logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Prefire logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Pulsar logo.png",
+     "10.0",
+     "0",
+     "1"
+    ]
+   ],
+   "Schedule": [
+    [
+     "Field",
+     "Value"
+    ],
+    [
+     "Count",
+     "3"
+    ],
+    [
+     "Match 1 tournament",
+     "NACE VARSITY"
+    ],
+    [
+     "Match 1 game",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ],
+    [
+     "Match 1 teams",
+     "George Mason University vs. St. Clair College"
+    ],
+    [
+     "Match 1 when",
+     "WED 11/11  |  7:30 PM"
+    ],
+    [
+     "Match 1 show",
+     "1"
+    ],
+    [
+     "Match 1 team 1",
+     "George Mason University"
+    ],
+    [
+     "Match 1 team 1 logo",
+     ""
+    ],
+    [
+     "Match 1 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 1 team 2 logo",
+     ""
+    ],
+    [
+     "Match 2 tournament",
+     "NACE VARSITY"
+    ],
+    [
+     "Match 2 game",
+     "PREMIER LEAGUE OF LEGENDS | SEMI-FINALS"
+    ],
+    [
+     "Match 2 teams",
+     "Maryville University vs. St. Clair College"
+    ],
+    [
+     "Match 2 when",
+     "THU 11/19  |  8:00 PM"
+    ],
+    [
+     "Match 2 show",
+     "1"
+    ],
+    [
+     "Match 2 team 1",
+     "Maryville University"
+    ],
+    [
+     "Match 2 team 1 logo",
+     ""
+    ],
+    [
+     "Match 2 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 2 team 2 logo",
+     ""
+    ],
+    [
+     "Match 3 tournament",
+     "CANADIAN ESPORTS NATIONALS"
+    ],
+    [
+     "Match 3 game",
+     "VALORANT"
+    ],
+    [
+     "Match 3 teams",
+     "Universit\u00e9 de Montr\u00e9al vs. St. Clair College"
+    ],
+    [
+     "Match 3 when",
+     "WED 11/25  |  8:30 PM"
+    ],
+    [
+     "Match 3 show",
+     "1"
+    ],
+    [
+     "Match 3 team 1",
+     "Universit\u00e9 de Montr\u00e9al"
+    ],
+    [
+     "Match 3 team 1 logo",
+     ""
+    ],
+    [
+     "Match 3 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 3 team 2 logo",
+     ""
+    ]
+   ]
+  }
+ },
+ {
+  "change": {
+   "best_of": 5,
+   "left": {
+    "score": 2
+   },
+   "right": {
+    "score": 1
+   }
+  },
+  "global": {
+   "event": "NACE VARSITY",
+   "stage": "PLAYOFFS",
+   "best_of": 5,
+   "game": "",
+   "left": {
+    "name": "St. Clair Saints",
+    "short": "SCC",
+    "logo": "assets/logos/St Clair Saints.png",
+    "color": "#0b6b3a",
+    "score": 2,
+    "game": ""
+   },
+   "right": {
+    "name": "Opponent",
+    "short": "OPP",
+    "logo": "",
+    "color": "#b8191c",
+    "score": 1,
+    "game": ""
+   },
+   "custom": [
+    [
+     "Game title",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ]
+   ],
+   "tournament_logo": "",
+   "sponsors": [
+    {
+     "logo": "assets/sponsors/Alienware logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/SCC Alumni logo.png",
+     "secs": 10.0,
+     "white": false
+    },
+    {
+     "logo": "assets/sponsors/Tim Hortons logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/SRC logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Subway logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Intel logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Prefire logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Pulsar logo.png",
+     "secs": 10.0,
+     "white": true
+    }
+   ],
+   "sponsor_epoch": 0,
+   "bgloop": {
+    "on": true,
+    "src": "",
+    "color": "#2fa85a",
+    "brightness": 1.6,
+    "speed": 1.0
+   },
+   "ticker": [
+    "WELCOME TO ST. CLAIR SAINTS ESPORTS",
+    "FOLLOW @SCCSAINTS FOR HIGHLIGHTS",
+    "THANKS FOR WATCHING!"
+   ],
+   "tournament": {
+    "top": {
+     "size": 8,
+     "format": "single",
+     "reset": true,
+     "short": false,
+     "teams": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ],
+     "scores": {}
+    },
+    "groups": [
+     {
+      "name": "GROUP A",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP B",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP C",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP D",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     }
+    ]
+   },
+   "schedule": {
+    "count": 3,
+    "matches": [
+     {
+      "tournament": "NACE VARSITY",
+      "game": "ROCKET LEAGUE",
+      "type": "PLAYOFFS",
+      "team1": "George Mason University",
+      "team2": "St. Clair College",
+      "date": "2026-11-11",
+      "time": "19:30"
+     },
+     {
+      "tournament": "NACE VARSITY",
+      "game": "PREMIER LEAGUE OF LEGENDS",
+      "type": "SEMI-FINALS",
+      "team1": "Maryville University",
+      "team2": "St. Clair College",
+      "date": "2026-11-19",
+      "time": "20:00"
+     },
+     {
+      "tournament": "CANADIAN ESPORTS NATIONALS",
+      "game": "VALORANT",
+      "type": "",
+      "team1": "Universit\u00e9 de Montr\u00e9al",
+      "team2": "St. Clair College",
+      "date": "2026-11-25",
+      "time": "20:30"
+     }
+    ]
+   },
+   "standings": {
+    "title": "",
+    "subtitle": "LEADERBOARD",
+    "count": 8,
+    "stat": "record",
+    "stat2": "",
+    "teams": [
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     }
+    ]
+   },
+   "clock": {
+    "mode": "time",
+    "until": "",
+    "zone": ""
+   },
+   "timer": {
+    "secs": 0,
+    "from": 0,
+    "down": false,
+    "started": 0
+   },
+   "roster": "left",
+   "player_stats": "auto",
+   "caster": {
+    "count": 1,
+    "primary": "#c2bdff",
+    "secondary": "#001a1a",
+    "text": "#001a1a"
+   },
+   "outputs_on": [],
+   "pictures": {
+    "team": {
+     "left": "headshot",
+     "right": "headshot"
+    },
+    "player": {
+     "left": "headshot",
+     "right": "headshot"
+    }
+   }
+  },
+  "tables": {
+   "Global": [
+    [
+     "Field",
+     "Value"
+    ],
+    [
+     "Event",
+     "NACE VARSITY"
+    ],
+    [
+     "Stage",
+     "PLAYOFFS"
+    ],
+    [
+     "Best of",
+     "5"
+    ],
+    [
+     "Game",
+     "4"
+    ],
+    [
+     "Left name",
+     "St. Clair Saints"
+    ],
+    [
+     "Left short",
+     "SCC"
+    ],
+    [
+     "Left logo",
+     "assets/logos/St Clair Saints.png"
+    ],
+    [
+     "Left color",
+     "#0b6b3a"
+    ],
+    [
+     "Left score",
+     "2"
+    ],
+    [
+     "Left game",
+     ""
+    ],
+    [
+     "Left won 1",
+     "1"
+    ],
+    [
+     "Left won 2",
+     "1"
+    ],
+    [
+     "Left won 3",
+     ""
+    ],
+    [
+     "Left won 4",
+     ""
+    ],
+    [
+     "Right name",
+     "Opponent"
+    ],
+    [
+     "Right short",
+     "OPP"
+    ],
+    [
+     "Right logo",
+     ""
+    ],
+    [
+     "Right color",
+     "#b8191c"
+    ],
+    [
+     "Right score",
+     "1"
+    ],
+    [
+     "Right game",
+     ""
+    ],
+    [
+     "Right won 1",
+     "1"
+    ],
+    [
+     "Right won 2",
+     ""
+    ],
+    [
+     "Right won 3",
+     ""
+    ],
+    [
+     "Right won 4",
+     ""
+    ],
+    [
+     "Game box 1",
+     "1"
+    ],
+    [
+     "Game box 2",
+     "1"
+    ],
+    [
+     "Game box 3",
+     "1"
+    ],
+    [
+     "Game box 4",
+     ""
+    ],
+    [
+     "Tournament logo",
+     ""
+    ],
+    [
+     "Sponsor logo",
+     "assets/sponsors/Alienware logo.png"
+    ],
+    [
+     "Sponsors",
+     "8"
+    ],
+    [
+     "BG loop",
+     "loops/scc-bg-loop.webm"
+    ],
+    [
+     "BG loop colour",
+     "#2fa85a"
+    ],
+    [
+     "BG loop brightness",
+     "1.6"
+    ],
+    [
+     "BG loop speed",
+     "1.0"
+    ],
+    [
+     "Ticker",
+     "WELCOME TO ST. CLAIR SAINTS ESPORTS  |  FOLLOW @SCCSAINTS FOR HIGHLIGHTS  |  THANKS FOR WATCHING!  |  "
+    ],
+    [
+     "Clock mode",
+     "time"
+    ],
+    [
+     "Clock until",
+     ""
+    ],
+    [
+     "Clock zone",
+     ""
+    ],
+    [
+     "Clock label",
+     "LOCAL TIME"
+    ],
+    [
+     "Timer secs",
+     "0"
+    ],
+    [
+     "Timer started",
+     "0"
+    ],
+    [
+     "Timer down",
+     ""
+    ],
+    [
+     "Caster boxes",
+     "1"
+    ],
+    [
+     "Caster primary",
+     "#c2bdff"
+    ],
+    [
+     "Caster secondary",
+     "#001a1a"
+    ],
+    [
+     "Caster text",
+     "#001a1a"
+    ],
+    [
+     "Caster 1 shown",
+     "1"
+    ],
+    [
+     "Caster 1 move",
+     "0 346 1"
+    ],
+    [
+     "Caster 2 shown",
+     ""
+    ],
+    [
+     "Caster 2 move",
+     ""
+    ],
+    [
+     "Caster 3 shown",
+     ""
+    ],
+    [
+     "Caster 3 move",
+     ""
+    ],
+    [
+     "Caster 4 shown",
+     ""
+    ],
+    [
+     "Caster 4 move",
+     ""
+    ],
+    [
+     "Game title",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ]
+   ],
+   "Sponsors": [
+    [
+     "Logo",
+     "Seconds",
+     "Epoch",
+     "White"
+    ],
+    [
+     "assets/sponsors/Alienware logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/SCC Alumni logo.png",
+     "10.0",
+     "0",
+     ""
+    ],
+    [
+     "assets/sponsors/Tim Hortons logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/SRC logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Subway logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Intel logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Prefire logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Pulsar logo.png",
+     "10.0",
+     "0",
+     "1"
+    ]
+   ],
+   "Schedule": [
+    [
+     "Field",
+     "Value"
+    ],
+    [
+     "Count",
+     "3"
+    ],
+    [
+     "Match 1 tournament",
+     "NACE VARSITY"
+    ],
+    [
+     "Match 1 game",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ],
+    [
+     "Match 1 teams",
+     "George Mason University vs. St. Clair College"
+    ],
+    [
+     "Match 1 when",
+     "WED 11/11  |  7:30 PM"
+    ],
+    [
+     "Match 1 show",
+     "1"
+    ],
+    [
+     "Match 1 team 1",
+     "George Mason University"
+    ],
+    [
+     "Match 1 team 1 logo",
+     ""
+    ],
+    [
+     "Match 1 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 1 team 2 logo",
+     ""
+    ],
+    [
+     "Match 2 tournament",
+     "NACE VARSITY"
+    ],
+    [
+     "Match 2 game",
+     "PREMIER LEAGUE OF LEGENDS | SEMI-FINALS"
+    ],
+    [
+     "Match 2 teams",
+     "Maryville University vs. St. Clair College"
+    ],
+    [
+     "Match 2 when",
+     "THU 11/19  |  8:00 PM"
+    ],
+    [
+     "Match 2 show",
+     "1"
+    ],
+    [
+     "Match 2 team 1",
+     "Maryville University"
+    ],
+    [
+     "Match 2 team 1 logo",
+     ""
+    ],
+    [
+     "Match 2 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 2 team 2 logo",
+     ""
+    ],
+    [
+     "Match 3 tournament",
+     "CANADIAN ESPORTS NATIONALS"
+    ],
+    [
+     "Match 3 game",
+     "VALORANT"
+    ],
+    [
+     "Match 3 teams",
+     "Universit\u00e9 de Montr\u00e9al vs. St. Clair College"
+    ],
+    [
+     "Match 3 when",
+     "WED 11/25  |  8:30 PM"
+    ],
+    [
+     "Match 3 show",
+     "1"
+    ],
+    [
+     "Match 3 team 1",
+     "Universit\u00e9 de Montr\u00e9al"
+    ],
+    [
+     "Match 3 team 1 logo",
+     ""
+    ],
+    [
+     "Match 3 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 3 team 2 logo",
+     ""
+    ]
+   ]
+  }
+ },
+ {
+  "change": {
+   "best_of": 1,
+   "left": {
+    "score": 1
+   },
+   "right": {
+    "score": 0
+   }
+  },
+  "global": {
+   "event": "NACE VARSITY",
+   "stage": "PLAYOFFS",
+   "best_of": 1,
+   "game": "",
+   "left": {
+    "name": "St. Clair Saints",
+    "short": "SCC",
+    "logo": "assets/logos/St Clair Saints.png",
+    "color": "#0b6b3a",
+    "score": 1,
+    "game": ""
+   },
+   "right": {
+    "name": "Opponent",
+    "short": "OPP",
+    "logo": "",
+    "color": "#b8191c",
+    "score": 0,
+    "game": ""
+   },
+   "custom": [
+    [
+     "Game title",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ]
+   ],
+   "tournament_logo": "",
+   "sponsors": [
+    {
+     "logo": "assets/sponsors/Alienware logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/SCC Alumni logo.png",
+     "secs": 10.0,
+     "white": false
+    },
+    {
+     "logo": "assets/sponsors/Tim Hortons logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/SRC logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Subway logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Intel logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Prefire logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Pulsar logo.png",
+     "secs": 10.0,
+     "white": true
+    }
+   ],
+   "sponsor_epoch": 0,
+   "bgloop": {
+    "on": true,
+    "src": "",
+    "color": "#2fa85a",
+    "brightness": 1.6,
+    "speed": 1.0
+   },
+   "ticker": [
+    "WELCOME TO ST. CLAIR SAINTS ESPORTS",
+    "FOLLOW @SCCSAINTS FOR HIGHLIGHTS",
+    "THANKS FOR WATCHING!"
+   ],
+   "tournament": {
+    "top": {
+     "size": 8,
+     "format": "single",
+     "reset": true,
+     "short": false,
+     "teams": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ],
+     "scores": {}
+    },
+    "groups": [
+     {
+      "name": "GROUP A",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP B",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP C",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP D",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     }
+    ]
+   },
+   "schedule": {
+    "count": 3,
+    "matches": [
+     {
+      "tournament": "NACE VARSITY",
+      "game": "ROCKET LEAGUE",
+      "type": "PLAYOFFS",
+      "team1": "George Mason University",
+      "team2": "St. Clair College",
+      "date": "2026-11-11",
+      "time": "19:30"
+     },
+     {
+      "tournament": "NACE VARSITY",
+      "game": "PREMIER LEAGUE OF LEGENDS",
+      "type": "SEMI-FINALS",
+      "team1": "Maryville University",
+      "team2": "St. Clair College",
+      "date": "2026-11-19",
+      "time": "20:00"
+     },
+     {
+      "tournament": "CANADIAN ESPORTS NATIONALS",
+      "game": "VALORANT",
+      "type": "",
+      "team1": "Universit\u00e9 de Montr\u00e9al",
+      "team2": "St. Clair College",
+      "date": "2026-11-25",
+      "time": "20:30"
+     }
+    ]
+   },
+   "standings": {
+    "title": "",
+    "subtitle": "LEADERBOARD",
+    "count": 8,
+    "stat": "record",
+    "stat2": "",
+    "teams": [
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     }
+    ]
+   },
+   "clock": {
+    "mode": "time",
+    "until": "",
+    "zone": ""
+   },
+   "timer": {
+    "secs": 0,
+    "from": 0,
+    "down": false,
+    "started": 0
+   },
+   "roster": "left",
+   "player_stats": "auto",
+   "caster": {
+    "count": 1,
+    "primary": "#c2bdff",
+    "secondary": "#001a1a",
+    "text": "#001a1a"
+   },
+   "outputs_on": [],
+   "pictures": {
+    "team": {
+     "left": "headshot",
+     "right": "headshot"
+    },
+    "player": {
+     "left": "headshot",
+     "right": "headshot"
+    }
+   }
+  },
+  "tables": {
+   "Global": [
+    [
+     "Field",
+     "Value"
+    ],
+    [
+     "Event",
+     "NACE VARSITY"
+    ],
+    [
+     "Stage",
+     "PLAYOFFS"
+    ],
+    [
+     "Best of",
+     "1"
+    ],
+    [
+     "Game",
+     "2"
+    ],
+    [
+     "Left name",
+     "St. Clair Saints"
+    ],
+    [
+     "Left short",
+     "SCC"
+    ],
+    [
+     "Left logo",
+     "assets/logos/St Clair Saints.png"
+    ],
+    [
+     "Left color",
+     "#0b6b3a"
+    ],
+    [
+     "Left score",
+     "1"
+    ],
+    [
+     "Left game",
+     ""
+    ],
+    [
+     "Left won 1",
+     "1"
+    ],
+    [
+     "Left won 2",
+     ""
+    ],
+    [
+     "Left won 3",
+     ""
+    ],
+    [
+     "Left won 4",
+     ""
+    ],
+    [
+     "Right name",
+     "Opponent"
+    ],
+    [
+     "Right short",
+     "OPP"
+    ],
+    [
+     "Right logo",
+     ""
+    ],
+    [
+     "Right color",
+     "#b8191c"
+    ],
+    [
+     "Right score",
+     "0"
+    ],
+    [
+     "Right game",
+     ""
+    ],
+    [
+     "Right won 1",
+     ""
+    ],
+    [
+     "Right won 2",
+     ""
+    ],
+    [
+     "Right won 3",
+     ""
+    ],
+    [
+     "Right won 4",
+     ""
+    ],
+    [
+     "Game box 1",
+     "1"
+    ],
+    [
+     "Game box 2",
+     ""
+    ],
+    [
+     "Game box 3",
+     ""
+    ],
+    [
+     "Game box 4",
+     ""
+    ],
+    [
+     "Tournament logo",
+     ""
+    ],
+    [
+     "Sponsor logo",
+     "assets/sponsors/Alienware logo.png"
+    ],
+    [
+     "Sponsors",
+     "8"
+    ],
+    [
+     "BG loop",
+     "loops/scc-bg-loop.webm"
+    ],
+    [
+     "BG loop colour",
+     "#2fa85a"
+    ],
+    [
+     "BG loop brightness",
+     "1.6"
+    ],
+    [
+     "BG loop speed",
+     "1.0"
+    ],
+    [
+     "Ticker",
+     "WELCOME TO ST. CLAIR SAINTS ESPORTS  |  FOLLOW @SCCSAINTS FOR HIGHLIGHTS  |  THANKS FOR WATCHING!  |  "
+    ],
+    [
+     "Clock mode",
+     "time"
+    ],
+    [
+     "Clock until",
+     ""
+    ],
+    [
+     "Clock zone",
+     ""
+    ],
+    [
+     "Clock label",
+     "LOCAL TIME"
+    ],
+    [
+     "Timer secs",
+     "0"
+    ],
+    [
+     "Timer started",
+     "0"
+    ],
+    [
+     "Timer down",
+     ""
+    ],
+    [
+     "Caster boxes",
+     "1"
+    ],
+    [
+     "Caster primary",
+     "#c2bdff"
+    ],
+    [
+     "Caster secondary",
+     "#001a1a"
+    ],
+    [
+     "Caster text",
+     "#001a1a"
+    ],
+    [
+     "Caster 1 shown",
+     "1"
+    ],
+    [
+     "Caster 1 move",
+     "0 346 1"
+    ],
+    [
+     "Caster 2 shown",
+     ""
+    ],
+    [
+     "Caster 2 move",
+     ""
+    ],
+    [
+     "Caster 3 shown",
+     ""
+    ],
+    [
+     "Caster 3 move",
+     ""
+    ],
+    [
+     "Caster 4 shown",
+     ""
+    ],
+    [
+     "Caster 4 move",
+     ""
+    ],
+    [
+     "Game title",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ]
+   ],
+   "Sponsors": [
+    [
+     "Logo",
+     "Seconds",
+     "Epoch",
+     "White"
+    ],
+    [
+     "assets/sponsors/Alienware logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/SCC Alumni logo.png",
+     "10.0",
+     "0",
+     ""
+    ],
+    [
+     "assets/sponsors/Tim Hortons logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/SRC logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Subway logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Intel logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Prefire logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Pulsar logo.png",
+     "10.0",
+     "0",
+     "1"
+    ]
+   ],
+   "Schedule": [
+    [
+     "Field",
+     "Value"
+    ],
+    [
+     "Count",
+     "3"
+    ],
+    [
+     "Match 1 tournament",
+     "NACE VARSITY"
+    ],
+    [
+     "Match 1 game",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ],
+    [
+     "Match 1 teams",
+     "George Mason University vs. St. Clair College"
+    ],
+    [
+     "Match 1 when",
+     "WED 11/11  |  7:30 PM"
+    ],
+    [
+     "Match 1 show",
+     "1"
+    ],
+    [
+     "Match 1 team 1",
+     "George Mason University"
+    ],
+    [
+     "Match 1 team 1 logo",
+     ""
+    ],
+    [
+     "Match 1 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 1 team 2 logo",
+     ""
+    ],
+    [
+     "Match 2 tournament",
+     "NACE VARSITY"
+    ],
+    [
+     "Match 2 game",
+     "PREMIER LEAGUE OF LEGENDS | SEMI-FINALS"
+    ],
+    [
+     "Match 2 teams",
+     "Maryville University vs. St. Clair College"
+    ],
+    [
+     "Match 2 when",
+     "THU 11/19  |  8:00 PM"
+    ],
+    [
+     "Match 2 show",
+     "1"
+    ],
+    [
+     "Match 2 team 1",
+     "Maryville University"
+    ],
+    [
+     "Match 2 team 1 logo",
+     ""
+    ],
+    [
+     "Match 2 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 2 team 2 logo",
+     ""
+    ],
+    [
+     "Match 3 tournament",
+     "CANADIAN ESPORTS NATIONALS"
+    ],
+    [
+     "Match 3 game",
+     "VALORANT"
+    ],
+    [
+     "Match 3 teams",
+     "Universit\u00e9 de Montr\u00e9al vs. St. Clair College"
+    ],
+    [
+     "Match 3 when",
+     "WED 11/25  |  8:30 PM"
+    ],
+    [
+     "Match 3 show",
+     "1"
+    ],
+    [
+     "Match 3 team 1",
+     "Universit\u00e9 de Montr\u00e9al"
+    ],
+    [
+     "Match 3 team 1 logo",
+     ""
+    ],
+    [
+     "Match 3 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 3 team 2 logo",
+     ""
+    ]
+   ]
+  }
+ },
+ {
+  "change": {
+   "best_of": 7,
+   "left": {
+    "score": 3
+   },
+   "right": {
+    "score": 3
+   },
+   "game": 4
+  },
+  "global": {
+   "event": "NACE VARSITY",
+   "stage": "PLAYOFFS",
+   "best_of": 7,
+   "game": "4",
+   "left": {
+    "name": "St. Clair Saints",
+    "short": "SCC",
+    "logo": "assets/logos/St Clair Saints.png",
+    "color": "#0b6b3a",
+    "score": 3,
+    "game": ""
+   },
+   "right": {
+    "name": "Opponent",
+    "short": "OPP",
+    "logo": "",
+    "color": "#b8191c",
+    "score": 3,
+    "game": ""
+   },
+   "custom": [
+    [
+     "Game title",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ]
+   ],
+   "tournament_logo": "",
+   "sponsors": [
+    {
+     "logo": "assets/sponsors/Alienware logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/SCC Alumni logo.png",
+     "secs": 10.0,
+     "white": false
+    },
+    {
+     "logo": "assets/sponsors/Tim Hortons logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/SRC logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Subway logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Intel logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Prefire logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Pulsar logo.png",
+     "secs": 10.0,
+     "white": true
+    }
+   ],
+   "sponsor_epoch": 0,
+   "bgloop": {
+    "on": true,
+    "src": "",
+    "color": "#2fa85a",
+    "brightness": 1.6,
+    "speed": 1.0
+   },
+   "ticker": [
+    "WELCOME TO ST. CLAIR SAINTS ESPORTS",
+    "FOLLOW @SCCSAINTS FOR HIGHLIGHTS",
+    "THANKS FOR WATCHING!"
+   ],
+   "tournament": {
+    "top": {
+     "size": 8,
+     "format": "single",
+     "reset": true,
+     "short": false,
+     "teams": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ],
+     "scores": {}
+    },
+    "groups": [
+     {
+      "name": "GROUP A",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP B",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP C",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP D",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     }
+    ]
+   },
+   "schedule": {
+    "count": 3,
+    "matches": [
+     {
+      "tournament": "NACE VARSITY",
+      "game": "ROCKET LEAGUE",
+      "type": "PLAYOFFS",
+      "team1": "George Mason University",
+      "team2": "St. Clair College",
+      "date": "2026-11-11",
+      "time": "19:30"
+     },
+     {
+      "tournament": "NACE VARSITY",
+      "game": "PREMIER LEAGUE OF LEGENDS",
+      "type": "SEMI-FINALS",
+      "team1": "Maryville University",
+      "team2": "St. Clair College",
+      "date": "2026-11-19",
+      "time": "20:00"
+     },
+     {
+      "tournament": "CANADIAN ESPORTS NATIONALS",
+      "game": "VALORANT",
+      "type": "",
+      "team1": "Universit\u00e9 de Montr\u00e9al",
+      "team2": "St. Clair College",
+      "date": "2026-11-25",
+      "time": "20:30"
+     }
+    ]
+   },
+   "standings": {
+    "title": "",
+    "subtitle": "LEADERBOARD",
+    "count": 8,
+    "stat": "record",
+    "stat2": "",
+    "teams": [
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     }
+    ]
+   },
+   "clock": {
+    "mode": "time",
+    "until": "",
+    "zone": ""
+   },
+   "timer": {
+    "secs": 0,
+    "from": 0,
+    "down": false,
+    "started": 0
+   },
+   "roster": "left",
+   "player_stats": "auto",
+   "caster": {
+    "count": 1,
+    "primary": "#c2bdff",
+    "secondary": "#001a1a",
+    "text": "#001a1a"
+   },
+   "outputs_on": [],
+   "pictures": {
+    "team": {
+     "left": "headshot",
+     "right": "headshot"
+    },
+    "player": {
+     "left": "headshot",
+     "right": "headshot"
+    }
+   }
+  },
+  "tables": {
+   "Global": [
+    [
+     "Field",
+     "Value"
+    ],
+    [
+     "Event",
+     "NACE VARSITY"
+    ],
+    [
+     "Stage",
+     "PLAYOFFS"
+    ],
+    [
+     "Best of",
+     "7"
+    ],
+    [
+     "Game",
+     "4"
+    ],
+    [
+     "Left name",
+     "St. Clair Saints"
+    ],
+    [
+     "Left short",
+     "SCC"
+    ],
+    [
+     "Left logo",
+     "assets/logos/St Clair Saints.png"
+    ],
+    [
+     "Left color",
+     "#0b6b3a"
+    ],
+    [
+     "Left score",
+     "3"
+    ],
+    [
+     "Left game",
+     ""
+    ],
+    [
+     "Left won 1",
+     "1"
+    ],
+    [
+     "Left won 2",
+     "1"
+    ],
+    [
+     "Left won 3",
+     "1"
+    ],
+    [
+     "Left won 4",
+     ""
+    ],
+    [
+     "Right name",
+     "Opponent"
+    ],
+    [
+     "Right short",
+     "OPP"
+    ],
+    [
+     "Right logo",
+     ""
+    ],
+    [
+     "Right color",
+     "#b8191c"
+    ],
+    [
+     "Right score",
+     "3"
+    ],
+    [
+     "Right game",
+     ""
+    ],
+    [
+     "Right won 1",
+     "1"
+    ],
+    [
+     "Right won 2",
+     "1"
+    ],
+    [
+     "Right won 3",
+     "1"
+    ],
+    [
+     "Right won 4",
+     ""
+    ],
+    [
+     "Game box 1",
+     "1"
+    ],
+    [
+     "Game box 2",
+     "1"
+    ],
+    [
+     "Game box 3",
+     "1"
+    ],
+    [
+     "Game box 4",
+     "1"
+    ],
+    [
+     "Tournament logo",
+     ""
+    ],
+    [
+     "Sponsor logo",
+     "assets/sponsors/Alienware logo.png"
+    ],
+    [
+     "Sponsors",
+     "8"
+    ],
+    [
+     "BG loop",
+     "loops/scc-bg-loop.webm"
+    ],
+    [
+     "BG loop colour",
+     "#2fa85a"
+    ],
+    [
+     "BG loop brightness",
+     "1.6"
+    ],
+    [
+     "BG loop speed",
+     "1.0"
+    ],
+    [
+     "Ticker",
+     "WELCOME TO ST. CLAIR SAINTS ESPORTS  |  FOLLOW @SCCSAINTS FOR HIGHLIGHTS  |  THANKS FOR WATCHING!  |  "
+    ],
+    [
+     "Clock mode",
+     "time"
+    ],
+    [
+     "Clock until",
+     ""
+    ],
+    [
+     "Clock zone",
+     ""
+    ],
+    [
+     "Clock label",
+     "LOCAL TIME"
+    ],
+    [
+     "Timer secs",
+     "0"
+    ],
+    [
+     "Timer started",
+     "0"
+    ],
+    [
+     "Timer down",
+     ""
+    ],
+    [
+     "Caster boxes",
+     "1"
+    ],
+    [
+     "Caster primary",
+     "#c2bdff"
+    ],
+    [
+     "Caster secondary",
+     "#001a1a"
+    ],
+    [
+     "Caster text",
+     "#001a1a"
+    ],
+    [
+     "Caster 1 shown",
+     "1"
+    ],
+    [
+     "Caster 1 move",
+     "0 346 1"
+    ],
+    [
+     "Caster 2 shown",
+     ""
+    ],
+    [
+     "Caster 2 move",
+     ""
+    ],
+    [
+     "Caster 3 shown",
+     ""
+    ],
+    [
+     "Caster 3 move",
+     ""
+    ],
+    [
+     "Caster 4 shown",
+     ""
+    ],
+    [
+     "Caster 4 move",
+     ""
+    ],
+    [
+     "Game title",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ]
+   ],
+   "Sponsors": [
+    [
+     "Logo",
+     "Seconds",
+     "Epoch",
+     "White"
+    ],
+    [
+     "assets/sponsors/Alienware logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/SCC Alumni logo.png",
+     "10.0",
+     "0",
+     ""
+    ],
+    [
+     "assets/sponsors/Tim Hortons logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/SRC logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Subway logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Intel logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Prefire logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Pulsar logo.png",
+     "10.0",
+     "0",
+     "1"
+    ]
+   ],
+   "Schedule": [
+    [
+     "Field",
+     "Value"
+    ],
+    [
+     "Count",
+     "3"
+    ],
+    [
+     "Match 1 tournament",
+     "NACE VARSITY"
+    ],
+    [
+     "Match 1 game",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ],
+    [
+     "Match 1 teams",
+     "George Mason University vs. St. Clair College"
+    ],
+    [
+     "Match 1 when",
+     "WED 11/11  |  7:30 PM"
+    ],
+    [
+     "Match 1 show",
+     "1"
+    ],
+    [
+     "Match 1 team 1",
+     "George Mason University"
+    ],
+    [
+     "Match 1 team 1 logo",
+     ""
+    ],
+    [
+     "Match 1 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 1 team 2 logo",
+     ""
+    ],
+    [
+     "Match 2 tournament",
+     "NACE VARSITY"
+    ],
+    [
+     "Match 2 game",
+     "PREMIER LEAGUE OF LEGENDS | SEMI-FINALS"
+    ],
+    [
+     "Match 2 teams",
+     "Maryville University vs. St. Clair College"
+    ],
+    [
+     "Match 2 when",
+     "THU 11/19  |  8:00 PM"
+    ],
+    [
+     "Match 2 show",
+     "1"
+    ],
+    [
+     "Match 2 team 1",
+     "Maryville University"
+    ],
+    [
+     "Match 2 team 1 logo",
+     ""
+    ],
+    [
+     "Match 2 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 2 team 2 logo",
+     ""
+    ],
+    [
+     "Match 3 tournament",
+     "CANADIAN ESPORTS NATIONALS"
+    ],
+    [
+     "Match 3 game",
+     "VALORANT"
+    ],
+    [
+     "Match 3 teams",
+     "Universit\u00e9 de Montr\u00e9al vs. St. Clair College"
+    ],
+    [
+     "Match 3 when",
+     "WED 11/25  |  8:30 PM"
+    ],
+    [
+     "Match 3 show",
+     "1"
+    ],
+    [
+     "Match 3 team 1",
+     "Universit\u00e9 de Montr\u00e9al"
+    ],
+    [
+     "Match 3 team 1 logo",
+     ""
+    ],
+    [
+     "Match 3 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 3 team 2 logo",
+     ""
+    ]
+   ]
+  }
+ },
+ {
+  "change": {
+   "best_of": 3,
+   "left": {
+    "score": 0
+   },
+   "right": {
+    "score": 2
+   },
+   "event": "NACE",
+   "stage": "FINALS"
+  },
+  "global": {
+   "event": "NACE",
+   "stage": "FINALS",
+   "best_of": 3,
+   "game": "",
+   "left": {
+    "name": "St. Clair Saints",
+    "short": "SCC",
+    "logo": "assets/logos/St Clair Saints.png",
+    "color": "#0b6b3a",
+    "score": 0,
+    "game": ""
+   },
+   "right": {
+    "name": "Opponent",
+    "short": "OPP",
+    "logo": "",
+    "color": "#b8191c",
+    "score": 2,
+    "game": ""
+   },
+   "custom": [
+    [
+     "Game title",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ]
+   ],
+   "tournament_logo": "",
+   "sponsors": [
+    {
+     "logo": "assets/sponsors/Alienware logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/SCC Alumni logo.png",
+     "secs": 10.0,
+     "white": false
+    },
+    {
+     "logo": "assets/sponsors/Tim Hortons logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/SRC logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Subway logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Intel logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Prefire logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Pulsar logo.png",
+     "secs": 10.0,
+     "white": true
+    }
+   ],
+   "sponsor_epoch": 0,
+   "bgloop": {
+    "on": true,
+    "src": "",
+    "color": "#2fa85a",
+    "brightness": 1.6,
+    "speed": 1.0
+   },
+   "ticker": [
+    "WELCOME TO ST. CLAIR SAINTS ESPORTS",
+    "FOLLOW @SCCSAINTS FOR HIGHLIGHTS",
+    "THANKS FOR WATCHING!"
+   ],
+   "tournament": {
+    "top": {
+     "size": 8,
+     "format": "single",
+     "reset": true,
+     "short": false,
+     "teams": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ],
+     "scores": {}
+    },
+    "groups": [
+     {
+      "name": "GROUP A",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP B",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP C",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP D",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     }
+    ]
+   },
+   "schedule": {
+    "count": 3,
+    "matches": [
+     {
+      "tournament": "NACE VARSITY",
+      "game": "ROCKET LEAGUE",
+      "type": "PLAYOFFS",
+      "team1": "George Mason University",
+      "team2": "St. Clair College",
+      "date": "2026-11-11",
+      "time": "19:30"
+     },
+     {
+      "tournament": "NACE VARSITY",
+      "game": "PREMIER LEAGUE OF LEGENDS",
+      "type": "SEMI-FINALS",
+      "team1": "Maryville University",
+      "team2": "St. Clair College",
+      "date": "2026-11-19",
+      "time": "20:00"
+     },
+     {
+      "tournament": "CANADIAN ESPORTS NATIONALS",
+      "game": "VALORANT",
+      "type": "",
+      "team1": "Universit\u00e9 de Montr\u00e9al",
+      "team2": "St. Clair College",
+      "date": "2026-11-25",
+      "time": "20:30"
+     }
+    ]
+   },
+   "standings": {
+    "title": "",
+    "subtitle": "LEADERBOARD",
+    "count": 8,
+    "stat": "record",
+    "stat2": "",
+    "teams": [
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     }
+    ]
+   },
+   "clock": {
+    "mode": "time",
+    "until": "",
+    "zone": ""
+   },
+   "timer": {
+    "secs": 0,
+    "from": 0,
+    "down": false,
+    "started": 0
+   },
+   "roster": "left",
+   "player_stats": "auto",
+   "caster": {
+    "count": 1,
+    "primary": "#c2bdff",
+    "secondary": "#001a1a",
+    "text": "#001a1a"
+   },
+   "outputs_on": [],
+   "pictures": {
+    "team": {
+     "left": "headshot",
+     "right": "headshot"
+    },
+    "player": {
+     "left": "headshot",
+     "right": "headshot"
+    }
+   }
+  },
+  "tables": {
+   "Global": [
+    [
+     "Field",
+     "Value"
+    ],
+    [
+     "Event",
+     "NACE"
+    ],
+    [
+     "Stage",
+     "FINALS"
+    ],
+    [
+     "Best of",
+     "3"
+    ],
+    [
+     "Game",
+     "3"
+    ],
+    [
+     "Left name",
+     "St. Clair Saints"
+    ],
+    [
+     "Left short",
+     "SCC"
+    ],
+    [
+     "Left logo",
+     "assets/logos/St Clair Saints.png"
+    ],
+    [
+     "Left color",
+     "#0b6b3a"
+    ],
+    [
+     "Left score",
+     "0"
+    ],
+    [
+     "Left game",
+     ""
+    ],
+    [
+     "Left won 1",
+     ""
+    ],
+    [
+     "Left won 2",
+     ""
+    ],
+    [
+     "Left won 3",
+     ""
+    ],
+    [
+     "Left won 4",
+     ""
+    ],
+    [
+     "Right name",
+     "Opponent"
+    ],
+    [
+     "Right short",
+     "OPP"
+    ],
+    [
+     "Right logo",
+     ""
+    ],
+    [
+     "Right color",
+     "#b8191c"
+    ],
+    [
+     "Right score",
+     "2"
+    ],
+    [
+     "Right game",
+     ""
+    ],
+    [
+     "Right won 1",
+     "1"
+    ],
+    [
+     "Right won 2",
+     "1"
+    ],
+    [
+     "Right won 3",
+     ""
+    ],
+    [
+     "Right won 4",
+     ""
+    ],
+    [
+     "Game box 1",
+     "1"
+    ],
+    [
+     "Game box 2",
+     "1"
+    ],
+    [
+     "Game box 3",
+     ""
+    ],
+    [
+     "Game box 4",
+     ""
+    ],
+    [
+     "Tournament logo",
+     ""
+    ],
+    [
+     "Sponsor logo",
+     "assets/sponsors/Alienware logo.png"
+    ],
+    [
+     "Sponsors",
+     "8"
+    ],
+    [
+     "BG loop",
+     "loops/scc-bg-loop.webm"
+    ],
+    [
+     "BG loop colour",
+     "#2fa85a"
+    ],
+    [
+     "BG loop brightness",
+     "1.6"
+    ],
+    [
+     "BG loop speed",
+     "1.0"
+    ],
+    [
+     "Ticker",
+     "WELCOME TO ST. CLAIR SAINTS ESPORTS  |  FOLLOW @SCCSAINTS FOR HIGHLIGHTS  |  THANKS FOR WATCHING!  |  "
+    ],
+    [
+     "Clock mode",
+     "time"
+    ],
+    [
+     "Clock until",
+     ""
+    ],
+    [
+     "Clock zone",
+     ""
+    ],
+    [
+     "Clock label",
+     "LOCAL TIME"
+    ],
+    [
+     "Timer secs",
+     "0"
+    ],
+    [
+     "Timer started",
+     "0"
+    ],
+    [
+     "Timer down",
+     ""
+    ],
+    [
+     "Caster boxes",
+     "1"
+    ],
+    [
+     "Caster primary",
+     "#c2bdff"
+    ],
+    [
+     "Caster secondary",
+     "#001a1a"
+    ],
+    [
+     "Caster text",
+     "#001a1a"
+    ],
+    [
+     "Caster 1 shown",
+     "1"
+    ],
+    [
+     "Caster 1 move",
+     "0 346 1"
+    ],
+    [
+     "Caster 2 shown",
+     ""
+    ],
+    [
+     "Caster 2 move",
+     ""
+    ],
+    [
+     "Caster 3 shown",
+     ""
+    ],
+    [
+     "Caster 3 move",
+     ""
+    ],
+    [
+     "Caster 4 shown",
+     ""
+    ],
+    [
+     "Caster 4 move",
+     ""
+    ],
+    [
+     "Game title",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ]
+   ],
+   "Sponsors": [
+    [
+     "Logo",
+     "Seconds",
+     "Epoch",
+     "White"
+    ],
+    [
+     "assets/sponsors/Alienware logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/SCC Alumni logo.png",
+     "10.0",
+     "0",
+     ""
+    ],
+    [
+     "assets/sponsors/Tim Hortons logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/SRC logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Subway logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Intel logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Prefire logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Pulsar logo.png",
+     "10.0",
+     "0",
+     "1"
+    ]
+   ],
+   "Schedule": [
+    [
+     "Field",
+     "Value"
+    ],
+    [
+     "Count",
+     "3"
+    ],
+    [
+     "Match 1 tournament",
+     "NACE VARSITY"
+    ],
+    [
+     "Match 1 game",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ],
+    [
+     "Match 1 teams",
+     "George Mason University vs. St. Clair College"
+    ],
+    [
+     "Match 1 when",
+     "WED 11/11  |  7:30 PM"
+    ],
+    [
+     "Match 1 show",
+     "1"
+    ],
+    [
+     "Match 1 team 1",
+     "George Mason University"
+    ],
+    [
+     "Match 1 team 1 logo",
+     ""
+    ],
+    [
+     "Match 1 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 1 team 2 logo",
+     ""
+    ],
+    [
+     "Match 2 tournament",
+     "NACE VARSITY"
+    ],
+    [
+     "Match 2 game",
+     "PREMIER LEAGUE OF LEGENDS | SEMI-FINALS"
+    ],
+    [
+     "Match 2 teams",
+     "Maryville University vs. St. Clair College"
+    ],
+    [
+     "Match 2 when",
+     "THU 11/19  |  8:00 PM"
+    ],
+    [
+     "Match 2 show",
+     "1"
+    ],
+    [
+     "Match 2 team 1",
+     "Maryville University"
+    ],
+    [
+     "Match 2 team 1 logo",
+     ""
+    ],
+    [
+     "Match 2 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 2 team 2 logo",
+     ""
+    ],
+    [
+     "Match 3 tournament",
+     "CANADIAN ESPORTS NATIONALS"
+    ],
+    [
+     "Match 3 game",
+     "VALORANT"
+    ],
+    [
+     "Match 3 teams",
+     "Universit\u00e9 de Montr\u00e9al vs. St. Clair College"
+    ],
+    [
+     "Match 3 when",
+     "WED 11/25  |  8:30 PM"
+    ],
+    [
+     "Match 3 show",
+     "1"
+    ],
+    [
+     "Match 3 team 1",
+     "Universit\u00e9 de Montr\u00e9al"
+    ],
+    [
+     "Match 3 team 1 logo",
+     ""
+    ],
+    [
+     "Match 3 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 3 team 2 logo",
+     ""
+    ]
+   ]
+  }
+ },
+ {
+  "change": {
+   "caster": {
+    "count": 2,
+    "primary": "#112233",
+    "secondary": "#445566"
+   }
+  },
+  "global": {
+   "event": "NACE VARSITY",
+   "stage": "PLAYOFFS",
+   "best_of": 3,
+   "game": "",
+   "left": {
+    "name": "St. Clair Saints",
+    "short": "SCC",
+    "logo": "assets/logos/St Clair Saints.png",
+    "color": "#0b6b3a",
+    "score": 0,
+    "game": ""
+   },
+   "right": {
+    "name": "Opponent",
+    "short": "OPP",
+    "logo": "",
+    "color": "#b8191c",
+    "score": 0,
+    "game": ""
+   },
+   "custom": [
+    [
+     "Game title",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ]
+   ],
+   "tournament_logo": "",
+   "sponsors": [
+    {
+     "logo": "assets/sponsors/Alienware logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/SCC Alumni logo.png",
+     "secs": 10.0,
+     "white": false
+    },
+    {
+     "logo": "assets/sponsors/Tim Hortons logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/SRC logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Subway logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Intel logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Prefire logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Pulsar logo.png",
+     "secs": 10.0,
+     "white": true
+    }
+   ],
+   "sponsor_epoch": 0,
+   "bgloop": {
+    "on": true,
+    "src": "",
+    "color": "#2fa85a",
+    "brightness": 1.6,
+    "speed": 1.0
+   },
+   "ticker": [
+    "WELCOME TO ST. CLAIR SAINTS ESPORTS",
+    "FOLLOW @SCCSAINTS FOR HIGHLIGHTS",
+    "THANKS FOR WATCHING!"
+   ],
+   "tournament": {
+    "top": {
+     "size": 8,
+     "format": "single",
+     "reset": true,
+     "short": false,
+     "teams": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ],
+     "scores": {}
+    },
+    "groups": [
+     {
+      "name": "GROUP A",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP B",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP C",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP D",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     }
+    ]
+   },
+   "schedule": {
+    "count": 3,
+    "matches": [
+     {
+      "tournament": "NACE VARSITY",
+      "game": "ROCKET LEAGUE",
+      "type": "PLAYOFFS",
+      "team1": "George Mason University",
+      "team2": "St. Clair College",
+      "date": "2026-11-11",
+      "time": "19:30"
+     },
+     {
+      "tournament": "NACE VARSITY",
+      "game": "PREMIER LEAGUE OF LEGENDS",
+      "type": "SEMI-FINALS",
+      "team1": "Maryville University",
+      "team2": "St. Clair College",
+      "date": "2026-11-19",
+      "time": "20:00"
+     },
+     {
+      "tournament": "CANADIAN ESPORTS NATIONALS",
+      "game": "VALORANT",
+      "type": "",
+      "team1": "Universit\u00e9 de Montr\u00e9al",
+      "team2": "St. Clair College",
+      "date": "2026-11-25",
+      "time": "20:30"
+     }
+    ]
+   },
+   "standings": {
+    "title": "",
+    "subtitle": "LEADERBOARD",
+    "count": 8,
+    "stat": "record",
+    "stat2": "",
+    "teams": [
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     }
+    ]
+   },
+   "clock": {
+    "mode": "time",
+    "until": "",
+    "zone": ""
+   },
+   "timer": {
+    "secs": 0,
+    "from": 0,
+    "down": false,
+    "started": 0
+   },
+   "roster": "left",
+   "player_stats": "auto",
+   "caster": {
+    "count": 2,
+    "primary": "#112233",
+    "secondary": "#445566",
+    "text": "#001a1a"
+   },
+   "outputs_on": [],
+   "pictures": {
+    "team": {
+     "left": "headshot",
+     "right": "headshot"
+    },
+    "player": {
+     "left": "headshot",
+     "right": "headshot"
+    }
+   }
+  },
+  "tables": {
+   "Global": [
+    [
+     "Field",
+     "Value"
+    ],
+    [
+     "Event",
+     "NACE VARSITY"
+    ],
+    [
+     "Stage",
+     "PLAYOFFS"
+    ],
+    [
+     "Best of",
+     "3"
+    ],
+    [
+     "Game",
+     "1"
+    ],
+    [
+     "Left name",
+     "St. Clair Saints"
+    ],
+    [
+     "Left short",
+     "SCC"
+    ],
+    [
+     "Left logo",
+     "assets/logos/St Clair Saints.png"
+    ],
+    [
+     "Left color",
+     "#0b6b3a"
+    ],
+    [
+     "Left score",
+     "0"
+    ],
+    [
+     "Left game",
+     ""
+    ],
+    [
+     "Left won 1",
+     ""
+    ],
+    [
+     "Left won 2",
+     ""
+    ],
+    [
+     "Left won 3",
+     ""
+    ],
+    [
+     "Left won 4",
+     ""
+    ],
+    [
+     "Right name",
+     "Opponent"
+    ],
+    [
+     "Right short",
+     "OPP"
+    ],
+    [
+     "Right logo",
+     ""
+    ],
+    [
+     "Right color",
+     "#b8191c"
+    ],
+    [
+     "Right score",
+     "0"
+    ],
+    [
+     "Right game",
+     ""
+    ],
+    [
+     "Right won 1",
+     ""
+    ],
+    [
+     "Right won 2",
+     ""
+    ],
+    [
+     "Right won 3",
+     ""
+    ],
+    [
+     "Right won 4",
+     ""
+    ],
+    [
+     "Game box 1",
+     "1"
+    ],
+    [
+     "Game box 2",
+     "1"
+    ],
+    [
+     "Game box 3",
+     ""
+    ],
+    [
+     "Game box 4",
+     ""
+    ],
+    [
+     "Tournament logo",
+     ""
+    ],
+    [
+     "Sponsor logo",
+     "assets/sponsors/Alienware logo.png"
+    ],
+    [
+     "Sponsors",
+     "8"
+    ],
+    [
+     "BG loop",
+     "loops/scc-bg-loop.webm"
+    ],
+    [
+     "BG loop colour",
+     "#2fa85a"
+    ],
+    [
+     "BG loop brightness",
+     "1.6"
+    ],
+    [
+     "BG loop speed",
+     "1.0"
+    ],
+    [
+     "Ticker",
+     "WELCOME TO ST. CLAIR SAINTS ESPORTS  |  FOLLOW @SCCSAINTS FOR HIGHLIGHTS  |  THANKS FOR WATCHING!  |  "
+    ],
+    [
+     "Clock mode",
+     "time"
+    ],
+    [
+     "Clock until",
+     ""
+    ],
+    [
+     "Clock zone",
+     ""
+    ],
+    [
+     "Clock label",
+     "LOCAL TIME"
+    ],
+    [
+     "Timer secs",
+     "0"
+    ],
+    [
+     "Timer started",
+     "0"
+    ],
+    [
+     "Timer down",
+     ""
+    ],
+    [
+     "Caster boxes",
+     "2"
+    ],
+    [
+     "Caster primary",
+     "#112233"
+    ],
+    [
+     "Caster secondary",
+     "#445566"
+    ],
+    [
+     "Caster text",
+     "#001a1a"
+    ],
+    [
+     "Caster 1 shown",
+     "1"
+    ],
+    [
+     "Caster 1 move",
+     "-362 346 1"
+    ],
+    [
+     "Caster 2 shown",
+     "1"
+    ],
+    [
+     "Caster 2 move",
+     "361 346 1"
+    ],
+    [
+     "Caster 3 shown",
+     ""
+    ],
+    [
+     "Caster 3 move",
+     ""
+    ],
+    [
+     "Caster 4 shown",
+     ""
+    ],
+    [
+     "Caster 4 move",
+     ""
+    ],
+    [
+     "Game title",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ]
+   ],
+   "Sponsors": [
+    [
+     "Logo",
+     "Seconds",
+     "Epoch",
+     "White"
+    ],
+    [
+     "assets/sponsors/Alienware logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/SCC Alumni logo.png",
+     "10.0",
+     "0",
+     ""
+    ],
+    [
+     "assets/sponsors/Tim Hortons logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/SRC logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Subway logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Intel logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Prefire logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Pulsar logo.png",
+     "10.0",
+     "0",
+     "1"
+    ]
+   ],
+   "Schedule": [
+    [
+     "Field",
+     "Value"
+    ],
+    [
+     "Count",
+     "3"
+    ],
+    [
+     "Match 1 tournament",
+     "NACE VARSITY"
+    ],
+    [
+     "Match 1 game",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ],
+    [
+     "Match 1 teams",
+     "George Mason University vs. St. Clair College"
+    ],
+    [
+     "Match 1 when",
+     "WED 11/11  |  7:30 PM"
+    ],
+    [
+     "Match 1 show",
+     "1"
+    ],
+    [
+     "Match 1 team 1",
+     "George Mason University"
+    ],
+    [
+     "Match 1 team 1 logo",
+     ""
+    ],
+    [
+     "Match 1 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 1 team 2 logo",
+     ""
+    ],
+    [
+     "Match 2 tournament",
+     "NACE VARSITY"
+    ],
+    [
+     "Match 2 game",
+     "PREMIER LEAGUE OF LEGENDS | SEMI-FINALS"
+    ],
+    [
+     "Match 2 teams",
+     "Maryville University vs. St. Clair College"
+    ],
+    [
+     "Match 2 when",
+     "THU 11/19  |  8:00 PM"
+    ],
+    [
+     "Match 2 show",
+     "1"
+    ],
+    [
+     "Match 2 team 1",
+     "Maryville University"
+    ],
+    [
+     "Match 2 team 1 logo",
+     ""
+    ],
+    [
+     "Match 2 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 2 team 2 logo",
+     ""
+    ],
+    [
+     "Match 3 tournament",
+     "CANADIAN ESPORTS NATIONALS"
+    ],
+    [
+     "Match 3 game",
+     "VALORANT"
+    ],
+    [
+     "Match 3 teams",
+     "Universit\u00e9 de Montr\u00e9al vs. St. Clair College"
+    ],
+    [
+     "Match 3 when",
+     "WED 11/25  |  8:30 PM"
+    ],
+    [
+     "Match 3 show",
+     "1"
+    ],
+    [
+     "Match 3 team 1",
+     "Universit\u00e9 de Montr\u00e9al"
+    ],
+    [
+     "Match 3 team 1 logo",
+     ""
+    ],
+    [
+     "Match 3 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 3 team 2 logo",
+     ""
+    ]
+   ]
+  }
+ },
+ {
+  "change": {
+   "caster": {
+    "count": 3
+   }
+  },
+  "global": {
+   "event": "NACE VARSITY",
+   "stage": "PLAYOFFS",
+   "best_of": 3,
+   "game": "",
+   "left": {
+    "name": "St. Clair Saints",
+    "short": "SCC",
+    "logo": "assets/logos/St Clair Saints.png",
+    "color": "#0b6b3a",
+    "score": 0,
+    "game": ""
+   },
+   "right": {
+    "name": "Opponent",
+    "short": "OPP",
+    "logo": "",
+    "color": "#b8191c",
+    "score": 0,
+    "game": ""
+   },
+   "custom": [
+    [
+     "Game title",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ]
+   ],
+   "tournament_logo": "",
+   "sponsors": [
+    {
+     "logo": "assets/sponsors/Alienware logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/SCC Alumni logo.png",
+     "secs": 10.0,
+     "white": false
+    },
+    {
+     "logo": "assets/sponsors/Tim Hortons logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/SRC logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Subway logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Intel logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Prefire logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Pulsar logo.png",
+     "secs": 10.0,
+     "white": true
+    }
+   ],
+   "sponsor_epoch": 0,
+   "bgloop": {
+    "on": true,
+    "src": "",
+    "color": "#2fa85a",
+    "brightness": 1.6,
+    "speed": 1.0
+   },
+   "ticker": [
+    "WELCOME TO ST. CLAIR SAINTS ESPORTS",
+    "FOLLOW @SCCSAINTS FOR HIGHLIGHTS",
+    "THANKS FOR WATCHING!"
+   ],
+   "tournament": {
+    "top": {
+     "size": 8,
+     "format": "single",
+     "reset": true,
+     "short": false,
+     "teams": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ],
+     "scores": {}
+    },
+    "groups": [
+     {
+      "name": "GROUP A",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP B",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP C",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP D",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     }
+    ]
+   },
+   "schedule": {
+    "count": 3,
+    "matches": [
+     {
+      "tournament": "NACE VARSITY",
+      "game": "ROCKET LEAGUE",
+      "type": "PLAYOFFS",
+      "team1": "George Mason University",
+      "team2": "St. Clair College",
+      "date": "2026-11-11",
+      "time": "19:30"
+     },
+     {
+      "tournament": "NACE VARSITY",
+      "game": "PREMIER LEAGUE OF LEGENDS",
+      "type": "SEMI-FINALS",
+      "team1": "Maryville University",
+      "team2": "St. Clair College",
+      "date": "2026-11-19",
+      "time": "20:00"
+     },
+     {
+      "tournament": "CANADIAN ESPORTS NATIONALS",
+      "game": "VALORANT",
+      "type": "",
+      "team1": "Universit\u00e9 de Montr\u00e9al",
+      "team2": "St. Clair College",
+      "date": "2026-11-25",
+      "time": "20:30"
+     }
+    ]
+   },
+   "standings": {
+    "title": "",
+    "subtitle": "LEADERBOARD",
+    "count": 8,
+    "stat": "record",
+    "stat2": "",
+    "teams": [
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     }
+    ]
+   },
+   "clock": {
+    "mode": "time",
+    "until": "",
+    "zone": ""
+   },
+   "timer": {
+    "secs": 0,
+    "from": 0,
+    "down": false,
+    "started": 0
+   },
+   "roster": "left",
+   "player_stats": "auto",
+   "caster": {
+    "count": 3,
+    "primary": "#c2bdff",
+    "secondary": "#001a1a",
+    "text": "#001a1a"
+   },
+   "outputs_on": [],
+   "pictures": {
+    "team": {
+     "left": "headshot",
+     "right": "headshot"
+    },
+    "player": {
+     "left": "headshot",
+     "right": "headshot"
+    }
+   }
+  },
+  "tables": {
+   "Global": [
+    [
+     "Field",
+     "Value"
+    ],
+    [
+     "Event",
+     "NACE VARSITY"
+    ],
+    [
+     "Stage",
+     "PLAYOFFS"
+    ],
+    [
+     "Best of",
+     "3"
+    ],
+    [
+     "Game",
+     "1"
+    ],
+    [
+     "Left name",
+     "St. Clair Saints"
+    ],
+    [
+     "Left short",
+     "SCC"
+    ],
+    [
+     "Left logo",
+     "assets/logos/St Clair Saints.png"
+    ],
+    [
+     "Left color",
+     "#0b6b3a"
+    ],
+    [
+     "Left score",
+     "0"
+    ],
+    [
+     "Left game",
+     ""
+    ],
+    [
+     "Left won 1",
+     ""
+    ],
+    [
+     "Left won 2",
+     ""
+    ],
+    [
+     "Left won 3",
+     ""
+    ],
+    [
+     "Left won 4",
+     ""
+    ],
+    [
+     "Right name",
+     "Opponent"
+    ],
+    [
+     "Right short",
+     "OPP"
+    ],
+    [
+     "Right logo",
+     ""
+    ],
+    [
+     "Right color",
+     "#b8191c"
+    ],
+    [
+     "Right score",
+     "0"
+    ],
+    [
+     "Right game",
+     ""
+    ],
+    [
+     "Right won 1",
+     ""
+    ],
+    [
+     "Right won 2",
+     ""
+    ],
+    [
+     "Right won 3",
+     ""
+    ],
+    [
+     "Right won 4",
+     ""
+    ],
+    [
+     "Game box 1",
+     "1"
+    ],
+    [
+     "Game box 2",
+     "1"
+    ],
+    [
+     "Game box 3",
+     ""
+    ],
+    [
+     "Game box 4",
+     ""
+    ],
+    [
+     "Tournament logo",
+     ""
+    ],
+    [
+     "Sponsor logo",
+     "assets/sponsors/Alienware logo.png"
+    ],
+    [
+     "Sponsors",
+     "8"
+    ],
+    [
+     "BG loop",
+     "loops/scc-bg-loop.webm"
+    ],
+    [
+     "BG loop colour",
+     "#2fa85a"
+    ],
+    [
+     "BG loop brightness",
+     "1.6"
+    ],
+    [
+     "BG loop speed",
+     "1.0"
+    ],
+    [
+     "Ticker",
+     "WELCOME TO ST. CLAIR SAINTS ESPORTS  |  FOLLOW @SCCSAINTS FOR HIGHLIGHTS  |  THANKS FOR WATCHING!  |  "
+    ],
+    [
+     "Clock mode",
+     "time"
+    ],
+    [
+     "Clock until",
+     ""
+    ],
+    [
+     "Clock zone",
+     ""
+    ],
+    [
+     "Clock label",
+     "LOCAL TIME"
+    ],
+    [
+     "Timer secs",
+     "0"
+    ],
+    [
+     "Timer started",
+     "0"
+    ],
+    [
+     "Timer down",
+     ""
+    ],
+    [
+     "Caster boxes",
+     "3"
+    ],
+    [
+     "Caster primary",
+     "#c2bdff"
+    ],
+    [
+     "Caster secondary",
+     "#001a1a"
+    ],
+    [
+     "Caster text",
+     "#001a1a"
+    ],
+    [
+     "Caster 1 shown",
+     "1"
+    ],
+    [
+     "Caster 1 move",
+     "-570 373 0.85"
+    ],
+    [
+     "Caster 2 shown",
+     "1"
+    ],
+    [
+     "Caster 2 move",
+     "51 373 0.85"
+    ],
+    [
+     "Caster 3 shown",
+     "1"
+    ],
+    [
+     "Caster 3 move",
+     "671 373 0.85"
+    ],
+    [
+     "Caster 4 shown",
+     ""
+    ],
+    [
+     "Caster 4 move",
+     ""
+    ],
+    [
+     "Game title",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ]
+   ],
+   "Sponsors": [
+    [
+     "Logo",
+     "Seconds",
+     "Epoch",
+     "White"
+    ],
+    [
+     "assets/sponsors/Alienware logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/SCC Alumni logo.png",
+     "10.0",
+     "0",
+     ""
+    ],
+    [
+     "assets/sponsors/Tim Hortons logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/SRC logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Subway logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Intel logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Prefire logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Pulsar logo.png",
+     "10.0",
+     "0",
+     "1"
+    ]
+   ],
+   "Schedule": [
+    [
+     "Field",
+     "Value"
+    ],
+    [
+     "Count",
+     "3"
+    ],
+    [
+     "Match 1 tournament",
+     "NACE VARSITY"
+    ],
+    [
+     "Match 1 game",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ],
+    [
+     "Match 1 teams",
+     "George Mason University vs. St. Clair College"
+    ],
+    [
+     "Match 1 when",
+     "WED 11/11  |  7:30 PM"
+    ],
+    [
+     "Match 1 show",
+     "1"
+    ],
+    [
+     "Match 1 team 1",
+     "George Mason University"
+    ],
+    [
+     "Match 1 team 1 logo",
+     ""
+    ],
+    [
+     "Match 1 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 1 team 2 logo",
+     ""
+    ],
+    [
+     "Match 2 tournament",
+     "NACE VARSITY"
+    ],
+    [
+     "Match 2 game",
+     "PREMIER LEAGUE OF LEGENDS | SEMI-FINALS"
+    ],
+    [
+     "Match 2 teams",
+     "Maryville University vs. St. Clair College"
+    ],
+    [
+     "Match 2 when",
+     "THU 11/19  |  8:00 PM"
+    ],
+    [
+     "Match 2 show",
+     "1"
+    ],
+    [
+     "Match 2 team 1",
+     "Maryville University"
+    ],
+    [
+     "Match 2 team 1 logo",
+     ""
+    ],
+    [
+     "Match 2 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 2 team 2 logo",
+     ""
+    ],
+    [
+     "Match 3 tournament",
+     "CANADIAN ESPORTS NATIONALS"
+    ],
+    [
+     "Match 3 game",
+     "VALORANT"
+    ],
+    [
+     "Match 3 teams",
+     "Universit\u00e9 de Montr\u00e9al vs. St. Clair College"
+    ],
+    [
+     "Match 3 when",
+     "WED 11/25  |  8:30 PM"
+    ],
+    [
+     "Match 3 show",
+     "1"
+    ],
+    [
+     "Match 3 team 1",
+     "Universit\u00e9 de Montr\u00e9al"
+    ],
+    [
+     "Match 3 team 1 logo",
+     ""
+    ],
+    [
+     "Match 3 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 3 team 2 logo",
+     ""
+    ]
+   ]
+  }
+ },
+ {
+  "change": {
+   "caster": {
+    "count": 4,
+    "text": "#abcdef"
+   }
+  },
+  "global": {
+   "event": "NACE VARSITY",
+   "stage": "PLAYOFFS",
+   "best_of": 3,
+   "game": "",
+   "left": {
+    "name": "St. Clair Saints",
+    "short": "SCC",
+    "logo": "assets/logos/St Clair Saints.png",
+    "color": "#0b6b3a",
+    "score": 0,
+    "game": ""
+   },
+   "right": {
+    "name": "Opponent",
+    "short": "OPP",
+    "logo": "",
+    "color": "#b8191c",
+    "score": 0,
+    "game": ""
+   },
+   "custom": [
+    [
+     "Game title",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ]
+   ],
+   "tournament_logo": "",
+   "sponsors": [
+    {
+     "logo": "assets/sponsors/Alienware logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/SCC Alumni logo.png",
+     "secs": 10.0,
+     "white": false
+    },
+    {
+     "logo": "assets/sponsors/Tim Hortons logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/SRC logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Subway logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Intel logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Prefire logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Pulsar logo.png",
+     "secs": 10.0,
+     "white": true
+    }
+   ],
+   "sponsor_epoch": 0,
+   "bgloop": {
+    "on": true,
+    "src": "",
+    "color": "#2fa85a",
+    "brightness": 1.6,
+    "speed": 1.0
+   },
+   "ticker": [
+    "WELCOME TO ST. CLAIR SAINTS ESPORTS",
+    "FOLLOW @SCCSAINTS FOR HIGHLIGHTS",
+    "THANKS FOR WATCHING!"
+   ],
+   "tournament": {
+    "top": {
+     "size": 8,
+     "format": "single",
+     "reset": true,
+     "short": false,
+     "teams": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ],
+     "scores": {}
+    },
+    "groups": [
+     {
+      "name": "GROUP A",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP B",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP C",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP D",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     }
+    ]
+   },
+   "schedule": {
+    "count": 3,
+    "matches": [
+     {
+      "tournament": "NACE VARSITY",
+      "game": "ROCKET LEAGUE",
+      "type": "PLAYOFFS",
+      "team1": "George Mason University",
+      "team2": "St. Clair College",
+      "date": "2026-11-11",
+      "time": "19:30"
+     },
+     {
+      "tournament": "NACE VARSITY",
+      "game": "PREMIER LEAGUE OF LEGENDS",
+      "type": "SEMI-FINALS",
+      "team1": "Maryville University",
+      "team2": "St. Clair College",
+      "date": "2026-11-19",
+      "time": "20:00"
+     },
+     {
+      "tournament": "CANADIAN ESPORTS NATIONALS",
+      "game": "VALORANT",
+      "type": "",
+      "team1": "Universit\u00e9 de Montr\u00e9al",
+      "team2": "St. Clair College",
+      "date": "2026-11-25",
+      "time": "20:30"
+     }
+    ]
+   },
+   "standings": {
+    "title": "",
+    "subtitle": "LEADERBOARD",
+    "count": 8,
+    "stat": "record",
+    "stat2": "",
+    "teams": [
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     }
+    ]
+   },
+   "clock": {
+    "mode": "time",
+    "until": "",
+    "zone": ""
+   },
+   "timer": {
+    "secs": 0,
+    "from": 0,
+    "down": false,
+    "started": 0
+   },
+   "roster": "left",
+   "player_stats": "auto",
+   "caster": {
+    "count": 4,
+    "primary": "#c2bdff",
+    "secondary": "#001a1a",
+    "text": "#abcdef"
+   },
+   "outputs_on": [],
+   "pictures": {
+    "team": {
+     "left": "headshot",
+     "right": "headshot"
+    },
+    "player": {
+     "left": "headshot",
+     "right": "headshot"
+    }
+   }
+  },
+  "tables": {
+   "Global": [
+    [
+     "Field",
+     "Value"
+    ],
+    [
+     "Event",
+     "NACE VARSITY"
+    ],
+    [
+     "Stage",
+     "PLAYOFFS"
+    ],
+    [
+     "Best of",
+     "3"
+    ],
+    [
+     "Game",
+     "1"
+    ],
+    [
+     "Left name",
+     "St. Clair Saints"
+    ],
+    [
+     "Left short",
+     "SCC"
+    ],
+    [
+     "Left logo",
+     "assets/logos/St Clair Saints.png"
+    ],
+    [
+     "Left color",
+     "#0b6b3a"
+    ],
+    [
+     "Left score",
+     "0"
+    ],
+    [
+     "Left game",
+     ""
+    ],
+    [
+     "Left won 1",
+     ""
+    ],
+    [
+     "Left won 2",
+     ""
+    ],
+    [
+     "Left won 3",
+     ""
+    ],
+    [
+     "Left won 4",
+     ""
+    ],
+    [
+     "Right name",
+     "Opponent"
+    ],
+    [
+     "Right short",
+     "OPP"
+    ],
+    [
+     "Right logo",
+     ""
+    ],
+    [
+     "Right color",
+     "#b8191c"
+    ],
+    [
+     "Right score",
+     "0"
+    ],
+    [
+     "Right game",
+     ""
+    ],
+    [
+     "Right won 1",
+     ""
+    ],
+    [
+     "Right won 2",
+     ""
+    ],
+    [
+     "Right won 3",
+     ""
+    ],
+    [
+     "Right won 4",
+     ""
+    ],
+    [
+     "Game box 1",
+     "1"
+    ],
+    [
+     "Game box 2",
+     "1"
+    ],
+    [
+     "Game box 3",
+     ""
+    ],
+    [
+     "Game box 4",
+     ""
+    ],
+    [
+     "Tournament logo",
+     ""
+    ],
+    [
+     "Sponsor logo",
+     "assets/sponsors/Alienware logo.png"
+    ],
+    [
+     "Sponsors",
+     "8"
+    ],
+    [
+     "BG loop",
+     "loops/scc-bg-loop.webm"
+    ],
+    [
+     "BG loop colour",
+     "#2fa85a"
+    ],
+    [
+     "BG loop brightness",
+     "1.6"
+    ],
+    [
+     "BG loop speed",
+     "1.0"
+    ],
+    [
+     "Ticker",
+     "WELCOME TO ST. CLAIR SAINTS ESPORTS  |  FOLLOW @SCCSAINTS FOR HIGHLIGHTS  |  THANKS FOR WATCHING!  |  "
+    ],
+    [
+     "Clock mode",
+     "time"
+    ],
+    [
+     "Clock until",
+     ""
+    ],
+    [
+     "Clock zone",
+     ""
+    ],
+    [
+     "Clock label",
+     "LOCAL TIME"
+    ],
+    [
+     "Timer secs",
+     "0"
+    ],
+    [
+     "Timer started",
+     "0"
+    ],
+    [
+     "Timer down",
+     ""
+    ],
+    [
+     "Caster boxes",
+     "4"
+    ],
+    [
+     "Caster primary",
+     "#c2bdff"
+    ],
+    [
+     "Caster secondary",
+     "#001a1a"
+    ],
+    [
+     "Caster text",
+     "#abcdef"
+    ],
+    [
+     "Caster 1 shown",
+     "1"
+    ],
+    [
+     "Caster 1 move",
+     "-580 412 0.63"
+    ],
+    [
+     "Caster 2 shown",
+     "1"
+    ],
+    [
+     "Caster 2 move",
+     "-109 412 0.63"
+    ],
+    [
+     "Caster 3 shown",
+     "1"
+    ],
+    [
+     "Caster 3 move",
+     "361 412 0.63"
+    ],
+    [
+     "Caster 4 shown",
+     "1"
+    ],
+    [
+     "Caster 4 move",
+     "831 412 0.63"
+    ],
+    [
+     "Game title",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ]
+   ],
+   "Sponsors": [
+    [
+     "Logo",
+     "Seconds",
+     "Epoch",
+     "White"
+    ],
+    [
+     "assets/sponsors/Alienware logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/SCC Alumni logo.png",
+     "10.0",
+     "0",
+     ""
+    ],
+    [
+     "assets/sponsors/Tim Hortons logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/SRC logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Subway logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Intel logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Prefire logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Pulsar logo.png",
+     "10.0",
+     "0",
+     "1"
+    ]
+   ],
+   "Schedule": [
+    [
+     "Field",
+     "Value"
+    ],
+    [
+     "Count",
+     "3"
+    ],
+    [
+     "Match 1 tournament",
+     "NACE VARSITY"
+    ],
+    [
+     "Match 1 game",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ],
+    [
+     "Match 1 teams",
+     "George Mason University vs. St. Clair College"
+    ],
+    [
+     "Match 1 when",
+     "WED 11/11  |  7:30 PM"
+    ],
+    [
+     "Match 1 show",
+     "1"
+    ],
+    [
+     "Match 1 team 1",
+     "George Mason University"
+    ],
+    [
+     "Match 1 team 1 logo",
+     ""
+    ],
+    [
+     "Match 1 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 1 team 2 logo",
+     ""
+    ],
+    [
+     "Match 2 tournament",
+     "NACE VARSITY"
+    ],
+    [
+     "Match 2 game",
+     "PREMIER LEAGUE OF LEGENDS | SEMI-FINALS"
+    ],
+    [
+     "Match 2 teams",
+     "Maryville University vs. St. Clair College"
+    ],
+    [
+     "Match 2 when",
+     "THU 11/19  |  8:00 PM"
+    ],
+    [
+     "Match 2 show",
+     "1"
+    ],
+    [
+     "Match 2 team 1",
+     "Maryville University"
+    ],
+    [
+     "Match 2 team 1 logo",
+     ""
+    ],
+    [
+     "Match 2 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 2 team 2 logo",
+     ""
+    ],
+    [
+     "Match 3 tournament",
+     "CANADIAN ESPORTS NATIONALS"
+    ],
+    [
+     "Match 3 game",
+     "VALORANT"
+    ],
+    [
+     "Match 3 teams",
+     "Universit\u00e9 de Montr\u00e9al vs. St. Clair College"
+    ],
+    [
+     "Match 3 when",
+     "WED 11/25  |  8:30 PM"
+    ],
+    [
+     "Match 3 show",
+     "1"
+    ],
+    [
+     "Match 3 team 1",
+     "Universit\u00e9 de Montr\u00e9al"
+    ],
+    [
+     "Match 3 team 1 logo",
+     ""
+    ],
+    [
+     "Match 3 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 3 team 2 logo",
+     ""
+    ]
+   ]
+  }
+ },
+ {
+  "change": {
+   "clock": {
+    "mode": "time",
+    "until": "",
+    "zone": "",
+    "label": ""
+   }
+  },
+  "global": {
+   "event": "NACE VARSITY",
+   "stage": "PLAYOFFS",
+   "best_of": 3,
+   "game": "",
+   "left": {
+    "name": "St. Clair Saints",
+    "short": "SCC",
+    "logo": "assets/logos/St Clair Saints.png",
+    "color": "#0b6b3a",
+    "score": 0,
+    "game": ""
+   },
+   "right": {
+    "name": "Opponent",
+    "short": "OPP",
+    "logo": "",
+    "color": "#b8191c",
+    "score": 0,
+    "game": ""
+   },
+   "custom": [
+    [
+     "Game title",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ]
+   ],
+   "tournament_logo": "",
+   "sponsors": [
+    {
+     "logo": "assets/sponsors/Alienware logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/SCC Alumni logo.png",
+     "secs": 10.0,
+     "white": false
+    },
+    {
+     "logo": "assets/sponsors/Tim Hortons logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/SRC logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Subway logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Intel logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Prefire logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Pulsar logo.png",
+     "secs": 10.0,
+     "white": true
+    }
+   ],
+   "sponsor_epoch": 0,
+   "bgloop": {
+    "on": true,
+    "src": "",
+    "color": "#2fa85a",
+    "brightness": 1.6,
+    "speed": 1.0
+   },
+   "ticker": [
+    "WELCOME TO ST. CLAIR SAINTS ESPORTS",
+    "FOLLOW @SCCSAINTS FOR HIGHLIGHTS",
+    "THANKS FOR WATCHING!"
+   ],
+   "tournament": {
+    "top": {
+     "size": 8,
+     "format": "single",
+     "reset": true,
+     "short": false,
+     "teams": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ],
+     "scores": {}
+    },
+    "groups": [
+     {
+      "name": "GROUP A",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP B",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP C",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP D",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     }
+    ]
+   },
+   "schedule": {
+    "count": 3,
+    "matches": [
+     {
+      "tournament": "NACE VARSITY",
+      "game": "ROCKET LEAGUE",
+      "type": "PLAYOFFS",
+      "team1": "George Mason University",
+      "team2": "St. Clair College",
+      "date": "2026-11-11",
+      "time": "19:30"
+     },
+     {
+      "tournament": "NACE VARSITY",
+      "game": "PREMIER LEAGUE OF LEGENDS",
+      "type": "SEMI-FINALS",
+      "team1": "Maryville University",
+      "team2": "St. Clair College",
+      "date": "2026-11-19",
+      "time": "20:00"
+     },
+     {
+      "tournament": "CANADIAN ESPORTS NATIONALS",
+      "game": "VALORANT",
+      "type": "",
+      "team1": "Universit\u00e9 de Montr\u00e9al",
+      "team2": "St. Clair College",
+      "date": "2026-11-25",
+      "time": "20:30"
+     }
+    ]
+   },
+   "standings": {
+    "title": "",
+    "subtitle": "LEADERBOARD",
+    "count": 8,
+    "stat": "record",
+    "stat2": "",
+    "teams": [
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     }
+    ]
+   },
+   "clock": {
+    "mode": "time",
+    "until": "",
+    "zone": ""
+   },
+   "timer": {
+    "secs": 0,
+    "from": 0,
+    "down": false,
+    "started": 0
+   },
+   "roster": "left",
+   "player_stats": "auto",
+   "caster": {
+    "count": 1,
+    "primary": "#c2bdff",
+    "secondary": "#001a1a",
+    "text": "#001a1a"
+   },
+   "outputs_on": [],
+   "pictures": {
+    "team": {
+     "left": "headshot",
+     "right": "headshot"
+    },
+    "player": {
+     "left": "headshot",
+     "right": "headshot"
+    }
+   }
+  },
+  "tables": {
+   "Global": [
+    [
+     "Field",
+     "Value"
+    ],
+    [
+     "Event",
+     "NACE VARSITY"
+    ],
+    [
+     "Stage",
+     "PLAYOFFS"
+    ],
+    [
+     "Best of",
+     "3"
+    ],
+    [
+     "Game",
+     "1"
+    ],
+    [
+     "Left name",
+     "St. Clair Saints"
+    ],
+    [
+     "Left short",
+     "SCC"
+    ],
+    [
+     "Left logo",
+     "assets/logos/St Clair Saints.png"
+    ],
+    [
+     "Left color",
+     "#0b6b3a"
+    ],
+    [
+     "Left score",
+     "0"
+    ],
+    [
+     "Left game",
+     ""
+    ],
+    [
+     "Left won 1",
+     ""
+    ],
+    [
+     "Left won 2",
+     ""
+    ],
+    [
+     "Left won 3",
+     ""
+    ],
+    [
+     "Left won 4",
+     ""
+    ],
+    [
+     "Right name",
+     "Opponent"
+    ],
+    [
+     "Right short",
+     "OPP"
+    ],
+    [
+     "Right logo",
+     ""
+    ],
+    [
+     "Right color",
+     "#b8191c"
+    ],
+    [
+     "Right score",
+     "0"
+    ],
+    [
+     "Right game",
+     ""
+    ],
+    [
+     "Right won 1",
+     ""
+    ],
+    [
+     "Right won 2",
+     ""
+    ],
+    [
+     "Right won 3",
+     ""
+    ],
+    [
+     "Right won 4",
+     ""
+    ],
+    [
+     "Game box 1",
+     "1"
+    ],
+    [
+     "Game box 2",
+     "1"
+    ],
+    [
+     "Game box 3",
+     ""
+    ],
+    [
+     "Game box 4",
+     ""
+    ],
+    [
+     "Tournament logo",
+     ""
+    ],
+    [
+     "Sponsor logo",
+     "assets/sponsors/Alienware logo.png"
+    ],
+    [
+     "Sponsors",
+     "8"
+    ],
+    [
+     "BG loop",
+     "loops/scc-bg-loop.webm"
+    ],
+    [
+     "BG loop colour",
+     "#2fa85a"
+    ],
+    [
+     "BG loop brightness",
+     "1.6"
+    ],
+    [
+     "BG loop speed",
+     "1.0"
+    ],
+    [
+     "Ticker",
+     "WELCOME TO ST. CLAIR SAINTS ESPORTS  |  FOLLOW @SCCSAINTS FOR HIGHLIGHTS  |  THANKS FOR WATCHING!  |  "
+    ],
+    [
+     "Clock mode",
+     "time"
+    ],
+    [
+     "Clock until",
+     ""
+    ],
+    [
+     "Clock zone",
+     ""
+    ],
+    [
+     "Clock label",
+     "LOCAL TIME"
+    ],
+    [
+     "Timer secs",
+     "0"
+    ],
+    [
+     "Timer started",
+     "0"
+    ],
+    [
+     "Timer down",
+     ""
+    ],
+    [
+     "Caster boxes",
+     "1"
+    ],
+    [
+     "Caster primary",
+     "#c2bdff"
+    ],
+    [
+     "Caster secondary",
+     "#001a1a"
+    ],
+    [
+     "Caster text",
+     "#001a1a"
+    ],
+    [
+     "Caster 1 shown",
+     "1"
+    ],
+    [
+     "Caster 1 move",
+     "0 346 1"
+    ],
+    [
+     "Caster 2 shown",
+     ""
+    ],
+    [
+     "Caster 2 move",
+     ""
+    ],
+    [
+     "Caster 3 shown",
+     ""
+    ],
+    [
+     "Caster 3 move",
+     ""
+    ],
+    [
+     "Caster 4 shown",
+     ""
+    ],
+    [
+     "Caster 4 move",
+     ""
+    ],
+    [
+     "Game title",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ]
+   ],
+   "Sponsors": [
+    [
+     "Logo",
+     "Seconds",
+     "Epoch",
+     "White"
+    ],
+    [
+     "assets/sponsors/Alienware logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/SCC Alumni logo.png",
+     "10.0",
+     "0",
+     ""
+    ],
+    [
+     "assets/sponsors/Tim Hortons logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/SRC logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Subway logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Intel logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Prefire logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Pulsar logo.png",
+     "10.0",
+     "0",
+     "1"
+    ]
+   ],
+   "Schedule": [
+    [
+     "Field",
+     "Value"
+    ],
+    [
+     "Count",
+     "3"
+    ],
+    [
+     "Match 1 tournament",
+     "NACE VARSITY"
+    ],
+    [
+     "Match 1 game",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ],
+    [
+     "Match 1 teams",
+     "George Mason University vs. St. Clair College"
+    ],
+    [
+     "Match 1 when",
+     "WED 11/11  |  7:30 PM"
+    ],
+    [
+     "Match 1 show",
+     "1"
+    ],
+    [
+     "Match 1 team 1",
+     "George Mason University"
+    ],
+    [
+     "Match 1 team 1 logo",
+     ""
+    ],
+    [
+     "Match 1 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 1 team 2 logo",
+     ""
+    ],
+    [
+     "Match 2 tournament",
+     "NACE VARSITY"
+    ],
+    [
+     "Match 2 game",
+     "PREMIER LEAGUE OF LEGENDS | SEMI-FINALS"
+    ],
+    [
+     "Match 2 teams",
+     "Maryville University vs. St. Clair College"
+    ],
+    [
+     "Match 2 when",
+     "THU 11/19  |  8:00 PM"
+    ],
+    [
+     "Match 2 show",
+     "1"
+    ],
+    [
+     "Match 2 team 1",
+     "Maryville University"
+    ],
+    [
+     "Match 2 team 1 logo",
+     ""
+    ],
+    [
+     "Match 2 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 2 team 2 logo",
+     ""
+    ],
+    [
+     "Match 3 tournament",
+     "CANADIAN ESPORTS NATIONALS"
+    ],
+    [
+     "Match 3 game",
+     "VALORANT"
+    ],
+    [
+     "Match 3 teams",
+     "Universit\u00e9 de Montr\u00e9al vs. St. Clair College"
+    ],
+    [
+     "Match 3 when",
+     "WED 11/25  |  8:30 PM"
+    ],
+    [
+     "Match 3 show",
+     "1"
+    ],
+    [
+     "Match 3 team 1",
+     "Universit\u00e9 de Montr\u00e9al"
+    ],
+    [
+     "Match 3 team 1 logo",
+     ""
+    ],
+    [
+     "Match 3 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 3 team 2 logo",
+     ""
+    ]
+   ]
+  }
+ },
+ {
+  "change": {
+   "clock": {
+    "mode": "countdown",
+    "until": "19:00",
+    "zone": "EST",
+    "label": "BACK SOON"
+   }
+  },
+  "global": {
+   "event": "NACE VARSITY",
+   "stage": "PLAYOFFS",
+   "best_of": 3,
+   "game": "",
+   "left": {
+    "name": "St. Clair Saints",
+    "short": "SCC",
+    "logo": "assets/logos/St Clair Saints.png",
+    "color": "#0b6b3a",
+    "score": 0,
+    "game": ""
+   },
+   "right": {
+    "name": "Opponent",
+    "short": "OPP",
+    "logo": "",
+    "color": "#b8191c",
+    "score": 0,
+    "game": ""
+   },
+   "custom": [
+    [
+     "Game title",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ]
+   ],
+   "tournament_logo": "",
+   "sponsors": [
+    {
+     "logo": "assets/sponsors/Alienware logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/SCC Alumni logo.png",
+     "secs": 10.0,
+     "white": false
+    },
+    {
+     "logo": "assets/sponsors/Tim Hortons logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/SRC logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Subway logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Intel logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Prefire logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Pulsar logo.png",
+     "secs": 10.0,
+     "white": true
+    }
+   ],
+   "sponsor_epoch": 0,
+   "bgloop": {
+    "on": true,
+    "src": "",
+    "color": "#2fa85a",
+    "brightness": 1.6,
+    "speed": 1.0
+   },
+   "ticker": [
+    "WELCOME TO ST. CLAIR SAINTS ESPORTS",
+    "FOLLOW @SCCSAINTS FOR HIGHLIGHTS",
+    "THANKS FOR WATCHING!"
+   ],
+   "tournament": {
+    "top": {
+     "size": 8,
+     "format": "single",
+     "reset": true,
+     "short": false,
+     "teams": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ],
+     "scores": {}
+    },
+    "groups": [
+     {
+      "name": "GROUP A",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP B",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP C",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP D",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     }
+    ]
+   },
+   "schedule": {
+    "count": 3,
+    "matches": [
+     {
+      "tournament": "NACE VARSITY",
+      "game": "ROCKET LEAGUE",
+      "type": "PLAYOFFS",
+      "team1": "George Mason University",
+      "team2": "St. Clair College",
+      "date": "2026-11-11",
+      "time": "19:30"
+     },
+     {
+      "tournament": "NACE VARSITY",
+      "game": "PREMIER LEAGUE OF LEGENDS",
+      "type": "SEMI-FINALS",
+      "team1": "Maryville University",
+      "team2": "St. Clair College",
+      "date": "2026-11-19",
+      "time": "20:00"
+     },
+     {
+      "tournament": "CANADIAN ESPORTS NATIONALS",
+      "game": "VALORANT",
+      "type": "",
+      "team1": "Universit\u00e9 de Montr\u00e9al",
+      "team2": "St. Clair College",
+      "date": "2026-11-25",
+      "time": "20:30"
+     }
+    ]
+   },
+   "standings": {
+    "title": "",
+    "subtitle": "LEADERBOARD",
+    "count": 8,
+    "stat": "record",
+    "stat2": "",
+    "teams": [
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     }
+    ]
+   },
+   "clock": {
+    "mode": "time",
+    "until": "19:00",
+    "zone": "EST"
+   },
+   "timer": {
+    "secs": 0,
+    "from": 0,
+    "down": false,
+    "started": 0
+   },
+   "roster": "left",
+   "player_stats": "auto",
+   "caster": {
+    "count": 1,
+    "primary": "#c2bdff",
+    "secondary": "#001a1a",
+    "text": "#001a1a"
+   },
+   "outputs_on": [],
+   "pictures": {
+    "team": {
+     "left": "headshot",
+     "right": "headshot"
+    },
+    "player": {
+     "left": "headshot",
+     "right": "headshot"
+    }
+   }
+  },
+  "tables": {
+   "Global": [
+    [
+     "Field",
+     "Value"
+    ],
+    [
+     "Event",
+     "NACE VARSITY"
+    ],
+    [
+     "Stage",
+     "PLAYOFFS"
+    ],
+    [
+     "Best of",
+     "3"
+    ],
+    [
+     "Game",
+     "1"
+    ],
+    [
+     "Left name",
+     "St. Clair Saints"
+    ],
+    [
+     "Left short",
+     "SCC"
+    ],
+    [
+     "Left logo",
+     "assets/logos/St Clair Saints.png"
+    ],
+    [
+     "Left color",
+     "#0b6b3a"
+    ],
+    [
+     "Left score",
+     "0"
+    ],
+    [
+     "Left game",
+     ""
+    ],
+    [
+     "Left won 1",
+     ""
+    ],
+    [
+     "Left won 2",
+     ""
+    ],
+    [
+     "Left won 3",
+     ""
+    ],
+    [
+     "Left won 4",
+     ""
+    ],
+    [
+     "Right name",
+     "Opponent"
+    ],
+    [
+     "Right short",
+     "OPP"
+    ],
+    [
+     "Right logo",
+     ""
+    ],
+    [
+     "Right color",
+     "#b8191c"
+    ],
+    [
+     "Right score",
+     "0"
+    ],
+    [
+     "Right game",
+     ""
+    ],
+    [
+     "Right won 1",
+     ""
+    ],
+    [
+     "Right won 2",
+     ""
+    ],
+    [
+     "Right won 3",
+     ""
+    ],
+    [
+     "Right won 4",
+     ""
+    ],
+    [
+     "Game box 1",
+     "1"
+    ],
+    [
+     "Game box 2",
+     "1"
+    ],
+    [
+     "Game box 3",
+     ""
+    ],
+    [
+     "Game box 4",
+     ""
+    ],
+    [
+     "Tournament logo",
+     ""
+    ],
+    [
+     "Sponsor logo",
+     "assets/sponsors/Alienware logo.png"
+    ],
+    [
+     "Sponsors",
+     "8"
+    ],
+    [
+     "BG loop",
+     "loops/scc-bg-loop.webm"
+    ],
+    [
+     "BG loop colour",
+     "#2fa85a"
+    ],
+    [
+     "BG loop brightness",
+     "1.6"
+    ],
+    [
+     "BG loop speed",
+     "1.0"
+    ],
+    [
+     "Ticker",
+     "WELCOME TO ST. CLAIR SAINTS ESPORTS  |  FOLLOW @SCCSAINTS FOR HIGHLIGHTS  |  THANKS FOR WATCHING!  |  "
+    ],
+    [
+     "Clock mode",
+     "time"
+    ],
+    [
+     "Clock until",
+     "19:00"
+    ],
+    [
+     "Clock zone",
+     "EST"
+    ],
+    [
+     "Clock label",
+     "LOCAL TIME"
+    ],
+    [
+     "Timer secs",
+     "0"
+    ],
+    [
+     "Timer started",
+     "0"
+    ],
+    [
+     "Timer down",
+     ""
+    ],
+    [
+     "Caster boxes",
+     "1"
+    ],
+    [
+     "Caster primary",
+     "#c2bdff"
+    ],
+    [
+     "Caster secondary",
+     "#001a1a"
+    ],
+    [
+     "Caster text",
+     "#001a1a"
+    ],
+    [
+     "Caster 1 shown",
+     "1"
+    ],
+    [
+     "Caster 1 move",
+     "0 346 1"
+    ],
+    [
+     "Caster 2 shown",
+     ""
+    ],
+    [
+     "Caster 2 move",
+     ""
+    ],
+    [
+     "Caster 3 shown",
+     ""
+    ],
+    [
+     "Caster 3 move",
+     ""
+    ],
+    [
+     "Caster 4 shown",
+     ""
+    ],
+    [
+     "Caster 4 move",
+     ""
+    ],
+    [
+     "Game title",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ]
+   ],
+   "Sponsors": [
+    [
+     "Logo",
+     "Seconds",
+     "Epoch",
+     "White"
+    ],
+    [
+     "assets/sponsors/Alienware logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/SCC Alumni logo.png",
+     "10.0",
+     "0",
+     ""
+    ],
+    [
+     "assets/sponsors/Tim Hortons logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/SRC logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Subway logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Intel logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Prefire logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Pulsar logo.png",
+     "10.0",
+     "0",
+     "1"
+    ]
+   ],
+   "Schedule": [
+    [
+     "Field",
+     "Value"
+    ],
+    [
+     "Count",
+     "3"
+    ],
+    [
+     "Match 1 tournament",
+     "NACE VARSITY"
+    ],
+    [
+     "Match 1 game",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ],
+    [
+     "Match 1 teams",
+     "George Mason University vs. St. Clair College"
+    ],
+    [
+     "Match 1 when",
+     "WED 11/11  |  7:30 PM"
+    ],
+    [
+     "Match 1 show",
+     "1"
+    ],
+    [
+     "Match 1 team 1",
+     "George Mason University"
+    ],
+    [
+     "Match 1 team 1 logo",
+     ""
+    ],
+    [
+     "Match 1 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 1 team 2 logo",
+     ""
+    ],
+    [
+     "Match 2 tournament",
+     "NACE VARSITY"
+    ],
+    [
+     "Match 2 game",
+     "PREMIER LEAGUE OF LEGENDS | SEMI-FINALS"
+    ],
+    [
+     "Match 2 teams",
+     "Maryville University vs. St. Clair College"
+    ],
+    [
+     "Match 2 when",
+     "THU 11/19  |  8:00 PM"
+    ],
+    [
+     "Match 2 show",
+     "1"
+    ],
+    [
+     "Match 2 team 1",
+     "Maryville University"
+    ],
+    [
+     "Match 2 team 1 logo",
+     ""
+    ],
+    [
+     "Match 2 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 2 team 2 logo",
+     ""
+    ],
+    [
+     "Match 3 tournament",
+     "CANADIAN ESPORTS NATIONALS"
+    ],
+    [
+     "Match 3 game",
+     "VALORANT"
+    ],
+    [
+     "Match 3 teams",
+     "Universit\u00e9 de Montr\u00e9al vs. St. Clair College"
+    ],
+    [
+     "Match 3 when",
+     "WED 11/25  |  8:30 PM"
+    ],
+    [
+     "Match 3 show",
+     "1"
+    ],
+    [
+     "Match 3 team 1",
+     "Universit\u00e9 de Montr\u00e9al"
+    ],
+    [
+     "Match 3 team 1 logo",
+     ""
+    ],
+    [
+     "Match 3 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 3 team 2 logo",
+     ""
+    ]
+   ]
+  }
+ },
+ {
+  "change": {
+   "timer": {
+    "secs": 90,
+    "from": 90,
+    "down": true,
+    "started": 0
+   }
+  },
+  "global": {
+   "event": "NACE VARSITY",
+   "stage": "PLAYOFFS",
+   "best_of": 3,
+   "game": "",
+   "left": {
+    "name": "St. Clair Saints",
+    "short": "SCC",
+    "logo": "assets/logos/St Clair Saints.png",
+    "color": "#0b6b3a",
+    "score": 0,
+    "game": ""
+   },
+   "right": {
+    "name": "Opponent",
+    "short": "OPP",
+    "logo": "",
+    "color": "#b8191c",
+    "score": 0,
+    "game": ""
+   },
+   "custom": [
+    [
+     "Game title",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ]
+   ],
+   "tournament_logo": "",
+   "sponsors": [
+    {
+     "logo": "assets/sponsors/Alienware logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/SCC Alumni logo.png",
+     "secs": 10.0,
+     "white": false
+    },
+    {
+     "logo": "assets/sponsors/Tim Hortons logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/SRC logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Subway logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Intel logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Prefire logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Pulsar logo.png",
+     "secs": 10.0,
+     "white": true
+    }
+   ],
+   "sponsor_epoch": 0,
+   "bgloop": {
+    "on": true,
+    "src": "",
+    "color": "#2fa85a",
+    "brightness": 1.6,
+    "speed": 1.0
+   },
+   "ticker": [
+    "WELCOME TO ST. CLAIR SAINTS ESPORTS",
+    "FOLLOW @SCCSAINTS FOR HIGHLIGHTS",
+    "THANKS FOR WATCHING!"
+   ],
+   "tournament": {
+    "top": {
+     "size": 8,
+     "format": "single",
+     "reset": true,
+     "short": false,
+     "teams": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ],
+     "scores": {}
+    },
+    "groups": [
+     {
+      "name": "GROUP A",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP B",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP C",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP D",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     }
+    ]
+   },
+   "schedule": {
+    "count": 3,
+    "matches": [
+     {
+      "tournament": "NACE VARSITY",
+      "game": "ROCKET LEAGUE",
+      "type": "PLAYOFFS",
+      "team1": "George Mason University",
+      "team2": "St. Clair College",
+      "date": "2026-11-11",
+      "time": "19:30"
+     },
+     {
+      "tournament": "NACE VARSITY",
+      "game": "PREMIER LEAGUE OF LEGENDS",
+      "type": "SEMI-FINALS",
+      "team1": "Maryville University",
+      "team2": "St. Clair College",
+      "date": "2026-11-19",
+      "time": "20:00"
+     },
+     {
+      "tournament": "CANADIAN ESPORTS NATIONALS",
+      "game": "VALORANT",
+      "type": "",
+      "team1": "Universit\u00e9 de Montr\u00e9al",
+      "team2": "St. Clair College",
+      "date": "2026-11-25",
+      "time": "20:30"
+     }
+    ]
+   },
+   "standings": {
+    "title": "",
+    "subtitle": "LEADERBOARD",
+    "count": 8,
+    "stat": "record",
+    "stat2": "",
+    "teams": [
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     }
+    ]
+   },
+   "clock": {
+    "mode": "time",
+    "until": "",
+    "zone": ""
+   },
+   "timer": {
+    "secs": 90.0,
+    "from": 90.0,
+    "down": true,
+    "started": 0
+   },
+   "roster": "left",
+   "player_stats": "auto",
+   "caster": {
+    "count": 1,
+    "primary": "#c2bdff",
+    "secondary": "#001a1a",
+    "text": "#001a1a"
+   },
+   "outputs_on": [],
+   "pictures": {
+    "team": {
+     "left": "headshot",
+     "right": "headshot"
+    },
+    "player": {
+     "left": "headshot",
+     "right": "headshot"
+    }
+   }
+  },
+  "tables": {
+   "Global": [
+    [
+     "Field",
+     "Value"
+    ],
+    [
+     "Event",
+     "NACE VARSITY"
+    ],
+    [
+     "Stage",
+     "PLAYOFFS"
+    ],
+    [
+     "Best of",
+     "3"
+    ],
+    [
+     "Game",
+     "1"
+    ],
+    [
+     "Left name",
+     "St. Clair Saints"
+    ],
+    [
+     "Left short",
+     "SCC"
+    ],
+    [
+     "Left logo",
+     "assets/logos/St Clair Saints.png"
+    ],
+    [
+     "Left color",
+     "#0b6b3a"
+    ],
+    [
+     "Left score",
+     "0"
+    ],
+    [
+     "Left game",
+     ""
+    ],
+    [
+     "Left won 1",
+     ""
+    ],
+    [
+     "Left won 2",
+     ""
+    ],
+    [
+     "Left won 3",
+     ""
+    ],
+    [
+     "Left won 4",
+     ""
+    ],
+    [
+     "Right name",
+     "Opponent"
+    ],
+    [
+     "Right short",
+     "OPP"
+    ],
+    [
+     "Right logo",
+     ""
+    ],
+    [
+     "Right color",
+     "#b8191c"
+    ],
+    [
+     "Right score",
+     "0"
+    ],
+    [
+     "Right game",
+     ""
+    ],
+    [
+     "Right won 1",
+     ""
+    ],
+    [
+     "Right won 2",
+     ""
+    ],
+    [
+     "Right won 3",
+     ""
+    ],
+    [
+     "Right won 4",
+     ""
+    ],
+    [
+     "Game box 1",
+     "1"
+    ],
+    [
+     "Game box 2",
+     "1"
+    ],
+    [
+     "Game box 3",
+     ""
+    ],
+    [
+     "Game box 4",
+     ""
+    ],
+    [
+     "Tournament logo",
+     ""
+    ],
+    [
+     "Sponsor logo",
+     "assets/sponsors/Alienware logo.png"
+    ],
+    [
+     "Sponsors",
+     "8"
+    ],
+    [
+     "BG loop",
+     "loops/scc-bg-loop.webm"
+    ],
+    [
+     "BG loop colour",
+     "#2fa85a"
+    ],
+    [
+     "BG loop brightness",
+     "1.6"
+    ],
+    [
+     "BG loop speed",
+     "1.0"
+    ],
+    [
+     "Ticker",
+     "WELCOME TO ST. CLAIR SAINTS ESPORTS  |  FOLLOW @SCCSAINTS FOR HIGHLIGHTS  |  THANKS FOR WATCHING!  |  "
+    ],
+    [
+     "Clock mode",
+     "time"
+    ],
+    [
+     "Clock until",
+     ""
+    ],
+    [
+     "Clock zone",
+     ""
+    ],
+    [
+     "Clock label",
+     "LOCAL TIME"
+    ],
+    [
+     "Timer secs",
+     "90.0"
+    ],
+    [
+     "Timer started",
+     "0"
+    ],
+    [
+     "Timer down",
+     "1"
+    ],
+    [
+     "Caster boxes",
+     "1"
+    ],
+    [
+     "Caster primary",
+     "#c2bdff"
+    ],
+    [
+     "Caster secondary",
+     "#001a1a"
+    ],
+    [
+     "Caster text",
+     "#001a1a"
+    ],
+    [
+     "Caster 1 shown",
+     "1"
+    ],
+    [
+     "Caster 1 move",
+     "0 346 1"
+    ],
+    [
+     "Caster 2 shown",
+     ""
+    ],
+    [
+     "Caster 2 move",
+     ""
+    ],
+    [
+     "Caster 3 shown",
+     ""
+    ],
+    [
+     "Caster 3 move",
+     ""
+    ],
+    [
+     "Caster 4 shown",
+     ""
+    ],
+    [
+     "Caster 4 move",
+     ""
+    ],
+    [
+     "Game title",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ]
+   ],
+   "Sponsors": [
+    [
+     "Logo",
+     "Seconds",
+     "Epoch",
+     "White"
+    ],
+    [
+     "assets/sponsors/Alienware logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/SCC Alumni logo.png",
+     "10.0",
+     "0",
+     ""
+    ],
+    [
+     "assets/sponsors/Tim Hortons logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/SRC logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Subway logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Intel logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Prefire logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Pulsar logo.png",
+     "10.0",
+     "0",
+     "1"
+    ]
+   ],
+   "Schedule": [
+    [
+     "Field",
+     "Value"
+    ],
+    [
+     "Count",
+     "3"
+    ],
+    [
+     "Match 1 tournament",
+     "NACE VARSITY"
+    ],
+    [
+     "Match 1 game",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ],
+    [
+     "Match 1 teams",
+     "George Mason University vs. St. Clair College"
+    ],
+    [
+     "Match 1 when",
+     "WED 11/11  |  7:30 PM"
+    ],
+    [
+     "Match 1 show",
+     "1"
+    ],
+    [
+     "Match 1 team 1",
+     "George Mason University"
+    ],
+    [
+     "Match 1 team 1 logo",
+     ""
+    ],
+    [
+     "Match 1 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 1 team 2 logo",
+     ""
+    ],
+    [
+     "Match 2 tournament",
+     "NACE VARSITY"
+    ],
+    [
+     "Match 2 game",
+     "PREMIER LEAGUE OF LEGENDS | SEMI-FINALS"
+    ],
+    [
+     "Match 2 teams",
+     "Maryville University vs. St. Clair College"
+    ],
+    [
+     "Match 2 when",
+     "THU 11/19  |  8:00 PM"
+    ],
+    [
+     "Match 2 show",
+     "1"
+    ],
+    [
+     "Match 2 team 1",
+     "Maryville University"
+    ],
+    [
+     "Match 2 team 1 logo",
+     ""
+    ],
+    [
+     "Match 2 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 2 team 2 logo",
+     ""
+    ],
+    [
+     "Match 3 tournament",
+     "CANADIAN ESPORTS NATIONALS"
+    ],
+    [
+     "Match 3 game",
+     "VALORANT"
+    ],
+    [
+     "Match 3 teams",
+     "Universit\u00e9 de Montr\u00e9al vs. St. Clair College"
+    ],
+    [
+     "Match 3 when",
+     "WED 11/25  |  8:30 PM"
+    ],
+    [
+     "Match 3 show",
+     "1"
+    ],
+    [
+     "Match 3 team 1",
+     "Universit\u00e9 de Montr\u00e9al"
+    ],
+    [
+     "Match 3 team 1 logo",
+     ""
+    ],
+    [
+     "Match 3 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 3 team 2 logo",
+     ""
+    ]
+   ]
+  }
+ },
+ {
+  "change": {
+   "bgloop": {
+    "on": false
+   }
+  },
+  "global": {
+   "event": "NACE VARSITY",
+   "stage": "PLAYOFFS",
+   "best_of": 3,
+   "game": "",
+   "left": {
+    "name": "St. Clair Saints",
+    "short": "SCC",
+    "logo": "assets/logos/St Clair Saints.png",
+    "color": "#0b6b3a",
+    "score": 0,
+    "game": ""
+   },
+   "right": {
+    "name": "Opponent",
+    "short": "OPP",
+    "logo": "",
+    "color": "#b8191c",
+    "score": 0,
+    "game": ""
+   },
+   "custom": [
+    [
+     "Game title",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ]
+   ],
+   "tournament_logo": "",
+   "sponsors": [
+    {
+     "logo": "assets/sponsors/Alienware logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/SCC Alumni logo.png",
+     "secs": 10.0,
+     "white": false
+    },
+    {
+     "logo": "assets/sponsors/Tim Hortons logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/SRC logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Subway logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Intel logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Prefire logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Pulsar logo.png",
+     "secs": 10.0,
+     "white": true
+    }
+   ],
+   "sponsor_epoch": 0,
+   "bgloop": {
+    "on": false,
+    "src": "",
+    "color": "#2fa85a",
+    "brightness": 1.6,
+    "speed": 1.0
+   },
+   "ticker": [
+    "WELCOME TO ST. CLAIR SAINTS ESPORTS",
+    "FOLLOW @SCCSAINTS FOR HIGHLIGHTS",
+    "THANKS FOR WATCHING!"
+   ],
+   "tournament": {
+    "top": {
+     "size": 8,
+     "format": "single",
+     "reset": true,
+     "short": false,
+     "teams": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ],
+     "scores": {}
+    },
+    "groups": [
+     {
+      "name": "GROUP A",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP B",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP C",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP D",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     }
+    ]
+   },
+   "schedule": {
+    "count": 3,
+    "matches": [
+     {
+      "tournament": "NACE VARSITY",
+      "game": "ROCKET LEAGUE",
+      "type": "PLAYOFFS",
+      "team1": "George Mason University",
+      "team2": "St. Clair College",
+      "date": "2026-11-11",
+      "time": "19:30"
+     },
+     {
+      "tournament": "NACE VARSITY",
+      "game": "PREMIER LEAGUE OF LEGENDS",
+      "type": "SEMI-FINALS",
+      "team1": "Maryville University",
+      "team2": "St. Clair College",
+      "date": "2026-11-19",
+      "time": "20:00"
+     },
+     {
+      "tournament": "CANADIAN ESPORTS NATIONALS",
+      "game": "VALORANT",
+      "type": "",
+      "team1": "Universit\u00e9 de Montr\u00e9al",
+      "team2": "St. Clair College",
+      "date": "2026-11-25",
+      "time": "20:30"
+     }
+    ]
+   },
+   "standings": {
+    "title": "",
+    "subtitle": "LEADERBOARD",
+    "count": 8,
+    "stat": "record",
+    "stat2": "",
+    "teams": [
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     }
+    ]
+   },
+   "clock": {
+    "mode": "time",
+    "until": "",
+    "zone": ""
+   },
+   "timer": {
+    "secs": 0,
+    "from": 0,
+    "down": false,
+    "started": 0
+   },
+   "roster": "left",
+   "player_stats": "auto",
+   "caster": {
+    "count": 1,
+    "primary": "#c2bdff",
+    "secondary": "#001a1a",
+    "text": "#001a1a"
+   },
+   "outputs_on": [],
+   "pictures": {
+    "team": {
+     "left": "headshot",
+     "right": "headshot"
+    },
+    "player": {
+     "left": "headshot",
+     "right": "headshot"
+    }
+   }
+  },
+  "tables": {
+   "Global": [
+    [
+     "Field",
+     "Value"
+    ],
+    [
+     "Event",
+     "NACE VARSITY"
+    ],
+    [
+     "Stage",
+     "PLAYOFFS"
+    ],
+    [
+     "Best of",
+     "3"
+    ],
+    [
+     "Game",
+     "1"
+    ],
+    [
+     "Left name",
+     "St. Clair Saints"
+    ],
+    [
+     "Left short",
+     "SCC"
+    ],
+    [
+     "Left logo",
+     "assets/logos/St Clair Saints.png"
+    ],
+    [
+     "Left color",
+     "#0b6b3a"
+    ],
+    [
+     "Left score",
+     "0"
+    ],
+    [
+     "Left game",
+     ""
+    ],
+    [
+     "Left won 1",
+     ""
+    ],
+    [
+     "Left won 2",
+     ""
+    ],
+    [
+     "Left won 3",
+     ""
+    ],
+    [
+     "Left won 4",
+     ""
+    ],
+    [
+     "Right name",
+     "Opponent"
+    ],
+    [
+     "Right short",
+     "OPP"
+    ],
+    [
+     "Right logo",
+     ""
+    ],
+    [
+     "Right color",
+     "#b8191c"
+    ],
+    [
+     "Right score",
+     "0"
+    ],
+    [
+     "Right game",
+     ""
+    ],
+    [
+     "Right won 1",
+     ""
+    ],
+    [
+     "Right won 2",
+     ""
+    ],
+    [
+     "Right won 3",
+     ""
+    ],
+    [
+     "Right won 4",
+     ""
+    ],
+    [
+     "Game box 1",
+     "1"
+    ],
+    [
+     "Game box 2",
+     "1"
+    ],
+    [
+     "Game box 3",
+     ""
+    ],
+    [
+     "Game box 4",
+     ""
+    ],
+    [
+     "Tournament logo",
+     ""
+    ],
+    [
+     "Sponsor logo",
+     "assets/sponsors/Alienware logo.png"
+    ],
+    [
+     "Sponsors",
+     "8"
+    ],
+    [
+     "BG loop",
+     ""
+    ],
+    [
+     "BG loop colour",
+     "#2fa85a"
+    ],
+    [
+     "BG loop brightness",
+     "1.6"
+    ],
+    [
+     "BG loop speed",
+     "1.0"
+    ],
+    [
+     "Ticker",
+     "WELCOME TO ST. CLAIR SAINTS ESPORTS  |  FOLLOW @SCCSAINTS FOR HIGHLIGHTS  |  THANKS FOR WATCHING!  |  "
+    ],
+    [
+     "Clock mode",
+     "time"
+    ],
+    [
+     "Clock until",
+     ""
+    ],
+    [
+     "Clock zone",
+     ""
+    ],
+    [
+     "Clock label",
+     "LOCAL TIME"
+    ],
+    [
+     "Timer secs",
+     "0"
+    ],
+    [
+     "Timer started",
+     "0"
+    ],
+    [
+     "Timer down",
+     ""
+    ],
+    [
+     "Caster boxes",
+     "1"
+    ],
+    [
+     "Caster primary",
+     "#c2bdff"
+    ],
+    [
+     "Caster secondary",
+     "#001a1a"
+    ],
+    [
+     "Caster text",
+     "#001a1a"
+    ],
+    [
+     "Caster 1 shown",
+     "1"
+    ],
+    [
+     "Caster 1 move",
+     "0 346 1"
+    ],
+    [
+     "Caster 2 shown",
+     ""
+    ],
+    [
+     "Caster 2 move",
+     ""
+    ],
+    [
+     "Caster 3 shown",
+     ""
+    ],
+    [
+     "Caster 3 move",
+     ""
+    ],
+    [
+     "Caster 4 shown",
+     ""
+    ],
+    [
+     "Caster 4 move",
+     ""
+    ],
+    [
+     "Game title",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ]
+   ],
+   "Sponsors": [
+    [
+     "Logo",
+     "Seconds",
+     "Epoch",
+     "White"
+    ],
+    [
+     "assets/sponsors/Alienware logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/SCC Alumni logo.png",
+     "10.0",
+     "0",
+     ""
+    ],
+    [
+     "assets/sponsors/Tim Hortons logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/SRC logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Subway logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Intel logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Prefire logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Pulsar logo.png",
+     "10.0",
+     "0",
+     "1"
+    ]
+   ],
+   "Schedule": [
+    [
+     "Field",
+     "Value"
+    ],
+    [
+     "Count",
+     "3"
+    ],
+    [
+     "Match 1 tournament",
+     "NACE VARSITY"
+    ],
+    [
+     "Match 1 game",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ],
+    [
+     "Match 1 teams",
+     "George Mason University vs. St. Clair College"
+    ],
+    [
+     "Match 1 when",
+     "WED 11/11  |  7:30 PM"
+    ],
+    [
+     "Match 1 show",
+     "1"
+    ],
+    [
+     "Match 1 team 1",
+     "George Mason University"
+    ],
+    [
+     "Match 1 team 1 logo",
+     ""
+    ],
+    [
+     "Match 1 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 1 team 2 logo",
+     ""
+    ],
+    [
+     "Match 2 tournament",
+     "NACE VARSITY"
+    ],
+    [
+     "Match 2 game",
+     "PREMIER LEAGUE OF LEGENDS | SEMI-FINALS"
+    ],
+    [
+     "Match 2 teams",
+     "Maryville University vs. St. Clair College"
+    ],
+    [
+     "Match 2 when",
+     "THU 11/19  |  8:00 PM"
+    ],
+    [
+     "Match 2 show",
+     "1"
+    ],
+    [
+     "Match 2 team 1",
+     "Maryville University"
+    ],
+    [
+     "Match 2 team 1 logo",
+     ""
+    ],
+    [
+     "Match 2 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 2 team 2 logo",
+     ""
+    ],
+    [
+     "Match 3 tournament",
+     "CANADIAN ESPORTS NATIONALS"
+    ],
+    [
+     "Match 3 game",
+     "VALORANT"
+    ],
+    [
+     "Match 3 teams",
+     "Universit\u00e9 de Montr\u00e9al vs. St. Clair College"
+    ],
+    [
+     "Match 3 when",
+     "WED 11/25  |  8:30 PM"
+    ],
+    [
+     "Match 3 show",
+     "1"
+    ],
+    [
+     "Match 3 team 1",
+     "Universit\u00e9 de Montr\u00e9al"
+    ],
+    [
+     "Match 3 team 1 logo",
+     ""
+    ],
+    [
+     "Match 3 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 3 team 2 logo",
+     ""
+    ]
+   ]
+  }
+ },
+ {
+  "change": {
+   "ticker": [
+    "ONE",
+    "TWO"
+   ]
+  },
+  "global": {
+   "event": "NACE VARSITY",
+   "stage": "PLAYOFFS",
+   "best_of": 3,
+   "game": "",
+   "left": {
+    "name": "St. Clair Saints",
+    "short": "SCC",
+    "logo": "assets/logos/St Clair Saints.png",
+    "color": "#0b6b3a",
+    "score": 0,
+    "game": ""
+   },
+   "right": {
+    "name": "Opponent",
+    "short": "OPP",
+    "logo": "",
+    "color": "#b8191c",
+    "score": 0,
+    "game": ""
+   },
+   "custom": [
+    [
+     "Game title",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ]
+   ],
+   "tournament_logo": "",
+   "sponsors": [
+    {
+     "logo": "assets/sponsors/Alienware logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/SCC Alumni logo.png",
+     "secs": 10.0,
+     "white": false
+    },
+    {
+     "logo": "assets/sponsors/Tim Hortons logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/SRC logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Subway logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Intel logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Prefire logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Pulsar logo.png",
+     "secs": 10.0,
+     "white": true
+    }
+   ],
+   "sponsor_epoch": 0,
+   "bgloop": {
+    "on": true,
+    "src": "",
+    "color": "#2fa85a",
+    "brightness": 1.6,
+    "speed": 1.0
+   },
+   "ticker": [
+    "ONE",
+    "TWO"
+   ],
+   "tournament": {
+    "top": {
+     "size": 8,
+     "format": "single",
+     "reset": true,
+     "short": false,
+     "teams": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ],
+     "scores": {}
+    },
+    "groups": [
+     {
+      "name": "GROUP A",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP B",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP C",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP D",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     }
+    ]
+   },
+   "schedule": {
+    "count": 3,
+    "matches": [
+     {
+      "tournament": "NACE VARSITY",
+      "game": "ROCKET LEAGUE",
+      "type": "PLAYOFFS",
+      "team1": "George Mason University",
+      "team2": "St. Clair College",
+      "date": "2026-11-11",
+      "time": "19:30"
+     },
+     {
+      "tournament": "NACE VARSITY",
+      "game": "PREMIER LEAGUE OF LEGENDS",
+      "type": "SEMI-FINALS",
+      "team1": "Maryville University",
+      "team2": "St. Clair College",
+      "date": "2026-11-19",
+      "time": "20:00"
+     },
+     {
+      "tournament": "CANADIAN ESPORTS NATIONALS",
+      "game": "VALORANT",
+      "type": "",
+      "team1": "Universit\u00e9 de Montr\u00e9al",
+      "team2": "St. Clair College",
+      "date": "2026-11-25",
+      "time": "20:30"
+     }
+    ]
+   },
+   "standings": {
+    "title": "",
+    "subtitle": "LEADERBOARD",
+    "count": 8,
+    "stat": "record",
+    "stat2": "",
+    "teams": [
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     }
+    ]
+   },
+   "clock": {
+    "mode": "time",
+    "until": "",
+    "zone": ""
+   },
+   "timer": {
+    "secs": 0,
+    "from": 0,
+    "down": false,
+    "started": 0
+   },
+   "roster": "left",
+   "player_stats": "auto",
+   "caster": {
+    "count": 1,
+    "primary": "#c2bdff",
+    "secondary": "#001a1a",
+    "text": "#001a1a"
+   },
+   "outputs_on": [],
+   "pictures": {
+    "team": {
+     "left": "headshot",
+     "right": "headshot"
+    },
+    "player": {
+     "left": "headshot",
+     "right": "headshot"
+    }
+   }
+  },
+  "tables": {
+   "Global": [
+    [
+     "Field",
+     "Value"
+    ],
+    [
+     "Event",
+     "NACE VARSITY"
+    ],
+    [
+     "Stage",
+     "PLAYOFFS"
+    ],
+    [
+     "Best of",
+     "3"
+    ],
+    [
+     "Game",
+     "1"
+    ],
+    [
+     "Left name",
+     "St. Clair Saints"
+    ],
+    [
+     "Left short",
+     "SCC"
+    ],
+    [
+     "Left logo",
+     "assets/logos/St Clair Saints.png"
+    ],
+    [
+     "Left color",
+     "#0b6b3a"
+    ],
+    [
+     "Left score",
+     "0"
+    ],
+    [
+     "Left game",
+     ""
+    ],
+    [
+     "Left won 1",
+     ""
+    ],
+    [
+     "Left won 2",
+     ""
+    ],
+    [
+     "Left won 3",
+     ""
+    ],
+    [
+     "Left won 4",
+     ""
+    ],
+    [
+     "Right name",
+     "Opponent"
+    ],
+    [
+     "Right short",
+     "OPP"
+    ],
+    [
+     "Right logo",
+     ""
+    ],
+    [
+     "Right color",
+     "#b8191c"
+    ],
+    [
+     "Right score",
+     "0"
+    ],
+    [
+     "Right game",
+     ""
+    ],
+    [
+     "Right won 1",
+     ""
+    ],
+    [
+     "Right won 2",
+     ""
+    ],
+    [
+     "Right won 3",
+     ""
+    ],
+    [
+     "Right won 4",
+     ""
+    ],
+    [
+     "Game box 1",
+     "1"
+    ],
+    [
+     "Game box 2",
+     "1"
+    ],
+    [
+     "Game box 3",
+     ""
+    ],
+    [
+     "Game box 4",
+     ""
+    ],
+    [
+     "Tournament logo",
+     ""
+    ],
+    [
+     "Sponsor logo",
+     "assets/sponsors/Alienware logo.png"
+    ],
+    [
+     "Sponsors",
+     "8"
+    ],
+    [
+     "BG loop",
+     "loops/scc-bg-loop.webm"
+    ],
+    [
+     "BG loop colour",
+     "#2fa85a"
+    ],
+    [
+     "BG loop brightness",
+     "1.6"
+    ],
+    [
+     "BG loop speed",
+     "1.0"
+    ],
+    [
+     "Ticker",
+     "ONE  |  TWO  |  "
+    ],
+    [
+     "Clock mode",
+     "time"
+    ],
+    [
+     "Clock until",
+     ""
+    ],
+    [
+     "Clock zone",
+     ""
+    ],
+    [
+     "Clock label",
+     "LOCAL TIME"
+    ],
+    [
+     "Timer secs",
+     "0"
+    ],
+    [
+     "Timer started",
+     "0"
+    ],
+    [
+     "Timer down",
+     ""
+    ],
+    [
+     "Caster boxes",
+     "1"
+    ],
+    [
+     "Caster primary",
+     "#c2bdff"
+    ],
+    [
+     "Caster secondary",
+     "#001a1a"
+    ],
+    [
+     "Caster text",
+     "#001a1a"
+    ],
+    [
+     "Caster 1 shown",
+     "1"
+    ],
+    [
+     "Caster 1 move",
+     "0 346 1"
+    ],
+    [
+     "Caster 2 shown",
+     ""
+    ],
+    [
+     "Caster 2 move",
+     ""
+    ],
+    [
+     "Caster 3 shown",
+     ""
+    ],
+    [
+     "Caster 3 move",
+     ""
+    ],
+    [
+     "Caster 4 shown",
+     ""
+    ],
+    [
+     "Caster 4 move",
+     ""
+    ],
+    [
+     "Game title",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ]
+   ],
+   "Sponsors": [
+    [
+     "Logo",
+     "Seconds",
+     "Epoch",
+     "White"
+    ],
+    [
+     "assets/sponsors/Alienware logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/SCC Alumni logo.png",
+     "10.0",
+     "0",
+     ""
+    ],
+    [
+     "assets/sponsors/Tim Hortons logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/SRC logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Subway logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Intel logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Prefire logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Pulsar logo.png",
+     "10.0",
+     "0",
+     "1"
+    ]
+   ],
+   "Schedule": [
+    [
+     "Field",
+     "Value"
+    ],
+    [
+     "Count",
+     "3"
+    ],
+    [
+     "Match 1 tournament",
+     "NACE VARSITY"
+    ],
+    [
+     "Match 1 game",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ],
+    [
+     "Match 1 teams",
+     "George Mason University vs. St. Clair College"
+    ],
+    [
+     "Match 1 when",
+     "WED 11/11  |  7:30 PM"
+    ],
+    [
+     "Match 1 show",
+     "1"
+    ],
+    [
+     "Match 1 team 1",
+     "George Mason University"
+    ],
+    [
+     "Match 1 team 1 logo",
+     ""
+    ],
+    [
+     "Match 1 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 1 team 2 logo",
+     ""
+    ],
+    [
+     "Match 2 tournament",
+     "NACE VARSITY"
+    ],
+    [
+     "Match 2 game",
+     "PREMIER LEAGUE OF LEGENDS | SEMI-FINALS"
+    ],
+    [
+     "Match 2 teams",
+     "Maryville University vs. St. Clair College"
+    ],
+    [
+     "Match 2 when",
+     "THU 11/19  |  8:00 PM"
+    ],
+    [
+     "Match 2 show",
+     "1"
+    ],
+    [
+     "Match 2 team 1",
+     "Maryville University"
+    ],
+    [
+     "Match 2 team 1 logo",
+     ""
+    ],
+    [
+     "Match 2 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 2 team 2 logo",
+     ""
+    ],
+    [
+     "Match 3 tournament",
+     "CANADIAN ESPORTS NATIONALS"
+    ],
+    [
+     "Match 3 game",
+     "VALORANT"
+    ],
+    [
+     "Match 3 teams",
+     "Universit\u00e9 de Montr\u00e9al vs. St. Clair College"
+    ],
+    [
+     "Match 3 when",
+     "WED 11/25  |  8:30 PM"
+    ],
+    [
+     "Match 3 show",
+     "1"
+    ],
+    [
+     "Match 3 team 1",
+     "Universit\u00e9 de Montr\u00e9al"
+    ],
+    [
+     "Match 3 team 1 logo",
+     ""
+    ],
+    [
+     "Match 3 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 3 team 2 logo",
+     ""
+    ]
+   ]
+  }
+ },
+ {
+  "change": {
+   "custom": [
+    [
+     "Host",
+     "MJ"
+    ],
+    [
+     "Mode",
+     "BO3"
+    ]
+   ]
+  },
+  "global": {
+   "event": "NACE VARSITY",
+   "stage": "PLAYOFFS",
+   "best_of": 3,
+   "game": "",
+   "left": {
+    "name": "St. Clair Saints",
+    "short": "SCC",
+    "logo": "assets/logos/St Clair Saints.png",
+    "color": "#0b6b3a",
+    "score": 0,
+    "game": ""
+   },
+   "right": {
+    "name": "Opponent",
+    "short": "OPP",
+    "logo": "",
+    "color": "#b8191c",
+    "score": 0,
+    "game": ""
+   },
+   "custom": [
+    [
+     "Host",
+     "MJ"
+    ],
+    [
+     "Mode",
+     "BO3"
+    ]
+   ],
+   "tournament_logo": "",
+   "sponsors": [
+    {
+     "logo": "assets/sponsors/Alienware logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/SCC Alumni logo.png",
+     "secs": 10.0,
+     "white": false
+    },
+    {
+     "logo": "assets/sponsors/Tim Hortons logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/SRC logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Subway logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Intel logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Prefire logo.png",
+     "secs": 10.0,
+     "white": true
+    },
+    {
+     "logo": "assets/sponsors/Pulsar logo.png",
+     "secs": 10.0,
+     "white": true
+    }
+   ],
+   "sponsor_epoch": 0,
+   "bgloop": {
+    "on": true,
+    "src": "",
+    "color": "#2fa85a",
+    "brightness": 1.6,
+    "speed": 1.0
+   },
+   "ticker": [
+    "WELCOME TO ST. CLAIR SAINTS ESPORTS",
+    "FOLLOW @SCCSAINTS FOR HIGHLIGHTS",
+    "THANKS FOR WATCHING!"
+   ],
+   "tournament": {
+    "top": {
+     "size": 8,
+     "format": "single",
+     "reset": true,
+     "short": false,
+     "teams": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ],
+     "scores": {}
+    },
+    "groups": [
+     {
+      "name": "GROUP A",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP B",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP C",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     },
+     {
+      "name": "GROUP D",
+      "teams": [
+       "",
+       "",
+       "",
+       ""
+      ],
+      "scores": {}
+     }
+    ]
+   },
+   "schedule": {
+    "count": 3,
+    "matches": [
+     {
+      "tournament": "NACE VARSITY",
+      "game": "ROCKET LEAGUE",
+      "type": "PLAYOFFS",
+      "team1": "George Mason University",
+      "team2": "St. Clair College",
+      "date": "2026-11-11",
+      "time": "19:30"
+     },
+     {
+      "tournament": "NACE VARSITY",
+      "game": "PREMIER LEAGUE OF LEGENDS",
+      "type": "SEMI-FINALS",
+      "team1": "Maryville University",
+      "team2": "St. Clair College",
+      "date": "2026-11-19",
+      "time": "20:00"
+     },
+     {
+      "tournament": "CANADIAN ESPORTS NATIONALS",
+      "game": "VALORANT",
+      "type": "",
+      "team1": "Universit\u00e9 de Montr\u00e9al",
+      "team2": "St. Clair College",
+      "date": "2026-11-25",
+      "time": "20:30"
+     }
+    ]
+   },
+   "standings": {
+    "title": "",
+    "subtitle": "LEADERBOARD",
+    "count": 8,
+    "stat": "record",
+    "stat2": "",
+    "teams": [
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     },
+     {
+      "name": "",
+      "w": "",
+      "l": "",
+      "pts": "",
+      "diff": ""
+     }
+    ]
+   },
+   "clock": {
+    "mode": "time",
+    "until": "",
+    "zone": ""
+   },
+   "timer": {
+    "secs": 0,
+    "from": 0,
+    "down": false,
+    "started": 0
+   },
+   "roster": "left",
+   "player_stats": "auto",
+   "caster": {
+    "count": 1,
+    "primary": "#c2bdff",
+    "secondary": "#001a1a",
+    "text": "#001a1a"
+   },
+   "outputs_on": [],
+   "pictures": {
+    "team": {
+     "left": "headshot",
+     "right": "headshot"
+    },
+    "player": {
+     "left": "headshot",
+     "right": "headshot"
+    }
+   }
+  },
+  "tables": {
+   "Global": [
+    [
+     "Field",
+     "Value"
+    ],
+    [
+     "Event",
+     "NACE VARSITY"
+    ],
+    [
+     "Stage",
+     "PLAYOFFS"
+    ],
+    [
+     "Best of",
+     "3"
+    ],
+    [
+     "Game",
+     "1"
+    ],
+    [
+     "Left name",
+     "St. Clair Saints"
+    ],
+    [
+     "Left short",
+     "SCC"
+    ],
+    [
+     "Left logo",
+     "assets/logos/St Clair Saints.png"
+    ],
+    [
+     "Left color",
+     "#0b6b3a"
+    ],
+    [
+     "Left score",
+     "0"
+    ],
+    [
+     "Left game",
+     ""
+    ],
+    [
+     "Left won 1",
+     ""
+    ],
+    [
+     "Left won 2",
+     ""
+    ],
+    [
+     "Left won 3",
+     ""
+    ],
+    [
+     "Left won 4",
+     ""
+    ],
+    [
+     "Right name",
+     "Opponent"
+    ],
+    [
+     "Right short",
+     "OPP"
+    ],
+    [
+     "Right logo",
+     ""
+    ],
+    [
+     "Right color",
+     "#b8191c"
+    ],
+    [
+     "Right score",
+     "0"
+    ],
+    [
+     "Right game",
+     ""
+    ],
+    [
+     "Right won 1",
+     ""
+    ],
+    [
+     "Right won 2",
+     ""
+    ],
+    [
+     "Right won 3",
+     ""
+    ],
+    [
+     "Right won 4",
+     ""
+    ],
+    [
+     "Game box 1",
+     "1"
+    ],
+    [
+     "Game box 2",
+     "1"
+    ],
+    [
+     "Game box 3",
+     ""
+    ],
+    [
+     "Game box 4",
+     ""
+    ],
+    [
+     "Tournament logo",
+     ""
+    ],
+    [
+     "Sponsor logo",
+     "assets/sponsors/Alienware logo.png"
+    ],
+    [
+     "Sponsors",
+     "8"
+    ],
+    [
+     "BG loop",
+     "loops/scc-bg-loop.webm"
+    ],
+    [
+     "BG loop colour",
+     "#2fa85a"
+    ],
+    [
+     "BG loop brightness",
+     "1.6"
+    ],
+    [
+     "BG loop speed",
+     "1.0"
+    ],
+    [
+     "Ticker",
+     "WELCOME TO ST. CLAIR SAINTS ESPORTS  |  FOLLOW @SCCSAINTS FOR HIGHLIGHTS  |  THANKS FOR WATCHING!  |  "
+    ],
+    [
+     "Clock mode",
+     "time"
+    ],
+    [
+     "Clock until",
+     ""
+    ],
+    [
+     "Clock zone",
+     ""
+    ],
+    [
+     "Clock label",
+     "LOCAL TIME"
+    ],
+    [
+     "Timer secs",
+     "0"
+    ],
+    [
+     "Timer started",
+     "0"
+    ],
+    [
+     "Timer down",
+     ""
+    ],
+    [
+     "Caster boxes",
+     "1"
+    ],
+    [
+     "Caster primary",
+     "#c2bdff"
+    ],
+    [
+     "Caster secondary",
+     "#001a1a"
+    ],
+    [
+     "Caster text",
+     "#001a1a"
+    ],
+    [
+     "Caster 1 shown",
+     "1"
+    ],
+    [
+     "Caster 1 move",
+     "0 346 1"
+    ],
+    [
+     "Caster 2 shown",
+     ""
+    ],
+    [
+     "Caster 2 move",
+     ""
+    ],
+    [
+     "Caster 3 shown",
+     ""
+    ],
+    [
+     "Caster 3 move",
+     ""
+    ],
+    [
+     "Caster 4 shown",
+     ""
+    ],
+    [
+     "Caster 4 move",
+     ""
+    ],
+    [
+     "Host",
+     "MJ"
+    ],
+    [
+     "Mode",
+     "BO3"
+    ]
+   ],
+   "Sponsors": [
+    [
+     "Logo",
+     "Seconds",
+     "Epoch",
+     "White"
+    ],
+    [
+     "assets/sponsors/Alienware logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/SCC Alumni logo.png",
+     "10.0",
+     "0",
+     ""
+    ],
+    [
+     "assets/sponsors/Tim Hortons logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/SRC logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Subway logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Intel logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Prefire logo.png",
+     "10.0",
+     "0",
+     "1"
+    ],
+    [
+     "assets/sponsors/Pulsar logo.png",
+     "10.0",
+     "0",
+     "1"
+    ]
+   ],
+   "Schedule": [
+    [
+     "Field",
+     "Value"
+    ],
+    [
+     "Count",
+     "3"
+    ],
+    [
+     "Match 1 tournament",
+     "NACE VARSITY"
+    ],
+    [
+     "Match 1 game",
+     "ROCKET LEAGUE | PLAYOFFS"
+    ],
+    [
+     "Match 1 teams",
+     "George Mason University vs. St. Clair College"
+    ],
+    [
+     "Match 1 when",
+     "WED 11/11  |  7:30 PM"
+    ],
+    [
+     "Match 1 show",
+     "1"
+    ],
+    [
+     "Match 1 team 1",
+     "George Mason University"
+    ],
+    [
+     "Match 1 team 1 logo",
+     ""
+    ],
+    [
+     "Match 1 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 1 team 2 logo",
+     ""
+    ],
+    [
+     "Match 2 tournament",
+     "NACE VARSITY"
+    ],
+    [
+     "Match 2 game",
+     "PREMIER LEAGUE OF LEGENDS | SEMI-FINALS"
+    ],
+    [
+     "Match 2 teams",
+     "Maryville University vs. St. Clair College"
+    ],
+    [
+     "Match 2 when",
+     "THU 11/19  |  8:00 PM"
+    ],
+    [
+     "Match 2 show",
+     "1"
+    ],
+    [
+     "Match 2 team 1",
+     "Maryville University"
+    ],
+    [
+     "Match 2 team 1 logo",
+     ""
+    ],
+    [
+     "Match 2 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 2 team 2 logo",
+     ""
+    ],
+    [
+     "Match 3 tournament",
+     "CANADIAN ESPORTS NATIONALS"
+    ],
+    [
+     "Match 3 game",
+     "VALORANT"
+    ],
+    [
+     "Match 3 teams",
+     "Universit\u00e9 de Montr\u00e9al vs. St. Clair College"
+    ],
+    [
+     "Match 3 when",
+     "WED 11/25  |  8:30 PM"
+    ],
+    [
+     "Match 3 show",
+     "1"
+    ],
+    [
+     "Match 3 team 1",
+     "Universit\u00e9 de Montr\u00e9al"
+    ],
+    [
+     "Match 3 team 1 logo",
+     ""
+    ],
+    [
+     "Match 3 team 2",
+     "St. Clair College"
+    ],
+    [
+     "Match 3 team 2 logo",
+     ""
+    ]
+   ]
+  }
+ }
+]

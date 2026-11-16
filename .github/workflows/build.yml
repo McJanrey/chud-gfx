@@ -1,0 +1,79 @@
+name: build
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+    inputs:
+      release:
+        description: "Publish this build as the update everyone gets"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install
+        run: python -m pip install -r requirements.txt
+
+      - name: Tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Set version
+        shell: pwsh
+        run: |
+          $v = "2.0.${{ github.run_number }}"
+          "VERSION=$v" | Out-File -Append -Encoding utf8 $env:GITHUB_ENV
+          (Get-Content sgfx/__init__.py) -replace '__version__ = "[^"]*"', "__version__ = `"$v`"" | Set-Content sgfx/__init__.py
+
+      - name: Build exe
+        run: pyinstaller --noconfirm standby-gfx.spec
+
+      - name: Smoke test the built exe
+        shell: pwsh
+        run: |
+          $p = Start-Process dist\ChudGFX\ChudGFX.exe -ArgumentList "--smoke-test" -Wait -PassThru
+          if ($p.ExitCode -ne 0) { exit 1 }
+
+      - name: Zip (the app's self-update and the Hub's install)
+        shell: pwsh
+        run: |
+          "v$env:VERSION" | Set-Content -NoNewline -Encoding ascii dist\ChudGFX\version.txt
+          Compress-Archive -Path dist\ChudGFX\* -DestinationPath ChudGFX-windows.zip
+
+      - name: Installer
+        shell: pwsh
+        run: '& "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /DAppVersion=$env:VERSION installer\ChudGFX.iss'
+
+      - name: Silent install test
+        shell: pwsh
+        run: |
+          $p = Start-Process installer\Output\Chud-GFX-Baby-Setup.exe -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /TASKS=" -Wait -PassThru
+          if ($p.ExitCode -ne 0) { exit 1 }
+          $p = Start-Process "C:\Chud GFX Baby\ChudGFX.exe" -ArgumentList "--smoke-test" -Wait -PassThru
+          if ($p.ExitCode -ne 0) { exit 1 }
+
+      - name: Companion module
+        working-directory: companion-module
+        run: |
+          npm ci
+          node test.js
+          npx companion-module-build --ignore-license-rules --output Chud-GFX-Companion-module
+
+      # A push builds and tests only. Releasing (the in-app update everyone gets) is by hand:
+      # Actions > build > Run workflow, tick release, once the version is checked.
+      - name: Release
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.release }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "v${{ env.VERSION }}" ChudGFX-windows.zip installer\Output\Chud-GFX-Baby-Setup.exe companion-module\Chud-GFX-Companion-module.tgz --title "Chud GFX Baby v${{ env.VERSION }}" --notes "Built from ${{ github.sha }}"

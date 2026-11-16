@@ -1,31 +1,10 @@
-## Chud GFX Baby
+## StandBy GFX
 
-Runs the Chud GFX Baby's graphics from Companion: Preview, Program, Take and quick functions.
+Set the engine's address (127.0.0.1 when Companion runs on the same PC) and its port (shown on the Outputs page).
+From another PC, turn on Outputs › Network in StandBy GFX first.
 
-**Setup**
+**Actions:** TAKE (with a transition), CUT, cue a graphic on Preview, take a graphic in / out / toggle on Program, update on air, clear, undo, run of show Next / Back, playlists, OBS scene.
 
-1. In the GFX Baby, open **Extras > Outputs**. The Companion box there shows the address and port to use.
-2. If Companion runs on a different PC, tick **Let other PCs use this engine** there.
-3. Add an **Chud GFX Baby** connection in Companion and enter that address and port.
+**Feedbacks:** graphic on Program, graphic on Preview, OBS scene showing, OBS live.
 
-**Presets**
-
-- **Preview**: one button per graphic. Puts it on Preview or takes it off; green while it's on Preview.
-- **Program**: one button per graphic. Takes it in or out of Program on its own, with its own animation; red while it's on air.
-- **Take**: Take (with the default transition, or one per transition), Clear Program, Clear Preview, Clear all, and Update Program (sends the values edited on Preview to air without a transition).
-- **Score**: each team's score +1 / -1 (the button shows the score), and reset to 0-0.
-- **Quick functions**: clock mode (time, Starting Soon, BRB), timer start / pause and reset, background loop on / off, whose players the player graphics show, how many caster boxes. Lit while it's what's set.
-
-The presets follow the workspace that's open: add, rename or open another workspace and they update. A button made from a preset keeps working in another workspace that has a graphic with the same name.
-
-**Actions**
-
-Preview on / off / toggle, Program in / out / toggle (any transition), Take (any transition), Clear, Update Program, Quick function.
-
-**Feedbacks**
-
-Graphic is on Preview, Graphic is on Program, Quick function is set (also: something is on Preview, something is on Program).
-
-**Variables**
-
-`workspace`, `preview`, `program`, `default_transition`, `clock`, `timer`, `best_of`, `casters`, `left_name`, `left_short`, `left_score`, `right_name`, `right_short`, `right_score`.
+**Variables:** `program`, `preview`, `segment`, `segment_next`, `segment_left`, `obs_scene`, `left_score`, `right_score`.
