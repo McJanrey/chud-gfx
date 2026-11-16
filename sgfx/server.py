@@ -26,6 +26,7 @@ from .net import Net
 from .obs import OBS
 from .buses import Buses
 from . import logs
+from . import hudlink
 from .logs import log
 
 WEB = os.path.join(getattr(sys, "_MEIPASS", ""), "web") if getattr(sys, "frozen", False) else os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "web")
@@ -1145,6 +1146,10 @@ def handler(engine):
             with open(path, "rb") as f:
                 self._send(200, f.read(), mimetypes.guess_type(path)[0] or "application/octet-stream")
 
+        def _base(self):
+            """This engine's address as the asker reached it (for full picture addresses)."""
+            return "http://" + (self.headers.get("Host") or f"127.0.0.1:{engine.port}")
+
         def _refused(self):
             """Another PC while this engine isn't shared (or on another network than the picked one), or a page
             reaching it under some other site's name (DNS rebinding: Host is then that site's name)."""
@@ -1172,6 +1177,16 @@ def handler(engine):
             if self._refused():
                 return
             path = urlparse(self.path).path
+            if path == "/api/hello":
+                return self._send(200, json.dumps(hudlink.hello(engine)))
+            if path == "/api/global":
+                try:
+                    hudlink.check_engine(engine, (parse_qs(urlparse(self.path).query).get("engine") or [""])[0])
+                except hudlink.Refused as e:
+                    return self._send(409, json.dumps({"error": str(e), "code": e.code}))
+                with engine.lock:
+                    g = json.dumps(hudlink.global_for_hud(engine, self._base()))
+                return self._send(200, g)
             if path == "/api/assets":
                 return self._send(200, json.dumps({"assets": engine.assets()}))
             if path == "/api/state":
@@ -1236,12 +1251,20 @@ def handler(engine):
                         return self._upload(q, name, data)
                 body = json.loads(self.rfile.read(int(self.headers.get("Content-Length") or 0)) or b"{}")
                 path = urlparse(self.path).path
+                if path == "/api/ingest":   # (a game HUD's send)
+                    with engine.lock:
+                        reply = hudlink.ingest(engine, body, self.client_address[0], self._base())
+                    return self._send(200, json.dumps(reply))
+                if path == "/api/global" and body.get("engine"):
+                    hudlink.check_engine(engine, body)
                 if path.startswith(UNLOCKED):   # (these wait on OBS or the network: they keep their own locks, and must not hold up a TAKE)
                     result = engine.act(path, body)
                 else:
                     with engine.lock:
                         result = engine.act(path, body)
                 self._send(200, json.dumps(result or {"ok": True}))
+            except hudlink.Refused as e:
+                self._send(409, json.dumps({"error": str(e), "code": e.code}))
             except (KeyError, ValueError) as e:
                 log.warning("POST %s refused: %s", self.path, e)
                 self._send(400, json.dumps({"error": str(e)}))
@@ -1306,6 +1329,7 @@ def make_server(workspace, library=None, port=7800):
     server.daemon_threads = True
     engine.port = server.server_address[1]
     engine.net = Net(library or os.path.dirname(os.path.abspath(workspace)), engine.port)
+    hudlink.start(engine)
     return engine, server
 
 

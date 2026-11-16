@@ -47,8 +47,8 @@ function fieldsOf(c) {
 function renderGraphics() {
   const pv = S.live.preview.on, pg = S.live.program.on;
   const rows = [];
-  for (const [kind, label] of KINDS) {
-    const list = S.project.compositions.filter(c => (c.kind || "overlay") === kind && c.name.toLowerCase().includes(filter));
+  for (const [kind, label] of [...KINDS, ["hud", "Game HUD"]]) {   // (a game HUD's own pages, live from the HUD, in a group of their own)
+    const list = S.project.compositions.filter(c => (c.hud_page ? "hud" : (c.kind || "overlay")) === kind && c.name.toLowerCase().includes(filter));
     if (!list.length) continue;
     rows.push(el("div", { class: "kind" }, label));
     for (const c of list) {
