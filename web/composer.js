@@ -1641,7 +1641,7 @@
       h("div", { class: "row-gap", style: { marginTop: "8px" } }, flip("flipX", "Flip across"), flip("flipY", "Flip up and down")),
       h("div", { class: "pic-crop" }, h("span", { class: "muted small" }, "Crop (% off each edge)"),
         h("div", { class: "grid4" }, lab("Left", crop("l")), lab("Top", crop("t")), lab("Right", crop("r")), lab("Bottom", crop("b")))),
-      l.pic && Object.keys(l.pic).length ? h("button", { class: "small", style: { marginTop: "8px" }, onclick: () => { snapshot(); delete l.pic; sync(); changed({ props: true }); } }, "Reset picture") : null);
+      h("button", { class: "small", style: { marginTop: "8px" }, onclick: () => { snapshot(); delete l.pic; sync(); changed({ props: true }); } }, "Reset picture"));
   }
 
   function syncPropsGeometry() {
