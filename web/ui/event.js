@@ -1,5 +1,5 @@
 // Event setup: Teams (shared by every workspace), Tournament (standings, knockout bracket, groups), Upcoming Schedule.
-import { $, el, api, App, pages, picker } from "./lib.js";
+import { $, el, api, App, pages, picker, ask } from "./lib.js";
 
 const G = () => App.state.project.global || {};
 const saveG = change => api("/api/global", { global: change });
@@ -27,7 +27,7 @@ function renderTeams() {
     const set = (k, v) => { cur[k] = v; saveAll(); };
     const pl = cur.players;
     right = el("div", { class: "panel" }, el("div", { class: "panel-head" }, el("h3", {}, cur.name),
-        el("button", { class: "small ghost", onclick: () => { if (confirm(`Delete the team "${cur.name}"?`)) { all.splice(all.indexOf(cur), 1); pickTeam = null; saveAll(); } } }, "Delete team")),
+        el("button", { class: "small ghost", onclick: async () => { if (await ask(`Delete the team "${cur.name}"?`)) { all.splice(all.indexOf(cur), 1); pickTeam = null; saveAll(); } } }, "Delete team")),
       el("div", { class: "list form" },
         el("div", { class: "two" }, lab("Name", inp(cur.name, v => set("name", v))), lab("Short name", inp(cur.short, v => set("short", v)))),
         el("div", { class: "two" }, lab("Colour", el("input", { type: "color", value: cur.color || "#0b6b3a", onchange: e => set("color", e.target.value) })), lab("Game", inp(cur.game, v => set("game", v)))),

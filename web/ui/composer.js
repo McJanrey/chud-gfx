@@ -1,6 +1,6 @@
 // Composer: make and change graphics. Graphics list + layers on the left, the canvas in the middle,
 // the picked layer's (or graphic's) settings on the right. Changes save as they're made; Ctrl+Z / Ctrl+Y undo / redo.
-import { $, el, api, App, pages, picker, toast, upload } from "./lib.js";
+import { $, el, api, App, pages, picker, toast, upload, askText } from "./lib.js";
 import { Stage, W, H } from "../engine/stage.js";
 import { play } from "../engine/anim.js";
 import { clipShapes } from "../engine/layers/box.js";
@@ -47,7 +47,7 @@ function renderGraphics() {
 }
 $("#cmp-bin").addEventListener("change", async e => { if (!e.target.value) return; const r = await api("/api/comp/restore", { id: e.target.value }); toast(`"${r.comp.name}" is back`); });
 $("#cmp-new").addEventListener("click", async () => {
-  const name = prompt("Name of the new graphic", "New graphic");
+  const name = await askText("Name of the new graphic", "New graphic");
   if (!name) return;
   const r = await api("/api/comp", { comp: { name, kind: "overlay", layer: 0, width: W, height: H, layers: [] } });
   setTimeout(() => openComp(r.comp.id), 300);
@@ -393,7 +393,7 @@ function renderProps() {
         el("button", { class: "small ghost", onclick: () => { snapshot(); for (const l of comp.layers) if (l.part_at === partOf.part_at) { delete l.part; delete l.part_at; } changed(); } }, "Detach this copy")))
     : ls.length > 1 ? el("section", { class: "sect" }, el("h4", {}, "Part"),
       el("button", { class: "small", onclick: async () => {
-        const name = prompt("Name of the part", "Name plate");
+        const name = await askText("Name of the part", "Name plate");
         if (!name) return;
         const r = await api("/api/part/make", { name, layers: ls });
         snapshot();

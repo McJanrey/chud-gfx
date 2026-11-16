@@ -1,5 +1,5 @@
 // Home: the workspaces (one per event or show) and the open one's backups.
-import { $, el, api, App, pages, toast } from "./lib.js";
+import { $, el, api, App, pages, toast, ask, askText } from "./lib.js";
 
 let tab = "ws";
 const ago = t => { const s = Date.now() / 1000 - t; return s < 60 ? "just now" : s < 3600 ? `${Math.round(s / 60)} min ago` : s < 86400 ? `${Math.round(s / 3600)} h ago` : `${Math.round(s / 86400)} days ago`; };
@@ -18,13 +18,13 @@ function render() {
         el("div", { class: "row" },
           w.open ? el("span", { class: "pill" }, "Open") : el("button", { class: "small primary", onclick: () => api("/api/workspace/open", { folder: w.folder }).then(() => toast(`Opened ${w.name}`)) }, "Open"),
           el("span", { class: "spacer" }),
-          el("button", { class: "small ghost", onclick: () => { const n = prompt("Name", w.name); if (n) api("/api/workspace/rename", { folder: w.folder, name: n }); } }, "Rename"),
+          el("button", { class: "small ghost", onclick: async () => { const n = await askText("Name", w.name); if (n) api("/api/workspace/rename", { folder: w.folder, name: n }); } }, "Rename"),
           el("button", { class: "small ghost", onclick: () => api("/api/workspace/copy", { folder: w.folder }) }, "Duplicate"),
           w.open ? el("a", { class: "small ghost btn", href: "/api/export", download: "" }, "Export pack") : null,
-          w.open ? null : el("button", { class: "small ghost", onclick: () => { if (confirm(`Remove "${w.name}"? It's moved to the .removed folder, not deleted.`)) api("/api/workspace/remove", { folder: w.folder }); } }, "Remove")))),
-      el("button", { class: "ws-card new", onclick: () => { const n = prompt("Name of the new workspace", "New workspace"); if (n) api("/api/workspace/new", { name: n }); } }, "+ New workspace"),
+          w.open ? null : el("button", { class: "small ghost", onclick: async () => { if (await ask(`Remove "${w.name}"? It's moved to the .removed folder, not deleted.`)) api("/api/workspace/remove", { folder: w.folder }); } }, "Remove")))),
+      el("button", { class: "ws-card new", onclick: async () => { const n = await askText("Name of the new workspace", "New workspace"); if (n) api("/api/workspace/new", { name: n }); } }, "+ New workspace"),
       el("button", { class: "ws-card new", onclick: async () => {
-        const path = prompt("Where GFX Baby is installed", "C:\\Chud GFX Baby");
+        const path = await askText("Where GFX Baby is installed", "C:\\Chud GFX Baby");
         if (!path) return;
         const r = await api("/api/import/gfxbaby", { path });
         toast(`Brought in ${r.workspaces.length} workspaces (${r.workspaces.join(", ") || "none new"}), ${r.fonts} fonts${r.run_of_show ? ", the run of show" : ""}. Retype OBS and stream passwords.`);
@@ -35,7 +35,7 @@ function render() {
       el("p", { class: "muted small" }, `A copy of "${st.project.name}" is kept every 10 minutes while it changes (the last 50). Restoring keeps what's there now as a backup too.`),
       ...(bk.length ? bk.map(b => el("div", { class: "gfx" }, el("span", { class: "bar-ind" }),
         el("div", {}, el("div", { class: "name" }, when(b.name)), el("div", { class: "sub" }, `${Math.round(b.size / 1024)} KB`)),
-        el("button", { class: "small", onclick: () => { if (confirm(`Go back to the ${when(b.name)} copy?`)) api("/api/backup/restore", { name: b.name }).then(() => toast("Restored")); } }, "Restore")))
+        el("button", { class: "small", onclick: async () => { if (await ask(`Go back to the ${when(b.name)} copy?`)) api("/api/backup/restore", { name: b.name }).then(() => toast("Restored")); } }, "Restore")))
         : [el("p", { class: "muted empty" }, "No backups yet.")])));
   }
   $("#home-body").replaceChildren(tabs, el("p", { class: "muted" }, "One per event or show: its own graphics, files, data, transitions and global settings. Fonts and teams are shared."), body);
@@ -54,7 +54,7 @@ App.on((st, msg) => {
   b.hidden = !(u.update || u.state === "installing");
   b.disabled = u.state === "installing";
   b.textContent = u.state === "installing" ? `Updating… ${u.progress || 0}%` : `Update to ${u.version}`;
-  b.onclick = () => { if (confirm(`Install StandBy GFX ${u.version}? It closes and opens again in a few seconds.`)) api("/api/update/install"); };
+  b.onclick = async () => { if (await ask(`Install StandBy GFX ${u.version}? It closes and opens again in a few seconds.`)) api("/api/update/install"); };
 });
 
 // Show check: what could go wrong on air, worst first, each with the page that fixes it.

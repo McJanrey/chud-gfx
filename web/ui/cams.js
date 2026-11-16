@@ -1,6 +1,6 @@
 // Cameras: guests' webcams through VDO.Ninja. Each camera has a guest link (they open it and pick their camera)
 // and is shown by Camera layers and its own output page. Look (colour) and framing are set here, once.
-import { $, el, api, App, pages, toast } from "./lib.js";
+import { $, el, api, App, pages, toast, ask, askText } from "./lib.js";
 
 
 const busy = () => { const p = $("#page-cams"); return p && p.contains(document.activeElement) && document.activeElement.matches("input, select"); };
@@ -27,7 +27,7 @@ function render() {
   };
   const card = c => el("section", { class: "card cam-card" },
     el("div", { class: "row" }, el("input", { value: c.name, "aria-label": "Camera name", class: "title-in", onchange: e => { c.name = e.target.value; save(); } }),
-      el("button", { class: "small ghost", "aria-label": `Remove ${c.name}`, onclick: () => { if (confirm(`Remove the camera "${c.name}"? Its guest link stops working.`)) { all.splice(all.indexOf(c), 1); save(); } } }, "✕")),
+      el("button", { class: "small ghost", "aria-label": `Remove ${c.name}`, onclick: async () => { if (await ask(`Remove the camera "${c.name}"? Its guest link stops working.`)) { all.splice(all.indexOf(c), 1); save(); } } }, "✕")),
     el("div", { class: "cam-slot", "data-slot": c.id }),   // (the live picture is drawn here: camdock.js)
     (() => { const st = ((App.state.cam_status || {})[c.id] || {}).state || "waiting";
       return el("span", { class: "cam-state st-" + st }, { live: "● Live", lost: "● Connection lost", waiting: "○ Waiting for the guest" }[st]); })(),
@@ -47,8 +47,8 @@ function render() {
     el("section", { class: "card wide" },
       el("div", { class: "row" }, el("h3", {}, "Looks"), lookSel,
         el("button", { class: "small", onclick: () => lookSel.value && api("/api/cams/look", { action: "recall", name: lookSel.value }).then(() => toast(`Recalled "${lookSel.value}"`)) }, "Recall"),
-        el("button", { class: "small", onclick: () => { const n = prompt("Save every camera's colours as", lookSel.value || "Main lights"); if (n) api("/api/cams/look", { action: "save", name: n }); } }, "Save as…"),
-        el("button", { class: "small ghost", onclick: () => lookSel.value && confirm(`Delete the look "${lookSel.value}"?`) && api("/api/cams/look", { action: "delete", name: lookSel.value }) }, "Delete"),
+        el("button", { class: "small", onclick: async () => { const n = await askText("Save every camera's colours as", lookSel.value || "Main lights"); if (n) api("/api/cams/look", { action: "save", name: n }); } }, "Save as…"),
+        el("button", { class: "small ghost", onclick: async () => lookSel.value && await ask(`Delete the look "${lookSel.value}"?`) && api("/api/cams/look", { action: "delete", name: lookSel.value }) }, "Delete"),
         el("span", { class: "spacer" }),
         el("button", { class: "small primary", onclick: () => { all.push({ name: `Camera ${all.length + 1}` }); save(); } }, "+ Camera")),
       el("p", { class: "muted small" }, "Send each guest their link: they open it, pick their camera and mic, and press Start. Graphics show a camera with a Camera layer (Composer › Live), or add its output link to OBS as a browser source (tick Control audio via OBS). Each card shows its camera live, with whether it's connected (the status keeps updating on the other pages too). Every other place showing a camera (OBS sources) is one more upload for the guest.")),

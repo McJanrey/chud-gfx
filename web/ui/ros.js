@@ -1,6 +1,6 @@
 // Run of show: templates per game (blocks of segments) on the left, the picked template in the middle,
 // tonight's show (live times) on the right. On Control: the show strip (now / next / Next) and the playlists.
-import { $, el, api, App, pages, toast } from "./lib.js";
+import { $, el, api, App, pages, toast, ask } from "./lib.js";
 
 let skew = 0;
 const now = () => Date.now() / 1000 + skew;
@@ -74,7 +74,7 @@ function editor(all) {
         el("button", { class: "small", onclick: () => { t.blocks.push({ id: nid(), name: "Match", color: "#64d2ff", repeat: true, segments: [{ ...seg(), title: "Map {{Map.N}}", mins: 40, game: true, color: "#30d158" }] }); save(); } }, "+ Repeat block"),
         el("span", { class: "spacer" }),
         el("button", { class: "small", onclick: () => { const c = copy(t); c.id = nid(); c.name += " copy"; all.push(c); pickT = c.id; save(); } }, "Duplicate"),
-        el("button", { class: "small ghost", onclick: () => { if (confirm(`Delete the template "${t.name}"?`)) { all.splice(all.indexOf(t), 1); pickT = null; save(); } } }, "Delete"),
+        el("button", { class: "small ghost", onclick: async () => { if (await ask(`Delete the template "${t.name}"?`)) { all.splice(all.indexOf(t), 1); pickT = null; save(); } } }, "Delete"),
         el("button", { class: "small primary", onclick: () => api("/api/ros/build", { template: t.id }).then(() => toast(`Tonight uses "${t.name}"`)) }, "Use tonight"))));
 }
 

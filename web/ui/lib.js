@@ -112,3 +112,29 @@ App.on(st => {
   const face = (n, u, w) => `@font-face{font-family:"${n.replace(/"/g, "")}";src:url("${encodeURI(u)}");${w ? `font-weight:${w};` : ""}font-display:block}`;
   fontCss.textContent = [...BUILTIN.map(([n, f, w]) => face(n, "fonts/" + f, w)), ...(st.fonts || []).map(f => face(f.name, f.url))].join(String.fromCharCode(10));
 });
+
+// Our own dialogs instead of the browser's confirm / prompt boxes: ask() -> true / false, askText() -> text or null.
+// The red button says what happens ("Remove", "Delete", "Install"), from the question's first word unless given.
+function dialog(title, body, { ok, danger, input } = {}) {
+  return new Promise(done => {
+    const field = input ? el("input", { value: input.value || "", placeholder: input.placeholder || "", "aria-label": title }) : null;
+    const word = ok || (/^(Remove|Delete|Install|Go back|Restore)/.exec(title) || [])[1] || (input ? "Save" : "OK");
+    const d = el("dialog", { class: "dlg ask" },
+      el("h3", {}, title), body ? el("p", { class: "muted" }, body) : "", field || "",
+      el("div", { class: "row end" },
+        el("button", { class: "small ghost", onclick: () => close(null) }, "Cancel"),
+        el("button", { class: "small " + (danger ?? /^(Remove|Delete)/.test(title) ? "danger" : "primary"), onclick: () => close(field ? field.value.trim() : true) }, word)));
+    const close = v => { d.close(); d.remove(); done(field ? (v || null) : !!v); };
+    d.addEventListener("cancel", e => { e.preventDefault(); close(null); });
+    if (field) field.addEventListener("keydown", e => { if (e.key === "Enter") close(field.value.trim()); });
+    document.body.appendChild(d);
+    d.showModal();
+    (field || d.querySelector("button:last-child")).focus();
+    if (field) field.select();
+  });
+}
+export const ask = (title, body, opts) => {
+  const i = body ? -1 : title.indexOf("? ");   // ("Remove X? It can't be undone." -> the question, then the explanation)
+  return i > 0 ? dialog(title.slice(0, i + 1), title.slice(i + 2), opts) : dialog(title, body, opts);
+};
+export const askText = (title, value = "", opts = {}) => dialog(title, opts.body, { ...opts, input: { value, placeholder: opts.placeholder } });

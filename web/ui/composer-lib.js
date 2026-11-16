@@ -1,5 +1,5 @@
 // Composer's Add panel: tabs of things to put in the graphic (text, shapes, media, live data, frames, parts).
-import { $, el, api, App, assets, toast } from "./lib.js";
+import { $, el, api, App, assets, toast, ask, askText } from "./lib.js";
 import { addLayers, composer } from "./composer.js";
 
 let tab = "graphics";
@@ -118,8 +118,8 @@ function partsTab() {
       el("div", { class: "row" },
         el("button", { class: "small primary", onclick: () => { const inst = "i" + Math.random().toString(36).slice(2, 10), x = Math.round((1920 - p.w) / 2), y = Math.round((1080 - p.h) / 2);
           addLayers(p.layers.map(l => ({ ...l, x: (l.x || 0) + x, y: (l.y || 0) + y, part: p.id, part_at: inst })), { keepPlace: true }); } }, "Add"),
-        el("button", { class: "small ghost", onclick: () => { const n = prompt("Name", p.name); if (n) api("/api/parts", { parts: ps.map(x => x.id === p.id ? { ...x, name: n } : x) }); } }, "Rename"),
-        el("button", { class: "small ghost", "aria-label": "Delete part", onclick: () => { if (confirm(`Delete the part "${p.name}"? Its copies stay as plain layers.`)) api("/api/parts", { parts: ps.filter(x => x.id !== p.id) }); } }, "✕"))))
+        el("button", { class: "small ghost", onclick: async () => { const n = await askText("Name", p.name); if (n) api("/api/parts", { parts: ps.map(x => x.id === p.id ? { ...x, name: n } : x) }); } }, "Rename"),
+        el("button", { class: "small ghost", "aria-label": "Delete part", onclick: async () => { if (await ask(`Delete the part "${p.name}"? Its copies stay as plain layers.`)) api("/api/parts", { parts: ps.filter(x => x.id !== p.id) }); } }, "✕"))))
       : [el("p", { class: "muted empty" }, "No parts yet.")])];
 }
 

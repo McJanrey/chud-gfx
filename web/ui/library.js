@@ -1,5 +1,5 @@
 // Assets (the workspace's files), Data (sources -> tables) and Appearance (this PC's look).
-import { $, el, api, upload, App, pages, assets, toast } from "./lib.js";
+import { $, el, api, upload, App, pages, assets, toast, ask } from "./lib.js";
 
 const busy = id => { const p = $(id); return p && p.contains(document.activeElement) && document.activeElement.matches("input, textarea, select"); };
 const kb = n => n < 1024 * 1024 ? `${Math.max(1, Math.round(n / 1024))} KB` : `${(n / 1048576).toFixed(1)} MB`;
@@ -47,7 +47,7 @@ function renderAssets() {
         el("button", { class: "small ghost", onclick: () => copyText(a.path) }, "Copy"),
         a.kind === "image" ? el("button", { class: "small ghost", onclick: () => makeGraphic(a, name) }, "Graphic") : null,
         el("span", { class: "spacer" }),
-        el("button", { class: "small ghost", "aria-label": `Remove ${name}`, onclick: () => { if (confirm(`Remove ${name}? It's moved to the workspace's .trash folder.`)) api("/api/asset/remove", { path: a.path }).then(async () => { list = await assets(true); renderAssets(); }); } }, "✕"))));
+        el("button", { class: "small ghost", "aria-label": `Remove ${name}`, onclick: async () => { if (await ask(`Remove ${name}? It's moved to the workspace's .trash folder.`)) api("/api/asset/remove", { path: a.path }).then(async () => { list = await assets(true); renderAssets(); }); } }, "✕"))));
   }
   $("#assets-body").replaceChildren(
     el("div", { class: "row" }, el("div", { class: "seg" }, ...KINDS.map(([k, t]) => el("button", { class: "small" + (kindTab === k ? " on" : ""), onclick: () => { kindTab = k; renderAssets(); } }, `${t} ${count(k)}`))),
@@ -110,7 +110,7 @@ function renderData() {
             el("label", { class: "f" }, el("span", {}, "Sheet / tab (optional)"), el("input", { value: cur.tab || "", onchange: e => set("tab", e.target.value) }))),
         el("div", { class: "row" },
           el("button", { class: "small", onclick: () => api("/api/source/read", { id: cur.id }).then(() => toast("Read")) }, "Read now"),
-          el("button", { class: "small ghost", onclick: () => { if (confirm(`Remove the data source "${cur.name}"? Graphics using it go blank.`)) { all.splice(all.indexOf(cur), 1); save(); } } }, "Remove"),
+          el("button", { class: "small ghost", onclick: async () => { if (await ask(`Remove the data source "${cur.name}"? Graphics using it go blank.`)) { all.splice(all.indexOf(cur), 1); save(); } } }, "Remove"),
           el("span", { class: "spacer" }), el("span", { class: "small" + (st.error ? " err" : " muted") }, st.error || (st.at ? `Read at ${new Date(st.at * 1000).toLocaleTimeString()}` : ""))),
         rows.length ? el("div", { class: "cells" }, el("table", {},
           el("tr", {}, el("th", {}, ""), ...Array.from({ length: cols }, (_, i) => el("th", {}, colName(i)))),
