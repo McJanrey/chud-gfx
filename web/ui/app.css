@@ -68,7 +68,8 @@ input:focus { outline: none; border-color: var(--accent); }
 .take { height: 58px; background: var(--red); color: var(--strong); font-weight: 600; font-size: 16px; letter-spacing: .12em; box-shadow: none; }
 .take:hover { background: #f75d62; }
 .cut { letter-spacing: .08em; }
-.row { display: flex; gap: 4px; } .row button { flex: 1; }
+.row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.takebar .row { flex-wrap: nowrap; gap: 4px; } .takebar .row button { flex: 1; }   /* (only under TAKE: Clear Program / Undo share the width) */
 .lower { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(260px, .7fr); gap: 12px; }
 .panel { display: flex; flex-direction: column; min-height: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
 .panel-head { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
@@ -345,3 +346,6 @@ button.danger { background: var(--red); color: #fff; box-shadow: none; font-weig
 .ws-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
 .ws-actions .ghost { padding-inline: 0; }
 .ws-current { font-size: 12px; font-weight: 600; color: var(--accent); padding-block: 3px; }
+
+/* a lone button in a stacked card or form keeps its own width (not stretched across) */
+.card > button, .card > a.btn, .stack > button, .form > button, .list > button, .sect > button, .cam-card > button, .ros-block > button { align-self: flex-start; }
