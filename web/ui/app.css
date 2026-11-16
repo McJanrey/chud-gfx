@@ -113,7 +113,10 @@ input[type=color] { padding: 2px; height: 34px; cursor: pointer; }
 .switch input::after { content: ""; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: var(--muted); transition: transform .15s; }
 .switch input:checked { background: var(--accent); }
 .switch input:checked::after { transform: translateX(12px); background: var(--on-accent); }
-.sponsor { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto auto; gap: 6px; align-items: center; }
+.sponsor { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto auto; gap: 8px; align-items: center; }
+.sponsor .thumb-pick { grid-column: 1 / -1; }   /* (the logo picker gets the whole width: in the side column it was squeezed to nothing) */
+.sponsor > button:first-of-type { grid-column: 4; }
+.sponsor + .sponsor { margin-top: 8px; }
 .inline { display: inline-flex; align-items: center; gap: 4px; color: var(--muted); }
 .thumb-pick { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 6px; align-items: center; min-width: 0; }
 .thumb-pick img { width: 44px; height: 28px; object-fit: contain; background: var(--input); border-radius: 4px; }

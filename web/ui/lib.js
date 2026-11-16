@@ -139,7 +139,29 @@ export const ask = (title, body, opts) => {
 };
 export const askText = (title, value = "", opts = {}) => dialog(title, opts.body, { ...opts, input: { value, placeholder: opts.placeholder } });
 
-// Is the person typing in this part of the page (a text box, a dropdown, a slider)? Then a redraw waits.
-// A button or a switch they just clicked doesn't count: the page must show what the click did.
-export const typingIn = box => !!box && box.contains(document.activeElement) &&
-  document.activeElement.matches("input:not([type=checkbox]):not([type=radio]):not([type=button]):not([type=color]), textarea, select");
+// Is the person in the middle of typing in this part of the page? Then a redraw waits, and only then:
+// a box with typed words not yet saved, or a field touched in the last moment (just clicked into, a dropdown
+// or slider being moved). Once the words are saved (Enter, Tab, clicking off) the page catches up at once,
+// even though the cursor is still in the box.
+const FIELD = "input:not([type=checkbox]):not([type=radio]):not([type=button]):not([type=color]), textarea, select";
+let unsaved = null, touched = 0, again = 0;
+function catchUp() {
+  clearTimeout(again);
+  again = setTimeout(() => {   // (as if everything changed but the clock: "now" is old here and would set the clocks wrong)
+    if (!App.state) return;
+    const msg = Object.fromEntries(Object.entries(App.state).filter(([k]) => k !== "now"));
+    for (const fn of App.listeners) fn(App.state, msg);
+  }, 60);
+}
+addEventListener("focusin", () => { touched = Date.now(); }, true);
+addEventListener("input", e => { unsaved = e.target; touched = Date.now(); }, true);
+addEventListener("change", e => { if (unsaved === e.target) unsaved = null; touched = 0; catchUp(); }, true);
+addEventListener("focusout", e => { if (unsaved === e.target) unsaved = null; catchUp(); }, true);
+export const typingIn = box => {
+  const a = document.activeElement;
+  if (!box || !a || !box.contains(a) || !a.matches(FIELD)) return false;
+  if (a === unsaved) return true;
+  const wait = 900 - (Date.now() - touched);
+  if (wait > 0) { clearTimeout(again); again = setTimeout(catchUp, wait); return true; }
+  return false;
+};
