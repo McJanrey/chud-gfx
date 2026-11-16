@@ -94,7 +94,23 @@ function renderFields() {
     const input = el("input", { value: vals[l.field] ?? l[key] ?? "", placeholder: l[key] || "", "aria-label": l.field,
       onchange: e => api("/api/values", { id: c.id, values: { [l.field]: e.target.value } }) });
     if (key === "fill" && /^#[0-9a-f]{6}$/i.test(vals[l.field] || l[key] || "")) input.type = "color";
-    return el("div", { class: "field" }, el("label", {}, l.field, el("span", { class: "kindtag" }, l.type)), input);
+    const set = v => api("/api/values", { id: c.id, values: { [l.field]: v } });
+    // a picture field suggests the team logos (Global's and the team list's)
+    let list = "";
+    if (l.type === "image") {
+      const tabs = S.data.tables || {}, g = tabs.Global || [], teams = tabs.Teams || [];
+      const logos = [...new Set([...g.filter(r => /logo$/i.test(r[0]) && r[1]).map(r => r[1]), ...teams.slice(1).map(r => r[2]).filter(Boolean)])];
+      if (logos.length) {
+        list = el("datalist", { id: "logos-" + l.field.replace(/\W/g, "_") }, ...logos.map(v => el("option", { value: v })));
+        input.setAttribute("list", list.id);
+      }
+    }
+    // ⛓: link the field to a Global value (it then follows Global)
+    const globals = ((S.data.tables || {}).Global || []).slice(1).map(r => r[0]).filter(Boolean);
+    const link = el("select", { class: "small link", title: "Link to a Global value", "aria-label": `Link ${l.field} to a Global value`,
+      onchange: e => { if (e.target.value) set(e.target.value); e.target.value = ""; } },
+      el("option", { value: "" }, "⛓"), ...globals.map(n => el("option", { value: `{{Global!${n}}}` }, n)));
+    return el("div", { class: "field" }, el("label", {}, l.field, el("span", { class: "kindtag" }, l.type)), el("div", { class: "field-in" }, input, link), list);
   }
 }
 // The Global timer ({{TIMER}}): start / pause, reset to its start time, up or down. It runs on air too.
