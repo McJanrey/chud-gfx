@@ -29,7 +29,7 @@ import uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, quote, unquote, urlparse
 
-from . import playlist, appearance, companion, discover, export, globalcfg, media, pack, share, chudhud, ros, obs, streampart, builderpart, preflight
+from . import playlist, appearance, companion, discover, export, globalcfg, media, pack, share, chudhud, ros, obs, streampart, builderpart, preflight, hudimport, gamedata
 from .assets import Assets
 from .config import DATA_DIR, WEB_DIR, Settings, safe_join
 from .data import Sources
@@ -1114,6 +1114,18 @@ def make_handler(engine):
                 return self._send(engine.state_json())
             if path == "/api/stream":
                 return self._stream((parse_qs(urlparse(self.path).query).get("out") or [""])[0][:60])
+            if path == "/api/gamedata":
+                # Every game HUD's fields, plainly named (for Composer's live data, before a game connects)
+                groups = []
+                for game in gamedata.GAMES:
+                    for g in gamedata.catalog(game):
+                        if g["table"] != "Global":
+                            groups.append({"group": f"{g['table']}: {g['group']}",
+                                           "items": [[f["token"], f["label"][:1].upper() + f["label"][1:]] for f in g["fields"]]})
+                return self._json({"groups": groups})
+            if path == "/api/hudbuilder/huds":
+                have = {c.get("from_hud") for c in engine.ws.get()["compositions"]}
+                return self._json({"huds": [{"id": h["id"], "name": h.get("name", ""), "imported": h["id"] in have} for h in hudimport.list_huds()]})
             if path == "/api/backups":
                 return self._json({"backups": engine.ws.backups()})
             if path == "/api/preflight":
@@ -1388,6 +1400,8 @@ def make_handler(engine):
                     live.program(body["id"], bool(body.get("on")), body.get("transition") or "animate")
                 elif path == "/api/clear":
                     live.clear(body.get("bus", "program"), body.get("transition") or "animate")
+                elif path == "/api/hudbuilder/import":
+                    result = {"imported": hudimport.import_all(ws, engine.library_dir)}
                 elif path == "/api/backups/restore":
                     ws.restore_backup(body.get("name"))
                 elif path == "/api/undo-take":

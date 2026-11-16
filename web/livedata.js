@@ -47,9 +47,12 @@ window.LiveData = (function () {
     items.push(["Tournament logo", "Tournament logo"], ["Sponsor logo", "First sponsor's logo"]);
     return [["Global", items.map(([k, t]) => [`{{Global!${k}}}`, t])]];
   }
+  // Every game HUD's fields (League, VALORANT, CoD, Rocket League, Smash, Overwatch), from the engine.
+  let games = null;
+  fetch("/api/gamedata").then(r => r.json()).then(d => { games = d.groups.map(g => [g.group, g.items]); }).catch(() => {});
   // Every group: [label, [[token, text]]], with what's live now that isn't listed.
   function groups() {
-    const out = [...global(), ...rocketLeague()];
+    const out = [...global(), ...(games || rocketLeague())];
     const known = new Set(out.flatMap(([, items]) => items.map(([v]) => v.toLowerCase())));
     const data = (window.App && App.state && App.state.data) || {};
     for (const name of Object.keys(data.feeds || {})) {

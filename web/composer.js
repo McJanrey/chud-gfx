@@ -102,6 +102,21 @@
     renderProps();
     renderComps();
   }
+  // HUDs made in the old HUD Builder come in as graphics (once each).
+  (async function hudImport() {
+    const btn = $("#comp-hud-import");
+    try {
+      const { huds } = await (await fetch("/api/hudbuilder/huds")).json();
+      const left = huds.filter(x => !x.imported);
+      btn.hidden = !left.length;
+      btn.textContent = `Import ${left.length} HUD${left.length === 1 ? "" : "s"} from HUD Builder`;
+    } catch (e) { btn.hidden = true; }
+    btn.onclick = async () => {
+      const r = await api("/api/hudbuilder/import", {});
+      toast(r.imported.length ? `Imported ${r.imported.join(", ")}: their controls are fields now` : "Nothing new to import");
+      btn.hidden = true;
+    };
+  })();
   $("#comp-new").addEventListener("click", async () => {
     const name = prompt("Name of the new graphic", "New graphic");
     if (!name) return;

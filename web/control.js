@@ -186,6 +186,7 @@ fetch("/api/state").then(r => r.json()).then(s => App.apply(s)).finally(connect)
 const UPDATED_FROM = (() => { try { return localStorage.getItem("gfx-updated-from"); } catch (e) { return null; } })();
 const pages = {};
 function showTab(name) {
+  if (name === "builder") name = "composer";   // (the HUD Builder is retired: HUDs are made in Composer)
   if (!pages[name] && name !== "control") name = "control";
   App.tab = name;
   for (const b of document.querySelectorAll("#tabs button[data-tab]")) b.classList.toggle("on", b.dataset.tab === name);

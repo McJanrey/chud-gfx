@@ -1,3 +1,4 @@
+import os
 import shutil
 import tempfile
 import unittest
@@ -127,6 +128,33 @@ class Parts(unittest.TestCase):
         self.assertEqual((two[1]["fill"], two[1]["x"], two[1]["y"], two[1]["group"], two[1]["field"]), ("#f00", 300, 50, "g2", "Name g2"))
         self.assertEqual((two[2]["x"], two[2]["y"]), (300, 68))
         self.assertEqual(ws.comp("c1")["layers"][0]["fill"], "#000")   # (the copy it was changed from: left alone)
+
+
+class HudImport(unittest.TestCase):
+    def test_hud_becomes_a_graphic_with_fields_and_its_pictures(self):
+        import json as _json
+        from gfxengine import hudimport
+        d, huds = tempfile.mkdtemp(), tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, d, True); self.addCleanup(shutil.rmtree, huds, True)
+        os.makedirs(os.path.join(huds, "h1", "assets"))
+        open(os.path.join(huds, "h1", "assets", "bar.png"), "wb").write(b"png")
+        _json.dump({"id": "h1", "name": "5V5 HUD", "vars": [{"name": "Left team", "value": "Team One"}, {"name": "Left colour", "value": "#123456"}],
+                    "values": {"Left team": "Saints"}, "layers": [
+            {"id": "a", "type": "text", "text": "{{HUD!Left team}}", "x": 0, "y": 0, "w": 9, "h": 9},
+            {"id": "b", "type": "rect", "fill": "{{HUD!Left colour}}", "x": 0, "y": 0, "w": 9, "h": 9},
+            {"id": "c", "type": "text", "text": "Map {{HUD!Left team}}", "x": 0, "y": 0, "w": 9, "h": 9},
+            {"id": "d", "type": "image", "src": "assets/bar.png", "x": 0, "y": 0, "w": 9, "h": 9},
+            {"id": "e", "type": "image", "src": "assets/ref.png", "reference": True, "x": 0, "y": 0, "w": 9, "h": 9}]},
+                   open(os.path.join(huds, "h1", "hud.json"), "w"))
+        ws = Workspace(d, starter="")
+        self.assertEqual(hudimport.import_all(ws, None, huds), ["5V5 HUD"])
+        self.assertEqual(hudimport.import_all(ws, None, huds), [])          # once only
+        c = ws.get()["compositions"][0]
+        a, b, t, img = c["layers"]                                           # (the reference layer stays behind)
+        self.assertEqual((a["field"], a["text"]), ("Left team", "Saints"))
+        self.assertEqual((b["field"], b["fill"]), ("Left colour", "#123456"))
+        self.assertEqual(t["text"], "Map Saints")
+        self.assertTrue(img["src"].startswith("assets/5V5 HUD/") and os.path.isfile(ws.asset_path(img["src"])))
 
 
 class Backups(unittest.TestCase):
