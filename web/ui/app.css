@@ -373,3 +373,4 @@ button.danger { background: var(--red); color: #fff; box-shadow: none; font-weig
 .out-one { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px; align-items: center; }
 .field-in { display: grid; grid-template-columns: minmax(0, 1fr) 44px; gap: 6px; align-items: center; }
 .field-in .link { padding-inline: 6px; text-align: center; }
+.app-version { display: block; margin-top: auto; padding: 16px 20px; font-variant-numeric: tabular-nums; }

@@ -47,6 +47,8 @@ App.on((st, msg) => {
   if (!b) return;
   b.hidden = !(u.update || u.state === "installing");
   b.disabled = u.state === "installing";
+  const v = $("#app-version"), ver = (st.app || {}).version || u.current;   // (the version this app is, in the sidebar)
+  if (v && ver) v.textContent = "StandBy GFX v" + ver;
   b.textContent = u.state === "installing" ? `Updating… ${u.progress || 0}%` : `Update to ${u.version}`;
   const install = async () => { if (await ask(`Install StandBy GFX ${u.version}?`, "It closes and opens again in a few seconds. Clear Program first: it won't update while something is on air.", { ok: "Install" })) api("/api/update/install").catch(() => {}); };
   b.onclick = install;

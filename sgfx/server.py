@@ -266,7 +266,7 @@ class Engine:
                 "jobs": self.jobs.public() if hasattr(self, "jobs") else [],
                 "obs": self.obs.public() if hasattr(self, "obs") else None,
                 "update": {k: v for k, v in getattr(self, "update", {}).items() if k in ("current", "version", "update", "state", "detail", "progress")},
-                "trash": [{"id": t["comp"]["id"], "name": t["comp"].get("name", ""), "at": t.get("at", 0)} for t in self.project.get("trash") or []], "app": {"port": self.port, "addresses": self.addresses(), "network": dict(self.net.cfg) if hasattr(self, "net") else {}}}
+                "trash": [{"id": t["comp"]["id"], "name": t["comp"].get("name", ""), "at": t.get("at", 0)} for t in self.project.get("trash") or []], "app": {"version": __import__("sgfx").__version__, "port": self.port, "addresses": self.addresses(), "network": dict(self.net.cfg) if hasattr(self, "net") else {}}}
 
     def _obs_scene(self, scene):
         """OBS switched scene: the rules for it take graphics in / out."""
