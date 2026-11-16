@@ -170,6 +170,59 @@ class Workspace:
         with open(tmp, "w", encoding="utf-8") as f:
             f.write(text)
         os.replace(tmp, self.path)
+        self._backup(text)
+
+    # --- backups: a copy every BACKUP_EVERY seconds while it changes, the last BACKUP_KEEP kept ---
+    BACKUP_EVERY = 600
+    BACKUP_KEEP = 50
+
+    def _backup(self, text, label="", force=False):
+        now = time.time()
+        if not force and now - getattr(self, "_backed_at", 0) < self.BACKUP_EVERY:
+            return None
+        self._backed_at = now
+        folder = os.path.join(self.folder, "backups")
+        os.makedirs(folder, exist_ok=True)
+        name = time.strftime("%Y-%m-%d_%H-%M-%S", time.localtime(now)) + (f"_{label}" if label else "") + ".json"
+        with open(os.path.join(folder, name), "w", encoding="utf-8") as f:
+            f.write(text)
+        for old in sorted(n for n in os.listdir(folder) if n.endswith(".json"))[:-self.BACKUP_KEEP]:
+            try:
+                os.remove(os.path.join(folder, old))
+            except OSError:
+                pass
+        return name
+
+    def backups(self):
+        """[{"name", "at", "graphics"}], newest first."""
+        folder = os.path.join(self.folder, "backups")
+        out = []
+        for n in sorted((n for n in os.listdir(folder) if n.endswith(".json")) if os.path.isdir(folder) else [], reverse=True):
+            p = os.path.join(folder, n)
+            try:
+                with open(p, encoding="utf-8") as f:
+                    count = len(json.load(f).get("compositions", []))
+            except (OSError, ValueError):
+                continue
+            out.append({"name": n, "at": os.path.getmtime(p), "graphics": count})
+        return out
+
+    def restore_backup(self, name):
+        """The project as it was in a backup. What's there now is backed up first, so this can be undone."""
+        folder = os.path.join(self.folder, "backups")
+        path = os.path.normpath(os.path.join(folder, os.path.basename(name or "")))
+        if not path.startswith(os.path.normpath(folder) + os.sep) or not os.path.isfile(path):
+            raise KeyError("No such backup")
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        if not isinstance(data, dict) or not isinstance(data.get("compositions"), list):
+            raise ValueError("That backup isn't a workspace")
+        with self.lock:
+            self._backup(json.dumps(self.data, indent=1), "before-restore", force=True)
+            fresh = blank_project()
+            fresh.update(data)
+            self.data = fresh
+            self.changed()
 
     def add_comp(self, comp=None, after=None):
         comp = comp or blank_comp()

@@ -243,6 +243,29 @@ addEventListener("load", () => {
   dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
 })();
 
+// Backups of the open workspace.
+(function backups() {
+  const dlg = $("#backups"), list = $("#bk-list");
+  const when = t => new Date(t * 1000).toLocaleString(undefined, { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+  async function load() {
+    list.replaceChildren(h("li", { class: "muted" }, "Loading…"));
+    const { backups } = await (await fetch("/api/backups")).json();
+    if (!backups.length) { list.replaceChildren(h("li", { class: "muted small" }, "None yet: the first is saved after the next change.")); return; }
+    list.replaceChildren(...backups.map(b => h("li", { class: "pf ok" },
+      h("div", { style: { flex: "1" } }, h("b", {}, when(b.at) + (/before-restore/.test(b.name) ? " · before a restore" : "")),
+        h("small", {}, `${b.graphics} graphic${b.graphics === 1 ? "" : "s"}`)),
+      h("button", { class: "small", onclick: async () => {
+        if (!confirm(`Put the workspace back to how it was on ${when(b.at)}? What's there now is backed up first.`)) return;
+        await api("/api/backups/restore", { name: b.name });
+        toast("Workspace restored");
+        load();
+      } }, "Restore"))));
+  }
+  $("#backups-btn").addEventListener("click", () => { dlg.showModal(); load(); });
+  $("#bk-close").addEventListener("click", () => dlg.close());
+  dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
+})();
+
 const projectName = $("#project-name");
 projectName.addEventListener("change", () => api("/api/project", { name: projectName.value }));
 App.on(s => {

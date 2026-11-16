@@ -1114,6 +1114,8 @@ def make_handler(engine):
                 return self._send(engine.state_json())
             if path == "/api/stream":
                 return self._stream((parse_qs(urlparse(self.path).query).get("out") or [""])[0][:60])
+            if path == "/api/backups":
+                return self._json({"backups": engine.ws.backups()})
             if path == "/api/preflight":
                 return self._json({"checks": preflight.check(engine)})
             if path == "/api/companion":
@@ -1386,6 +1388,8 @@ def make_handler(engine):
                     live.program(body["id"], bool(body.get("on")), body.get("transition") or "animate")
                 elif path == "/api/clear":
                     live.clear(body.get("bus", "program"), body.get("transition") or "animate")
+                elif path == "/api/backups/restore":
+                    ws.restore_backup(body.get("name"))
                 elif path == "/api/undo-take":
                     result = {"undone": live.undo()}
                 # --- transitions, data ---

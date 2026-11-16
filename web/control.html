@@ -48,6 +48,11 @@
     <span id="version" class="muted small"></span>
   </div>
 </header>
+<dialog id="backups" class="preflight" aria-labelledby="bk-title">
+  <div class="pf-head"><h2 id="bk-title">Backups</h2><span class="spacer"></span><button class="small ghost" id="bk-close">Close</button></div>
+  <p class="muted small">The open workspace's graphics and settings, saved every 10 minutes while they change (the last 50). Restoring saves what's there now first, so it can be undone.</p>
+  <ul id="bk-list" class="pf-list"></ul>
+</dialog>
 <dialog id="preflight" class="preflight" aria-labelledby="pf-title">
   <div class="pf-head"><h2 id="pf-title">Show check</h2><span class="spacer"></span>
     <button class="small" id="pf-again">Check again</button><button class="small ghost" id="pf-close" aria-label="Close">Close</button></div>
@@ -76,6 +81,7 @@
     </div>
     <div class="home-head">
       <h2>My Workspaces</h2>
+      <button class="small" id="backups-btn" title="Copies of the open workspace, saved every 10 minutes while it changes">Backups</button>
       <span class="muted">One per event or show: its own graphics, files, data, transitions and global settings. Fonts are shared by all of them.</span>
     </div>
     <div id="ws-grid" class="ws-grid"></div>

@@ -129,6 +129,25 @@ class Parts(unittest.TestCase):
         self.assertEqual(ws.comp("c1")["layers"][0]["fill"], "#000")   # (the copy it was changed from: left alone)
 
 
+class Backups(unittest.TestCase):
+    def test_saved_listed_and_restored_with_a_copy_of_now(self):
+        d = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, d, True)
+        ws = Workspace(d, starter="")
+        ws.add_comp(blank_comp("A"))
+        ws.close()                                     # first save: a backup
+        ws.add_comp(blank_comp("B"))
+        ws.close()                                     # within 10 minutes: no new backup
+        b = ws.backups()
+        self.assertEqual([x["graphics"] for x in b], [1])
+        ws.restore_backup(b[0]["name"])
+        self.assertEqual([c["name"] for c in ws.get()["compositions"]], ["A"])
+        names = [x["name"] for x in ws.backups()]
+        self.assertTrue(any("before-restore" in n for n in names))   # (the two-graphic version, kept)
+        with self.assertRaises(KeyError):
+            ws.restore_backup("../project.json")
+
+
 class ShowCheck(unittest.TestCase):
     def test_finds_missing_files_fonts_and_no_program(self):
         import types
