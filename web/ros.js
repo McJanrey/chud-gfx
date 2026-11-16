@@ -56,7 +56,7 @@ const Ros = (() => {
     const segs = (show && show.segments) || [];
     const tl = (show && show.timeline) || [];
     const cur = show ? show.current : -1;
-    let html = `<div class="ros-head"><h2>Run of show</h2><div class="sub">${esc(matchLine(show))}</div></div><div class="ros-list" id="ros-list">`;
+    let html = `<div class="ros-head"><h2>Run of show</h2><div class="sub">${esc(matchLine(show))}</div></div><div class="ros-now" id="ros-now" hidden></div><div class="ros-list" id="ros-list">`;
     if (!segs.length) {
       const game = show && show.match && show.match.game_key;
       html += `<div class="ros-empty">${show && show.template_name === "" && game
@@ -87,10 +87,28 @@ const Ros = (() => {
       <div class="ros-more"><button data-ros="apply">Rebuild from Schedule</button><button data-ros="reset" ${cur >= 0 ? "" : "disabled"}>Reset times</button></div>`;
     const scroll = (box.querySelector("#ros-list") || {}).scrollTop;
     box.innerHTML = html;
+    tickNow();
     const list = box.querySelector("#ros-list");
     if (scroll !== undefined) list.scrollTop = scroll;
     else if (cur >= 0) { const el = list.querySelector(".ros-seg.now"); if (el) el.scrollIntoView({ block: "center" }); }
   }
+
+  // The countdown card: time left in the segment on air (over: red, counting up), and what's next.
+  function tickNow() {
+    const card = $("#ros-now");
+    if (!card || !R || !R.show) return;
+    const show = R.show, segs = show.segments || [], tl = show.timeline || [], cur = show.current;
+    const s = segs[cur], t = tl[cur];
+    if (!s || !t || !t.end) { card.hidden = true; return; }
+    const left = t.end - Date.now() / 1000, over = left < 0, a = Math.abs(left);
+    const clock = (a >= 3600 ? Math.floor(a / 3600) + ":" : "") + String(Math.floor(a / 60) % 60).padStart(2, "0") + ":" + String(Math.floor(a % 60)).padStart(2, "0");
+    const nx = segs[cur + 1], nt = tl[cur + 1];
+    card.hidden = false;
+    card.className = "ros-now" + (over ? " over" : left < 60 ? " soon" : "");
+    card.innerHTML = `<div class="rn-top"><span class="rn-label">${esc(s.title)}${s.game ? " · game" : ""}</span><span class="rn-clock">${over ? "+" : ""}${t.est_end ? "~" : ""}${clock}</span></div>
+      <div class="rn-sub">${over ? "over its time" : "left"}${nx ? ` · next <b style="color:${nx.color}">${esc(nx.title)}</b>${nt && nt.start ? ` at ${nt.est_start ? "~" : ""}${hm(nt.start)}` : ""}` : " · last segment"}</div>`;
+  }
+  setInterval(() => { if (visible.panel) tickNow(); }, 1000);
 
   $("#ros-panel").addEventListener("click", e => {
     const cue = e.target.closest("[data-cue]"), b = e.target.closest("[data-ros]");
