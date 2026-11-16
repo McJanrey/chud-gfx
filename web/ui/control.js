@@ -80,13 +80,22 @@ function renderFields() {
   if (!fs.length) return $("#fields").replaceChildren(...(timer ? [timer] : [el("p", { class: "muted empty" }, "This graphic has no fields.")]));
   const vals = S.live.preview.values[c.id] || {};
   const seen = new Set();
-  $("#fields").replaceChildren(...(timer ? [timer] : []), ...fs.filter(l => !seen.has(l.field) && seen.add(l.field)).map(l => {
+  // reading order (top to bottom, left to right); a graphic with slots: slot by slot (each caster's name, then handle)
+  const slotted = c.slots && c.slots.on;
+  const order = (a, b) => (slotted ? (+a.slot || 99) - (+b.slot || 99) : 0) || (Math.round(a.y / 8) - Math.round(b.y / 8)) || (a.x - b.x);
+  let lastSlot = null;
+  $("#fields").replaceChildren(...(timer ? [timer] : []), ...fs.filter(l => !seen.has(l.field) && seen.add(l.field)).sort(order).flatMap(l => {
+    const head = slotted && (+l.slot || 0) !== lastSlot ? [el("div", { class: "field-group" }, +l.slot ? `Slot ${+l.slot}` : "Other")] : [];
+    lastSlot = +l.slot || 0;
+    return [...head, fieldRow(l)];
+  }));
+  function fieldRow(l) {
     const key = CONTENT[l.type];
     const input = el("input", { value: vals[l.field] ?? l[key] ?? "", placeholder: l[key] || "", "aria-label": l.field,
       onchange: e => api("/api/values", { id: c.id, values: { [l.field]: e.target.value } }) });
     if (key === "fill" && /^#[0-9a-f]{6}$/i.test(vals[l.field] || l[key] || "")) input.type = "color";
     return el("div", { class: "field" }, el("label", {}, l.field, el("span", { class: "kindtag" }, l.type)), input);
-  }));
+  }
 }
 // The Global timer ({{TIMER}}): start / pause, reset to its start time, up or down. It runs on air too.
 const mmss = t => (t >= 3600 ? Math.floor(t / 3600) + ":" : "") + String(Math.floor(t / 60) % 60).padStart(2, "0") + ":" + String(t % 60).padStart(2, "0");
