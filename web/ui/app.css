@@ -374,3 +374,10 @@ button.danger { background: var(--red); color: #fff; box-shadow: none; font-weig
 .field-in { display: grid; grid-template-columns: minmax(0, 1fr) 44px; gap: 6px; align-items: center; }
 .field-in .link { padding-inline: 6px; text-align: center; }
 .app-version { display: block; margin-top: auto; padding: 16px 20px; font-variant-numeric: tabular-nums; }
+
+/* Chip boxes: text with live-data codes shown as labelled chips */
+.chipbox { min-height: 34px; padding: 6px 10px; border-radius: 8px; background: var(--input); border: 1px solid var(--line); color: var(--text); line-height: 22px; white-space: pre-wrap; overflow-wrap: anywhere; cursor: text; outline: none; }
+.chipbox.multi { min-height: 76px; }
+.chipbox:focus { border-color: var(--accent); }
+.chipbox:empty::before { content: attr(data-placeholder); color: var(--muted); }
+.chipbox .chip { display: inline-block; padding: 0 8px; margin: 0 2px; border-radius: 6px; background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--text); font-size: .92em; line-height: 20px; white-space: nowrap; user-select: all; }

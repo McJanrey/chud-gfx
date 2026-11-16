@@ -1,5 +1,5 @@
 // The Control page: Preview / Program, transitions, TAKE, the graphics list and each graphic's fields.
-import { $, el, api, toast, App, pages, typingIn } from "./lib.js";
+import { $, el, api, toast, App, pages, typingIn, chipBox } from "./lib.js";
 
 let S = null, selected = null, transition = null, filter = "";
 const KINDS = [["board", "Full-page boards"], ["lower third", "Lower thirds"], ["overlay", "Overlays"]];
@@ -91,8 +91,10 @@ function renderFields() {
   }));
   function fieldRow(l) {
     const key = CONTENT[l.type];
-    const input = el("input", { value: vals[l.field] ?? l[key] ?? "", placeholder: l[key] || "", "aria-label": l.field,
-      onchange: e => api("/api/values", { id: c.id, values: { [l.field]: e.target.value } }) });
+    // text fields show their live-data codes as chips; the rest (pictures, colours) stay plain boxes
+    const input = key === "text" ? chipBox(vals[l.field] ?? l[key] ?? "", v => api("/api/values", { id: c.id, values: { [l.field]: v } }), { label: l.field, placeholder: l[key] || "" })
+      : el("input", { value: vals[l.field] ?? l[key] ?? "", placeholder: l[key] || "", "aria-label": l.field,
+        onchange: e => api("/api/values", { id: c.id, values: { [l.field]: e.target.value } }) });
     if (key === "fill" && /^#[0-9a-f]{6}$/i.test(vals[l.field] || l[key] || "")) input.type = "color";
     const set = v => api("/api/values", { id: c.id, values: { [l.field]: v } });
     // a picture field suggests the team logos (Global's and the team list's)

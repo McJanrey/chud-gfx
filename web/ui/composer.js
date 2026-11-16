@@ -1,6 +1,6 @@
 // Composer: make and change graphics. Graphics list + layers on the left, the canvas in the middle,
 // the picked layer's (or graphic's) settings on the right. Changes save as they're made; Ctrl+Z / Ctrl+Y undo / redo.
-import { $, el, api, App, pages, picker, toast, upload, askText, typingIn } from "./lib.js";
+import { $, el, api, App, pages, picker, toast, upload, askText, typingIn, chipBox } from "./lib.js";
 import { Stage, W, H } from "../engine/stage.js";
 import { play } from "../engine/anim.js";
 import { clipShapes } from "../engine/layers/box.js";
@@ -494,7 +494,7 @@ function renderProps() {
     lab("Only shows while this has a value", bind(l, "show", "text", { placeholder: "e.g. {{Roster!Player 1 headshot}}" })),
     comp.slots && comp.slots.on ? lab("Slot (shows as many as there are)", bind(l, "slot", "select", { options: [["", "None"], ...[1, 2, 3, 4, 5, 6, 7, 8].map(n => [n, `Slot ${n}`]), ["stretch", "Stretch (the bar behind)"], ["follow", "Follow (moves with the bar's edge)"]], def: "" })) : "")];
   if (T === "text") sects.push(el("section", { class: "sect" }, el("h4", {}, "Words"),
-    lab("Text ({{Table!Field}} shows live data)", bind(l, "text", "area")),
+    lab("Text (live data shows as chips)", chipBox(l.text, v => { snapshot(); l.text = v; changed({ keepList: true, keepProps: true }); }, { multiline: true, label: "Text" })),
     el("div", { class: "two" }, lab("Font", bind(l, "font", "select", { options: [...new Set([...FONTS, ...(App.state.fonts || []).map(f => f.name), l.font].filter(Boolean))], def: "Inter" })), lab("Size", bind(l, "size", "number", { def: 32 }))),
     el("div", { class: "three" }, lab("Colour", bind(l, "color", "color")), lab("Weight", bind(l, "weight", "select", { options: [300, 400, 500, 600, 700, 800, 900].map(n => [n, String(n)]), def: 400, num: true })), lab("Spacing", bind(l, "tracking", "number"))),
     el("div", { class: "three" }, lab("Across", bind(l, "align", "select", { options: ["left", "center", "right"], def: "left" })), lab("Down", bind(l, "valign", "select", { options: ["top", "middle", "bottom"], def: "middle" })), lab("Line height", bind(l, "lineHeight", "number", { def: 1.15, step: 0.05 }))),

@@ -157,7 +157,7 @@ export const askText = (title, value = "", opts = {}) => dialog(title, opts.body
 // a box with typed words not yet saved, or a field touched in the last moment (just clicked into, a dropdown
 // or slider being moved). Once the words are saved (Enter, Tab, clicking off) the page catches up at once,
 // even though the cursor is still in the box.
-const FIELD = "input:not([type=checkbox]):not([type=radio]):not([type=button]):not([type=color]), textarea, select";
+const FIELD = "input:not([type=checkbox]):not([type=radio]):not([type=button]):not([type=color]), textarea, select, [contenteditable=true]";
 let unsaved = null, touched = 0, again = 0;
 function later() { setTimeout(catchUp, 700); }   // (once more when the engine's answer to a save has surely arrived)
 function catchUp() {
@@ -169,7 +169,7 @@ function catchUp() {
   }, 60);
 }
 addEventListener("focusin", () => { touched = Date.now(); }, true);
-const TYPED = "input:not([type]), input[type=text], input[type=search], input[type=url], input[type=email], input[type=password], textarea";
+const TYPED = "input:not([type]), input[type=text], input[type=search], input[type=url], input[type=email], input[type=password], textarea, [contenteditable=true]";
 addEventListener("input", e => { if (e.target.matches && e.target.matches(TYPED)) unsaved = e.target; touched = Date.now(); }, true);   // (only typed words hold a redraw, never a dropdown or a slider)
 addEventListener("change", e => { if (unsaved === e.target) unsaved = null; touched = 0; catchUp(); later(); }, true);
 addEventListener("focusout", e => { if (unsaved === e.target) unsaved = null; catchUp(); }, true);
@@ -181,3 +181,39 @@ export const typingIn = box => {
   if (wait > 0) { clearTimeout(again); again = setTimeout(catchUp, wait); return true; }
   return false;
 };
+
+// Chip boxes: text with live-data codes, the codes shown as labelled chips ("{{Global!Left name}}" reads
+// "Left name"), as GFX Baby had. The saved value is still the plain text with its codes; a code typed in
+// by hand becomes a chip once the box is left. Enter saves a one-line box.
+export function chipLabel(code) {
+  const c = code.replace(/^\{\{\s*|\s*\}\}$/g, "");
+  const named = { time: "Clock", clock: "Clock", time24: "Clock (24 h)", date: "Date", timer: "Timer", sponsors: "Sponsor", "sponsors all": "All sponsors" }[c.toLowerCase()];
+  if (named) return named;
+  const cd = /^countdown\s*:\s*(.+)$/i.exec(c);
+  if (cd) return `Countdown to ${cd[1]}`;
+  const i = c.indexOf("!");
+  if (i < 0) return c;
+  const table = c.slice(0, i), field = c.slice(i + 1);
+  return table === "Global" ? field : /^[A-Z]{1,3}\d+$/.test(field) ? `${table} ${field}` : `${table}: ${field.replace("#", " row ")}`;
+}
+export function chipBox(value, onSave, { multiline = false, placeholder = "", label = "" } = {}) {
+  const box = el("div", { class: "chipbox" + (multiline ? " multi" : ""), contenteditable: "true", role: "textbox", "aria-multiline": String(multiline),
+    "aria-label": label || placeholder, "data-placeholder": placeholder, spellcheck: "false" });
+  const draw = v => box.replaceChildren(...String(v ?? "").split(/(\{\{[^{}]+\}\})/).filter(Boolean).map(p => /^\{\{[^{}]+\}\}$/.test(p)
+    ? el("span", { class: "chip", contenteditable: "false", "data-code": p, title: p }, chipLabel(p)) : document.createTextNode(p)));
+  const read = node => [...node.childNodes].map(n => n.nodeType === 3 ? n.nodeValue : n.dataset && n.dataset.code ? n.dataset.code
+    : n.nodeName === "BR" ? "\n" : (n.nodeName === "DIV" || n.nodeName === "P" ? "\n" : "") + read(n)).join("");
+  let last = String(value ?? "");
+  draw(last);
+  box.value = last;
+  box.addEventListener("keydown", e => { if (e.key === "Enter" && !multiline) { e.preventDefault(); box.blur(); } });
+  box.addEventListener("paste", e => { e.preventDefault(); document.execCommand("insertText", false, e.clipboardData.getData("text/plain")); });
+  box.addEventListener("blur", () => {
+    const v = read(box).replace(/\u00a0/g, " ");
+    box.value = v;
+    if (v !== last) { last = v; onSave(v); }
+    draw(v);
+  });
+  box.set = v => { last = String(v ?? ""); box.value = last; draw(last); };   // (a value put in from outside, e.g. a live-data pick)
+  return box;
+}
