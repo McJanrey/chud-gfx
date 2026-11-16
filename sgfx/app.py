@@ -18,6 +18,7 @@ from pathlib import Path
 
 from . import __version__
 from .server import make_server, WEB
+from . import logs
 
 log = logging.getLogger("sgfx")
 PORTS = range(7820, 7830)
@@ -120,7 +121,7 @@ def main(argv=None):
     if args.smoke_test:
         return smoke_test()
     d = data_dir()
-    logging.basicConfig(filename=d / "standby-gfx.log", level=logging.INFO, encoding="utf-8", format="%(asctime)s %(levelname)s %(message)s")
+    logs.setup(str(d))
     migrate(d)
     port = free_port(old_settings(d).get("http_port"))   # (GFX Baby's port first: OBS sources pointing at it keep working)
     if not port:
@@ -129,7 +130,7 @@ def main(argv=None):
     ws = Path(args.workspace) if args.workspace else pick_workspace(d)
     engine, srv = make_server(str(ws), str(d / "library"), port)
     threading.Thread(target=srv.serve_forever, daemon=True).start()
-    threading.Thread(target=engine.check_update, daemon=True).start()
+    threading.Thread(target=engine.watch_updates, daemon=True, name="updates").start()
 
     def remember():   # (which workspace to open next time)
         try:

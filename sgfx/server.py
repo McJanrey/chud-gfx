@@ -25,6 +25,8 @@ from . import parts as partsmod
 from .net import Net
 from .obs import OBS
 from .buses import Buses
+from . import logs
+from .logs import log
 
 WEB = os.path.join(getattr(sys, "_MEIPASS", ""), "web") if getattr(sys, "frozen", False) else os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "web")
 mimetypes.add_type("text/javascript", ".js")
@@ -104,12 +106,21 @@ class Engine:
 
     def check_update(self):
         from . import updater, __version__
-        self.update = {"current": __version__, "state": "checking"}
+        if getattr(self, "update", {}).get("state") == "installing":
+            return
         try:
             self.update = {**updater.check(), "state": "ready"}
-        except Exception as e:   # (offline, no release yet: the app works the same)
-            self.update = {"current": __version__, "state": "error", "detail": str(e)[:120]}
+        except Exception as e:   # (offline, no release yet: the app works the same; a found update stays offered)
+            if not getattr(self, "update", {}).get("update"):
+                self.update = {"current": __version__, "state": "error", "detail": str(e)[:120]}
+            log.info("Update check failed: %s", e)
         self._bump()
+
+    def watch_updates(self, every=600):
+        """Checks now, then every 10 minutes: a release made while the app is open still shows up."""
+        while True:
+            self.check_update()
+            time.sleep(every)
 
     def install_update(self):
         from . import updater
@@ -705,6 +716,9 @@ class Engine:
         for side in ("left", "right"):
             if not (g.get(side) or {}).get("name"):
                 add("warn", f"No {side} team name in Global", "global")
+        errs = logs.errors_since(1800)
+        if errs:
+            add("warn", f"{len(errs)} error{'s' if len(errs) != 1 else ''} in the last 30 minutes (newest: {errs[-1][:120]}). Open the Error log for details", "log")
         if not any(o["level"] != "ok" for o in out):
             add("ok", "Nothing to fix", "")
         rank = {"stop": 0, "warn": 1, "ok": 2}
@@ -844,7 +858,7 @@ class Engine:
                 with self.lock:
                     self._playlist_next(p)
             except Exception as e:   # (a bad item must not stop playlists for good)
-                print("playlist:", e, file=sys.stderr)
+                log.exception("Playlist stopped: %s", e)
                 self.playing = None
 
     def _playlist_next(self, p):
@@ -1026,6 +1040,10 @@ class Engine:
             self.__dict__.setdefault("cam_status", {})[str(body.get("id"))] = {"state": str(body.get("state")), "at": time.time()}
         elif path == "/api/cams/look":
             self.cam_look(body)
+        elif path == "/api/log":
+            logs.page_error(body)
+        elif path == "/api/log/read":
+            result = {"text": logs.tail(400), "file": logs.path or ""}
         elif path == "/api/check":
             result = {"items": self.show_check()}
         elif path == "/api/backup/restore":
@@ -1139,6 +1157,18 @@ def handler(engine):
             return True
 
         def do_GET(self):
+            try:
+                self._get()
+            except (ConnectionError, OSError):
+                pass   # (the page went away mid-answer)
+            except Exception:
+                log.exception("GET %s failed", self.path)
+                try:
+                    self._send(500, b'{"error": "Something failed here: see the Error log"}')
+                except OSError:
+                    pass
+
+        def _get(self):
             if self._refused():
                 return
             path = urlparse(self.path).path
@@ -1213,9 +1243,10 @@ def handler(engine):
                         result = engine.act(path, body)
                 self._send(200, json.dumps(result or {"ok": True}))
             except (KeyError, ValueError) as e:
+                log.warning("POST %s refused: %s", self.path, e)
                 self._send(400, json.dumps({"error": str(e)}))
             except Exception as e:
-                print("POST", self.path, repr(e), file=sys.stderr)
+                log.exception("POST %s failed", self.path)
                 self._send(500, json.dumps({"error": f"Something failed here ({e.__class__.__name__}): {str(e)[:160]}"}))
 
         def _upload(self, q, name, data):
@@ -1279,6 +1310,7 @@ def make_server(workspace, library=None, port=7800):
 
 
 def serve(workspace, library=None, port=7800):
+    logs.setup(library or os.path.dirname(os.path.abspath(workspace)))
     engine, server = make_server(workspace, library, port)
     print(f"StandBy GFX on http://127.0.0.1:{engine.port}/output", flush=True)
     server.serve_forever()

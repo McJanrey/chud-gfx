@@ -48,7 +48,15 @@ App.on((st, msg) => {
   b.hidden = !(u.update || u.state === "installing");
   b.disabled = u.state === "installing";
   b.textContent = u.state === "installing" ? `Updating… ${u.progress || 0}%` : `Update to ${u.version}`;
-  b.onclick = async () => { if (await ask(`Install StandBy GFX ${u.version}? It closes and opens again in a few seconds.`)) api("/api/update/install"); };
+  const install = async () => { if (await ask(`Install StandBy GFX ${u.version}?`, "It closes and opens again in a few seconds. Clear Program first: it won't update while something is on air.", { ok: "Install" })) api("/api/update/install").catch(() => {}); };
+  b.onclick = install;
+  // a new version pops up once (the pill stays for later)
+  let seen = "";
+  try { seen = localStorage.getItem("sg-update-asked") || ""; } catch (e) {}
+  if (u.update && u.state !== "installing" && seen !== u.version && !document.querySelector("dialog[open]")) {
+    try { localStorage.setItem("sg-update-asked", u.version); } catch (e) {}
+    install();
+  }
 });
 
 // Show check: what could go wrong on air, worst first, each with the page that fixes it.
@@ -56,10 +64,25 @@ async function runCheck() {
   const { items } = await api("/api/check");
   const mark = { stop: "✕", warn: "!", ok: "✓" };
   $("#check-list").replaceChildren(...items.map(i => el("div", { class: "check " + i.level }, el("span", { class: "mark" }, mark[i.level]), el("span", {}, i.text),
-    el("span", { class: "spacer" }), i.page && i.level !== "ok" ? el("button", { class: "small ghost", onclick: () => { $("#check-dlg").close(); document.querySelector(`#nav button[data-page="${i.page}"]`)?.click(); } }, "Fix") : "")));
+    el("span", { class: "spacer" }), i.page && i.level !== "ok" ? el("button", { class: "small ghost", onclick: () => { if (i.page === "log") return showLog(); $("#check-dlg").close(); document.querySelector(`#nav button[data-page="${i.page}"]`)?.click(); } }, "Fix") : "")));
   const worst = items[0] ? items[0].level : "ok";
   $("#check-btn").className = "small " + (worst === "stop" ? "check-stop" : worst === "warn" ? "check-warn" : "");
 }
 $("#check-btn").addEventListener("click", () => { $("#check-dlg").showModal(); runCheck(); });
 $("#check-again").addEventListener("click", runCheck);
+$("#check-log").addEventListener("click", showLog);
+
+// Error log: the newest lines of standby-gfx.log, to copy and send when something breaks.
+async function showLog() {
+  const { text, file } = await api("/api/log/read");
+  const box = el("textarea", { class: "log-text", readonly: true, "aria-label": "Error log" }, text);
+  const d = el("dialog", { class: "dlg log-dlg" },
+    el("div", { class: "row" }, el("h3", {}, "Error log"), el("span", { class: "spacer" }),
+      el("button", { class: "small", onclick: async () => { await navigator.clipboard.writeText(box.value).catch(() => { box.select(); document.execCommand("copy"); }); toast("Copied the log"); } }, "Copy"),
+      el("button", { class: "small ghost", onclick: () => { d.close(); d.remove(); } }, "Close")),
+    el("p", { class: "muted small" }, "Newest at the bottom. The whole file: ", el("code", {}, file || "standby-gfx.log")), box);
+  document.body.appendChild(d);
+  d.showModal();
+  box.scrollTop = box.scrollHeight;
+}
 $("#check-close").addEventListener("click", () => $("#check-dlg").close());

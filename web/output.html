@@ -21,6 +21,18 @@
 import { Stage, W, H } from "./engine/stage.js";
 // ?bus=preview, ?comp=<id> (that graphic only, always on), ?monitor=1 (muted, not counted), ?bg=checker
 const q = new URLSearchParams(location.search);
+
+// Errors on this page go to the engine's Error log (Show check > Error log), so we know what broke.
+{
+  let sent = 0;
+  const report = (msg, src, line, stack) => {
+    if (++sent > 30) return;   // (a loop of the same error mustn't flood the log)
+    fetch("/api/log", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ page: "output " + location.search, msg: String(msg || "error"), src, line, stack }) }).catch(() => {});
+  };
+  addEventListener("error", e => { if (e.message) report(e.message, e.filename, e.lineno, e.error && e.error.stack); }, true);
+  addEventListener("unhandledrejection", e => { const r = e.reason || {}; report(r.message || String(r), "", "", r.stack); });
+}
 if (q.get("bg")) document.body.classList.add(q.get("bg"));
 const root = document.getElementById("stage");
 const stage = new Stage(root, { bus: q.get("bus") || "program", comp: q.get("comp"), muted: q.get("monitor") === "1" });

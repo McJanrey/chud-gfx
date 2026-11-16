@@ -42,6 +42,19 @@ export function toast(msg, action) {
 }
 
 // The live state from the engine, and who wants to hear about it.
+
+// Errors on this page go to the engine's Error log (Show check > Error log), so we know what broke.
+{
+  let sent = 0;
+  const report = (msg, src, line, stack) => {
+    if (++sent > 30) return;   // (a loop of the same error mustn't flood the log)
+    fetch("/api/log", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ page: "control " + location.pathname, msg: String(msg || "error"), src, line, stack }) }).catch(() => {});
+  };
+  addEventListener("error", e => { if (e.message) report(e.message, e.filename, e.lineno, e.error && e.error.stack); }, true);
+  addEventListener("unhandledrejection", e => { const r = e.reason || {}; report(r.message || String(r), "", "", r.stack); });
+}
+
 export const App = { state: null, listeners: [], page: "control", on(fn) { this.listeners.push(fn); if (this.state) fn(this.state); } };
 // The monitors (iframes of /output?monitor=1) get each change from here.
 function feed(msg) {
