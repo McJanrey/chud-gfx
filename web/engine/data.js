@@ -46,14 +46,17 @@ function clockText(tables) {
 }
 // {{Sponsors}}: the sponsor showing now. Every output picks the same one: they take turns from the
 // list's epoch, each for its seconds (Sponsors table: Logo, Seconds, Epoch, White).
-function sponsorNow(tables) {
+// sponsorTurn: {i (its row, from 0), logo, secs, left (seconds)} of the sponsor on now, or null.
+export function sponsorTurn(tables) {
   const rows = (tables.Sponsors || []).slice(1).filter(r => r[0]);
-  if (!rows.length) return "";
+  if (!rows.length) return null;
   const secs = rows.map(r => Math.max(1, +r[1] || 10)), total = secs.reduce((a, b) => a + b, 0);
   let t = ((Date.now() + skew) / 1000 - (+rows[0][2] || 0)) % total;
-  for (let i = 0; i < rows.length; i++) { if (t < secs[i]) return rows[i][0]; t -= secs[i]; }
-  return rows[0][0];
+  if (t < 0) t += total;
+  for (let i = 0; i < rows.length; i++) { if (t < secs[i]) return { i, logo: rows[i][0], secs: secs[i], left: secs[i] - t }; t -= secs[i]; }
+  return { i: 0, logo: rows[0][0], secs: secs[0], left: secs[0] };
 }
+const sponsorNow = tables => (sponsorTurn(tables) || {}).logo || "";
 const time24 = () => { const n = new Date(Date.now() + skew); return pad(n.getHours()) + ":" + pad(n.getMinutes()); };
 // {{countdown:19:30}}: time left until that time today (or tomorrow once it's passed more than 12 hours ago)
 function countdown(_, until) {

@@ -494,7 +494,9 @@ function renderProps() {
     T === "image" ? lab("When live data has none", picker("image", l.placeholder || "", v => { snapshot(); l.placeholder = v; changed({ keepProps: true }); })) : null,
     T === "image" ? el("p", { class: "muted small" }, "{{Sponsors}} shows each sponsor in turn; {{Sponsors all}} shows every sponsor in a row.") : null,
     T === "image" ? el("div", { class: "two" }, bind(l, "mono", "check", { label: "White sponsor logos (footer)" }),
-      lab("Sponsor change", bind(l, "swap", "select", { options: [["", "Cut"], ["fade", "Fade"]], def: "" }))) : null,
+      lab("Sponsor change", bind(l, "swap", "select", { options: [["", "Lift and fade"], ["fade", "Fade"], ["cut", "Cut"]], def: "" }))) : null,
+    T === "image" && /\{\{\s*sponsors\s*\}\}/i.test(l.src || "") ? el("div", { class: "two" }, bind(l, "bar", "check", { label: "Show a bar with the time it has left" }),
+      l.bar ? lab("Bar colour", bind(l, "barColor", "text", { placeholder: "#ffffff" })) : el("span")) : null,
     T === "video" ? el("div", { class: "row" }, bind(l, "loop", "check", { label: "Loop" }), bind(l, "audio", "check", { label: "Sound on Program" })) : null,
     T === "video" ? el("div", { class: "three" }, lab("Tint", bind(l, "tint", "text", { placeholder: "(none)" })), lab("Brightness", bind(l, "brightness", "text")), lab("Speed", bind(l, "speed", "text"))) : null));
   if (T === "rotator" || T === "ticker") sects.push(itemsSect(l));

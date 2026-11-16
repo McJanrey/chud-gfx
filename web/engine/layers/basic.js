@@ -1,6 +1,6 @@
 // rect, image and video layers (Spec 01 section 2).
 import { content, picture } from "./box.js";
-import { ticks } from "../data.js";
+import { ticks, sponsorTurn } from "../data.js";
 
 export function rect(el, layer, ctx) {
   const s = el.style;
@@ -45,13 +45,29 @@ export function image(el, layer, ctx) {
   img.draggable = false;
   const white = () => { img.style.filter = layer.mono && whiteLogos(ctx).has(ctx.resolve(raw)) ? "brightness(0) invert(1)" : ""; if (layer.pic) picture(img, layer); };
   if (layer.mono) white();
-  // ({{Sponsors}}: the picture changes when the turn moves on)
+  // ({{Sponsors}}: the picture changes when the turn moves on, with a lift and fade unless set otherwise)
+  const isSponsor = /\{\{\s*sponsors\s*\}\}/i.test(String(raw || ""));
+  const bar = isSponsor && layer.bar ? document.createElement("div") : null;
+  if (bar) {
+    Object.assign(bar.style, { position: "absolute", left: "0", bottom: "0", height: (+layer.barH || 4) + "px", width: "100%", background: ctx.resolve(layer.barColor || "#ffffff"), transformOrigin: "left", zIndex: "1" });
+    el.appendChild(bar);
+  }
+  const showLeft = () => {   // (the bar shrinks over the sponsor's seconds)
+    const t = sponsorTurn({ Sponsors: ctx.table("Sponsors") });
+    if (!bar || !t) return;
+    bar.getAnimations().forEach(a => a.cancel());
+    bar.animate([{ transform: `scaleX(${t.left / t.secs})` }, { transform: "scaleX(0)" }], { duration: t.left * 1000, easing: "linear", fill: "forwards" });
+  };
+  showLeft();
   if (ticks(raw)) ctx.tick(() => {
     const u = ctx.url(ctx.resolve(raw));
     if (img.src === new URL(u, location.href).href) return;
     img.src = u;
     if (layer.mono) white();
-    if (layer.swap && layer.swap !== "cut") img.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 500, easing: "ease-out" });
+    const swap = layer.swap || "lift";
+    if (swap === "lift") img.animate([{ opacity: 0, transform: "translateY(14%)" }, { opacity: 1, transform: "none" }], { duration: 600, easing: "cubic-bezier(.2, .8, .2, 1)" });
+    else if (swap === "fade") img.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 500, easing: "ease-out" });
+    showLeft();
   });
 }
 

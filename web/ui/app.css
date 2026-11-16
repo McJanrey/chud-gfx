@@ -117,6 +117,8 @@ input[type=color] { padding: 2px; height: 34px; cursor: pointer; }
 .sponsor .thumb-pick { grid-column: 1 / -1; }   /* (the logo picker gets the whole width: in the side column it was squeezed to nothing) */
 .sponsor > button:first-of-type { grid-column: 4; }
 .sponsor + .sponsor { margin-top: 8px; }
+.sponsor .sp-left { grid-column: 3; color: var(--red); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.sponsor.on-air .thumb-pick img { outline: 2px solid var(--red); outline-offset: 1px; }
 .inline { display: inline-flex; align-items: center; gap: 4px; color: var(--muted); }
 .thumb-pick { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 6px; align-items: center; min-width: 0; }
 .thumb-pick img { width: 44px; height: 28px; object-fit: contain; background: var(--input); border-radius: 4px; }

@@ -1,5 +1,6 @@
 // Global: set once, used by every graphic (teams, series, sponsors, background loop, ticker, clock, casters).
 import { $, el, api, App, pages, picker, typingIn } from "./lib.js";
+import { sponsorTurn } from "../engine/data.js";
 
 const save = change => api("/api/global", { global: change });
 const G = () => App.state.project.global || {};
@@ -46,6 +47,7 @@ function sponsors() {
         picker("image", s.logo || "", v => { list[i] = { ...s, logo: v }; put(); }, "sponsors")),
       el("label", { class: "inline" }, num(s.secs || 10, v => { list[i] = { ...s, secs: Math.max(1, v) }; put(); }, { min: 1, style: "width:70px" }), "s"),
       toggle("White", !!s.white, v => { list[i] = { ...s, white: v }; put(); }),
+      el("span", { class: "sp-left small", "data-i": String(i) }),
       el("button", { class: "small ghost", "aria-label": "Move up", disabled: !i, onclick: () => { [list[i - 1], list[i]] = [list[i], list[i - 1]]; put(); } }, "↑"),
       el("button", { class: "small ghost", "aria-label": "Remove", onclick: () => { list.splice(i, 1); put(); } }, "✕"))),
     el("button", { class: "small", onclick: () => { list.push({ logo: "", secs: 10, white: false }); put(); } }, "+ Sponsor"));
@@ -107,4 +109,15 @@ function render() {
     tag(sponsors(), "g-sponsors"), ticker(), clock(), loop(), casters());
 }
 App.on(() => { if (App.page === "global") render(); });
+// Which sponsor is on air now, and how long it has left (the rows with a logo take turns).
+setInterval(() => {
+  if (App.page !== "global" || !App.state) return;
+  const t = sponsorTurn(App.state.data.tables || {});
+  const withLogo = (G().sponsors || []).map((s, i) => s.logo ? i : -1).filter(i => i >= 0);
+  for (const e of document.querySelectorAll(".sp-left")) {
+    const on = t && withLogo[t.i] === +e.dataset.i;
+    e.textContent = on ? `On air · ${Math.ceil(t.left)}s left` : "";
+    e.closest(".sponsor").classList.toggle("on-air", !!on);
+  }
+}, 500);
 pages.global = { shown() { sig = ""; if (App.state) render(); } };
