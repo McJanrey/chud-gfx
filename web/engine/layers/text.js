@@ -57,22 +57,32 @@ export function shrink(el, span, size) {
   span.style.fontSize = lo + "px";
 }
 
-// Scrolling text (a ticker): right to left at layer.scroll px a second, two copies end to end so it never runs out.
+// Scrolling text (a ticker): right to left at layer.scroll px a second, copies end to end so it never runs out.
+// Divider: the lines (kept apart by "|", as {{Global!Ticker}} is) get a bar of that colour between them.
 function scroller(el, span, layer, hold = 0) {
   el.style.overflow = "hidden";
   el.style.justifyContent = "flex-start";
   const track = document.createElement("div");
   track.className = "sg-track";
-  track.style.cssText = "display:flex;flex:none;white-space:pre;will-change:transform";
-  const gap = Math.round((+layer.size || 32) * 2);
-  span.style.paddingRight = gap + "px";
-  const copy = span.cloneNode(true);
+  track.style.cssText = "display:flex;flex:none;white-space:pre;will-change:transform;align-items:center";
+  const size = +layer.size || 32, gap = Math.round(size * 2);
+  if (layer.divider) {
+    const parts = span.textContent.split(/\s*\|\s*/).map(p => p.trim()).filter(Boolean);
+    span.replaceChildren(...parts.flatMap(p => {
+      const bar = document.createElement("span");
+      bar.style.cssText = `display:inline-block;vertical-align:middle;width:${+layer.dividerWidth || 5}px;height:0.9em;margin:0 ${Math.round(size * 0.75)}px;background:${layer.divider}`;
+      return [document.createTextNode(p), bar];
+    }));
+  } else span.style.paddingRight = gap + "px";
   span.remove();
-  track.append(span, copy);
+  track.append(span);
   el.appendChild(track);
   requestAnimationFrame(() => {
-    const w = span.getBoundingClientRect().width / (el.getBoundingClientRect().width / el.offsetWidth || 1);
+    const k = el.getBoundingClientRect().width / el.offsetWidth || 1;
+    const w = span.getBoundingClientRect().width / k;
     if (!w) return;
+    // (enough copies that a line shorter than the box still fills it all the way round)
+    while (track.children.length < Math.ceil((el.offsetWidth || 1920) / w) + 1) track.append(span.cloneNode(true));
     track.animate([{ transform: "translateX(0)" }, { transform: `translateX(${-w}px)` }],
       { duration: (w / +layer.scroll) * 1000, iterations: Infinity, easing: "linear", delay: hold });   // (still, from the start, while it animates in)
   });

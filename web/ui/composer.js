@@ -477,6 +477,7 @@ function renderProps() {
     el("div", { class: "three" }, lab("Colour", bind(l, "color", "color")), lab("Weight", bind(l, "weight", "select", { options: [300, 400, 500, 600, 700, 800, 900].map(n => [n, String(n)]), def: 400, num: true })), lab("Spacing", bind(l, "tracking", "number"))),
     el("div", { class: "three" }, lab("Across", bind(l, "align", "select", { options: ["left", "center", "right"], def: "left" })), lab("Down", bind(l, "valign", "select", { options: ["top", "middle", "bottom"], def: "middle" })), lab("Line height", bind(l, "lineHeight", "number", { def: 1.15, step: 0.05 }))),
     el("div", { class: "two" }, lab("Too long", bind(l, "fit", "select", { options: [["shrink", "Shrink to fit"], ["none", "Run over"], ["wrap", "Wrap"]], def: "shrink" })), lab("Scroll (px/s, ticker)", bind(l, "scroll", "number", { def: 0 }))),
+    +l.scroll > 0 ? el("div", { class: "two" }, lab("Divider colour (a bar between lines)", bind(l, "divider", "text", { placeholder: "(none) e.g. #ffc52a" })), lab("Divider width", bind(l, "dividerWidth", "number", { def: 5 }))) : null,
     el("div", { class: "row" }, bind(l, "caps", "check", { label: "Capitals" }), bind(l, "italic", "check", { label: "Italic" }))));
   if (T === "rect" || T === "shape") sects.push(el("section", { class: "sect" }, el("h4", {}, "Look"),
     T === "shape" ? lab("Shape", bind(l, "shape", "select", { options: SHAPES, def: "rect" })) : null,
