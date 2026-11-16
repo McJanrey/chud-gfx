@@ -178,6 +178,32 @@
   };
   GFX.hasFont = name => assetFonts.has(String(name || "").toLowerCase()) || GFX.builtinFonts.includes(name);
 
+  // --- picture adjustments (Composer > Picture) ------------------------------------
+  // layer.pic = {bright, contrast, sat, gray, hue (degrees), flipX, flipY, crop: {l, t, r, b} (% taken off each edge)}
+  GFX.picFilter = function (layer) {
+    const p = layer.pic || {}, f = [];
+    if (p.bright != null && +p.bright !== 100) f.push(`brightness(${+p.bright}%)`);
+    if (p.contrast != null && +p.contrast !== 100) f.push(`contrast(${+p.contrast}%)`);
+    if (p.sat != null && +p.sat !== 100) f.push(`saturate(${+p.sat}%)`);
+    if (+p.gray) f.push(`grayscale(${+p.gray}%)`);
+    if (+p.hue) f.push(`hue-rotate(${+p.hue}deg)`);
+    return f.join(" ");
+  };
+  GFX.picStyle = function (node, layer) {
+    const p = layer.pic || {};
+    node.style.filter = GFX.picFilter(layer);
+    node.style.transform = p.flipX || p.flipY ? `scale(${p.flipX ? -1 : 1}, ${p.flipY ? -1 : 1})` : "";
+  };
+  GFX.picCrop = function (layer) {
+    const c = (layer.pic || {}).crop;
+    if (!c) return null;
+    const l = Math.max(0, +c.l || 0), t = Math.max(0, +c.t || 0), r = Math.max(0, +c.r || 0), b = Math.max(0, +c.b || 0);
+    if (!(l || t || r || b) || l + r >= 99 || t + b >= 99) return null;
+    const w = 100 - l - r, h = 100 - t - b;
+    return { img: { position: "absolute", inset: "auto", width: (10000 / w) + "%", height: (10000 / h) + "%",
+                    left: (-l * 100 / w) + "%", top: (-t * 100 / h) + "%", maxWidth: "none" } };
+  };
+
   // --- data and fields -----------------------------------------------------------
   const ctx = { tables: {} };
   GFX.setData = function (tables) { ctx.tables = tables || {}; GFX.retext(); tickRotators(); redrawBrackets(); reshow(); };
@@ -378,16 +404,23 @@
     }
     if (t === "image") {
       if (!value) return el("div");
-      const img = el("img", "gfx-media", { objectFit: fitOf(layer.fit), objectPosition: POSITIONS[layer.position] || "" });
+      const crop = GFX.picCrop(layer);
+      const img = el("img", "gfx-media", crop ? Object.assign({ objectFit: "fill" }, crop.img) : { objectFit: fitOf(layer.fit), objectPosition: POSITIONS[layer.position] || "" });
       img.draggable = false;
-      const done = smoothed.get(smoothKey(value, layer));
+      GFX.picStyle(img, layer);
+      const done = !crop && smoothed.get(smoothKey(value, layer));
       img.src = done || url(encodeURI(value));
-      if (!done && layer.fit !== "fill" && !/\.(gif|svg)(\?|$)/i.test(value)) img.addEventListener("load", () => smooth(img, layer, value), { once: true });
-      return img;
+      if (!crop && !done && layer.fit !== "fill" && !/\.(gif|svg)(\?|$)/i.test(value)) img.addEventListener("load", () => smooth(img, layer, value), { once: true });
+      if (!crop) return img;
+      // Cropped: the picture is drawn bigger inside a box that cuts off the edges taken away.
+      const box = el("div", "gfx-media", { overflow: "hidden" });
+      box.appendChild(img);
+      return box;
     }
     if (t === "video") {
       if (!value) return el("div");
       const v = el("video", "gfx-media", { objectFit: fitOf(layer.fit) });
+      GFX.picStyle(v, layer);
       v.src = url(encodeURI(value));
       v.muted = opts.muted || !layer.audio;
       v.loop = layer.loop !== false;

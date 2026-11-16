@@ -1612,6 +1612,34 @@
   }
   const lab = (text, ...kids) => h("label", {}, text, ...kids);
 
+  // Picture: light, colour, flip and crop for a picture or video layer (layer.pic, drawn by GFX.picStyle / picCrop).
+  function pictureSection(l) {
+    const pic = () => (l.pic = l.pic || {});
+    const slider = (key, label, min, max, def, unit) => {
+      const val = () => (l.pic && l.pic[key] != null ? +l.pic[key] : def);
+      const out = h("span", { class: "pic-val" }, val() + unit);
+      const r = h("input", { type: "range", min, max, step: 1, value: val(), "aria-label": label,
+        onpointerdown: () => snapshot(), onkeydown: () => snapshot(),
+        oninput: e => { pic()[key] = +e.target.value; out.textContent = e.target.value + unit; changed({ keepList: true }); },
+        ondblclick: () => { snapshot(); delete pic()[key]; changed({ props: true }); } });
+      return h("label", { class: "pic-row", title: "Double-click to reset" }, h("span", {}, label), r, out);
+    };
+    const crop = side => h("input", { type: "number", min: 0, max: 95, step: 1, value: ((l.pic || {}).crop || {})[side] || 0, "aria-label": "Crop " + side,
+      onchange: e => { snapshot(); const c = pic().crop = pic().crop || {}; c[side] = Math.max(0, Math.min(95, +e.target.value || 0)); changed({ keepList: true }); } });
+    const flip = (key, label) => h("button", { class: "small" + ((l.pic || {})[key] ? " on" : ""), "aria-pressed": String(!!(l.pic || {})[key]),
+      onclick: () => { snapshot(); pic()[key] = !pic()[key]; changed({ props: true }); } }, label);
+    return h("div", { class: "sect pic-sect" }, h("h3", {}, "Picture"),
+      slider("bright", "Brightness", 0, 200, 100, "%"),
+      slider("contrast", "Contrast", 0, 200, 100, "%"),
+      slider("sat", "Saturation", 0, 200, 100, "%"),
+      slider("gray", "Black and white", 0, 100, 0, "%"),
+      slider("hue", "Hue", -180, 180, 0, "°"),
+      h("div", { class: "row-gap", style: { marginTop: "8px" } }, flip("flipX", "Flip across"), flip("flipY", "Flip up and down")),
+      h("div", { class: "pic-crop" }, h("span", { class: "muted small" }, "Crop (% off each edge)"),
+        h("div", { class: "grid4" }, lab("Left", crop("l")), lab("Top", crop("t")), lab("Right", crop("r")), lab("Bottom", crop("b")))),
+      l.pic && Object.keys(l.pic).length ? h("button", { class: "small", style: { marginTop: "8px" }, onclick: () => { snapshot(); delete l.pic; changed({ props: true }); } }, "Reset picture") : null);
+  }
+
   function syncPropsGeometry() {
     const l = layerById(selected);
     if (!l) return;
@@ -1708,6 +1736,7 @@
         l.type !== "image" ? h("div", { class: "row-gap" }, bind(l, "loop", "check", { label: "Loop" }),
           l.type === "video" ? bind(l, "audio", "check", { label: "Sound (Program output)" }) : null) : null));
     }
+    if ((l.type === "image" || l.type === "video") && l.src) sections.push(pictureSection(l));
     sections.push(fxSection(l));
     sections.push(liveSection([l]));
     sections.push(animSection(l));
