@@ -23,6 +23,7 @@ export async function api(path, body = {}) {
   const r = await fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
   const j = await r.json().catch(() => ({}));
   if (!r.ok) { toast(j.error || "That didn't work"); throw new Error(j.error); }
+  later();
   return j;
 }
 export async function upload(file, folder = "", extra = "") {
@@ -158,6 +159,7 @@ export const askText = (title, value = "", opts = {}) => dialog(title, opts.body
 // even though the cursor is still in the box.
 const FIELD = "input:not([type=checkbox]):not([type=radio]):not([type=button]):not([type=color]), textarea, select";
 let unsaved = null, touched = 0, again = 0;
+function later() { setTimeout(catchUp, 700); }   // (once more when the engine's answer to a save has surely arrived)
 function catchUp() {
   clearTimeout(again);
   again = setTimeout(() => {   // (as if everything changed but the clock: "now" is old here and would set the clocks wrong)
@@ -167,8 +169,9 @@ function catchUp() {
   }, 60);
 }
 addEventListener("focusin", () => { touched = Date.now(); }, true);
-addEventListener("input", e => { unsaved = e.target; touched = Date.now(); }, true);
-addEventListener("change", e => { if (unsaved === e.target) unsaved = null; touched = 0; catchUp(); }, true);
+const TYPED = "input:not([type]), input[type=text], input[type=search], input[type=url], input[type=email], input[type=password], textarea";
+addEventListener("input", e => { if (e.target.matches && e.target.matches(TYPED)) unsaved = e.target; touched = Date.now(); }, true);   // (only typed words hold a redraw, never a dropdown or a slider)
+addEventListener("change", e => { if (unsaved === e.target) unsaved = null; touched = 0; catchUp(); later(); }, true);
 addEventListener("focusout", e => { if (unsaved === e.target) unsaved = null; catchUp(); }, true);
 export const typingIn = box => {
   const a = document.activeElement;
