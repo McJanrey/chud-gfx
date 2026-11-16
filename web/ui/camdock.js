@@ -1,4 +1,5 @@
-// The camera dock: every camera live, small, on every page, with whether it's connected.
+// The camera dock: every camera live, small, with whether it's connected. Shown on the Cameras page only, but it
+// stays loaded on every page, so the status keeps coming in and the previews never reconnect.
 // One preview per camera (it stays put while pages change, so it never reconnects). VDO.Ninja tells the page
 // when the guest's picture arrives or drops (its IFRAME API "view-connection" message); the dock passes that to the
 // engine so the Show check and the Stream Deck know too.
@@ -35,7 +36,7 @@ addEventListener("message", e => {
 function render() {
   const dock = $("#cam-dock");
   const P = App.state.project, cams = P.cams || [];
-  dock.hidden = !cams.length;
+  dock.hidden = !cams.length || App.page !== "cams";
   dock.classList.toggle("min", collapsed);
   for (const [id, t] of tiles) if (!cams.some(c => c.id === id)) { t.tile.remove(); tiles.delete(id); }
   for (const c of cams) {
@@ -69,3 +70,5 @@ $("#cam-dock-toggle").addEventListener("click", () => {
 });
 setInterval(() => { for (const t of tiles.values()) if (t.state === "lost") paint(t); }, 1000);
 App.on((st, msg) => { if (!msg || msg.project) render(); });
+document.addEventListener("click", e => { if (e.target.closest("#nav button[data-page]")) setTimeout(render, 0); });   // (show / hide with the page)
+addEventListener("load", () => setTimeout(() => App.state && render(), 0));   // (opening straight onto the Cameras page)

@@ -50,7 +50,7 @@ function render() {
         el("button", { class: "small ghost", onclick: () => lookSel.value && confirm(`Delete the look "${lookSel.value}"?`) && api("/api/cams/look", { action: "delete", name: lookSel.value }) }, "Delete"),
         el("span", { class: "spacer" }),
         el("button", { class: "small primary", onclick: () => { all.push({ name: `Camera ${all.length + 1}` }); save(); } }, "+ Camera")),
-      el("p", { class: "muted small" }, "Send each guest their link: they open it, pick their camera and mic, and press Start. Graphics show a camera with a Camera layer (Composer › Live), or add its output link to OBS as a browser source (tick Control audio via OBS). The camera dock under the top bar shows every camera live on every page, with whether it's connected. Every other place showing a camera (OBS sources) is one more upload for the guest.")),
+      el("p", { class: "muted small" }, "Send each guest their link: they open it, pick their camera and mic, and press Start. Graphics show a camera with a Camera layer (Composer › Live), or add its output link to OBS as a browser source (tick Control audio via OBS). The live previews above show every camera with whether it's connected (the status keeps updating on the other pages too). Every other place showing a camera (OBS sources) is one more upload for the guest.")),
     ...(all.length ? all.map(card) : [el("p", { class: "muted empty" }, "No cameras yet: + Camera makes one with its own guest link. Name them Caster 1-4 for the caster boxes.")]));
 }
 pages.cams = { shown: render };
