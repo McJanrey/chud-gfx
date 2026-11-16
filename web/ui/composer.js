@@ -92,6 +92,7 @@ $("#cmp-import").addEventListener("change", async e => {
 // --- canvas -----------------------------------------------------------------------
 const view = $("#cmp-view"), sheet = $("#cmp-sheet"), box = $("#cmp-sel");
 const stage = new Stage(sheet, { muted: true, editor: true });
+setInterval(() => { const n = sheet.firstElementChild; for (const fn of (n && n._ticks) || []) fn(); }, 1000);   // (live data that moves on by itself, e.g. {{Sponsors}}, turns here too)
 // Zoom: "fit" (the whole page in view) or a fixed scale; zoomed in, the page pans (scroll, or drag with the
 // middle button / Space held). Ctrl + scroll zooms at the pointer; the toolbar has - / % / + / Fit.
 let scale = 0.5, zoom = "fit", panX = 0, panY = 0;
