@@ -67,13 +67,31 @@ export class Stage {
   wanted(state) {
     const comps = new Map(state.project.compositions.map(c => [c.id, c]));
     const c = this.opts.comp;
-    if (c) return { ids: comps.has(c) ? [c] : [], comps, values: { [c]: Object.assign({}, state.live.preview.values[c], state.live.program.values[c]) } };
+    // (a graphic's own output switched off in Outputs shows nothing)
+    if (c) return { ids: comps.has(c) && comps.get(c).output !== false ? [c] : [], comps, values: { [c]: Object.assign({}, state.live.preview.values[c], state.live.program.values[c]) } };
     const bus = state.live[this.opts.bus];
     return { ids: bus.on.filter(id => comps.has(id)), comps, values: bus.values || {} };
   }
 
+  // Every picture the graphics use, loaded and decoded ahead (kept: a few hundred MB with many graphics, on purpose).
+  preload(state) {
+    const sig = JSON.stringify(state.project.compositions.map(c => c.layers.map(l => l.src)));
+    if (sig === this.preSig) return;
+    this.preSig = sig;
+    this.held = this.held || new Map();
+    for (const c of state.project.compositions) for (const l of c.layers || []) {
+      const src = String(l.type === "image" && l.src || "");
+      if (!src || src.includes("{{") || this.held.has(src)) continue;
+      const img = new Image();
+      img.src = this.url(src);
+      img.decode().catch(() => {});
+      this.held.set(src, img);
+    }
+  }
+
   tables(state) {
     if (state.now) setNow(state.now);
+    if (!this.opts.editor && state.project) this.preload(state);
     this.cams = (state.project && state.project.cams) || this.cams || [];
     this.camPassword = (state.project && state.project.cam_password) || "";
     return (state.data && state.data.tables) || {};
@@ -120,6 +138,11 @@ export class Stage {
   // in / out: every layer plays its own animation (or the transition's effect for the whole graphic).
   async goIn(el, mode, t) {
     if (el.parentNode !== this.root) this.root.appendChild(el);   // (a warmed-up graphic is there already: moving it would reconnect its cameras)
+    // (its pictures decoded first, so it never plays in half drawn; they're preloaded, so this is usually instant)
+    const gen = this.gen;
+    el.style.visibility = "hidden";
+    await Promise.race([Promise.all([...el.querySelectorAll("img")].map(i => i.decode().catch(() => {}))), new Promise(r => setTimeout(r, 700))]);
+    if (gen !== this.gen && !el.isConnected) return;
     el.style.visibility = "";
     el._later.forEach(fn => fn());
     if (mode === "cut") return;

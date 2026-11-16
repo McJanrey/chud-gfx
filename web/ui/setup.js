@@ -68,7 +68,7 @@ function copyRow(label, url, count) {
 let oSig = "";
 function renderOutputs() {
   const st = App.state, outs = st.outputs || {};
-  const s = JSON.stringify([st.project.compositions.map(c => [c.id, c.name]), outs, st.app]);
+  const s = JSON.stringify([st.project.compositions.map(c => [c.id, c.name, c.output !== false]), outs, st.app]);
   if (s === oSig) return;
   oSig = s;
   const net = (st.app || {}).network || {};
@@ -78,8 +78,11 @@ function renderOutputs() {
     ...hosts.map(h => el("div", { class: "card" }, el("h3", {}, h === "localhost" ? "On this PC" : `From other PCs (${h})`),
       copyRow("Program", base(h) + "/output", outs.program), copyRow("Preview", base(h) + "/output?bus=preview", outs.preview))),
     el("div", { class: "card" }, el("h3", {}, "One graphic each"),
-      el("p", { class: "muted small" }, "Each link always shows its graphic: add the ones you want to OBS as browser sources (1920 × 1080)."),
-      ...st.project.compositions.map(c => copyRow(c.name, base(hosts[hosts.length - 1]) + "/output?comp=" + c.id, outs["comp:" + c.id]))),
+      el("p", { class: "muted small" }, "On, a link always shows its graphic (its Program values, or else its Preview ones): add the ones you want to OBS as browser sources (1920 × 1080). Off, it shows nothing, so a source you aren't using costs the PC nothing."),
+      ...st.project.compositions.map(c => el("div", { class: "out-one" },
+        el("label", { class: "switch", title: c.output !== false ? "Its own output is on" : "Its own output is off" }, el("input", { type: "checkbox", checked: c.output !== false, "aria-label": `${c.name}: its own output`,
+          onchange: e => api("/api/comp", { comp: { ...c, output: e.target.checked } }) }), ""),
+        copyRow(c.name, base(hosts[hosts.length - 1]) + "/output?comp=" + c.id, outs["comp:" + c.id])))),
     networkCard(), exportCard());
   $("#out-list").prepend(obsCard());
 }
@@ -103,7 +106,7 @@ function networkCard() {
     el("p", { class: "muted small" }, "Pick one (your NDI VLAN, say) to keep the engine to it."),
     el("label", { class: "f" }, el("span", {}, "This engine's name on the network"), el("input", { value: net.name || "", onchange: e => save({ name: e.target.value }) })),
     el("h4", {}, "Bitfocus Companion (Stream Deck)"),
-    el("p", { class: "muted small" }, "Import standby-gfx-companion.tgz (from the release) on Companion's Modules page, then add a StandBy GFX connection with:"),
+    el("p", { class: "muted small" }, "Import Chud-GFX-Companion-module.tgz (from the release) on Companion's Modules page, then add a StandBy GFX connection with:"),
     copyRow("On this PC", "127.0.0.1"), ...(net.network ? addrs.filter(a => !net.bind || a === net.bind).map(a => copyRow("From another PC", a)) : []), copyRow("Port", String(app.port || location.port)),
     el("div", { class: "row" }, el("h4", {}, "Engines on the network"), el("span", { class: "spacer" }),
       el("button", { class: "small", onclick: async () => { engines = (await api("/api/network/scan")).engines; oSig = ""; renderOutputs(); } }, "Scan")),
