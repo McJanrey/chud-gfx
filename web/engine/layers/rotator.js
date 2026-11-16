@@ -102,13 +102,21 @@ export function ticker(el, layer, ctx) {
     Object.assign(s.style, { position: "relative", inset: "auto", flex: "none" });
     return [d, s];
   });
-  const a = document.createElement("div"), b = document.createElement("div");
-  for (const half of [a, b]) { Object.assign(half.style, { display: "flex", alignItems: "center", flex: "none", paddingRight: gap / 2 + "px" }); half.append(...run()); track.append(half); }
+  const copy = () => { const h = document.createElement("div"); Object.assign(h.style, { display: "flex", alignItems: "center", flex: "none", paddingRight: gap / 2 + "px" }); h.append(...run()); track.append(h); return h; };
+  const a = copy();
+  copy();
   el.appendChild(track);
   if (layer.fade) el.style.maskImage = el.style.webkitMaskImage = "linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent)";
-  requestAnimationFrame(() => {
+  // Measured once the pictures have loaded (before that a logo is 0 wide, so the loop jumped back early),
+  // with enough copies end to end that the strip never runs out before it wraps.
+  const hold = ctx.hold ? ctx.hold(layer) : 0, born = performance.now();
+  const start = async (tries = 0) => {
+    await Promise.all([...a.querySelectorAll("img")].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; })));
     const w = a.offsetWidth;
-    if (w) track.animate([{ transform: "translateX(0)" }, { transform: `translateX(${-w}px)` }], { duration: w / Math.max(10, +layer.speed || 120) * 1000, iterations: Infinity, easing: "linear",
-      delay: ctx.hold ? ctx.hold(layer) : 0 });   // (from its first item, still while it animates in)
-  });
+    if (!w) return tries < 50 && setTimeout(() => start(tries + 1), 100);   // (not on the page yet)
+    while (track.children.length < Math.ceil((el.offsetWidth || 1920) / w) + 1) copy();
+    track.animate([{ transform: "translateX(0)" }, { transform: `translateX(${-w}px)` }], { duration: w / Math.max(10, +layer.speed || 120) * 1000, iterations: Infinity, easing: "linear",
+      delay: Math.max(0, hold - (performance.now() - born)) });   // (from its first item, still while it animates in)
+  };
+  requestAnimationFrame(() => start());
 }
