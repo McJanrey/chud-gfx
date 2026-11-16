@@ -939,7 +939,8 @@
     const grouped = layers.some(o => o.group);
     const shapes = layers.filter(combinable);
     const isPart = layers[0].part && layers.every(o => o.part === layers[0].part && o.group === layers[0].group);
-    return [h("div", { class: "sect" }, h("h3", {}, "Group"),
+    const pics = layers.filter(o => (o.type === "image" || o.type === "video") && o.src);
+    return [pics.length > 1 ? pictureSection(pics[0], pics) : null, h("div", { class: "sect" }, h("h3", {}, "Group"),
       h("div", { class: "row-gap" },
         h("button", { class: "small", title: "Ctrl+G", onclick: () => groupLayers(layers) }, "Group"),
         grouped ? h("button", { class: "small", title: "Ctrl+Shift+G", onclick: () => ungroupLayers(layers) }, "Ungroup") : null,
@@ -1613,22 +1614,25 @@
   const lab = (text, ...kids) => h("label", {}, text, ...kids);
 
   // Picture: light, colour, flip and crop for a picture or video layer (layer.pic, drawn by GFX.picStyle / picCrop).
-  function pictureSection(l) {
+  // all: several picture layers edited together (they all take the first one's settings).
+  function pictureSection(l, all) {
+    const others = (all || [l]).filter(o => o !== l);
+    const sync = () => others.forEach(o => { if (l.pic) o.pic = JSON.parse(JSON.stringify(l.pic)); else delete o.pic; });
     const pic = () => (l.pic = l.pic || {});
     const slider = (key, label, min, max, def, unit) => {
       const val = () => (l.pic && l.pic[key] != null ? +l.pic[key] : def);
       const out = h("span", { class: "pic-val" }, val() + unit);
       const r = h("input", { type: "range", min, max, step: 1, value: val(), "aria-label": label,
         onpointerdown: () => snapshot(), onkeydown: () => snapshot(),
-        oninput: e => { pic()[key] = +e.target.value; out.textContent = e.target.value + unit; changed({ keepList: true }); },
-        ondblclick: () => { snapshot(); delete pic()[key]; changed({ props: true }); } });
+        oninput: e => { pic()[key] = +e.target.value; out.textContent = e.target.value + unit; sync(); changed({ keepList: true }); },
+        ondblclick: () => { snapshot(); delete pic()[key]; sync(); changed({ props: true }); } });
       return h("label", { class: "pic-row", title: "Double-click to reset" }, h("span", {}, label), r, out);
     };
     const crop = side => h("input", { type: "number", min: 0, max: 95, step: 1, value: ((l.pic || {}).crop || {})[side] || 0, "aria-label": "Crop " + side,
-      onchange: e => { snapshot(); const c = pic().crop = pic().crop || {}; c[side] = Math.max(0, Math.min(95, +e.target.value || 0)); changed({ keepList: true }); } });
+      onchange: e => { snapshot(); const c = pic().crop = pic().crop || {}; c[side] = Math.max(0, Math.min(95, +e.target.value || 0)); sync(); changed({ keepList: true }); } });
     const flip = (key, label) => h("button", { class: "small" + ((l.pic || {})[key] ? " on" : ""), "aria-pressed": String(!!(l.pic || {})[key]),
-      onclick: () => { snapshot(); pic()[key] = !pic()[key]; changed({ props: true }); } }, label);
-    return h("div", { class: "sect pic-sect" }, h("h3", {}, "Picture"),
+      onclick: () => { snapshot(); pic()[key] = !pic()[key]; sync(); changed({ props: true }); } }, label);
+    return h("div", { class: "sect pic-sect" }, h("h3", {}, others.length ? `Picture (all ${others.length + 1})` : "Picture"),
       slider("bright", "Brightness", 0, 200, 100, "%"),
       slider("contrast", "Contrast", 0, 200, 100, "%"),
       slider("sat", "Saturation", 0, 200, 100, "%"),
@@ -1637,7 +1641,7 @@
       h("div", { class: "row-gap", style: { marginTop: "8px" } }, flip("flipX", "Flip across"), flip("flipY", "Flip up and down")),
       h("div", { class: "pic-crop" }, h("span", { class: "muted small" }, "Crop (% off each edge)"),
         h("div", { class: "grid4" }, lab("Left", crop("l")), lab("Top", crop("t")), lab("Right", crop("r")), lab("Bottom", crop("b")))),
-      l.pic && Object.keys(l.pic).length ? h("button", { class: "small", style: { marginTop: "8px" }, onclick: () => { snapshot(); delete l.pic; changed({ props: true }); } }, "Reset picture") : null);
+      l.pic && Object.keys(l.pic).length ? h("button", { class: "small", style: { marginTop: "8px" }, onclick: () => { snapshot(); delete l.pic; sync(); changed({ props: true }); } }, "Reset picture") : null);
   }
 
   function syncPropsGeometry() {
