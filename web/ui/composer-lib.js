@@ -70,7 +70,7 @@ function liveTab() {
     group("Cameras (Cameras page)",
       tile("Camera", "a guest's webcam", () => addLayers([{ type: "camera", name: "Camera", cam: ((App.state.project.cams || [])[0] || {}).name || "", w: 640, h: 360 }])),
       tile("Player's camera", "follows the Roster's player 1", () => addLayers([{ type: "camera", name: "Player 1 camera", cam: "{{Roster!Player 1 name}}", w: 480, h: 270 }])),
-      tile("Caster cameras", "above the caster boxes, moving with them", () => casterCams())),
+      tile("Caster cameras", "on the caster boxes (moving with them), or two to place", () => casterCams())),
     group("Tournament", tile("Knockout bracket", "8 or 16", () => addLayers([{ type: "bracket", name: "Bracket", font: "Bebas Neue", color: "#ffffff", gold: "#b28a1d", dark: "#000b05", line: "#b28a1d", w: 1566, h: 748 }])),
       tile("Champion", "", () => addLayers([T("{{Tournament!Top champion}}", 64, { name: "Champion" })]))),
     ...(hudGroups.length ? hudGroups : [el("p", { class: "muted small" }, "Game HUDs show up here once one sends its data (Outputs › HUD link).")])];
@@ -83,13 +83,19 @@ function casterCams() {
   if (!c) return toast("Pick a graphic first");
   const made = [];
   for (let n = 1; n <= 4; n++) {
-    const box = c.layers.filter(l => (l.move || "").includes(`Caster ${n} move`) && l.type === "image").sort((a, b) => b.w * b.h - a.w * a.h)[0] || {};   // (the box itself: its biggest picture)
-    const w = box.w || 640, h = Math.round(w * 9 / 16), x = box.x ?? 642, y = (box.y ?? 451) - h - 8;
-    made.push({ type: "camera", name: `Caster ${n} camera`, cam: `Caster ${n}`, x, y, w, h, move: box.move || `{{Global!Caster ${n} move}}`, origin: box.origin || [box.x ?? 642, box.y ?? 451],
-      show: box.show || `{{Global!Caster ${n} shown}}`, clip: "", fx: { shadow: { x: 0, y: 8, blur: 24, color: "#000000" } } });
+    const box = c.layers.filter(l => (l.move || "").includes(`Caster ${n} move`) && l.type === "image").sort((a, b) => b.w * b.h - a.w * a.h)[0];
+    if (!box) continue;
+    const w = box.w, h = Math.round(w * 9 / 16);
+    made.push({ type: "camera", name: `Caster ${n} camera`, cam: `Caster ${n}`, x: box.x, y: box.y - h - 8, w, h, move: box.move, origin: box.origin || [box.x, box.y],
+      show: box.show || `{{Global!Caster ${n} shown}}`, fx: { shadow: { x: 0, y: 8, blur: 24, color: "#000000" } } });
   }
-  addLayers(made, { keepPlace: true });
-  toast("Added 4 caster cameras: name the cameras Caster 1-4 on the Cameras page");
+  if (made.length) {
+    addLayers(made, { keepPlace: true });
+    return toast(`Added ${made.length} caster cameras on the caster boxes: name the cameras Caster 1-${made.length} on the Cameras page`);
+  }
+  // (no caster boxes here: two cameras side by side to drag onto the design's frames)
+  addLayers([1, 2].map(n => ({ type: "camera", name: `Caster ${n} camera`, cam: `Caster ${n}`, x: n === 1 ? 120 : 1020, y: 200, w: 780, h: 439 })), { keepPlace: true });
+  toast("No caster boxes in this graphic: added Caster 1 and 2 cameras to place on your design");
 }
 
 function framesTab() {

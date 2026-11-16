@@ -103,18 +103,26 @@ function fit() {
 }
 new ResizeObserver(fit).observe(view);
 function drawCanvas() {
-  sheet.replaceChildren();
-  if (!comp) return;
+  if (!comp) return sheet.replaceChildren();
   const tables = (App.state.data && App.state.data.tables) || {};
   stage.cams = App.state.project.cams || [];
   const node = stage.build(comp, (App.state.live.preview.values || {})[comp.id] || {}, tables);
-  sheet.appendChild(node);
-  node._later.forEach(fn => fn());
+  const old = sheet.firstChild;
+  if (old && old._comp === comp.id && [...old.children].some(c => c._keep)) stage.patch(old, node);   // (videos keep playing)
+  else { node._comp = comp.id; sheet.replaceChildren(node); node._later.forEach(fn => fn()); }
   drawSelection();
   drawRulers();
 }
+// Where a layer is drawn on the canvas (in 1920 x 1080 px): live data can move it (a caster box's "move" for
+// 1-4 casters), so this is read from the drawing, not from its x / y. Hidden: its own box.
+function shown(l) {
+  const node = sheet.firstChild, e = node && [...node.children].find(c => c._layer && c._layer.id === l.id);
+  if (!e || !e.getClientRects().length) return { x: l.x, y: l.y, w: l.w, h: l.h };
+  const r = e.getBoundingClientRect(), s = sheet.getBoundingClientRect();
+  return { x: (r.left - s.left) / scale, y: (r.top - s.top) / scale, w: r.width / scale, h: r.height / scale };
+}
 function drawSelection() {
-  const ls = picked();
+  const ls = picked().map(shown);
   box.hidden = !ls.length;
   if (!ls.length) return;
   const x0 = Math.min(...ls.map(l => l.x)), y0 = Math.min(...ls.map(l => l.y));
@@ -126,9 +134,12 @@ function drawSelection() {
 function layerAt(x, y) {
   let best = null;
   for (const l of comp.layers) {
-    if (l.visible === false || l.locked || !(x >= l.x && x <= l.x + l.w && y >= l.y && y <= l.y + l.h)) continue;
-    if (!best || l.w * l.h <= best.w * best.h) best = l;
+    if (l.visible === false || l.locked) continue;
+    const b = shown(l);
+    if (!(x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h)) continue;
+    if (!best || b.w * b.h <= best.b.w * best.b.h) best = { l, b };
   }
+  best = best && best.l;
   return best;
 }
 const toStage = e => { const r = sheet.getBoundingClientRect(); return [(e.clientX - r.left) / scale, (e.clientY - r.top) / scale]; };
@@ -197,7 +208,13 @@ view.addEventListener("mousedown", e => {
       if (!ev.altKey) [dx, dy] = snap(start.map(s => ({ ...s.l, x: s.x, y: s.y })), dx, dy);
       for (const s of start) { s.l.x = s.x + dx; s.l.y = s.y + dy; }
     }
-    drawCanvas();
+    // (only the picked layers move while dragging; everything is drawn again on release)
+    const node = sheet.firstChild;
+    for (const s of start) {
+      const e = node && [...node.children].find(c => c._layer && c._layer.id === s.l.id);
+      if (e) Object.assign(e.style, { left: s.l.x + "px", top: s.l.y + "px", width: s.l.w + "px", height: s.l.h + "px" });
+    }
+    drawSelection();
     renderPropsNumbers();
   };
   const up = () => { removeEventListener("mousemove", move); removeEventListener("mouseup", up); if (moved) changed({ keepList: true }); };

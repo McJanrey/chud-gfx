@@ -50,5 +50,5 @@ export function camera(el, layer, ctx) {
   const wash = document.createElement("div");
   styleCam(frame, wash, cam);
   el.append(frame, wash);
-  el._camKey = `${layer.id}|${frame.src}`;   // (kept when the graphic redraws: a new iframe would reconnect)
+  el._keep = `${layer.id}|${frame.src}`;   // (kept when the graphic redraws: a new iframe would reconnect)
 }

@@ -97,6 +97,7 @@ export function video(el, layer, ctx) {
     el.appendChild(wash);
   }
   v.play().catch(() => {});
+  el._keep = JSON.stringify([layer.id, v.src, tint, v.loop, v.playbackRate, v.muted]);   // (a redraw keeps it playing)
 }
 
 // A web page (a live scoreboard, a chat overlay...), see-through where the page is.

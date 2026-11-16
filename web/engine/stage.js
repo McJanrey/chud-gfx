@@ -104,7 +104,7 @@ export class Stage {
       const o = this.on.get(id);
       if (o && o.sig === sig) continue;
       const el = this.build(comp, want.values[id], tables, !o);
-      if (o && [...o.el.children].some(c => c._camKey)) { this.patch(o.el, el); this.on.set(id, { el: o.el, sig }); }
+      if (o && [...o.el.children].some(c => c._keep)) { this.patch(o.el, el); this.on.set(id, { el: o.el, sig }); }
       else if (o) { o.el.replaceWith(el); el._later.forEach(fn => fn()); this.on.set(id, { el, sig }); }
       else if (this.warm && this.warm.has(id)) {   // (it was waiting, hidden, with its cameras connected)
         const w = this.warm.get(id);
@@ -188,20 +188,19 @@ export class Stage {
     }
   }
 
-  // Redraw a graphic that shows cameras without touching their iframes (a moved iframe reconnects):
-  // the new layers go in around the cameras that stay.
+  // Redraw a graphic without touching its cameras and videos (a new iframe reconnects, a new video restarts):
+  // the new layers go in around the ones that stay (those with the same _keep key).
   patch(oldEl, newEl) {
-    const keep = new Map([...oldEl.children].filter(c => c._camKey).map(c => [c._camKey, c]));
+    const keep = new Map([...oldEl.children].filter(c => c._keep).map(c => [c._keep, c]));
     const stay = new Set();
     let cursor = null;
     for (const n of [...newEl.children]) {
-      const old = n._camKey && keep.get(n._camKey);
+      const old = n._keep && keep.get(n._keep);
       if (old) {
         old.style.cssText = n.style.cssText;
         old._layer = n._layer;
-        const [f, w] = n.children;
-        if (f && old.children[0]) { old.children[0].style.cssText = f.style.cssText; old.children[1].style.cssText = w.style.cssText; }
-        keep.delete(n._camKey);
+        [...n.children].forEach((c, i) => { const o = old.children[i]; if (o && o.tagName === c.tagName) o.style.cssText = c.style.cssText; });
+        keep.delete(n._keep);
         stay.add(old);
         cursor = old;
         continue;
