@@ -36,6 +36,8 @@ export function text(el, layer, ctx) {
     if (layer.baseline != null && layer.baseline !== "") { s.alignItems = "flex-start"; span.style.marginTop = (+layer.baseline - baselineOf(span)) + "px"; }
   };
   ctx.later(fit);
+  // and again whenever its box gets a size: a graphic built off the page (preloaded for TAKE) measures 0 and skipped the shrink
+  if (window.ResizeObserver) new ResizeObserver(() => { if (el.clientWidth) fit(); }).observe(el);
   // measured again once its font file has loaded (measuring with the stand-in font shrank it too much)
   // (with its weight and style: asking for a weight the font doesn't have finds nothing and never refits)
   if (document.fonts && layer.font) document.fonts.load(`${layer.italic ? "italic " : ""}${layer.weight || 400} ${+layer.size || 32}px "${String(layer.font).replace(/"/g, "")}"`, span.textContent || "A")
@@ -44,9 +46,9 @@ export function text(el, layer, ctx) {
 
 // Smaller until it fits the box (never bigger than its set size).
 export function shrink(el, span, size) {
-  span.style.fontSize = size + "px";
   const W = el.clientWidth, H = el.clientHeight;
-  if (!W || !H) return;
+  if (!W || !H) return;   // (not laid out yet: keep the last fit, the ResizeObserver comes back)
+  span.style.fontSize = size + "px";
   let lo = 4, hi = size;
   if (span.scrollWidth <= W && span.scrollHeight <= H) return;
   while (hi - lo > 0.5) {
