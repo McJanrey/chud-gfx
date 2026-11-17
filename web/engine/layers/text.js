@@ -27,7 +27,7 @@ export function text(el, layer, ctx) {
   const raw = layer.field && ctx.values[layer.field] ? ctx.values[layer.field] : layer.text;
   if (ticks(raw)) ctx.tick(() => { span.textContent = ctx.resolve(raw); });   // ({{TIME}}: every second)
   el.appendChild(span);
-  if (+layer.scroll > 0) return scroller(el, span, layer, ctx.hold ? ctx.hold(layer) : 0);
+  if (+layer.scroll > 0) return scroller(el, span, layer, ctx.hold ? ctx.hold(layer) : 0, ctx.entering !== false);
   // baseline: the text's baseline sits this many px below the box's top (as the design had it)
   const fit = () => {
     // (text shrinks to fit its box unless it's set to overflow or wrap)
@@ -60,14 +60,23 @@ export function shrink(el, span, size) {
 }
 
 // A ticker strip starts empty: it slides in from the right edge (W wide box) at `speed` px/s, then loops one copy (w) forever.
-export function scrollIn(track, W, w, speed, delay = 0) {
-  const intro = track.animate([{ transform: `translateX(${W}px)` }, { transform: "translateX(0)" }], { duration: W / speed * 1000, easing: "linear", delay, fill: "backwards" });
-  intro.onfinish = () => track.animate([{ transform: "translateX(0)" }, { transform: `translateX(${-w}px)` }], { duration: w / speed * 1000, iterations: Infinity, easing: "linear" });
+// Redrawn while on air (a score changed on the same graphic), it carries on from where it was instead of starting again.
+const running = new Map();   // layer id -> when its slide-in started (performance.now)
+export function scrollIn(track, W, w, speed, delay = 0, key = "", entering = true) {
+  const introMs = W / speed * 1000, frames = [{ transform: "translateX(0)" }, { transform: `translateX(${-w}px)` }];
+  const loop = at => { track.animate(frames, { duration: w / speed * 1000, iterations: Infinity, easing: "linear" }).currentTime = at; };
+  const was = !entering && key ? running.get(key) : undefined;
+  if (was === undefined && key) running.set(key, performance.now() + delay);
+  const since = was === undefined ? -delay : performance.now() - was;
+  if (since >= introMs) return loop(since - introMs);
+  const intro = track.animate([{ transform: `translateX(${W}px)` }, { transform: "translateX(0)" }], { duration: introMs, easing: "linear", fill: "backwards" });
+  intro.currentTime = since;   // (negative: waits that long, still empty)
+  intro.onfinish = () => loop(0);
 }
 
 // Scrolling text (a ticker): right to left at layer.scroll px a second, copies end to end so it never runs out.
 // Divider: the lines (kept apart by "|", as {{Global!Ticker}} is) get a bar of that colour between them.
-function scroller(el, span, layer, hold = 0) {
+function scroller(el, span, layer, hold = 0, entering = true) {
   el.style.overflow = "hidden";
   el.style.justifyContent = "flex-start";
   const track = document.createElement("div");
@@ -91,7 +100,7 @@ function scroller(el, span, layer, hold = 0) {
     if (!w) return;
     // (enough copies that a line shorter than the box still fills it all the way round)
     while (track.children.length < Math.ceil((el.offsetWidth || 1920) / w) + 1) track.append(span.cloneNode(true));
-    scrollIn(track, el.offsetWidth || 1920, w, +layer.scroll, hold);   // (empty while it animates in)
+    scrollIn(track, el.offsetWidth || 1920, w, +layer.scroll, hold, layer.id, entering);   // (empty while it animates in)
   });
 }
 

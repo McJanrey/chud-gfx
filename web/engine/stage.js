@@ -51,6 +51,18 @@ export function slotFit(comp, tables, values = {}) {
   };
 }
 
+// Only the tables a graphic reads (named in it, or in a table it reads: Global's fields can point at others):
+// a HUD sending every second or an edit to another table no longer redraws it (that restarted its tickers).
+export function usedTables(comp, values, tables) {
+  const used = {}, names = Object.keys(tables || {});
+  let text = JSON.stringify([comp, values || {}]) + ((comp.layers || []).some(l => l.type === "bracket") ? "Tournament" : "");
+  for (let grew = true; grew;) {
+    grew = false;
+    for (const n of names) if (!(n in used) && text.includes(n)) { used[n] = tables[n]; text += JSON.stringify(tables[n]); grew = true; }
+  }
+  return used;
+}
+
 export class Stage {
   constructor(root, { bus = "program", comp = null, muted = false, base = "", editor = false } = {}) {
     this.root = root;
@@ -104,7 +116,7 @@ export class Stage {
     const later = [];
     const ticking = [];
     const ctx = { values: values || {}, resolve: v => resolve(v, tables), url: s => this.url(s), muted: this.opts.muted, later: fn => later.push(fn), tick: fn => ticking.push(fn),
-      table: name => tables[name], now: () => Date.now() + nowSkew(),
+      table: name => tables[name], now: () => Date.now() + nowSkew(), entering,
       cams: this.cams || [], camPassword: this.camPassword, liveCams: !this.opts.editor, cardCams: !!this.opts.editor, camBitrate: this.opts.muted ? 800 : 0,
       hold: layer => { const a = (layer.anim || {}).in || {}; return entering && a.type && a.type !== "none" ? (+a.delay || 0) + (+a.dur || 400) : 0; } };
     const fit = slotFit(comp, tables, values || {});
@@ -186,7 +198,7 @@ export class Stage {
     const fresh = [];
     for (const id of want.ids) {
       const comp = want.comps.get(id), hasCam = (comp.layers || []).some(l => l.type === "camera");
-      const sig = JSON.stringify([comp, want.values[id], tables, hasCam ? [this.cams, this.camPassword] : 0]);
+      const sig = JSON.stringify([comp, want.values[id], usedTables(comp, want.values[id], tables), hasCam ? [this.cams, this.camPassword] : 0]);
       const o = this.on.get(id);
       if (o && o.sig === sig) continue;
       const el = this.build(comp, want.values[id], tables, !o);
@@ -221,7 +233,7 @@ export class Stage {
     for (const [id, w] of this.warm) if (!want.has(id)) { w.el.remove(); this.warm.delete(id); }
     for (const id of want) {
       const comp = comps.get(id), values = (state.live.preview.values || {})[id];
-      const sig = JSON.stringify([comp, values, tables, [this.cams, this.camPassword]]), w = this.warm.get(id);
+      const sig = JSON.stringify([comp, values, usedTables(comp, values, tables), [this.cams, this.camPassword]]), w = this.warm.get(id);
       if (w && w.sig === sig) continue;
       const el = this.build(comp, values, tables, true);
       if (w) { this.patch(w.el, el); w.sig = sig; continue; }

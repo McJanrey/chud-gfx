@@ -116,7 +116,7 @@ export function ticker(el, layer, ctx) {
     const w = a.offsetWidth;
     if (!w) return tries < 50 && setTimeout(() => start(tries + 1), 100);   // (not on the page yet)
     while (track.children.length < Math.ceil((el.offsetWidth || 1920) / w) + 1) copy();
-    scrollIn(track, el.offsetWidth || 1920, w, Math.max(10, +layer.speed || 120), Math.max(0, hold - (performance.now() - born)));   // (empty while it animates in)
+    scrollIn(track, el.offsetWidth || 1920, w, Math.max(10, +layer.speed || 120), Math.max(0, hold - (performance.now() - born)), layer.id, ctx.entering !== false);   // (empty while it animates in)
   };
   requestAnimationFrame(() => start());
 }

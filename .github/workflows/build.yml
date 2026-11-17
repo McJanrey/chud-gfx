@@ -28,6 +28,8 @@ jobs:
 
       - name: Tests
         run: python -m unittest discover -s tests -v
+      - name: Engine checks
+        run: node tests/engine_check.mjs
 
       - name: Set version
         shell: pwsh
