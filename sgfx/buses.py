@@ -43,6 +43,11 @@ class Buses:
         self.cut = {"seq": self.cut["seq"] + 1, "transition": copy.deepcopy(transition), "only": only,
                     "undo": self._undo is not None}
 
+    def _drop_undo(self):
+        """Program changed some other way: an Undo now would bring back a stale Program, so it goes."""
+        self._undo = None
+        self.cut["undo"] = False
+
     def _snapshot(self):
         self._undo = copy.deepcopy({b: {"on": s["on"], "values": s["values"]} for b, s in self.state.items()})
 
@@ -53,6 +58,8 @@ class Buses:
         self._bump("preview")
 
     def set_values(self, cid, values, bus="preview"):
+        if bus in ("program", "both"):
+            self._drop_undo()
         for b in (("preview", "program") if bus == "both" else (bus,)):
             vals = self.state[b]["values"].setdefault(cid, {})
             for k, v in values.items():
@@ -63,6 +70,7 @@ class Buses:
             self._bump(b)
 
     def send_values(self, cid):
+        self._drop_undo()
         self.state["program"]["values"][cid] = copy.deepcopy(self.state["preview"]["values"].get(cid, {}))
         self._bump("program")
 
@@ -86,6 +94,7 @@ class Buses:
         return True
 
     def program(self, cid, on, transition=None):
+        self._drop_undo()
         pg, pv = self.state["program"], self.state["preview"]
         if on:
             pg["on"] = self._add(pg["on"], [cid])

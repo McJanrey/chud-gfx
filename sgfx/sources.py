@@ -5,6 +5,7 @@ Files: CSV / TSV / text, JSON, Excel (.xlsx). Web addresses: CSV or JSON. Google
 address (shared "anyone with the link"), read as CSV, the tab by name or the address's gid.
 """
 import csv
+import datetime
 import io
 import json
 import re
@@ -64,10 +65,14 @@ def from_xlsx(data, tab=""):
         rels = ET.fromstring(z.read("xl/_rels/workbook.xml.rels"))
         rid = next((s.get("{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id") for s in wb.iter("{%s}sheet" % NS["m"]) if s.get("name", "").lower() == tab.lower()), None)
         target = next((r.get("Target") for r in rels if r.get("Id") == rid), None)
-        if target:
-            sheet = "xl/" + target.lstrip("/").replace("xl/", "", 1)
+        if not target:   # (not silently the first tab: a renamed tab shows on the Data page)
+            raise ValueError(f"No tab named {tab}")
+        sheet = "xl/" + target.lstrip("/").replace("xl/", "", 1)
+    dates = _date_styles(z)
     rows = []
     for row in ET.fromstring(z.read(sheet)).iter("{%s}row" % NS["m"]):
+        while len(rows) < int(row.get("r") or 0) - 1:   # (Excel leaves empty rows out: keep B5 on row 5)
+            rows.append([])
         out = []
         for c in row.findall("m:c", NS):
             col = col_index(re.match(r"[A-Z]+", c.get("r", "A")).group())
@@ -78,11 +83,53 @@ def from_xlsx(data, tab=""):
                 val = shared[int(v.text)]
             elif c.get("t") == "inlineStr":
                 val = "".join(t.text or "" for t in c.iter("{%s}t" % NS["m"]))
+            elif c.get("t") == "b" and v is not None:   # (as the sheet shows a checkbox)
+                val = "TRUE" if v.text == "1" else "FALSE"
+            elif c.get("t") in (None, "n") and v is not None and int(c.get("s") or 0) in dates and re.fullmatch(r"-?\d+(\.\d+)?", v.text or ""):
+                val = _serial(float(v.text), dates[int(c.get("s") or 0)])
             else:
                 val = _s(float(v.text)) if v is not None and re.fullmatch(r"-?\d+(\.\d+)?", v.text or "") else (v.text if v is not None else "")
             out.append(val)
         rows.append(out)
     return rows
+
+
+# Excel's built-in date / time / percent formats by id (only the parts _serial looks at).
+DATE_FMTS = {9: "0%", 10: "0.00%", 14: "yyyy", 15: "yyyy", 16: "yyyy", 17: "yyyy", 18: "h:mm", 19: "h:mm:ss", 20: "h:mm", 21: "h:mm:ss",
+             22: "yyyy h:mm", 45: "h:mm:ss", 46: "h:mm:ss", 47: "h:mm:ss"}
+
+
+def _date_styles(z):
+    """Cell style index -> its number format, for the styles that show a date, a time or a percent."""
+    if "xl/styles.xml" not in z.namelist():
+        return {}
+    st = ET.fromstring(z.read("xl/styles.xml"))
+    fmts = dict(DATE_FMTS)
+    for f in st.iter("{%s}numFmt" % NS["m"]):
+        fmts[int(f.get("numFmtId") or 0)] = f.get("formatCode", "")
+    xfs = st.find("m:cellXfs", NS)
+    out = {}
+    for i, xf in enumerate(xfs if xfs is not None else []):
+        code = re.sub(r'"[^"]*"|\[[^\]]*\]|\\.', "", fmts.get(int(xf.get("numFmtId") or 0), "")).lower()   # (not quoted text, [Red], [$-409])
+        if re.search(r"[dyhs%]", code):
+            out[i] = code
+    return out
+
+
+def _serial(v, code):
+    """An Excel number as the sheet shows it, roughly: 45%, 2026-11-17, 7:30 PM, 19:30 or both."""
+    # shortcut: ISO dates whatever the cell's format, no thousands / currency; 1904-based workbooks are 4 years off
+    if "%" in code:
+        dec = re.search(r"\.(0+)", code)
+        return f"{v * 100:.{len(dec.group(1)) if dec else 0}f}%"
+    if v < 0 or v >= 2958466:
+        return _s(v)
+    d = datetime.datetime(1899, 12, 30) + datetime.timedelta(seconds=round(v * 86400))
+    day = d.strftime("%Y-%m-%d") if re.search(r"[dy]", code) else ""
+    ampm = "am/pm" in code
+    clock = d.strftime(("%I" if ampm else "%H") + (":%M:%S" if "s" in code else ":%M") + (" %p" if ampm else "")) if re.search(r"[hs]", code) else ""
+    clock = clock.lstrip("0") if ampm else clock
+    return " ".join(x for x in (day, clock) if x)
 
 
 def col_index(letters):
@@ -109,8 +156,8 @@ def sheet_url(url, tab=""):
     m = re.search(r"/spreadsheets/d/([A-Za-z0-9_-]+)", url or "")
     if not m:
         return url
-    if tab:
-        return f"https://docs.google.com/spreadsheets/d/{m.group(1)}/gviz/tq?tqx=out:csv&sheet={urllib.parse.quote(tab)}"
+    if tab:   # (the workbook, its tab picked by name: the gviz CSV blanks the fewer-type cells of a mixed column)
+        return f"https://docs.google.com/spreadsheets/d/{m.group(1)}/export?format=xlsx"
     gid = re.search(r"[#&?]gid=(\d+)", url)
     return f"https://docs.google.com/spreadsheets/d/{m.group(1)}/export?format=csv" + (f"&gid={gid.group(1)}" if gid else "")
 

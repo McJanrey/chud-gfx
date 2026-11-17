@@ -24,7 +24,7 @@ class Sources(unittest.TestCase):
     def test_sheet_url(self):
         u = "https://docs.google.com/spreadsheets/d/ABC_123/edit#gid=42"
         self.assertEqual(sources.sheet_url(u), "https://docs.google.com/spreadsheets/d/ABC_123/export?format=csv&gid=42")
-        self.assertEqual(sources.sheet_url(u, "Match Day"), "https://docs.google.com/spreadsheets/d/ABC_123/gviz/tq?tqx=out:csv&sheet=Match%20Day")
+        self.assertEqual(sources.sheet_url(u, "Match Day"), "https://docs.google.com/spreadsheets/d/ABC_123/export?format=xlsx")
         with self.assertRaises(ValueError):
             sources.fetch({"type": "url", "url": "file:///etc/passwd"})
 

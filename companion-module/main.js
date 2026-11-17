@@ -29,12 +29,12 @@ class StandByGFX extends InstanceBase {
 	getConfigFields() {
 		return [
 			{ type: "textinput", id: "host", label: "Engine address", width: 8, default: "127.0.0.1", regex: Regex.HOSTNAME },
-			{ type: "number", id: "port", label: "Port", width: 4, default: 7800, min: 1, max: 65535 },
+			{ type: "number", id: "port", label: "Port", width: 4, default: 7820, min: 1, max: 65535 },
 		]
 	}
 
 	base() {
-		return `http://${this.config.host || "127.0.0.1"}:${this.config.port || 7800}`
+		return `http://${this.config.host || "127.0.0.1"}:${this.config.port || 7820}`
 	}
 
 	// --- talking to the engine ---------------------------------------------------------
@@ -111,6 +111,7 @@ class StandByGFX extends InstanceBase {
 				again()
 			})
 		})
+		this.req.setTimeout(10000, () => this.req.destroy(new Error("no ping"))) // (the engine pings every 2 s: silence = a dead PC, not a quiet show)
 		this.req.on("error", () => {
 			this.updateStatus(InstanceStatus.Disconnected)
 			again()

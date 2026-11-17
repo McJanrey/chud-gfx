@@ -35,11 +35,14 @@ def match_key(m):
     return "|".join(str(m.get(k, "")) for k in ("date", "time", "team1", "team2", "game"))
 
 
-def next_match(schedule, now=None):
-    """The first Schedule match that hasn't started (more than 4 hours ago)."""
+def next_match(schedule, now=None, skip=()):
+    """The first Schedule match that hasn't started (more than 4 hours ago). `skip`: match keys to pass over
+    (matches whose show has already run to its end)."""
     now = now or datetime.datetime.now()
     best = None
     for m in (schedule or {}).get("matches") or []:
+        if match_key(m) in skip:
+            continue
         try:
             at = datetime.datetime.fromisoformat(f"{m.get('date')}T{m.get('time') or '00:00'}")
         except (TypeError, ValueError):

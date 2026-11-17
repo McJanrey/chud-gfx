@@ -22,6 +22,7 @@ ASSET = "ChudGFX-windows.zip"
 EXE = "ChudGFX.exe"
 log = logging.getLogger("sgfx")
 _token = None
+before_exit = []   # (app.main's cleanup: install() ends with os._exit, which skips finally blocks)
 
 
 def parse(v):
@@ -134,4 +135,13 @@ def install(info, progress=None):
     bat = tmp / "swap.bat"
     bat.write_bytes(swap_script(os.getpid(), staging, Path(sys.executable).parent).encode("ascii"))
     launch_detached(str(bat))
-    threading.Timer(1.0, lambda: os._exit(0)).start()   # (let the page get its answer first)
+    threading.Timer(1.0, exit_now).start()   # (let the page get its answer first)
+
+
+def exit_now():
+    for f in before_exit:
+        try:
+            f()
+        except Exception:
+            log.exception("Cleanup before the update failed")
+    os._exit(0)

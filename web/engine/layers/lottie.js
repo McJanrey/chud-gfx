@@ -17,6 +17,7 @@ export function lottie(el, layer, ctx) {
   const src = content(layer, "src", ctx.values, ctx.resolve);
   if (!src) return;
   lib().then(L => {
+    if (!el.isConnected) return;   // (dropped before it drew: a merge kept the old one, or a redraw replaced it)
     const anim = L.loadAnimation({ container: el, renderer: "svg", loop: layer.loop !== false, autoplay: true, path: ctx.url(src),
       rendererSettings: { preserveAspectRatio: layer.fit === "cover" ? "xMidYMid slice" : "xMidYMid meet" } });
     if (+layer.speed > 0) anim.setSpeed(+layer.speed);

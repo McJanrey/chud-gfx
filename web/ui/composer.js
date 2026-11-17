@@ -5,7 +5,7 @@ import { Stage, W, H } from "../engine/stage.js";
 import { play } from "../engine/anim.js";
 import { clipShapes } from "../engine/layers/box.js";
 
-let comp = null, compId = null, sel = new Set(), undo = [], redo = [], saveTimer = null, dirty = false;
+let comp = null, compId = null, sel = new Set(), undo = [], redo = [], saveTimer = null, dirty = false, dragging = false;
 const layerById = id => comp && comp.layers.find(l => l.id === id);
 const picked = () => comp ? comp.layers.filter(l => sel.has(l.id)) : [];
 const uid = p => p + Math.random().toString(36).slice(2, 10);
@@ -162,7 +162,7 @@ view.addEventListener("wheel", e => {
   fit();
 }, { passive: false });
 let spaceDown = false;
-addEventListener("keydown", e => { if (e.code === "Space" && App.page === "composer" && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) { spaceDown = true; view.classList.add("grab"); e.preventDefault(); } });
+addEventListener("keydown", e => { if (e.code === "Space" && App.page === "composer" && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) && !document.activeElement.isContentEditable) { spaceDown = true; view.classList.add("grab"); e.preventDefault(); } });
 addEventListener("keyup", e => { if (e.code === "Space") { spaceDown = false; view.classList.remove("grab"); } });
 view.addEventListener("mousedown", e => {   // (pan: middle button, or Space + drag)
   if (!(e.button === 1 || (e.button === 0 && spaceDown))) return;
@@ -267,7 +267,7 @@ view.addEventListener("mousedown", e => {
     const [mx, my] = toStage(ev);
     let dx = Math.round(mx - sx), dy = Math.round(my - sy);
     if (!moved && Math.abs(dx) + Math.abs(dy) < 2) return;
-    if (!moved) { snapshot(); moved = true; }
+    if (!moved) { snapshot(); moved = dragging = true; }   // (dragging: a server push mid-drag must not swap the layers out)
     if (handle) {
       const h = handle.dataset.h, s0 = start[0];   // (resizing: the picked layers' first one)
       if (h.includes("e")) s0.l.w = Math.max(4, s0.w + dx);
@@ -289,11 +289,11 @@ view.addEventListener("mousedown", e => {
     drawSelection();
     renderPropsNumbers();
   };
-  const up = () => { removeEventListener("mousemove", move); removeEventListener("mouseup", up); if (moved) changed({ keepList: true }); };
+  const up = () => { removeEventListener("mousemove", move); removeEventListener("mouseup", up); dragging = false; if (moved) changed({ keepList: true }); };
   addEventListener("mousemove", move); addEventListener("mouseup", up);
 });
 addEventListener("keydown", e => {
-  if (App.page !== "composer" || !comp || /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
+  if (App.page !== "composer" || !comp || /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) || document.activeElement.isContentEditable) return;   // (a chip box is typed in too)
   const k = e.key.toLowerCase();
   if (pen && (k === "enter" || k === "escape")) { e.preventDefault(); if (k === "escape") pen = []; finishPen(); return; }
   if ((e.ctrlKey || e.metaKey) && k === "z") { e.preventDefault(); e.shiftKey ? back(redo, undo) : back(undo, redo); return; }
@@ -301,7 +301,13 @@ addEventListener("keydown", e => {
   const ls = picked();
   if (!ls.length) return;
   if (k === "delete" || k === "backspace") { e.preventDefault(); snapshot(); comp.layers = comp.layers.filter(l => !sel.has(l.id)); sel = new Set(); changed(); return; }
-  if ((e.ctrlKey || e.metaKey) && k === "d") { e.preventDefault(); snapshot(); const copies = ls.map(l => ({ ...JSON.parse(JSON.stringify(l)), id: uid("l"), name: (l.name || "") + " copy", x: l.x + 20, y: l.y + 20 })); comp.layers.push(...copies); sel = new Set(copies.map(c => c.id)); changed(); return; }
+  if ((e.ctrlKey || e.metaKey) && k === "d") { e.preventDefault(); snapshot(); const copies = ls.map(l => ({ ...JSON.parse(JSON.stringify(l)), id: uid("l"), name: (l.name || "") + " copy", x: l.x + 20, y: l.y + 20 }));
+    const at = {};   // (a copied part copy is its own copy of the part; a copied piece of one is no part)
+    for (const c of copies) if (c.part_at) {
+      if (comp.layers.every(l => l.part_at !== c.part_at || sel.has(l.id))) c.part_at = at[c.part_at] ||= uid("i");
+      else { delete c.part; delete c.part_at; }
+    }
+    comp.layers.push(...copies); sel = new Set(copies.map(c => c.id)); changed(); return; }
   const step = e.shiftKey ? 10 : 1, d = { arrowleft: [-step, 0], arrowright: [step, 0], arrowup: [0, -step], arrowdown: [0, step] }[k];
   if (d) { e.preventDefault(); snapshot(); for (const l of ls) { l.x += d[0]; l.y += d[1]; } changed({ keepList: true }); }
 });
@@ -610,6 +616,6 @@ App.on(st => {
   if (sig !== listSig) { listSig = sig; renderGraphics(); }
   // someone else changed the graphic we're on (and we've nothing unsaved): take theirs
   const c = compId && st.project.compositions.find(x => x.id === compId);
-  if (c && !dirty && JSON.stringify(c) !== JSON.stringify(comp) && !typingIn($("#page-composer"))) { comp = JSON.parse(JSON.stringify(c)); renderLayers(); drawCanvas(); renderProps(); }
+  if (c && !dirty && !dragging && JSON.stringify(c) !== JSON.stringify(comp) && !typingIn($("#page-composer"))) { comp = JSON.parse(JSON.stringify(c)); renderLayers(); drawCanvas(); renderProps(); }
 });
 pages.composer = { shown() { listSig = ""; renderGraphics(); if (!compId && App.state.project.compositions[0]) openComp(App.state.project.compositions[0].id); setTimeout(fit, 0); } };

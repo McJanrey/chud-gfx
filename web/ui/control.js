@@ -21,13 +21,20 @@ function chosen() {
   if (picked === undefined) { const d = ts.find(t => t.id === S.project.default_transition); return d ? d.id : null; }
   return ts.some(t => t.id === picked) ? picked : null;
 }
+let chipsSig = "";
 function renderChips() {
   const ts = (S.project.transitions || []).filter(t => t.enabled !== false && !OWN(t));
   const cur = chosen();
+  // (only when something changed: a rebuild between press and release swallows the click)
+  const sig = JSON.stringify([cur, ts.map(t => [t.id, t.name])]);
+  if (sig === chipsSig) return;
+  chipsSig = sig;
   $("#chips").replaceChildren(...ts.map(t => el("button", { role: "radio", "aria-checked": String(t.id === cur), title: t.id === cur ? "Click again for the graphics' own animations" : t.name,
     onclick: () => { picked = t.id === cur ? null : t.id; renderChips(); } }, t.name)));
   const name = (ts.find(t => t.id === cur) || {}).name;
-  $("#take").replaceChildren("TAKE", el("small", {}, name || "own animations"));
+  const small = $("#take small");   // (the label changes in place: TAKE pressed on it must still fire)
+  if (small) small.textContent = name || "own animations";
+  else $("#take").replaceChildren("TAKE", el("small", {}, name || "own animations"));
 }
 $("#take").addEventListener("click", () => api("/api/take", { transition: chosen() || "animate" }));
 $("#cut").addEventListener("click", () => api("/api/take", { transition: "cut" }));
@@ -44,8 +51,13 @@ $("#pgm-clear").addEventListener("click", async () => {
 function fieldsOf(c) {
   return (c.layers || []).filter(l => l.field && CONTENT[l.type]);
 }
+let gfxSig = "";
 function renderGraphics() {
   const pv = S.live.preview.on, pg = S.live.program.on;
+  // (only when the list changed: the HUD link or a save echo mustn't rebuild PVW / IN under a click)
+  const sig = JSON.stringify([pv, pg, selected, filter, S.project.compositions.map(c => [c.id, c.name, c.kind, c.hud_page, fieldsOf(c).length])]);
+  if (sig === gfxSig || typingIn($("#graphics"))) return;
+  gfxSig = sig;
   const rows = [];
   for (const [kind, label] of [...KINDS, ["hud", "Game HUD"]]) {   // (a game HUD's own pages, live from the HUD, in a group of their own)
     const list = S.project.compositions.filter(c => (c.hud_page ? "hud" : (c.kind || "overlay")) === kind && c.name.toLowerCase().includes(filter));

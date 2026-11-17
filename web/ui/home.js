@@ -52,10 +52,11 @@ App.on((st, msg) => {
   b.textContent = u.state === "installing" ? `Updating… ${u.progress || 0}%` : `Update to ${u.version}`;
   const install = async () => { if (await ask(`Install StandBy GFX ${u.version}?`, "It closes and opens again in a few seconds. Clear Program first: it won't update while something is on air.", { ok: "Install" })) api("/api/update/install").catch(() => {}); };
   b.onclick = install;
-  // a new version pops up once (the pill stays for later)
+  // a new version pops up once (the pill stays for later); never while something is on air or on Control, it'd block TAKE
+  const onAir = st.live && st.live.program.on.length;
   let seen = "";
   try { seen = localStorage.getItem("sg-update-asked") || ""; } catch (e) {}
-  if (u.update && u.state !== "installing" && seen !== u.version && !document.querySelector("dialog[open]")) {
+  if (u.update && u.state !== "installing" && seen !== u.version && !onAir && App.page !== "control" && !document.querySelector("dialog[open]")) {
     try { localStorage.setItem("sg-update-asked", u.version); } catch (e) {}
     install();
   }

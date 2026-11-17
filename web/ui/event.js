@@ -35,7 +35,7 @@ function renderTeams() {
     right = el("div", { class: "panel" }, el("div", { class: "panel-head" }, el("h3", {}, cur.name),
         el("button", { class: "small ghost", onclick: async () => { if (await ask(`Delete the team "${cur.name}"?`)) { all.splice(all.indexOf(cur), 1); pickTeam = null; saveAll(); } } }, "Delete team")),
       el("div", { class: "list form" },
-        el("div", { class: "two" }, lab("Name", inp(cur.name, v => set("name", v))), lab("Short name", inp(cur.short, v => set("short", v)))),
+        el("div", { class: "two" }, lab("Name", inp(cur.name, v => v.trim() ? set("name", v) : renderTeams())), lab("Short name", inp(cur.short, v => set("short", v)))),
         el("div", { class: "two" }, lab("Colour", el("input", { type: "color", value: cur.color || "#0b6b3a", onchange: e => set("color", e.target.value) })), lab("Game", inp(cur.game, v => set("game", v)))),
         lab("Logo", picker("image", cur.logo || "", v => set("logo", v), "logos")),
         el("h4", {}, "Players"),
@@ -79,7 +79,7 @@ function matchBox(key, a, b, sc, onScore, onTeam) {
 function bracketCard() {
   const top = { size: 8, format: "single", reset: true, short: false, teams: [], scores: {}, ...((G().tournament || {}).top || {}) };
   const size = +top.size === 16 ? 16 : 8, names = [...(top.teams || []), ...Array(16).fill("")].slice(0, 16);
-  const put = change => { Object.assign(top, change || {}); return saveG({ tournament: { ...(G().tournament || {}), top: { ...top, teams: names } } }); };
+  const put = change => { Object.assign(top, change || {}); return saveG({ tournament: { top: { ...top, teams: names } } }); };
   top.scores = { ...(top.scores || {}) };
   // (edits build on each other until the page redraws: one shared copy, changed in place)
   const score = (key, n, v) => { const cur = [...(top.scores[key] || ["", ""])]; cur[n] = v; top.scores[key] = cur; put(); };
@@ -120,7 +120,8 @@ function bracketCard() {
 function groupsCard() {
   const t = G().tournament || {}, groups = (t.groups || []).map(g => ({ ...g, teams: [...(g.teams || []), "", "", "", ""].slice(0, 4), scores: { ...(g.scores || {}) } }));
   while (groups.length < 4) groups.push({ name: "GROUP " + "ABCD"[groups.length], teams: ["", "", "", ""], scores: {} });
-  const put = () => saveG({ tournament: { ...t, groups } });
+  // (only groups: the server merges one level, so a stale copy of the bracket can't undo a score)
+  const put = () => saveG({ tournament: { groups } });
   const rows = Object.fromEntries((App.state.data.tables.Tournament || []).slice(1));
   return el("section", { class: "card wide" }, el("h3", {}, "Groups"),
     el("div", { class: "groups" }, ...groups.map((g, gi) => {

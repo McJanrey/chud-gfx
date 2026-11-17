@@ -66,8 +66,8 @@ class WS:
             if op == 9:
                 self.send(data, 10)
                 continue
-            if op == 8:
-                raise ConnectionError("OBS closed the connection")
+            if op == 8:   # (its code says why: 4009 = wrong password)
+                raise ConnectionError(f"OBS closed the connection ({struct.unpack('>H', data[:2])[0] if len(data) >= 2 else 0})")
             if op in (0, 1, 2):
                 msg += data
                 if b0 & 0x80:
@@ -192,6 +192,8 @@ class OBS:
                     return
                 wrong = "4009" in str(e) or "password" in str(e).lower()
                 self._set(state="error", detail=("Wrong password" if wrong else "Can't reach OBS: is it open with its WebSocket server on?") + f" ({e.__class__.__name__})")
+                if wrong:
+                    return   # (the same password fails again: wait for a new one)
                 stop.wait(5)
 
     def _refresh(self):

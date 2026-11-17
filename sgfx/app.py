@@ -18,7 +18,7 @@ from pathlib import Path
 
 from . import __version__
 from .server import make_server, WEB
-from . import logs
+from . import logs, updater
 
 log = logging.getLogger("sgfx")
 PORTS = range(7820, 7830)
@@ -86,6 +86,22 @@ def free_port(first=None):
     return 0
 
 
+def one_instance(d):
+    """A mutex named after the data folder, held while the app runs. None = a copy is already running (a second
+    launch would open the same show on the next port, miss OBS's sources and save over the first one's edits)."""
+    if os.name != "nt":
+        return True
+    import ctypes
+    import hashlib
+    k32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    k32.CreateMutexW.restype = ctypes.c_void_p
+    h = k32.CreateMutexW(None, False, "Local\\StandByGFX-" + hashlib.sha1(str(d).lower().encode()).hexdigest()[:16])
+    if h and ctypes.get_last_error() == 183:   # (ERROR_ALREADY_EXISTS)
+        k32.CloseHandle(ctypes.c_void_p(h))
+        return None
+    return h or True   # (no mutex at all: start anyway rather than never)
+
+
 def get(port, path):
     with urllib.request.urlopen(f"http://127.0.0.1:{port}{path}", timeout=10) as r:
         return r.read()
@@ -122,6 +138,10 @@ def main(argv=None):
         return smoke_test()
     d = data_dir()
     logs.setup(str(d))
+    held = one_instance(d)
+    if not held:
+        log.info("StandBy GFX is already running: this second launch closes")
+        return 0
     migrate(d)
     port = free_port(old_settings(d).get("http_port"))   # (GFX Baby's port first: OBS sources pointing at it keep working)
     if not port:
@@ -137,6 +157,11 @@ def main(argv=None):
             (d / "last.json").write_text(json.dumps({"workspace": Path(engine.folder).name}), encoding="utf-8")
         except OSError:
             pass
+
+    def bye():   # (ffmpeg would outlive the app: still relaying, or holding the RTMP port)
+        remember()
+        engine.stream.stop()
+    updater.before_exit.append(bye)   # (an update ends with os._exit, which skips the finally below)
     url = f"http://127.0.0.1:{port}/control"
     log.info("StandBy GFX %s on %s, workspace %s", __version__, url, ws)
     try:
@@ -153,7 +178,7 @@ def main(argv=None):
             webbrowser.open(url)
             threading.Event().wait()
     finally:
-        remember()
+        bye()
         srv.shutdown()
     return 0
 

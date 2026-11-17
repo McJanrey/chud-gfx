@@ -35,12 +35,8 @@ export const nowSkew = () => skew;
 function clockText(tables) {
   const now = new Date(Date.now() + skew);
   const mode = lookup(tables, "Global", "Clock mode"), until = lookup(tables, "Global", "Clock until"), zone = lookup(tables, "Global", "Clock zone");
-  if ((mode === "soon" || mode === "brb") && /^\d{1,2}:\d{2}$/.test(until)) {
-    const [h, m] = until.split(":").map(Number), end = new Date(now);
-    end.setHours(h, m, 0, 0);
-    const left = Math.max(0, Math.floor((end - now) / 1000));
-    return (left >= 3600 ? Math.floor(left / 3600) + ":" : "") + pad(Math.floor(left / 60) % 60) + ":" + pad(left % 60);
-  }
+  // (as {{COUNTDOWN}}: a time after midnight counts down to tomorrow)
+  if ((mode === "soon" || mode === "brb") && /^\d{1,2}:\d{2}$/.test(until)) return countdown(tables, until);
   const h = now.getHours();
   return `${pad((h % 12) || 12)}:${pad(now.getMinutes())} ${h < 12 ? "AM" : "PM"}` + (zone ? " " + zone : "");
 }

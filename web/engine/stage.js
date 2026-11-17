@@ -106,7 +106,7 @@ export class Stage {
     if (!this.opts.editor && state.project) this.preload(state);
     this.cams = (state.project && state.project.cams) || this.cams || [];
     this.camPassword = (state.project && state.project.cam_password) || "";
-    return (state.data && state.data.tables) || {};
+    return (this.latestTables = (state.data && state.data.tables) || {});
   }
 
   // entering: the graphic is coming in (tickers wait for their layer's In animation, from their start)
@@ -115,8 +115,10 @@ export class Stage {
     el.className = "sg-comp";
     const later = [];
     const ticking = [];
-    const ctx = { values: values || {}, resolve: v => resolve(v, tables), url: s => this.url(s), muted: this.opts.muted, later: fn => later.push(fn), tick: fn => ticking.push(fn),
-      table: name => tables[name], now: () => Date.now() + nowSkew(), entering,
+    // (the newest tables, for ticks too: a graphic isn't redrawn for a table it doesn't name, e.g. Global for {{TIMER}})
+    const cur = () => this.latestTables || tables;
+    const ctx = { values: values || {}, resolve: v => resolve(v, cur()), url: s => this.url(s), muted: this.opts.muted, later: fn => later.push(fn), tick: fn => ticking.push(fn),
+      table: name => cur()[name], now: () => Date.now() + nowSkew(), entering,
       cams: this.cams || [], camPassword: this.camPassword, liveCams: !this.opts.editor, cardCams: !!this.opts.editor, camBitrate: this.opts.muted ? 800 : 0,
       hold: layer => { const a = (layer.anim || {}).in || {}; return entering && a.type && a.type !== "none" ? (+a.delay || 0) + (+a.dur || 400) : 0; } };
     const fit = slotFit(comp, tables, values || {});
@@ -129,8 +131,11 @@ export class Stage {
       if (layer.show != null && layer.show !== "" && !truthy(resolve(String(layer.show), tables))) continue;
       const lel = box(layer);
       placeMove(lel, layer, ctx.resolve);
+      const t0 = ticking.length;
       draw(lel, layer, ctx);
+      lel._ticks = ticking.slice(t0);   // (its own: a merge that keeps the old layer swaps them)
       effects(lel, layer, ctx.resolve);
+      lel._drawn = lel.outerHTML;   // (as drawn now: a lottie or a ticker fills in later, merge compares this too)
       lel._layer = layer;
       if (layer !== raw) { lel._shift = [layer.x - raw.x, layer.y - raw.y, layer.w - raw.w, layer.h - raw.h]; lel._layer = raw; }
       el.appendChild(lel);
@@ -151,16 +156,32 @@ export class Stage {
   async goIn(el, mode, t) {
     if (el.parentNode !== this.root) this.root.appendChild(el);   // (a warmed-up graphic is there already: moving it would reconnect its cameras)
     // (its pictures decoded first, so it never plays in half drawn; they're preloaded, so this is usually instant)
-    const gen = this.gen;
+    const gen = this.gen, run = el._in = { el, at: 0 };   // (a redraw while it comes in takes over from here: carryIn)
     el.style.visibility = "hidden";
     await Promise.race([Promise.all([...el.querySelectorAll("img")].map(i => i.decode().catch(() => {}))), new Promise(r => setTimeout(r, 700))]);
-    if (gen !== this.gen && !el.isConnected) return;
+    el = run.el;
+    if (gen !== this.gen) { if (el.isConnected) el._later.forEach(fn => fn()); return; }   // (a newer TAKE settled it: no In over its Out)
     el.style.visibility = "";
     el._later.forEach(fn => fn());
     if (mode === "cut") return;
-    if (mode === "fade") return el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: +t.dur || 500 }).finished.catch(() => {});
-    if (mode === "wipe") return el.animate(wipeFrames(t.direction, true), { duration: +t.dur || 600, easing: "ease-in-out" }).finished.catch(() => {});
-    await Promise.all([...el.children].filter(l => l._layer).map(l => play(l, l._layer, "in")));
+    run.in = e => mode === "fade" ? e.animate([{ opacity: 0 }, { opacity: 1 }], { duration: +t.dur || 500 }).finished.catch(() => {})
+      : mode === "wipe" ? e.animate(wipeFrames(t.direction, true), { duration: +t.dur || 600, easing: "ease-in-out" }).finished.catch(() => {})
+      : Promise.all([...e.children].filter(l => l._layer).map(l => play(l, l._layer, "in")));
+    run.at = performance.now();
+    await run.in(el);
+    run.at = 0;
+  }
+  // A graphic redrawn while it's still coming in (a HUD score mid-In) carries on its In from where it was, not popped in whole.
+  carryIn(from, el) {
+    const run = from._in;
+    if (!run || run.el !== from) return;
+    run.el = el;
+    el._in = run;
+    if (from.style.visibility === "hidden") { el.style.visibility = "hidden"; return; }   // (still waiting on its pictures: goIn shows it)
+    if (!run.at) return;
+    run.in(el);
+    const at = performance.now() - run.at;
+    for (const x of [el, ...el.children]) for (const a of x.getAnimations()) a.currentTime = at;
   }
   async goOut(el, mode, t) {
     (this.leaving = this.leaving || new Set()).add(el);
@@ -182,7 +203,11 @@ export class Stage {
     for (const c of [...this.root.children]) if (c.classList.contains("sg-cover") || c.classList.contains("sg-stinger")) c.remove();
     for (const { el } of this.on.values()) {
       for (const g of el.querySelectorAll(".sg-ghost")) g.remove();
+      if (el._in) el._in.at = 0;
       for (const a of el.getAnimations({ subtree: true })) {
+        // (only the TAKE's own, on the graphic or its layers: a sponsor bar or a ticker sliding in inside a layer runs on)
+        const x = a.effect && a.effect.target;
+        if (x !== el && (!x || x.parentNode !== el)) continue;
         const iters = a.effect && a.effect.getComputedTiming ? a.effect.getComputedTiming().iterations : 1;
         if (iters !== Infinity) { try { a.finish(); } catch (e) { a.cancel(); } }   // (tickers keep running)
       }
@@ -202,8 +227,8 @@ export class Stage {
       const o = this.on.get(id);
       if (o && o.sig === sig) continue;
       const el = this.build(comp, want.values[id], tables, !o);
-      if (o && [...o.el.children].some(c => c._keep)) { this.patch(o.el, el); this.on.set(id, { el: o.el, sig }); }
-      else if (o) { o.el.replaceWith(el); el._later.forEach(fn => fn()); this.on.set(id, { el, sig }); }
+      if (o && [...o.el.children].some(c => c._keep)) { this.patch(o.el, el); this.carryIn(o.el, o.el); this.on.set(id, { el: o.el, sig }); }
+      else if (o) { o.el.replaceWith(el); el._later.forEach(fn => fn()); this.carryIn(o.el, el); this.on.set(id, { el, sig }); }
       else if (this.warm && this.warm.has(id)) {   // (it was waiting, hidden, with its cameras connected)
         const w = this.warm.get(id);
         this.warm.delete(id);
@@ -253,7 +278,9 @@ export class Stage {
     const same = (a, b) => JSON.stringify({ ...a, id: 0, anim: 0 }) === JSON.stringify({ ...b, id: 0, anim: 0 });
     const olds = new Map();
     for (const g of going) for (const l of g.children) { if (!l._layer) continue; const k = key(l); if (!olds.has(k)) olds.set(k, []); olds.get(k).push(l); }
-    const box = l => { const L = l._layer; return { left: (L.x || 0) + "px", top: (L.y || 0) + "px", width: (L.w || 0) + "px", height: (L.h || 0) + "px", opacity: getComputedStyle(l).opacity }; };
+    // (where it's drawn: a slot graphic's layers sit _shift from their design place)
+    const box = l => { const L = l._layer, s = l._shift || []; const at = (k, i) => (+L[k] || 0) + (+s[i] || 0) + "px";
+      return { left: at("x", 0), top: at("y", 1), width: at("w", 2), height: at("h", 3), opacity: getComputedStyle(l).opacity }; };
     for (const el of fresh) {
       if (el.parentNode !== this.root) this.root.appendChild(el);
       el.style.visibility = "";
@@ -263,13 +290,17 @@ export class Stage {
         const old = (olds.get(key(l)) || []).shift();
         if (!old) { play(l, l._layer, "in"); continue; }
         old._merged = true;
-        old.style.visibility = "hidden";
         const from = box(old), to = box(l);
-        if (JSON.stringify(from) === JSON.stringify(to) && old.textContent === l.textContent && same(old._layer, l._layer)) {
-          old.style.visibility = "";   // (the very same layer: the one on screen moves over and keeps playing, a loop or a ticker doesn't restart)
-          l.replaceWith(old);
+        // (the very same layer, drawn the same: field values and slot places count, not just the layer's settings)
+        // (live markup for a ticking clock, the build-time one for what draws later: a lottie, a ticker's copies)
+        const drawnSame = old.outerHTML === l.outerHTML || (old._drawn != null && old._drawn === l._drawn);
+        if (JSON.stringify(from) === JSON.stringify(to) && drawnSame && same(old._layer, l._layer)) {
+          l.replaceWith(old);   // (the one on screen moves over and keeps playing, a loop or a ticker doesn't restart)
+          const mine = new Set(l._ticks || []);
+          el._ticks = el._ticks.filter(fn => !mine.has(fn)).concat(old._ticks || []);   // (and its clock / sponsor ticks go with it)
           continue;
         }
+        old.style.visibility = "hidden";
         l.animate([from, to], { duration: dur, easing });
         if (old.textContent !== l.textContent && l._layer.type === "text") {   // (new words: the old ones fade out where they move)
           const ghost = old.cloneNode(true);
@@ -302,6 +333,8 @@ export class Stage {
         old._layer = n._layer;
         [...n.children].forEach((c, i) => { const o = old.children[i]; if (o && o.tagName === c.tagName) o.style.cssText = c.style.cssText; });
         keep.delete(n._keep);
+        // (the new copy is dropped, never on the page: it was playing off-page, a second sound and decoder each redraw)
+        for (const m of n.querySelectorAll("video")) { m.pause(); m.removeAttribute("src"); m.load(); }
         stay.add(old);
         cursor = old;
         continue;
@@ -348,7 +381,7 @@ export class Stage {
     this.later(() => { if (this.hold === gen) this.swapIn(); }, half + 400);   // (if the cover's animation never finishes, the TAKE still goes on)
     cover.animate([{ opacity: 0 }, { opacity: 1 }], { duration: half, fill: "forwards" }).finished.then(() => {
       if (gen !== this.gen) return;
-      this.swapIn();
+      if (this.hold === gen) this.swapIn();   // (the fallback may have swapped already: again would put back an older state)
       return cover.animate([{ opacity: 1 }, { opacity: 0 }], { duration: half, fill: "forwards" }).finished;
     }).finally(() => cover.remove());
   }

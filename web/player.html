@@ -25,22 +25,16 @@ const stage = new Stage(root, { bus: "program", base: "." });
 const fit = () => { const k = Math.min(innerWidth / W, innerHeight / H); root.style.transform = `scale(${k})`; };
 addEventListener("resize", fit); fit();
 
-const snap = await fetch("state.json").then(r => r.json());
-const ids = snap.project.compositions.map(c => c.id);
-let at = 0, on = false;
-const fromUrl = Object.fromEntries([...q].filter(([k]) => !["autoplay", "live"].includes(k)));
-const values = Object.fromEntries(ids.map(id => [id, { ...fromUrl }]));
-const css = document.createElement("style");
-css.textContent = (snap.fonts || []).map(f => `@font-face{font-family:"${f.name.replace(/"/g, "")}";src:url("${encodeURI(f.url)}");${f.weight ? `font-weight:${f.weight};` : ""}font-display:block}`).join("\n");
-document.head.appendChild(css);
-const state = () => ({ ...snap, live: { program: { on: on ? [ids[at]] : [], values, seq: 0 }, preview: { on: [], values: {} }, cut: { seq: 0 } } });
-const show = mode => stage.sync(state(), mode);
+// (the host can call play() / update() as soon as the page loads, before state.json is in: those wait, then run)
+let snap = null, ids = [], values = {}, at = 0, on = false;
+const waiting = [];
+const when = fn => (...a) => { if (snap) fn(...a); else waiting.push(() => fn(...a)); };
 
-window.play = () => { on = true; show("animate"); };
-window.stop = () => { on = false; show("animate"); };
-window.next = () => { if (ids.length > 1) { at = (at + 1) % ids.length; show("animate"); } };
-window.remove = () => { on = false; show("cut"); };
-window.update = data => {   // CasparCG sends XML or JSON; SPX sends an object
+window.play = when(() => { on = true; show("animate"); });
+window.stop = when(() => { on = false; show("animate"); });
+window.next = when(() => { if (ids.length > 1) { at = (at + 1) % ids.length; show("animate"); } });
+window.remove = when(() => { on = false; show("cut"); });
+window.update = when(data => {   // CasparCG sends XML or JSON; SPX sends an object
   let d = data;
   if (typeof d === "string") {
     try { d = JSON.parse(d); } catch (e) {
@@ -50,7 +44,18 @@ window.update = data => {   // CasparCG sends XML or JSON; SPX sends an object
   }
   for (const id of ids) Object.assign(values[id], d || {});
   show("cut");
-};
+});
+
+const loaded = await fetch("state.json").then(r => r.json());
+ids = loaded.project.compositions.map(c => c.id);
+const fromUrl = Object.fromEntries([...q].filter(([k]) => !["autoplay", "live"].includes(k)));
+values = Object.fromEntries(ids.map(id => [id, { ...fromUrl }]));
+snap = loaded;
+const css = document.createElement("style");
+css.textContent = (snap.fonts || []).map(f => `@font-face{font-family:"${f.name.replace(/"/g, "")}";src:url("${encodeURI(f.url)}");${f.weight ? `font-weight:${f.weight};` : ""}font-display:block}`).join("\n");
+document.head.appendChild(css);
+const state = () => ({ ...snap, live: { program: { on: on ? [ids[at]] : [], values, seq: 0 }, preview: { on: [], values: {} }, cut: { seq: 0 } } });
+function show(mode) { stage.sync(state(), mode); }
 
 if (q.get("live")) {   // follow an engine's live data (tables), still playing on its own
   const base = q.get("live").replace(/\/$/, "");
@@ -58,6 +63,7 @@ if (q.get("live")) {   // follow an engine's live data (tables), still playing o
   es.onmessage = e => { const m = JSON.parse(e.data); if (m.data) { snap.data = m.data; show("cut"); } };
 }
 if (q.get("autoplay") !== "0") window.play(); else show("cut");
+waiting.splice(0).forEach(fn => fn());   // (after autoplay: what the host asked for wins)
 </script>
 </body>
 </html>

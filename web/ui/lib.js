@@ -90,11 +90,17 @@ document.addEventListener("click", e => { const b = e.target.closest("#nav butto
 addEventListener("load", () => { let p = "control"; try { p = localStorage.getItem("sg-page") || p; } catch (e) { /* */ } show(p); });
 
 // A picture picker: the workspace's images, plus "Add a file…".
-let assetCache = null;
+let assetCache = null, assetFolder;
 export async function assets(force) {
-  if (!assetCache || force) assetCache = (await fetch("/api/assets").then(r => r.json())).assets;
-  return assetCache;
+  if (assetCache && !force) return assetCache;
+  const f = assetFolder, list = (await fetch("/api/assets").then(r => r.json())).assets;
+  if (f === assetFolder) assetCache = list;   // (a workspace opened mid-fetch: don't cache the old one's files)
+  return list;
 }
+App.on(st => {   // (another workspace open: its own assets folder, so the list is fetched again)
+  const w = (st.workspaces || []).find(w => w.open), f = w && w.folder;
+  if (f !== assetFolder) { assetFolder = f; assetCache = null; }
+});
 export function picker(kind, value, onPick, folder = "") {
   const sel = el("select", { "aria-label": "File" });
   const fill = list => sel.replaceChildren(el("option", { value: "" }, "(none)"),
@@ -173,7 +179,15 @@ const TYPED = "input:not([type]), input[type=text], input[type=search], input[ty
 addEventListener("input", e => { if (e.target.matches && e.target.matches(TYPED)) unsaved = e.target; touched = Date.now(); }, true);   // (only typed words hold a redraw, never a dropdown or a slider)
 addEventListener("change", e => { if (unsaved === e.target) unsaved = null; touched = 0; catchUp(); later(); }, true);
 addEventListener("focusout", e => { if (unsaved === e.target) unsaved = null; catchUp(); }, true);
+// A button held down: a redraw before it's let go would swallow its click (catch up once it's let go).
+let pressed = null, pressAt = 0;
+addEventListener("pointerdown", e => { pressed = e.target; pressAt = Date.now(); }, true);
+const release = () => { if (pressed) { pressed = null; catchUp(); } };
+addEventListener("pointerup", release, true);
+addEventListener("pointercancel", release, true);
 export const typingIn = box => {
+  const held = 1500 - (Date.now() - pressAt);   // (capped: a release outside the window never arrives)
+  if (box && pressed && box.contains(pressed) && held > 0) { clearTimeout(again); again = setTimeout(catchUp, held); return true; }
   const a = document.activeElement;
   if (!box || !a || !box.contains(a) || !a.matches(FIELD)) return false;
   if (a === unsaved) return true;

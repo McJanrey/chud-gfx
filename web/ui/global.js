@@ -18,13 +18,19 @@ function team(side) {
     el("div", { class: "two" }, field("Short name", text(t.short, v => set("short", v))), field("Colour", el("input", { type: "color", value: t.color || "#0b6b3a", onchange: e => set("color", e.target.value) }))),
     field("Logo", picker("image", t.logo || "", v => set("logo", v), "logos")),
     el("div", { class: "score" },
-      el("button", { "aria-label": "One less", onclick: () => set("score", Math.max(0, (+t.score || 0) - 1)) }, "−"),
+      el("button", { "aria-label": "One less", onclick: () => set("score", t.score = Math.max(0, (+t.score || 0) - 1)) }, "−"),
       el("span", { class: "big" }, String(+t.score || 0)),
-      el("button", { "aria-label": "One more", onclick: () => set("score", (+t.score || 0) + 1) }, "+")));
+      el("button", { "aria-label": "One more", onclick: () => set("score", t.score = (+t.score || 0) + 1) }, "+")));   // (kept here too: a second tap before the redraw still counts)
 }
 
 function series() {
   const g = G();
+  // (every key both ways, blank where a team has none: the engine merges teams, so a missing key would stay put)
+  const swap = () => {
+    const keys = [...new Set([...Object.keys(g.left || {}), ...Object.keys(g.right || {})])];
+    const pick = t => Object.fromEntries(keys.map(k => [k, (t || {})[k] ?? ""]));
+    save({ left: pick(g.right), right: pick(g.left) });
+  };
   return card("Series",
     el("div", { class: "two" },
       field("Best of", el("select", { onchange: e => save({ best_of: +e.target.value }) }, ...[1, 3, 5, 7].map(n => el("option", { value: n, selected: (+g.best_of || 3) === n }, String(n))))),
@@ -33,7 +39,7 @@ function series() {
     field("Stage", text(g.stage, v => save({ stage: v }))),
     field("Tournament logo", picker("image", g.tournament_logo || "", v => save({ tournament_logo: v }), "logos")),
     el("div", { class: "row" },
-      el("button", { class: "small", onclick: () => save({ left: g.right || {}, right: g.left || {} }) }, "Swap sides"),
+      el("button", { class: "small", onclick: swap }, "Swap sides"),
       el("button", { class: "small", onclick: () => save({ left: { score: 0 }, right: { score: 0 }, game: "" }) }, "Reset series")));
 }
 
@@ -44,9 +50,9 @@ function sponsors() {
     el("p", { class: "muted small" }, "Shown in turn wherever a graphic shows {{Sponsors}}."),
     ...list.map((s, i) => el("div", { class: "sponsor" },
       el("div", { class: "thumb-pick" }, s.logo ? el("img", { src: s.logo, alt: "" }) : el("span", { class: "muted" }, "—"),
-        picker("image", s.logo || "", v => { list[i] = { ...s, logo: v }; put(); }, "sponsors")),
-      el("label", { class: "inline" }, num(s.secs || 10, v => { list[i] = { ...s, secs: Math.max(1, v) }; put(); }, { min: 1, style: "width:70px" }), "s"),
-      toggle("White", !!s.white, v => { list[i] = { ...s, white: v }; put(); }),
+        picker("image", s.logo || "", v => { list[i] = { ...list[i], logo: v }; put(); }, "sponsors")),
+      el("label", { class: "inline" }, num(s.secs || 10, v => { list[i] = { ...list[i], secs: Math.max(1, v) }; put(); }, { min: 1, style: "width:70px" }), "s"),
+      toggle("White", !!s.white, v => { list[i] = { ...list[i], white: v }; put(); }),   // (list[i], not s: an edit just before this one stays)
       el("span", { class: "sp-left small", "data-i": String(i) }),
       el("button", { class: "small ghost", "aria-label": "Move up", disabled: !i, onclick: () => { [list[i - 1], list[i]] = [list[i], list[i - 1]]; put(); } }, "↑"),
       el("button", { class: "small ghost", "aria-label": "Remove", onclick: () => { list.splice(i, 1); put(); } }, "✕"))),

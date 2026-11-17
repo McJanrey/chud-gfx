@@ -81,7 +81,8 @@ function renderOutputs() {
       el("p", { class: "muted small" }, "On, a link always shows its graphic (its Program values, or else its Preview ones): add the ones you want to OBS as browser sources (1920 × 1080). Off, it shows nothing, so a source you aren't using costs the PC nothing."),
       ...st.project.compositions.map(c => el("div", { class: "out-one" },
         el("label", { class: "switch", title: c.output !== false ? "Its own output is on" : "Its own output is off" }, el("input", { type: "checkbox", checked: c.output !== false, "aria-label": `${c.name}: its own output`,
-          onchange: e => api("/api/comp", { comp: { ...c, output: e.target.checked } }) }), ""),
+          // (the live graphic: this list only redraws on name/output, so c can hold old layers)
+          onchange: e => api("/api/comp", { comp: { ...(App.state.project.compositions.find(x => x.id === c.id) || c), output: e.target.checked } }) }), ""),
         copyRow(c.name, base(hosts[hosts.length - 1]) + "/output?comp=" + c.id, outs["comp:" + c.id])))),
     networkCard(), exportCard());
   $("#out-list").prepend(obsCard());

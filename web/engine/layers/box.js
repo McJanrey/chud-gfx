@@ -67,7 +67,7 @@ export function picture(media, layer) {
   const c = p.crop;
   if (c && (+c.l || +c.t || +c.r || +c.b)) {
     const l = +c.l || 0, t = +c.t || 0, w = 100 - l - (+c.r || 0), h = 100 - t - (+c.b || 0);
-    if (w > 1 && h > 1) Object.assign(media.style, { objectFit: "fill", width: 10000 / w + "%", height: 10000 / h + "%", left: -l * 100 / w + "%", top: -t * 100 / h + "%", inset: "auto" });
+    if (w > 1 && h > 1) Object.assign(media.style, { inset: "auto", objectFit: "fill", width: 10000 / w + "%", height: 10000 / h + "%", left: -l * 100 / w + "%", top: -t * 100 / h + "%" });   // (inset first: set after, it reset left / top)
     if (media.parentElement) media.parentElement.style.overflow = "hidden";
   }
 }

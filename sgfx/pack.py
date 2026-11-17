@@ -23,7 +23,8 @@ def _paths(obj, found):
         for v in obj:
             _paths(v, found)
     elif isinstance(obj, str) and "assets/" in obj:
-        for m in re.finditer(r"assets/[^\"'{}|<>]+?\.[A-Za-z0-9]{2,5}\b", obj):
+        # (the extension must end the name: "red.bull.png" isn't cut at "red.bull")
+        for m in re.finditer(r"assets/[^\"'{}|<>]+?\.[A-Za-z0-9]{2,5}(?![\w./-])", obj):
             found.add(m.group(0))
     return found
 
@@ -76,14 +77,16 @@ def import_pack(data, folder, existing_ids, existing_names):
         with open(dst, "wb") as f:
             f.write(blob)
 
+    # (one pass: logo.png -> logo-2.png must not then go on to logo-2.png -> logo-2-2.png)
+    renamed = re.compile("|".join(re.escape(a) for a in sorted(rename, key=len, reverse=True))) if rename else None
+
     def fix(obj):
         if isinstance(obj, dict):
             return {k: fix(v) for k, v in obj.items()}
         if isinstance(obj, list):
             return [fix(v) for v in obj]
-        if isinstance(obj, str):
-            for a, b in rename.items():
-                obj = obj.replace(a, b)
+        if isinstance(obj, str) and renamed:
+            obj = renamed.sub(lambda m: rename[m.group(0)], obj)
         return obj
 
     comps = []

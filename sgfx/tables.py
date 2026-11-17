@@ -49,14 +49,14 @@ def global_rows(g):
     for n in range(1, 5):
         add(f"Game box {n}", "1" if n <= need else "")
     add("Tournament logo", g.get("tournament_logo", ""))
-    sponsors = [s for s in g.get("sponsors") or [] if s.get("logo")]
+    sponsors = [s for s in g.get("sponsors") or [] if isinstance(s, dict) and s.get("logo")]
     add("Sponsor logo", sponsors[0]["logo"] if sponsors else ""); add("Sponsors", len(sponsors))
     loop = g.get("bgloop") or {}
     src = loop.get("src") or DEFAULT_LOOP
     add("BG loop", (DEFAULT_LOOP if src == OLD_LOOP else src) if loop.get("on", True) else "")
     add("BG loop colour", loop.get("color", "")); add("BG loop brightness", loop.get("brightness", "")); add("BG loop speed", loop.get("speed", ""))
     ticker = [t for t in g.get("ticker") or [] if t]
-    add("Ticker", "".join(t + "  |  " for t in ticker))
+    add("Ticker", "".join(_s(t) + "  |  " for t in ticker))
     clock = g.get("clock") or {}
     mode = clock.get("mode") if clock.get("mode") in CLOCK_LABELS else "time"
     add("Clock mode", mode); add("Clock until", clock.get("until", "")); add("Clock zone", clock.get("zone", "")); add("Clock label", CLOCK_LABELS[mode])
@@ -68,15 +68,16 @@ def global_rows(g):
     add("Caster text", caster.get("text") or caster.get("secondary", ""))
     for n in range(1, 5):
         add(f"Caster {n} shown", "1" if n <= count else ""); add(f"Caster {n} move", CASTER_MOVES[count][n - 1] if n <= count else "")
-    for k, v in g.get("custom") or []:
-        add(k, v)
+    for row in g.get("custom") or []:
+        if isinstance(row, (list, tuple)) and len(row) >= 2:   # (a bad send can't break every page)
+            add(_s(row[0]), row[1])
     return rows
 
 
 def sponsor_rows(g):
     rows = [["Logo", "Seconds", "Epoch", "White"]]
     for s in g.get("sponsors") or []:
-        if s.get("logo"):
+        if isinstance(s, dict) and s.get("logo"):
             rows.append([s["logo"], _s(s.get("secs", "")), _s(g.get("sponsor_epoch", 0)), "1" if s.get("white") else ""])
     return rows
 
@@ -97,7 +98,7 @@ def _when(date, time):
 
 def schedule_rows(g, teams=()):
     s = g.get("schedule") or {}
-    matches = s.get("matches") or []
+    matches = [m for m in (s.get("matches") if isinstance(s.get("matches"), list) else []) if isinstance(m, dict)]
     count = _num(s.get("count"), len(matches))
     logo = {(t.get("name") or "").lower(): t.get("logo", "") for t in teams}
     rows = [["Field", "Value"], ["Count", _s(count)]]
@@ -105,12 +106,12 @@ def schedule_rows(g, teams=()):
         P = f"Match {i}"
         add = lambda k, v: rows.append([f"{P} {k}", _s(v)])
         add("tournament", m.get("tournament", ""))
-        add("game", " | ".join(x for x in (m.get("game", ""), m.get("type", "")) if x))
-        add("teams", " vs. ".join(x for x in (m.get("team1", ""), m.get("team2", "")) if x))
-        add("when", _when(m.get("date", ""), m.get("time", "")))
+        add("game", " | ".join(x for x in (_s(m.get("game")), _s(m.get("type"))) if x))
+        add("teams", " vs. ".join(x for x in (_s(m.get("team1")), _s(m.get("team2"))) if x))
+        add("when", _when(_s(m.get("date")), _s(m.get("time"))))
         add("show", "1")
         for n in (1, 2):
-            name = m.get(f"team{n}", "")
+            name = _s(m.get(f"team{n}"))
             add(f"team {n}", name); add(f"team {n} logo", logo.get(name.lower(), ""))
     return rows
 
@@ -118,7 +119,7 @@ def schedule_rows(g, teams=()):
 def roster_rows(g, teams=()):
     """The players of the side picked for the player graphics (Global "roster": left / right)."""
     side = g.get("roster") if g.get("roster") in ("left", "right") else "left"
-    pick = (g.get(side) or {}).get("name", "").strip().lower()
+    pick = _s((g.get(side) or {}).get("name")).strip().lower()
     team = next((t for t in teams if pick and (t.get("name") or "").strip().lower() == pick), {}) if pick else {}
     players = [p for p in team.get("players") or [] if isinstance(p, dict)]
     rows = [["Field", "Value"], ["Side", side], ["Team", team.get("name", "")], ["Team short", team.get("short", "")],
@@ -149,10 +150,10 @@ def standings_rows(g, teams=()):
             ["Stat 1 title", STATS[stat]], ["Stat 2 title", STATS.get(stat2, "")], ["Stat 2 shown", "1" if stat2 else ""],
             ["One stat", "" if stat2 else "1"], ["Stat titles shown", "1"]]
     lookup = {(t.get("name") or "").strip().lower(): t for t in teams}
-    entries = st.get("teams") or []
+    entries = [t for t in (st.get("teams") if isinstance(st.get("teams"), list) else []) if isinstance(t, dict)]
     for n in range(1, count + 1):
         t = entries[n - 1] if n <= len(entries) else {}
-        name = t.get("name", "")
+        name = _s(t.get("name"))
         known = lookup.get(name.strip().lower(), {}) if name else {}
         shown = "1" if name else ""
         P = f"Team {n}"
@@ -183,9 +184,9 @@ def teams_rows(teams=()):
 
 
 # --- the team list as CSV (as GFX Baby's teams.csv): Name, Short name, Logo, Colour, Game, then per player:
-# Player N (name), Player N ID (in-game ID), Player N country, Player N headshot ---
+# Player N (name), Player N ID (in-game ID), Player N country, Player N headshot, Player N tag, Player N flag ---
 TEAM_COLS = ["Name", "Short name", "Logo", "Colour", "Game"]
-PLAYER_COLS = [("", "name"), (" ID", "id"), (" country", "country"), (" headshot", "photo")]
+PLAYER_COLS = [("", "name"), (" ID", "id"), (" country", "country"), (" headshot", "photo"), (" tag", "tag"), (" flag", "flag")]
 
 
 def teams_csv(teams):
@@ -226,13 +227,18 @@ def teams_from_csv(text, teams):
         name = get("Name")
         if not name:
             continue
+        t = by.get(name.lower())
+        old = (t or {}).get("players") or []
         players, i = [], 1
         while col(f"Player {i}") >= 0:
-            p = {k: get(f"Player {i}{suffix}") for suffix, k in PLAYER_COLS}
+            # (only the columns the CSV has: an older CSV without tag / flag keeps the player's own)
+            p = {k: get(f"Player {i}{suffix}") for suffix, k in PLAYER_COLS if col(f"Player {i}{suffix}") >= 0}
             if any(p.values()):
-                players.append(dict(p, tag=""))
+                # (the same player by in-game ID or name: a new player never takes the old one's tag / flag)
+                was = next((o for o in old if isinstance(o, dict) and ((p.get("id") and o.get("id") == p.get("id"))
+                            or (p.get("name") and _s(o.get("name")).strip().lower() == p["name"].lower()))), {})
+                players.append(dict(was, **p))
             i += 1
-        t = by.get(name.lower())
         fields = {"name": name, "short": get("Short name"), "logo": get("Logo"), "color": get("Colour") or get("Color"), "game": get("Game")}
         if t:
             t.update({k: v for k, v in fields.items() if v})

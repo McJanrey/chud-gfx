@@ -36,6 +36,17 @@ def tee_targets(targets):
     return "|".join(outs)
 
 
+def listen_host(folder):
+    """This PC only unless 'Let other PCs use this engine' is on (Net's <library>/settings.json): ffmpeg takes
+    any stream key, so anyone on a venue LAN could otherwise send video out on these channels."""
+    try:
+        with open(os.path.join(folder, "settings.json"), encoding="utf-8") as f:
+            net = json.load(f)
+    except (OSError, ValueError):
+        net = {}
+    return "0.0.0.0" if net.get("network", bool(os.environ.get("SGFX_LAN"))) else "127.0.0.1"
+
+
 class Multistream:
     def __init__(self, folder):
         self.path = os.path.join(folder, "stream.json")
@@ -48,6 +59,7 @@ class Multistream:
         self.cfg.setdefault("port", 1935)
         self.cfg.setdefault("targets", [])
         self.proc, self.status, self.lock = None, {"state": "off", "detail": "", "since": 0, "kbps": 0}, threading.Lock()
+        self.gen = 0   # (bumped by start and stop: an older _run sees it and ends instead of starting a second ffmpeg)
         self.on_change = lambda: None
         if self.cfg["on"]:
             self.start()
@@ -77,11 +89,12 @@ class Multistream:
             if url and not re.match(r"rtmps?://", url):
                 raise ValueError("A server address starts with rtmp:// or rtmps://")
             targets.append({"id": tid, "platform": str(t.get("platform", "custom")), "name": str(t.get("name", ""))[:40], "url": url, "key": key.strip(), "on": bool(t.get("on"))})
+        before = (tee_targets(self.cfg["targets"]), self.cfg["port"])
         self.cfg["targets"] = targets
         if "port" in body:
             self.cfg["port"] = max(1024, min(65535, int(body["port"] or 1935)))
         self._save()
-        if self.cfg["on"]:
+        if self.cfg["on"] and (tee_targets(targets), self.cfg["port"]) != before:   # (a restart drops OBS and every platform: only when ffmpeg's command changes)
             self.restart()
 
     def turn(self, on):
@@ -93,9 +106,16 @@ class Multistream:
         self.stop()
         self.start()
 
+    def relisten(self):
+        """'Let other PCs use this engine' changed: listen on the new address now (not while live: the next
+        OBS reconnect picks it up, since _run reads it each time)."""
+        if self.cfg["on"] and self.status.get("state") != "live":
+            self.restart()
+
     def stop(self):
         with self.lock:
             p, self.proc = self.proc, None
+            self.gen += 1
         if p and p.poll() is None:
             p.terminate()
             try:
@@ -105,13 +125,16 @@ class Multistream:
         self._set("off", "")
 
     def start(self):
-        threading.Thread(target=self._run, daemon=True).start()
+        with self.lock:
+            self.gen += 1
+            gen = self.gen
+        threading.Thread(target=self._run, args=(gen,), daemon=True).start()
 
     def _set(self, state, detail, kbps=0):
         self.status = {"state": state, "detail": detail, "since": time.time() if state != self.status.get("state") else self.status.get("since", 0), "kbps": kbps}
         self.on_change()
 
-    def _run(self):
+    def _run(self, gen):
         """Wait for OBS, copy to the platforms, and wait again when OBS stops."""
         exe = ffmpeg()
         if not exe:
@@ -120,15 +143,17 @@ class Multistream:
             outs = tee_targets(self.cfg["targets"])
             if not outs:
                 return self._set("error", "Turn on at least one platform with its stream key")
-            cmd = [exe, "-hide_banner", "-loglevel", "info", "-stats", "-listen", "1", "-i", f"rtmp://0.0.0.0:{self.cfg['port']}/live",
+            host = listen_host(os.path.dirname(self.path))
+            cmd = [exe, "-hide_banner", "-loglevel", "info", "-stats", "-listen", "1", "-i", f"rtmp://{host}:{self.cfg['port']}/live",
                    "-map", "0", "-c", "copy", "-f", "tee", outs]
             flags = getattr(subprocess, "CREATE_NO_WINDOW", 0)
             with self.lock:
-                if not self.cfg["on"]:
+                if not self.cfg["on"] or gen != self.gen:
                     return
                 self.proc = subprocess.Popen(cmd, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, creationflags=flags)
                 proc = self.proc
-            self._set("waiting", "Waiting for OBS")
+            # (say where: OBS on another PC is refused until Outputs > Network lets other PCs in)
+            self._set("waiting", "Waiting for OBS" if host == "0.0.0.0" else f"Waiting for OBS on this PC (rtmp://127.0.0.1:{self.cfg['port']}/live)")
             buf = b""
             while True:
                 ch = proc.stderr.read(1)

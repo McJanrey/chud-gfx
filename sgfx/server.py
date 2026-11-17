@@ -3,6 +3,7 @@
     python -m sgfx --workspace <folder> [--library <folder>] [--port 7800]
 """
 
+import copy
 import csv
 import json
 import mimetypes
@@ -42,6 +43,14 @@ def inside(base, rel):
     return path if path.startswith(os.path.normpath(base) + os.sep) else None
 
 
+def refresh_secs(v):
+    """A source's refresh in seconds: 2 at least, 10 when it isn't a number (a pack or hand edit with "auto")."""
+    try:
+        return max(2.0, float(v or 10))
+    except (TypeError, ValueError):
+        return 10.0
+
+
 # The old starter set's stand-in pictures (Owen's art) -> ours, from MJ's Claude reference folder.
 # Swapped in memory when a workspace opens; the workspace's own files are never changed.
 PLACEHOLDERS = {"player.png": "placeholders/player.png", "replace with tournament logo.png": "placeholders/logo.png"}
@@ -78,8 +87,9 @@ class Engine:
         self.library = library
         self.version, self.cond = 0, threading.Condition()
         self.lock = threading.RLock()   # (requests, the playlist, OBS and data threads all change the project: one at a time)
+        self.import_lock = threading.Lock()   # (one pack import at a time: two must not hand out the same ids or file names)
         self._load(workspace)
-        self.playing = None   # {id, i, until}: a playlist running on Program
+        self.playing = None   # {id, i, on, until}: a playlist running on Program (on: the graphic it put up)
         threading.Thread(target=self._playlist_loop, daemon=True).start()
         self._remote = {}
         threading.Thread(target=self._fetch_loop, daemon=True).start()
@@ -182,8 +192,10 @@ class Engine:
                         cache[path] = (stamp, srcmod.parse(f.read(), path, src.get("tab", "")))
                     status[src.get("id") or name] = {"at": time.time(), "error": ""}
                 out[name] = cache[path][1]
-            except (OSError, TypeError, ValueError, KeyError) as e:
+            except Exception as e:   # (locked, mid-sync or corrupt workbook: the last good table stays on air)
                 status[src.get("id") or name] = {"at": time.time(), "error": str(e) or "Can't read the file"}
+                if path in cache:
+                    out[name] = cache[path][1]
         return out
 
     def _fetch_loop(self):
@@ -195,8 +207,11 @@ class Engine:
                 sid = src.get("id")
                 if src.get("type", "file") == "file" or not sid or time.time() < due.get(sid, 0):
                     continue
-                due[sid] = time.time() + max(2.0, float(src.get("refresh") or 10))
-                self.read_source(sid)
+                due[sid] = time.time() + refresh_secs(src.get("refresh"))
+                try:
+                    self.read_source(sid)
+                except Exception as e:   # (one bad source must not stop the others for good)
+                    log.warning("Source %s: %s", sid, e)
 
     def read_source(self, sid):
         src = next((x for x in self.project.get("sources") or [] if x.get("id") == sid), None)
@@ -204,8 +219,9 @@ class Engine:
             raise KeyError("No such source")
         status = self.__dict__.setdefault("source_status", {})
         if src.get("type", "file") == "file":
-            self.__dict__.pop("_csv", None)
-            self.sources()
+            with self.lock:
+                self._reread_files()
+                self.sources()
         else:
             try:
                 rows = srcmod.fetch(src)
@@ -216,6 +232,12 @@ class Engine:
                         self.changed()
             except Exception as e:   # (network, bad sheet: shown on the Data page, the old table stays)
                 status[sid] = {"at": time.time(), "error": str(e)[:200] or "Couldn't read it"}
+
+    def _reread_files(self):
+        """Files read again on the next look, the last good tables kept (a locked workbook doesn't blank them)."""
+        cache = self.__dict__.get("_csv", {})
+        for k in cache:
+            cache[k] = (None, cache[k][1])
 
     def ingest(self, name, body):
         """A game HUD (or anything) sends its live fields: {"fields": {...}, "score": [left, right]?}.
@@ -240,9 +262,9 @@ class Engine:
             t = x.get("type") if x.get("type") in ("file", "url", "sheet") else "file"
             name = re.sub(r"[{}!]", "", str(x.get("name") or "Data")).strip()[:60] or "Data"
             out.append({"id": x.get("id") or "s" + os.urandom(4).hex(), "name": name, "type": t, "path": str(x.get("path", "")),
-                        "url": str(x.get("url", "")), "tab": str(x.get("tab", "")), "refresh": max(2.0, float(x.get("refresh") or 10))})
+                        "url": str(x.get("url", "")), "tab": str(x.get("tab", "")), "refresh": refresh_secs(x.get("refresh"))})
         self.project["sources"] = out
-        self.__dict__.pop("_csv", None)
+        self._reread_files()
         self.save_project()
 
     def state(self):
@@ -400,14 +422,17 @@ class Engine:
         if not folder:
             raise ValueError("Bad folder")
         os.makedirs(folder, exist_ok=True)
+        pending = self.__dict__.setdefault("_converting", set())
         base, n = os.path.join(folder, stem), 2
-        while any(os.path.exists(base + e) for e in (".webm", ".mp4")):
+        while os.path.normcase(base) in pending or any(os.path.exists(base + e) for e in (".webm", ".mp4")):
             base, n = os.path.join(folder, f"{stem}-{n}"), n + 1
+        pending.add(os.path.normcase(base))   # (taken until its job ends: ffmpeg makes the file only later)
 
         def run(progress):
             try:
                 out = convert.png_sequence(src, base, fps, progress) if ext == ".zip" else convert.video(src, base, progress)
             finally:
+                pending.discard(os.path.normcase(base))
                 try:
                     os.remove(src)
                 except OSError:
@@ -417,10 +442,12 @@ class Engine:
         return self.jobs.add(name, run)
 
     def pack_export(self, ids=None):
-        comps = [c for c in self.comps() if not ids or c["id"] in ids]
-        name = comps[0]["name"] if len(comps) == 1 else self.project.get("name") or "Graphics"
-        srcs = self.project.get("sources") or [] if not ids else []
-        return name, pack.export(self.folder, name, comps, srcs)
+        with self.lock:   # (only the copy: zipping big videos must not hold up a TAKE)
+            comps = copy.deepcopy([c for c in self.comps() if not ids or c["id"] in ids])
+            name = comps[0]["name"] if len(comps) == 1 else self.project.get("name") or "Graphics"
+            srcs = copy.deepcopy(self.project.get("sources") or [] if not ids else [])
+            folder = self.folder
+        return name, pack.export(folder, name, comps, srcs)
 
     BUILTIN_FONTS = [("Inter", "Inter.ttf", "100 900"), ("Anton", "Anton-Regular.ttf", ""), ("Bebas Neue", "BebasNeue.ttf", ""), ("Permanent Marker", "PermanentMarker-Regular.ttf", ""),
                      ("Montserrat", "Montserrat-400.woff2", "400"), ("Montserrat", "Montserrat-500.woff2", "500"), ("Montserrat", "Montserrat-700.woff2", "700"),
@@ -433,24 +460,27 @@ class Engine:
         CasparCG and SPX), the player, the files and fonts they use, and a snapshot of the data."""
         import io
         import zipfile
-        comps = [c for c in self.comps() if not ids or c["id"] in ids]
-        if not comps:
-            raise KeyError("No graphics picked")
-        st = self.state()
+        with self.lock:   # (only the copy: zipping big videos must not hold up a TAKE)
+            comps = copy.deepcopy([c for c in self.comps() if not ids or c["id"] in ids])
+            if not comps:
+                raise KeyError("No graphics picked")
+            data = copy.deepcopy(self.state()["data"])
+            transitions = copy.deepcopy(self.project.get("transitions") or [])
+            folder, found = self.folder, self.fonts()
         used = {l.get("font", "").lower() for c in comps for l in c.get("layers") or []}
         fonts = [{"name": n, "url": "fonts/" + f, "weight": w} for n, f, w in self.BUILTIN_FONTS]
         files = {}
-        for f in self.fonts():
+        for f in found:
             if f["name"].lower() in used:
-                src = inside(self.library, f["url"][len("/library/"):]) if f["url"].startswith("/library/") and self.library else inside(self.folder, f["url"][1:])
+                src = inside(self.library, f["url"][len("/library/"):]) if f["url"].startswith("/library/") and self.library else inside(folder, f["url"][1:])
                 if src and os.path.isfile(src):
                     files["fonts/lib/" + os.path.basename(src)] = src
                     fonts.append({"name": f["name"], "url": "fonts/lib/" + os.path.basename(src)})
-        for p in pack._paths([comps, st["data"]["tables"]], set()):   # (the graphics' files and the data's: logos, sponsors)
-            full = os.path.join(self.folder, p)
+        for p in pack._paths([comps, data["tables"]], set()):   # (the graphics' files and the data's: logos, sponsors)
+            full = os.path.join(folder, p)
             if os.path.isfile(full):
                 files[p] = full
-        snap = {"project": {"compositions": comps, "transitions": self.project.get("transitions") or []}, "data": st["data"], "fonts": fonts}
+        snap = {"project": {"compositions": comps, "transitions": transitions}, "data": data, "fonts": fonts}
         buf = io.BytesIO()
         with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as z:
             z.write(os.path.join(WEB, "player.html"), "index.html")
@@ -468,12 +498,22 @@ class Engine:
         return name, buf.getvalue()
 
     def pack_import(self, data):
-        comps, srcs = pack.import_pack(data, self.folder, {c["id"] for c in self.comps()}, [c.get("name", "") for c in self.comps()])
-        have = {x.get("name") for x in self.project.get("sources") or []}
-        self.project.setdefault("sources", []).extend(x for x in srcs if x.get("name") not in have)
-        for c in comps:
-            self.comps().append(c)
-        self.save_project()
+        with self.import_lock:
+            return self._pack_import(data)
+
+    def _pack_import(self, data):
+        with self.lock:
+            folder, ids, names = self.folder, {c["id"] for c in self.comps()}, [c.get("name", "") for c in self.comps()]
+        comps, srcs = pack.import_pack(data, folder, ids, names)   # (unzipping outside the lock: a TAKE doesn't wait for it)
+        with self.lock:
+            if self.folder != folder:
+                raise ValueError("The workspace changed while importing: import it again")
+            have = {x.get("name") for x in self.project.get("sources") or []}
+            # (through set_sources: an imported refresh like "auto" is cleaned like a typed one)
+            self.set_sources((self.project.get("sources") or []) + [x for x in srcs if x.get("name") not in have])
+            for c in comps:
+                self.comps().append(c)
+            self.save_project()
         self.changed()
         return comps
 
@@ -485,17 +525,23 @@ class Engine:
             raise ValueError("PSD import needs psd-tools (pip install psd-tools)")
         stem = os.path.splitext(os.path.basename(name.replace("\\", "/")))[0]
         folder = re.sub(r"[^\w ()-]+", "_", stem).strip() or "PSD"
+        def save(fname, png):
+            with self.lock:   # (the lock per picture only: the layers' render must not hold up a TAKE)
+                return self.upload(fname, png, folder)
         try:
-            comp = psd.convert(data, stem, lambda fname, png: self.upload(fname, png, folder))
+            comp = psd.convert(data, stem, save)
         except ImportError:
             raise ValueError("PSD import needs psd-tools (pip install psd-tools)")
         except Exception as e:
             raise ValueError(f"Couldn't read that Photoshop file ({e.__class__.__name__})")
-        return self.comp_put(comp)
+        with self.lock:
+            return self.comp_put(comp)
 
     def asset_remove(self, rel):
         """Out of assets/ into .trash/ (kept, not deleted)."""
-        path = inside(self.folder, rel) if str(rel or "").startswith("assets/") else None
+        rel = str(rel or "")
+        # (checked against assets/ itself: "assets/../project.json" is refused)
+        path = inside(os.path.join(self.folder, "assets"), rel[len("assets/"):]) if rel.startswith("assets/") else None
         if not path or not os.path.isfile(path):
             raise KeyError("No such file")
         dst = os.path.join(self.folder, ".trash", time.strftime("%Y%m%d-%H%M%S-") + os.path.basename(path))
@@ -772,19 +818,43 @@ class Engine:
         num = lambda v: int(float(v)) if str(v).strip().replace(".", "", 1).isdigit() else 0
         return num((g.get("left") or {}).get("score") or 0), num((g.get("right") or {}).get("score") or 0)
 
+    def _show_done(self):
+        show = self.ros().get("show") or {}
+        return bool(show.get("segments")) and show.get("current", -1) >= len(show["segments"])
+
+    def _next_match(self):
+        """The next Schedule match; once a show has run to its end, the one after it (a LAN day's second match)."""
+        skip = set(self.ros().get("finished") or [])
+        if self._show_done():
+            skip.add(self.ros()["show"].get("match_key"))
+        return rosmod.next_match((self.project.get("global") or {}).get("schedule"), skip=skip)
+
+    def _ros_replace(self, show):
+        """A new show; a finished one's match is remembered (the next match stays next after it's gone)."""
+        r = self.ros()
+        if self._show_done():
+            r["finished"] = ((r.get("finished") or []) + [r["show"].get("match_key")])[-50:]
+        r["show"] = show
+        self._ros_save()
+
     def ros_auto(self):
         """Auto-apply: tonight's next Schedule match builds the show from the template for its game."""
         r = self.ros()
         if not r.get("auto"):
             return
-        m = rosmod.next_match((self.project.get("global") or {}).get("schedule"))
+        m = self._next_match()
         show = r.get("show") or {}
-        if not m or show.get("match_key") == rosmod.match_key(m) or show.get("current", -1) >= 0:
+        done = self._show_done()
+        if not m or show.get("match_key") == rosmod.match_key(m) or (show.get("current", -1) >= 0 and not done):
             return
-        t = rosmod.pick_template(r["templates"], m, (self.project.get("global") or {}).get("best_of"))
+        # (the match was edited before the show started: a hand-picked template stays, if it's for this game)
+        t = next((x for x in r["templates"] if x.get("id") == show.get("template_id")), None) if show.get("picked") and not done else None
+        if t and (t.get("game") or "") not in ("", rosmod.game_key(m.get("game", ""))):
+            t = None
+        picked = bool(t)
+        t = t or rosmod.pick_template(r["templates"], m, (self.project.get("global") or {}).get("best_of"))
         if t:
-            r["show"] = rosmod.build(t, dict(m, best_of=t.get("best_of")))
-            self._ros_save()
+            self._ros_replace(dict(rosmod.build(t, dict(m, best_of=t.get("best_of"))), picked=picked))
 
     def ros_state(self):
         self.ros_auto()
@@ -792,7 +862,7 @@ class Engine:
         show = r.get("show")
         left, right = self._scores()
         return {"templates": r["templates"], "auto": r.get("auto", True), "show": show,
-                "next_match": rosmod.next_match((self.project.get("global") or {}).get("schedule")),
+                "next_match": self._next_match(),
                 "games": [[k, n] for k, n, _ in rosmod.GAMES],
                 "timeline": rosmod.timeline(show, left=left, right=right) if show else []}
 
@@ -809,9 +879,8 @@ class Engine:
         t = next((t for t in r["templates"] if t.get("id") == tid), None)
         if not t:
             raise KeyError("No such template")
-        m = match or rosmod.next_match((self.project.get("global") or {}).get("schedule")) or {}
-        r["show"] = rosmod.build(t, dict(m, best_of=m.get("best_of") or t.get("best_of")))
-        self._ros_save()
+        m = match or self._next_match() or {}
+        self._ros_replace(dict(rosmod.build(t, dict(m, best_of=m.get("best_of") or t.get("best_of"))), picked=True))
 
     def ros_step(self, by):
         show = self.ros().get("show")
@@ -834,8 +903,10 @@ class Engine:
         pl = next((p for p in self.project.get("playlists") or [] if p.get("id") == pid), None)
         if not pl or not pl.get("items"):
             raise KeyError("No such playlist")
+        old = self.playing
         self.playlist_stop(quiet=True)
-        self.playing = {"id": pid, "i": -1, "until": 0}
+        # (the old graphic is handed on: the first step takes it off, unless it's the new first item, so no flicker)
+        self.playing = {"id": pid, "i": -1, "until": 0, "on": (old or {}).get("on")}
 
     def _playlist_items(self, pid):
         pl = next((x for x in self.project.get("playlists") or [] if x.get("id") == pid), None)
@@ -844,10 +915,9 @@ class Engine:
 
     def playlist_stop(self, quiet=False):
         p, self.playing = self.playing, None
-        if p and not quiet:
-            _, items = self._playlist_items(p["id"])
-            if 0 <= p["i"] < len(items):
-                self.buses.program(items[p["i"]]["comp"], False, self.transition(None))
+        # (by the id it put up, not its place in the list: the list may have been edited since)
+        if p and not quiet and p.get("on") in self.buses.state["program"]["on"]:
+            self.buses.program(p["on"], False, self.transition(None))
 
     def _playlist_loop(self):
         while True:
@@ -866,20 +936,17 @@ class Engine:
         if self.playing is not p:
             return
         pl, items = self._playlist_items(p["id"])
-        if not items:
-            self.playing = None
-            return
         nxt = p["i"] + 1
-        if nxt >= len(items) and not pl.get("loop"):
-            self.playlist_stop()
+        if not items or (nxt >= len(items) and not pl.get("loop")):
+            self.playlist_stop()   # (also when it was deleted or emptied: its graphic comes off)
             self.changed()
             return
         nxt %= len(items)
         tr = self.transition(None)
-        if 0 <= p["i"] < len(items) and items[p["i"]]["comp"] != items[nxt]["comp"]:
-            self.buses.program(items[p["i"]]["comp"], False, tr)
+        if p.get("on") in self.buses.state["program"]["on"] and p["on"] != items[nxt]["comp"]:
+            self.buses.program(p["on"], False, tr)
         self.buses.program(items[nxt]["comp"], True, tr)
-        p["i"], p["until"] = nxt, time.time() + max(1.0, float(items[nxt].get("secs") or 5))
+        p["i"], p["on"], p["until"] = nxt, items[nxt]["comp"], time.time() + max(1.0, float(items[nxt].get("secs") or 5))
         self.changed()
 
     def set_playlists(self, pls):
@@ -1080,6 +1147,8 @@ class Engine:
             result = {"cut": ms}
         elif path == "/api/network":
             self.net.save(body)
+            if "network" in body:
+                self.stream.relisten()   # (the RTMP relay listens on this PC only unless sharing is on)
         elif path == "/api/network/scan":
             result = {"engines": self.net.scan()}
         elif path == "/api/obs":
@@ -1117,7 +1186,7 @@ class Engine:
         return result
 
 
-UNLOCKED = ("/api/obs", "/api/network/scan", "/api/stream/")
+UNLOCKED = ("/api/obs", "/api/network/scan", "/api/stream/", "/api/source/read", "/api/stinger/cut")
 
 
 def good_host(host):
@@ -1258,8 +1327,7 @@ def handler(engine):
             if path == "/api/export/html":
                 ids = [i for i in (parse_qs(urlparse(self.path).query).get("ids") or [""])[0].split(",") if i]
                 try:
-                    with engine.lock:
-                        name, data = engine.html_export(ids)
+                    name, data = engine.html_export(ids)   # (takes the lock only for its copy)
                 except (KeyError, ValueError, OSError) as e:
                     return self._send(400, json.dumps({"error": str(e)}))
                 fname = re.sub(r"[^\w ()-]+", "_", name).strip() or "graphics"
@@ -1271,8 +1339,7 @@ def handler(engine):
                 return self.wfile.write(data)
             if path == "/api/export":
                 ids = [i for i in (parse_qs(urlparse(self.path).query).get("ids") or [""])[0].split(",") if i]
-                with engine.lock:
-                    name, data = engine.pack_export(ids)
+                name, data = engine.pack_export(ids)   # (takes the lock only for its copy)
                 fname = re.sub(r"[^\w ()-]+", "_", name).strip() or "graphics"
                 self.send_response(200)
                 self.send_header("Content-Type", "application/zip")
@@ -1307,8 +1374,7 @@ def handler(engine):
                         raise ValueError("That file is too big (400 MB at most)")
                     name = unquote((q.get("name") or [""])[0])
                     data = self.rfile.read(length)
-                    with engine.lock:
-                        return self._upload(q, name, data)
+                    return self._upload(q, name, data)
                 body = json.loads(self.rfile.read(int(self.headers.get("Content-Length") or 0)) or b"{}")
                 path = urlparse(self.path).path
                 if path == "/api/ingest":   # (a game HUD's send)
@@ -1335,13 +1401,16 @@ def handler(engine):
         def _upload(self, q, name, data):
             if name.lower().endswith(convert.NEEDS + (".zip",)):
                 fps = max(1.0, min(120.0, float((q.get("fps") or ["30"])[0] or 30)))
-                return self._send(200, json.dumps({"job": engine.convert_upload(name, data, (q.get("folder") or [""])[0], fps)}))
+                with engine.lock:
+                    job = engine.convert_upload(name, data, (q.get("folder") or [""])[0], fps)
+                return self._send(200, json.dumps({"job": job}))
             if name.lower().endswith((".chudgfx", ".sgfx")):
                 got = engine.pack_import(data)
                 return self._send(200, json.dumps({"comps": [{"id": c["id"], "name": c["name"]} for c in got]}))
             if name.lower().endswith(".psd"):
                 return self._send(200, json.dumps({"comp": engine.import_psd(name, data)}))
-            rel = engine.upload(name, data, (q.get("folder") or [""])[0])
+            with engine.lock:
+                rel = engine.upload(name, data, (q.get("folder") or [""])[0])
             return self._send(200, json.dumps({"path": rel}))
 
         def _stream(self):

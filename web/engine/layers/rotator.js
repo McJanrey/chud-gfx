@@ -2,7 +2,7 @@
 // Items come from the layer's list or a data table's columns. The turn is worked out from the clock,
 // so every output shows the same item at the same moment.
 // Ticker: the items end to end, scrolling.
-import { scrollIn } from "./text.js";
+import { scrollIn, fontReady } from "./text.js";
 
 function items(layer, ctx) {
   if (layer.source) {
@@ -108,11 +108,13 @@ export function ticker(el, layer, ctx) {
   copy();
   el.appendChild(track);
   if (layer.fade) el.style.maskImage = el.style.webkitMaskImage = "linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent)";
-  // Measured once the pictures have loaded (before that a logo is 0 wide, so the loop jumped back early),
+  // Measured once the pictures and the font have loaded (before that a logo is 0 wide, words are in the stand-in font,
+  // so the loop jumped back early),
   // with enough copies end to end that the strip never runs out before it wraps.
   const hold = ctx.hold ? ctx.hold(layer) : 0, born = performance.now();
   const start = async (tries = 0) => {
     await Promise.all([...a.querySelectorAll("img")].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; })));
+    await fontReady(layer, layer.weight || 600, +layer.size || 36, a.textContent);
     const w = a.offsetWidth;
     if (!w) return tries < 50 && setTimeout(() => start(tries + 1), 100);   // (not on the page yet)
     while (track.children.length < Math.ceil((el.offsetWidth || 1920) / w) + 1) copy();

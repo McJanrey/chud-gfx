@@ -44,7 +44,7 @@ def _match(r, key, a, b, scores):
 def tournament_rows(g, teams=()):
     t = g.get("tournament") or {}
     top = t.get("top") or {}
-    size = 16 if int(top.get("size") or 8) == 16 else 8
+    size = 16 if str(top.get("size") or "").strip().startswith("16") else 8   # (a bad size like "16 teams" mustn't break every page)
     double = top.get("format") == "double"
     reset = top.get("reset", True) is not False
     short_on = bool(top.get("short"))

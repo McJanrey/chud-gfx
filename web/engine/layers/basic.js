@@ -118,7 +118,8 @@ export function video(el, layer, ctx) {
 
 // A web page (a live scoreboard, a chat overlay...), see-through where the page is.
 export function web(el, layer, ctx) {
-  const src = content(layer, "src", ctx.values, ctx.resolve);
+  // (a Game HUD page made by the HUD link keeps its address in "url")
+  const src = content(layer, "src", ctx.values, ctx.resolve) || ctx.resolve(String(layer.url || ""));
   if (!src) return;
   const f = document.createElement("iframe");
   f.className = "sg-fill";

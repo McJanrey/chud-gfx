@@ -25,9 +25,11 @@ export function text(el, layer, ctx) {
   t.textAlign = layer.align || "left";
   span.textContent = content(layer, "text", ctx.values, ctx.resolve);
   const raw = layer.field && ctx.values[layer.field] ? ctx.values[layer.field] : layer.text;
-  if (ticks(raw)) ctx.tick(() => { span.textContent = ctx.resolve(raw); });   // ({{TIME}}: every second)
   el.appendChild(span);
-  if (+layer.scroll > 0) return scroller(el, span, layer, ctx.hold ? ctx.hold(layer) : 0, ctx.entering !== false);
+  // ({{TIME}}: every second, redrawn the way it was first drawn, only when the words changed)
+  let shown = span.textContent;
+  const tick = redraw => { if (ticks(raw)) ctx.tick(() => { const v = ctx.resolve(raw); if (v !== shown) redraw(shown = v); }); };
+  if (+layer.scroll > 0) return tick(scroller(el, span, layer, ctx.hold ? ctx.hold(layer) : 0, ctx.entering !== false));
   // baseline: the text's baseline sits this many px below the box's top (as the design had it)
   const fit = () => {
     // (text shrinks to fit its box unless it's set to overflow or wrap)
@@ -35,6 +37,7 @@ export function text(el, layer, ctx) {
     // baseline: the text's baseline sits this many px below the box's top (as the design had it)
     if (layer.baseline != null && layer.baseline !== "") { s.alignItems = "flex-start"; span.style.marginTop = (+layer.baseline - baselineOf(span)) + "px"; }
   };
+  tick(v => { span.textContent = v; fit(); });
   ctx.later(fit);
   // and again whenever its box gets a size: a graphic built off the page (preloaded for TAKE) measures 0 and skipped the shrink
   if (window.ResizeObserver) new ResizeObserver(() => { if (el.clientWidth) fit(); }).observe(el);
@@ -76,6 +79,7 @@ export function scrollIn(track, W, w, speed, delay = 0, key = "", entering = tru
 
 // Scrolling text (a ticker): right to left at layer.scroll px a second, copies end to end so it never runs out.
 // Divider: the lines (kept apart by "|", as {{Global!Ticker}} is) get a bar of that colour between them.
+// Returns set(words): new words ({{COUNTDOWN}} ticking) in every copy, the loop measured again if its width changed.
 function scroller(el, span, layer, hold = 0, entering = true) {
   el.style.overflow = "hidden";
   el.style.justifyContent = "flex-start";
@@ -83,25 +87,52 @@ function scroller(el, span, layer, hold = 0, entering = true) {
   track.className = "sg-track";
   track.style.cssText = "display:flex;flex:none;white-space:pre;will-change:transform;align-items:center";
   const size = +layer.size || 32, gap = Math.round(size * 2);
-  if (layer.divider) {
-    const parts = span.textContent.split(/\s*\|\s*/).map(p => p.trim()).filter(Boolean);
-    span.replaceChildren(...parts.flatMap(p => {
-      const bar = document.createElement("span");
-      bar.style.cssText = `display:inline-block;vertical-align:middle;width:${+layer.dividerWidth || 5}px;height:0.9em;margin:0 ${Math.round(size * 0.75)}px;background:${layer.divider}`;
-      return [document.createTextNode(p), bar];
-    }));
-  } else span.style.paddingRight = gap + "px";
+  if (!layer.divider) span.style.paddingRight = gap + "px";
   span.remove();
   track.append(span);
   el.appendChild(track);
-  requestAnimationFrame(() => {
-    const k = el.getBoundingClientRect().width / el.offsetWidth || 1;
-    const w = span.getBoundingClientRect().width / k;
-    if (!w) return;
-    // (enough copies that a line shorter than the box still fills it all the way round)
-    while (track.children.length < Math.ceil((el.offsetWidth || 1920) / w) + 1) track.append(span.cloneNode(true));
-    scrollIn(track, el.offsetWidth || 1920, w, +layer.scroll, hold, layer.id, entering);   // (empty while it animates in)
-  });
+  const born = performance.now();
+  let gen = 0, w0 = 0;
+  const set = words => {
+    const g = ++gen;
+    if (layer.divider) {
+      const parts = words.split(/\s*\|\s*/).map(p => p.trim()).filter(Boolean);
+      span.replaceChildren(...parts.flatMap(p => {
+        const bar = document.createElement("span");
+        bar.style.cssText = `display:inline-block;vertical-align:middle;width:${+layer.dividerWidth || 5}px;height:0.9em;margin:0 ${Math.round(size * 0.75)}px;background:${layer.divider}`;
+        return [document.createTextNode(p), bar];
+      }));
+    } else span.textContent = words;
+    // (measured once its font has loaded: measured in the stand-in font, the loop jumped at every wrap)
+    fontReady(layer, layer.weight || 400, size, words).then(() => requestAnimationFrame(() => {
+      if (g !== gen) return;   // (newer words came while it waited)
+      const k = el.getBoundingClientRect().width / el.offsetWidth || 1;
+      const w = span.getBoundingClientRect().width / k;
+      if (!w) return;
+      // (enough copies that a line shorter than the box still fills it all the way round)
+      track.replaceChildren(span);
+      while (track.children.length < Math.ceil((el.offsetWidth || 1920) / w) + 1) track.append(span.cloneNode(true));
+      if (w === w0) return;   // (same width: the loop carries on untouched)
+      const a = w0 && track.getAnimations()[0], sp = +layer.scroll;
+      const loop = at => { track.animate([{ transform: "translateX(0)" }, { transform: `translateX(${-w}px)` }], { duration: w / sp * 1000, iterations: Infinity, easing: "linear" }).currentTime = at; };
+      // (a new width on air carries on from where the strip is now: proportional digits change it most ticks,
+      // and the start time would put it loops x the change away; still sliding in, it loops at the new width once in)
+      if (a && a.effect && a.effect.getTiming().iterations !== Infinity) { a.onfinish = () => loop(0); w0 = w; return; }
+      if (a) { const at = (a.currentTime || 0) / 1000 * sp % w0 % w; a.cancel(); loop(at / sp * 1000); w0 = w; return; }
+      track.getAnimations().forEach(a => a.cancel());
+      // (empty while it animates in)
+      scrollIn(track, el.offsetWidth || 1920, w, +layer.scroll, Math.max(0, hold - (performance.now() - born)), layer.id, entering && !w0);
+      w0 = w;
+    }));
+  };
+  set(span.textContent);
+  return set;
+}
+
+// Resolves once the layer's font file has loaded (at once with no font, or if it can't load).
+export function fontReady(layer, weight, size, sample) {
+  if (!document.fonts || !layer.font) return Promise.resolve();
+  return document.fonts.load(`${layer.italic ? "italic " : ""}${weight} ${size}px "${String(layer.font).replace(/"/g, "")}"`, sample || "A").catch(() => {});
 }
 
 // A font that isn't installed shows in the nearest built-in one.
