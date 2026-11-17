@@ -264,8 +264,8 @@ export class Stage {
           ghost.classList.add("sg-ghost");
           ghost.style.visibility = "visible";
           el.appendChild(ghost);
-          ghost.animate([{ ...from, opacity: 1 }, { ...to, opacity: 0 }], { duration: dur, easing, fill: "forwards" }).finished.then(() => ghost.remove(), () => ghost.remove());
-          l.animate([{ opacity: 0 }, { opacity: 0, offset: 0.3 }, { opacity: 1 }], { duration: dur });
+          ghost.animate([from, { ...to, opacity: 0 }], { duration: dur, easing, fill: "forwards" }).finished.then(() => ghost.remove(), () => ghost.remove());
+          l.animate([{ opacity: 0 }, { opacity: 0, offset: 0.3 }, { opacity: to.opacity }], { duration: dur });
         }
       }
     }

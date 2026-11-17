@@ -57,6 +57,12 @@ export function shrink(el, span, size) {
   span.style.fontSize = lo + "px";
 }
 
+// A ticker strip starts empty: it slides in from the right edge (W wide box) at `speed` px/s, then loops one copy (w) forever.
+export function scrollIn(track, W, w, speed, delay = 0) {
+  const intro = track.animate([{ transform: `translateX(${W}px)` }, { transform: "translateX(0)" }], { duration: W / speed * 1000, easing: "linear", delay, fill: "backwards" });
+  intro.onfinish = () => track.animate([{ transform: "translateX(0)" }, { transform: `translateX(${-w}px)` }], { duration: w / speed * 1000, iterations: Infinity, easing: "linear" });
+}
+
 // Scrolling text (a ticker): right to left at layer.scroll px a second, copies end to end so it never runs out.
 // Divider: the lines (kept apart by "|", as {{Global!Ticker}} is) get a bar of that colour between them.
 function scroller(el, span, layer, hold = 0) {
@@ -83,8 +89,7 @@ function scroller(el, span, layer, hold = 0) {
     if (!w) return;
     // (enough copies that a line shorter than the box still fills it all the way round)
     while (track.children.length < Math.ceil((el.offsetWidth || 1920) / w) + 1) track.append(span.cloneNode(true));
-    track.animate([{ transform: "translateX(0)" }, { transform: `translateX(${-w}px)` }],
-      { duration: (w / +layer.scroll) * 1000, iterations: Infinity, easing: "linear", delay: hold });   // (still, from the start, while it animates in)
+    scrollIn(track, el.offsetWidth || 1920, w, +layer.scroll, hold);   // (empty while it animates in)
   });
 }
 

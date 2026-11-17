@@ -2,6 +2,7 @@
 // Items come from the layer's list or a data table's columns. The turn is worked out from the clock,
 // so every output shows the same item at the same moment.
 // Ticker: the items end to end, scrolling.
+import { scrollIn } from "./text.js";
 
 function items(layer, ctx) {
   if (layer.source) {
@@ -115,8 +116,7 @@ export function ticker(el, layer, ctx) {
     const w = a.offsetWidth;
     if (!w) return tries < 50 && setTimeout(() => start(tries + 1), 100);   // (not on the page yet)
     while (track.children.length < Math.ceil((el.offsetWidth || 1920) / w) + 1) copy();
-    track.animate([{ transform: "translateX(0)" }, { transform: `translateX(${-w}px)` }], { duration: w / Math.max(10, +layer.speed || 120) * 1000, iterations: Infinity, easing: "linear",
-      delay: Math.max(0, hold - (performance.now() - born)) });   // (from its first item, still while it animates in)
+    scrollIn(track, el.offsetWidth || 1920, w, Math.max(10, +layer.speed || 120), Math.max(0, hold - (performance.now() - born)));   // (empty while it animates in)
   };
   requestAnimationFrame(() => start());
 }

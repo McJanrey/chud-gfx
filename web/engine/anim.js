@@ -24,7 +24,9 @@ export function play(el, layer, dir) {
   const a = ((layer.anim || {})[dir]) || {};
   const frames = K[a.type] || (dir === "in" || dir === "out" ? K.none : K.fade);
   if (!a.type || a.type === "none") return Promise.resolve();
-  const kf = dir === "out" ? [...frames].reverse().map((f, i, all) => ({ ...f, offset: f.offset != null ? 1 - f.offset : undefined })) : frames;
+  const base = layer.opacity != null && layer.opacity !== "" ? +layer.opacity : 1;   // (a fade ends at the layer's own opacity, not 100%)
+  const kf = (dir === "out" ? [...frames].reverse().map((f, i, all) => ({ ...f, offset: f.offset != null ? 1 - f.offset : undefined })) : frames)
+    .map(f => f.opacity != null ? { ...f, opacity: f.opacity * base } : f);
   const anim = el.animate(kf, { duration: Math.max(0, +a.dur || 400), delay: Math.max(0, +a.delay || 0),
     easing: dir === "out" ? EASE_OUT : EASE_IN, fill: "both" });
   return anim.finished.catch(() => {});
