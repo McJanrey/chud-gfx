@@ -942,10 +942,19 @@ class Engine:
 
     def set_global(self, change):
         """Merge a change into the Global settings (dicts merge one level, the rest replaces)."""
+        if not isinstance(change, dict):
+            raise ValueError("Global change must be a set of fields")
         g = self.project.setdefault("global", {})
-        for k, v in (change or {}).items():
+        for k, v in change.items():   # (a part that is a set of fields or a list stays one: a bad send can't break every page)
+            kind = dict if isinstance(g.get(k), dict) or k in self.GLOBAL_DICTS else list if isinstance(g.get(k), list) or k in self.GLOBAL_LISTS else None
+            if kind and not isinstance(v, kind):
+                raise ValueError(f"Global {k} must be a {'set of fields' if kind is dict else 'list'}")
+        for k, v in change.items():
             g[k] = {**g[k], **v} if isinstance(v, dict) and isinstance(g.get(k), dict) else v
         self.save_project()
+
+    GLOBAL_DICTS = ("left", "right", "bgloop", "tournament", "schedule", "standings", "clock", "timer", "caster", "pictures")
+    GLOBAL_LISTS = ("custom", "sponsors", "ticker", "outputs_on")
 
     TYPES = ("cut", "fade", "animate", "dip", "wipe", "stinger", "delay", "merge")
 

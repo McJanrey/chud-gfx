@@ -35,3 +35,14 @@ class Saves(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class BadGlobal(unittest.TestCase):
+    def test_bad_shapes_refused_and_state_still_works(self):
+        e = Engine(str(pick_workspace_in(Path(tempfile.mkdtemp()))), None)
+        for bad in ({"left": "x"}, {"sponsors": "x"}, {"clock": [1]}, "x"):
+            with self.assertRaises(ValueError):
+                e.set_global(bad)
+        e.set_global({"left": {"name": "SCC"}, "event": "WWL"})
+        self.assertEqual(e.project["global"]["left"]["name"], "SCC")
+        e.state()   # (a bad send used to break this, and with it every page)

@@ -81,7 +81,7 @@ export class Stage {
     const c = this.opts.comp;
     // (a graphic's own output switched off in Outputs shows nothing)
     if (c) return { ids: comps.has(c) && comps.get(c).output !== false ? [c] : [], comps, values: { [c]: Object.assign({}, state.live.preview.values[c], state.live.program.values[c]) } };
-    const bus = state.live[this.opts.bus];
+    const bus = state.live[this.opts.bus] || state.live.program;   // (a mistyped ?bus= shows Program, not a blank page)
     return { ids: bus.on.filter(id => comps.has(id)), comps, values: bus.values || {} };
   }
 
