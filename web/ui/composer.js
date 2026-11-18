@@ -645,6 +645,14 @@ function multiEdit(ls) {
       el("div", { class: "two" }, lab("Fill", bind(m, "fill", "color")), lab("Corner radius", bind(m, "radius", "number", { def: "" }))),
       el("div", { class: "two" }, lab("Border", bind(m, "stroke", "color")), lab("Border width", bind(m, "strokeWidth", "number", { def: "" })))));
   }
+  // their In / Out animations, all at once
+  const anim = dir => { const ds = ls.map(l => { const a = l.anim = l.anim || {}; return a[dir] = a[dir] || {}; }), m = {};
+    for (const [k, d] of [["type", "none"], ["dur", 400], ["delay", 0]])
+      Object.defineProperty(m, k, { get: () => { const v = ds.map(x => x[k] ?? d); return v.every(x => String(x) === String(v[0])) ? v[0] : undefined; },
+        set: v => { if (v === "") return; for (const x of ds) x[k] = v; } });
+    return el("div", { class: "three" }, lab(dir === "in" ? "In" : "Out", bind(m, "type", "select", { options: [["", "(mixed)"], ...ANIMS] })),
+      lab("Length (ms)", bind(m, "dur", "number", { def: "", step: 50 })), lab("Delay (ms)", bind(m, "delay", "number", { def: "", step: 50 }))); };
+  out.push(el("section", { class: "sect" }, el("h4", {}, `Animation: all ${ls.length}`), anim("in"), anim("out")));
   const all = many(ls, { opacity: 1 });
   out.push(el("section", { class: "sect" }, el("h4", {}, `All ${ls.length}`), lab("Opacity", bind(all, "opacity", "number", { def: "", step: 0.05, min: 0 }))));
   return out;
