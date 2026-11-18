@@ -387,3 +387,5 @@ button.danger { background: var(--red); color: #fff; box-shadow: none; font-weig
 #upd-text { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .upd-bar button, .bar > button, .bar > .pill { flex: none; }
 .upd-bar[hidden] { display: none; }
+
+.chip-field { display: grid; gap: 6px; }

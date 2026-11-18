@@ -387,6 +387,15 @@ function bind(l, key, kind = "text", extra = {}) {
   if (kind === "check") return el("label", { class: "switch" }, el("input", { type: "checkbox", checked: !!l[key], onchange: e => set(e.target.checked) }), extra.label);
   if (kind === "color") return el("input", { type: "color", value: /^#[0-9a-f]{6}$/i.test(l[key] || "") ? l[key] : "#ffffff", onchange: e => set(e.target.value) });
   if (kind === "number") return el("input", { type: "number", value: l[key] ?? extra.def ?? 0, step: extra.step || 1, min: extra.min, "data-k": key, onchange: e => set(+e.target.value || 0) });
+  if (kind === "chip") {   // (live data as labelled chips, plus a list to pick it from: no {{...}} to type)
+    const box = chipBox(l[key] ?? "", set, { placeholder: extra.placeholder || "", label: extra.label || key });
+    const tables = (App.state && App.state.data && App.state.data.tables) || {};
+    const groups = Object.entries(tables).filter(([, rows]) => rows && rows[0] && rows[0][0] === "Field" && rows[0][1] === "Value")
+      .map(([t, rows]) => el("optgroup", { label: t }, ...rows.slice(1).filter(r => r[0]).map(r => el("option", { value: `{{${t}!${r[0]}}}` }, r[0]))));
+    const pick = el("select", { "aria-label": "Pick live data", onchange: e => { const v = e.target.value === "__clear" ? "" : e.target.value; e.target.value = ""; box.set(v); set(v); } },
+      el("option", { value: "" }, "Pick live data…"), el("option", { value: "__clear" }, "None (clear it)"), ...groups);
+    return el("div", { class: "chip-field" }, box, pick);
+  }
   if (kind === "area") return el("textarea", { rows: 3, onchange: e => set(e.target.value) }, l[key] ?? "");
   return el("input", { value: l[key] ?? "", placeholder: extra.placeholder || "", onchange: e => set(e.target.value) });
 }
@@ -408,7 +417,7 @@ function slotsSect() {
   return el("div", { class: "stack" }, el("h4", {}, "Shows as many as there are"),
     el("label", { class: "switch" }, el("input", { type: "checkbox", checked: !!S.on, onchange: e => { snapshot(); S.on = e.target.checked; changed(); } }), "On (like the caster lower third)"),
     S.on ? el("div", { class: "stack" },
-      lab("How many (blank: the ones with a name typed in)", bind(S, "count", "text", { placeholder: "the filled ones, or e.g. {{Global!Caster boxes}}" })),
+      lab("How many (blank: the ones with a name typed in)", bind(S, "count", "chip", { placeholder: "the filled ones, or pick e.g. Caster boxes" })),
       el("div", { class: "two" }, lab("Slots go", bind(S, "axis", "select", { options: [["x", "Across"], ["y", "Down"]], def: "x" })), lab("Slot to slot (px, blank: measured)", bind(S, "step", "text", { placeholder: "auto" }))),
       el("p", { class: "muted small" }, `${used} layers have a slot. Give each layer its slot (1, 2, 3, 4) in its settings, the bar behind them "Stretch", and things on the bar's edge (a logo) "Follow". A slot with nothing typed in hides; the rest close up and move to the middle.`),
       el("button", { class: "small", onclick: autoSlots }, "Guess the slots from the layout")) : "");
@@ -497,7 +506,7 @@ function renderProps() {
     el("div", { class: "four" }, ...["x", "y", "w", "h"].map(k => lab(k.toUpperCase(), bind(l, k, "number")))),
     el("div", { class: "three" }, lab("Opacity", bind(l, "opacity", "number", { def: 1, step: 0.05, min: 0 })), lab("Rotate °", bind(l, "rotation", "number")),
       lab("Blend", bind(l, "blend", "select", { options: ["normal", "multiply", "screen", "overlay", "darken", "lighten", "soft-light", "difference"], def: "normal" }))),
-    lab("Only shows while this has a value", bind(l, "show", "text", { placeholder: "e.g. {{Roster!Player 1 headshot}}" })),
+    lab("Only shows while this has a value", bind(l, "show", "chip", { placeholder: "always shows; or pick e.g. Player 1 headshot" })),
     comp.slots && comp.slots.on ? lab("Slot (shows as many as there are)", bind(l, "slot", "select", { options: [["", "None"], ...[1, 2, 3, 4, 5, 6, 7, 8].map(n => [n, `Slot ${n}`]), ["stretch", "Stretch (the bar behind)"], ["follow", "Follow (moves with the bar's edge)"]], def: "" })) : "")];
   if (T === "text") sects.push(el("section", { class: "sect" }, el("h4", {}, "Words"),
     lab("Text (live data shows as chips)", chipBox(l.text, v => { snapshot(); l.text = v; changed({ keepList: true, keepProps: true }); }, { multiline: true, label: "Text" })),
@@ -505,7 +514,8 @@ function renderProps() {
     el("div", { class: "three" }, lab("Colour", bind(l, "color", "color")), lab("Weight", bind(l, "weight", "select", { options: [300, 400, 500, 600, 700, 800, 900].map(n => [n, String(n)]), def: 400, num: true })), lab("Spacing", bind(l, "tracking", "number"))),
     el("div", { class: "three" }, lab("Across", bind(l, "align", "select", { options: ["left", "center", "right"], def: "left" })), lab("Down", bind(l, "valign", "select", { options: ["top", "middle", "bottom"], def: "middle" })), lab("Line height", bind(l, "lineHeight", "number", { def: 1.15, step: 0.05 }))),
     el("div", { class: "two" }, lab("Too long", bind(l, "fit", "select", { options: [["shrink", "Shrink to fit"], ["none", "Run over"], ["wrap", "Wrap"]], def: "shrink" })), lab("Scroll (px/s, ticker)", bind(l, "scroll", "number", { def: 0 }))),
-    +l.scroll > 0 ? el("div", { class: "two" }, lab("Divider colour (a bar between lines)", bind(l, "divider", "text", { placeholder: "(none) e.g. #ffc52a" })), lab("Divider width", bind(l, "dividerWidth", "number", { def: 5 }))) : null,
+    +l.scroll > 0 ? lab("Between lines", ((sel) => (sel.addEventListener("change", () => changed({ keepList: true })), sel))(bind(l, "sepMark", "select", { options: [["bar", "Bar"], ["|", "|"], ["•", "•"], ["/", "/"], ["◆", "◆"], ["—", "—"], ["none", "None (just space)"]], def: l.divider ? "bar" : "|" }))) : null,
+    +l.scroll > 0 && (l.sepMark || (l.divider ? "bar" : "|")) === "bar" ? el("div", { class: "two" }, lab("Bar colour", bind(l, "divider", "text", { placeholder: "e.g. #ffc52a (blank: the text's)" })), lab("Bar width", bind(l, "dividerWidth", "number", { def: 5 }))) : null,
     el("div", { class: "row" }, bind(l, "caps", "check", { label: "Capitals" }), bind(l, "italic", "check", { label: "Italic" }))));
   if (T === "rect" || T === "shape") sects.push(el("section", { class: "sect" }, el("h4", {}, "Look"),
     T === "shape" ? lab("Shape", bind(l, "shape", "select", { options: SHAPES, def: "rect" })) : null,
@@ -513,10 +523,10 @@ function renderProps() {
     el("div", { class: "two" }, lab("Border", bind(l, "stroke", "color")), lab("Border width", bind(l, "strokeWidth", "number"))),
     T === "shape" && l.shape === "polygon" ? lab("Sides", bind(l, "sides", "number", { def: 6, min: 3 })) : null,
     T === "shape" && l.shape === "star" ? lab("Points", bind(l, "points", "number", { def: 5, min: 3 })) : null,
-    lab("Fill from live data (instead)", bind(l, "fill", "text", { placeholder: "e.g. {{Global!Left color}}" }))));
+    lab("Fill from live data (instead)", bind(l, "fill", "chip", { placeholder: "pick e.g. Left color" }))));
   if (T === "image" || T === "video") sects.push(el("section", { class: "sect" }, el("h4", {}, "Source"),
     lab("File", picker(T, (l.src || "").startsWith("assets/") ? l.src : "", v => { snapshot(); l.src = v; changed({ keepProps: true }); }, comp.name)),
-    lab("Or live data", bind(l, "src", "text", { placeholder: "e.g. {{Global!Left logo}}" })),
+    lab("Or live data", bind(l, "src", "chip", { placeholder: "pick e.g. Left logo" })),
     el("div", { class: "two" }, lab("Fit", bind(l, "fit", "select", { options: [["contain", "Fit inside"], ["cover", "Fill and crop"], ["fill", "Stretch"]], def: "contain" })),
       lab("Sits at", bind(l, "position", "select", { options: [["", "Middle"], ["top", "Top"], ["bottom", "Bottom"], ["left", "Left"], ["right", "Right"]], def: "" }))),
     lab("Cut to a shape (frame)", bind(l, "clip", "select", { options: [["", "None"], ...clipShapes.map(c => [c, c])], def: "" })),
@@ -537,7 +547,7 @@ function renderProps() {
     const cams = App.state.project.cams || [];
     sects.push(el("section", { class: "sect" }, el("h4", {}, "Camera"),
       lab("Camera", bind(l, "cam", "select", { options: [["", "(pick one)"], ...cams.map(c => [c.name, c.name]), ...(l.cam && !cams.some(c => c.name === l.cam) ? [[l.cam, l.cam]] : [])], def: "" })),
-      lab("Or the camera named by live data", bind(l, "cam", "text", { placeholder: "e.g. {{Roster!Player 1 name}}" })),
+      lab("Or the camera named by live data", bind(l, "cam", "chip", { placeholder: "pick e.g. Player 1 name" })),
       el("p", { class: "muted small" }, "Cameras are set up on the Cameras page (a VDO.Ninja link per guest). Their look and framing apply everywhere they show. Here the canvas shows a card; outputs show the live picture."),
       lab("Picture", bind(l, "fit", "select", { options: [["cover", "Fill the box (crop the sides)"], ["contain", "Whole picture (bars)"]], def: "cover" })),
       lab("Behind the picture", bind(l, "bg", "text", { placeholder: "transparent" }))));

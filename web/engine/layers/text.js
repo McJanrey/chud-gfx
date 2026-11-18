@@ -87,7 +87,6 @@ function scroller(el, span, layer, hold = 0, entering = true) {
   track.className = "sg-track";
   track.style.cssText = "display:flex;flex:none;white-space:pre;will-change:transform;align-items:center;visibility:hidden";   // (shown once its slide-in starts: before that it sat full across the box)
   const size = +layer.size || 32, gap = Math.round(size * 2);
-  if (!layer.divider) span.style.paddingRight = gap + "px";
   span.remove();
   track.append(span);
   el.appendChild(track);
@@ -95,14 +94,20 @@ function scroller(el, span, layer, hold = 0, entering = true) {
   let gen = 0, w0 = 0;
   const set = words => {
     const g = ++gen;
-    if (layer.divider) {
-      const parts = words.split(/\s*\|\s*/).map(p => p.trim()).filter(Boolean);
+    // Between lines (kept apart by "|", as {{Global!Ticker}} is): sepMark "bar" (a bar in the divider colour), a mark
+    // ("|", "•", "/", "◆", "—") or "none" (just space); after every line, so the loop's seam looks like the rest.
+    const mark = layer.sepMark || (layer.divider ? "bar" : "|"), parts = words.split(/\s*\|\s*/).map(p => p.trim()).filter(Boolean);
+    if (words.includes("|") || mark === "bar") {
+      span.style.paddingRight = "";
       span.replaceChildren(...parts.flatMap(p => {
-        const bar = document.createElement("span");
-        bar.style.cssText = `display:inline-block;vertical-align:middle;width:${+layer.dividerWidth || 5}px;height:0.9em;margin:0 ${Math.round(size * 0.75)}px;background:${layer.divider}`;
-        return [document.createTextNode(p), bar];
+        const sep = document.createElement("span");
+        sep.style.cssText = `display:inline-block;vertical-align:middle;margin:0 ${Math.round(size * 0.75)}px`;
+        if (mark === "bar") sep.style.cssText += `;width:${+layer.dividerWidth || 5}px;height:0.9em;background:${layer.divider || "currentColor"}`;
+        else if (mark === "none") sep.style.width = size + "px";
+        else sep.textContent = mark;
+        return [document.createTextNode(p), sep];
       }));
-    } else span.textContent = words;
+    } else { span.textContent = words; span.style.paddingRight = gap + "px"; }
     // (measured once its font has loaded: measured in the stand-in font, the loop jumped at every wrap)
     fontReady(layer, layer.weight || 400, size, words).then(() => requestAnimationFrame(() => {
       if (g !== gen) return;   // (newer words came while it waited)
