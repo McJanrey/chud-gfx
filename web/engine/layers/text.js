@@ -85,7 +85,7 @@ function scroller(el, span, layer, hold = 0, entering = true) {
   el.style.justifyContent = "flex-start";
   const track = document.createElement("div");
   track.className = "sg-track";
-  track.style.cssText = "display:flex;flex:none;white-space:pre;will-change:transform;align-items:center";
+  track.style.cssText = "display:flex;flex:none;white-space:pre;will-change:transform;align-items:center;visibility:hidden";   // (shown once its slide-in starts: before that it sat full across the box)
   const size = +layer.size || 32, gap = Math.round(size * 2);
   if (!layer.divider) span.style.paddingRight = gap + "px";
   span.remove();
@@ -109,6 +109,7 @@ function scroller(el, span, layer, hold = 0, entering = true) {
       const k = el.getBoundingClientRect().width / el.offsetWidth || 1;
       const w = span.getBoundingClientRect().width / k;
       if (!w) return;
+      track.style.visibility = "";   // (its animation starts in this same frame)
       // (enough copies that a line shorter than the box still fills it all the way round)
       track.replaceChildren(span);
       while (track.children.length < Math.ceil((el.offsetWidth || 1920) / w) + 1) track.append(span.cloneNode(true));

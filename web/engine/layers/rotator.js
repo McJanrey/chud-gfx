@@ -93,7 +93,7 @@ export function ticker(el, layer, ctx) {
   const list = items(layer, ctx);
   if (!list.length) return;
   const track = document.createElement("div");
-  Object.assign(track.style, { position: "absolute", top: "0", bottom: "0", left: "0", display: "flex", alignItems: "center", whiteSpace: "nowrap", willChange: "transform" });
+  Object.assign(track.style, { position: "absolute", top: "0", bottom: "0", left: "0", display: "flex", alignItems: "center", whiteSpace: "nowrap", willChange: "transform", visibility: "hidden" });   // (shown once its slide-in starts)
   const gap = +layer.gap || 60, sep = layer.sep ?? layer.separator ?? "";   // (GFX Baby saves it as "sep"; none unless one is set)
   const run = () => list.flatMap((it, i) => {
     const d = itemEl(it, layer, ctx, false);
@@ -118,6 +118,7 @@ export function ticker(el, layer, ctx) {
     const w = a.offsetWidth;
     if (!w) return tries < 50 && setTimeout(() => start(tries + 1), 100);   // (not on the page yet)
     while (track.children.length < Math.ceil((el.offsetWidth || 1920) / w) + 1) copy();
+    track.style.visibility = "";
     scrollIn(track, el.offsetWidth || 1920, w, Math.max(10, +layer.speed || 120), Math.max(0, hold - (performance.now() - born)), layer.id, ctx.entering !== false);   // (empty while it animates in)
   };
   requestAnimationFrame(() => start());
