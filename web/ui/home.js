@@ -22,6 +22,11 @@ function render() {
           w.open ? el("a", { class: "small ghost btn", href: "/api/export", download: "" }, "Export pack") : null,
           w.open ? null : el("button", { class: "small ghost", onclick: async () => { if (await ask(`Remove "${w.name}"? It's moved to the .removed folder, not deleted.`)) api("/api/workspace/remove", { folder: w.folder }); } }, "Remove")))),
       el("button", { class: "ws-card new", onclick: async () => { const n = await askText("Name of the new workspace", "New workspace"); if (n) api("/api/workspace/new", { name: n }); } }, "+ New workspace"));
+    const gone = st.removed_ws || [];   // (Remove keeps them: they come back from here)
+    if (gone.length) body = el("div", {}, body, el("h4", { class: "g-head" }, "Removed workspaces"),
+      el("div", { class: "panel" }, el("div", { class: "list" }, ...gone.map(w => el("div", { class: "gfx" }, el("span", { class: "bar-ind" }),
+        el("div", {}, el("div", { class: "name" }, w.name), el("div", { class: "muted small" }, `${w.graphics} graphics · removed ${ago(w.removed)}`)),
+        el("button", { class: "small", onclick: () => api("/api/workspace/unremove", { folder: w.folder }).then(() => toast(`"${w.name}" is back`)) }, "Bring back"))))));
 
   } else {
     const bk = st.backups || [];

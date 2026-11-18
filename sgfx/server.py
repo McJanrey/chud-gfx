@@ -285,7 +285,7 @@ class Engine:
         data = {"tables": found}
         return {"project": self.project, "live": live, "data": data, "fonts": self.fonts(), "now": time.time(),
                 "outputs": dict(getattr(self, "outputs", {})), "teams": self.teams(), "ros": self.ros_state(), "playing": self.playing,
-                "workspaces": self.workspaces(), "backups": self.backups(), "source_status": dict(getattr(self, "source_status", {})), "cam_status": dict(getattr(self, "cam_status", {})),
+                "workspaces": self.workspaces(), "removed_ws": self.removed_workspaces(), "backups": self.backups(), "source_status": dict(getattr(self, "source_status", {})), "cam_status": dict(getattr(self, "cam_status", {})),
                 "stream": self.stream.public() if hasattr(self, "stream") else None,
                 "jobs": self.jobs.public() if hasattr(self, "jobs") else [],
                 "obs": self.obs.public() if hasattr(self, "obs") else None,
@@ -594,6 +594,30 @@ class Engine:
                         "changed": os.path.getmtime(os.path.join(path, "project.json")),
                         "open": os.path.abspath(path) == os.path.abspath(self.folder)})
         return out
+
+    def removed_workspaces(self):
+        """What Remove moved to <root>/.removed: [{folder, name, graphics, removed}] newest first, so it can come back."""
+        bin_, out = os.path.join(self._root(), ".removed"), []
+        for name in os.listdir(bin_) if os.path.isdir(bin_) else []:
+            try:
+                with open(os.path.join(bin_, name, "project.json"), encoding="utf-8") as f:
+                    p = json.load(f)
+            except (OSError, ValueError):
+                continue
+            out.append({"folder": name, "name": p.get("name") or name, "graphics": len(p.get("compositions") or []), "removed": os.path.getmtime(os.path.join(bin_, name))})
+        return sorted(out, key=lambda w: -w["removed"])
+
+    def ws_unremove(self, folder):
+        """Bring a removed workspace back (its old folder name, or with a number if that's taken)."""
+        name = os.path.basename(str(folder or ""))
+        src = os.path.join(self._root(), ".removed", name)
+        if not name or not os.path.isdir(src):
+            raise ValueError("No such removed workspace")
+        base = re.sub(r"-\d{8}-\d{6}$", "", name) or "workspace"
+        dest, n = os.path.join(self._root(), base), 2
+        while os.path.exists(dest):
+            dest, n = os.path.join(self._root(), f"{base}-{n}"), n + 1
+        os.replace(src, dest)
 
     def _ws_path(self, folder):
         name = os.path.basename(str(folder or ""))
@@ -1104,6 +1128,8 @@ class Engine:
             self.ws_rename(body.get("folder"), body.get("name"))
         elif path == "/api/workspace/remove":
             self.ws_remove(body.get("folder"))
+        elif path == "/api/workspace/unremove":
+            self.ws_unremove(body.get("folder"))
         elif path == "/api/part/make":
             part = partsmod.make(body.get("name"), body.get("layers") or [])
             self.project.setdefault("parts", []).append(part)

@@ -46,3 +46,18 @@ class BadGlobal(unittest.TestCase):
         e.set_global({"left": {"name": "SCC"}, "event": "WWL"})
         self.assertEqual(e.project["global"]["left"]["name"], "SCC")
         e.state()   # (a bad send used to break this, and with it every page)
+
+
+class RemovedWorkspaces(unittest.TestCase):
+    def test_remove_then_bring_back(self):
+        root = Path(tempfile.mkdtemp())
+        e = Engine(str(pick_workspace_in(root)), None)
+        e.ws_new("Show two") if hasattr(e, "ws_new") else e.act("/api/workspace/new", {"name": "Show two"})
+        other = next(w for w in e.workspaces() if not w["open"])
+        e.ws_remove(other["folder"])
+        self.assertNotIn(other["folder"], [w["folder"] for w in e.workspaces()])
+        gone = e.removed_workspaces()
+        self.assertEqual(gone[0]["name"], other["name"])
+        e.ws_unremove(gone[0]["folder"])
+        self.assertIn(other["folder"], [w["folder"] for w in e.workspaces()])
+        self.assertEqual(e.removed_workspaces(), [])
