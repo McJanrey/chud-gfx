@@ -9,7 +9,7 @@ assert.deepEqual(Object.keys(usedTables({ layers: [{ type: "text", text: "{{Glob
 assert.deepEqual(Object.keys(usedTables({ layers: [{ type: "bracket" }] }, {}, tables)), ["Tournament"]);
 assert.deepEqual(usedTables({ layers: [{ type: "text", text: "hello" }] }, {}, tables), {});
 
-let kf; const el = { animate: k => { kf = k; return { finished: Promise.resolve() }; } };
+let kf; const el = { animate: k => { kf = k; return { finished: Promise.resolve(), cancel() {} }; } };
 await play(el, { opacity: 0.6, anim: { in: { type: "fade" } } }, "in");
 assert.deepEqual(kf, [{ opacity: 0 }, { opacity: 0.6 }]);
 
@@ -184,3 +184,10 @@ assert.deepEqual(kf, [{ opacity: 0 }, { opacity: 0.6 }]);
   globalThis.document = doc;
 }
 console.log("engine checks OK");
+
+// Fly from right: starts exactly past the page's right edge, wherever the layer sits; Out goes back the same way
+await play(el, { x: 1500, w: 300, anim: { in: { type: "fly-right" } } }, "in");
+assert.deepEqual(kf[0], { translate: "420px 0" });
+await play(el, { x: 1500, w: 300, anim: { out: { type: "fly-right" } } }, "out");
+assert.equal(kf.at(-1).translate, "420px 0");
+console.log("animation checks OK");

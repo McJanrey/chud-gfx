@@ -433,7 +433,13 @@ export const composer = {
 // --- properties ---------------------------------------------------------------------
 const FONTS = ["Inter", "Montserrat", "Barlow Condensed", "Bebas Neue", "Anton", "Permanent Marker", "Vazirmatn"];
 const SHAPES = ["rect", "pill", "ellipse", "triangle", "diamond", "polygon", "star", "parallelogram", "trapezoid", "chevron", "tab", "arrow", "shield", "path"];
-const ANIMS = ["none", "fade", "slide-left", "slide-right", "slide-up", "slide-down", "wipe-right", "wipe-left", "wipe-down", "wipe-up", "grow-x", "grow-y", "scale", "pop", "blur"];
+const ANIMS = [["none", "None"], ["fade", "Fade"],
+  ["fly-left", "Fly from left (off screen)"], ["fly-right", "Fly from right (off screen)"], ["fly-top", "Fly from top (off screen)"], ["fly-bottom", "Fly from bottom (off screen)"],
+  ["fly-left-bounce", "Fly from left + bounce"], ["fly-right-bounce", "Fly from right + bounce"], ["drop", "Drop and bounce"], ["rise", "Rise"],
+  ["slide-left", "Slide in from right (short)"], ["slide-right", "Slide in from left (short)"], ["slide-up", "Slide up (short)"], ["slide-down", "Slide down (short)"], ["blur-slide", "Blur slide"],
+  ["wipe-right", "Wipe right"], ["wipe-left", "Wipe left"], ["wipe-down", "Wipe down"], ["wipe-up", "Wipe up"], ["blinds", "Open from the middle"], ["blinds-y", "Open from the middle (up/down)"], ["iris", "Iris (circle)"], ["type-on", "Typewriter"],
+  ["grow-x", "Grow across"], ["grow-y", "Grow down"], ["scale", "Scale"], ["zoom-in", "Zoom in"], ["zoom-out", "Zoom out"], ["pop", "Pop"], ["elastic", "Elastic pop"],
+  ["flip-x", "Flip (sideways)"], ["flip-y", "Flip (over)"], ["swing", "Swing down"], ["spin", "Spin in"], ["blur", "Blur"], ["glitch", "Glitch"]];   // ([saved name, what it's called]; Out plays each one backwards)
 function bind(l, key, kind = "text", extra = {}) {
   const set = v => { snapshot(); l[key] = v; changed({ keepList: key !== "name" && key !== "field", keepProps: true }); };
   if (kind === "select") return el("select", { onchange: e => set(extra.num && e.target.value !== "" ? +e.target.value : e.target.value) }, ...extra.options.map(o => Array.isArray(o) ? el("option", { value: o[0], selected: String(l[key] ?? extra.def ?? "") === String(o[0]) }, o[1]) : el("option", { value: o, selected: (l[key] ?? extra.def) === o }, o)));
@@ -524,7 +530,7 @@ function renderProps() {
       slotsSect(),
       el("h4", {}, "Animation"),
       el("p", { class: "muted small" }, "Every layer has its own In and Out animation. Set them all at once:"),
-      el("div", { class: "row" }, el("select", { id: "cmp-all-anim" }, ...ANIMS.map(a => el("option", { value: a, selected: a === "fade" }, a))),
+      el("div", { class: "row" }, el("select", { id: "cmp-all-anim" }, ...ANIMS.map(([v, t]) => el("option", { value: v, selected: v === "fade" }, t))),
         el("button", { class: "small", onclick: () => setAll(false) }, "All together"), el("button", { class: "small", onclick: () => setAll(true) }, "One after another")),
       el("div", { class: "row" },
         el("button", { class: "small", onclick: async () => { const c = JSON.parse(JSON.stringify(comp)); delete c.id; c.name += " copy"; c.layers.forEach(l => (l.id = uid("l"))); const r = await api("/api/comp", { comp: c }); setTimeout(() => openComp(r.comp.id), 300); } }, "Duplicate"),
