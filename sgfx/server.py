@@ -119,16 +119,18 @@ class Engine:
         from . import updater, __version__
         if getattr(self, "update", {}).get("state") == "installing":
             return
+        before = dict(getattr(self, "update", {}))
         try:
             self.update = {**updater.check(), "state": "ready"}
         except Exception as e:   # (offline, no release yet: the app works the same; a found update stays offered)
             if not getattr(self, "update", {}).get("update"):
                 self.update = {"current": __version__, "state": "error", "detail": str(e)[:120]}
             log.info("Update check failed: %s", e)
-        self._bump()
+        if self.update != before:   # (every 30 s: only a real change goes out to the pages)
+            self._bump()
 
-    def watch_updates(self, every=600):
-        """Checks now, then every 10 minutes: a release made while the app is open still shows up."""
+    def watch_updates(self, every=30):
+        """Checks now, then every 30 seconds: a release made while the app is open shows up straight away."""
         while True:
             self.check_update()
             time.sleep(every)

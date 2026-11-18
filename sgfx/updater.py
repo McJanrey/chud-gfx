@@ -12,6 +12,7 @@ import subprocess
 import sys
 import tempfile
 import threading
+import urllib.error
 import urllib.request
 from pathlib import Path
 
@@ -56,9 +57,21 @@ def _request(url, accept="application/vnd.github+json"):
     return req
 
 
+_last = {}   # (the last answer and its ETag: asked every 30 s, an unchanged release costs GitHub nothing)
+
+
 def check():
-    with urllib.request.urlopen(_request(f"https://api.github.com/repos/{REPO}/releases/latest"), timeout=20) as r:
-        rel = json.loads(r.read())
+    req = _request(f"https://api.github.com/repos/{REPO}/releases/latest")
+    if _last.get("etag"):
+        req.add_header("If-None-Match", _last["etag"])
+    try:
+        with urllib.request.urlopen(req, timeout=20) as r:
+            rel = json.loads(r.read())
+            _last.update(etag=r.headers.get("ETag"), rel=rel)
+    except urllib.error.HTTPError as e:
+        if e.code != 304 or "rel" not in _last:
+            raise
+        rel = _last["rel"]   # (304: nothing new since the last check)
     z = next((a for a in rel.get("assets", []) if a.get("name") == SETUP), None)
     latest = (rel.get("tag_name") or "").lstrip("v")
     digest = (z or {}).get("digest") or ""
