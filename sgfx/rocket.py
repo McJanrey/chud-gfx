@@ -13,6 +13,7 @@ they leave. Finished games are also written to rl-games.json in the workspace, s
 import json
 import logging
 import os
+import re
 import socket
 import threading
 import time
@@ -408,6 +409,43 @@ $port = __PORT__
 Write-Host "RL Observer: reads Rocket League on this PC and sends it to StandBy GFX at $gfx"
 Write-Host 'Keep this window open during the show. Close it to stop.'
 $enc = [Text.Encoding]::UTF8
+function Enable-StatsApi {
+  $dirs = @()
+  $man = Join-Path $env:ProgramData 'Epic\EpicGamesLauncher\Data\Manifests'
+  if (Test-Path $man) { Get-ChildItem $man -Filter *.item | ForEach-Object { try { $j = Get-Content $_.FullName -Raw | ConvertFrom-Json; if ($j.DisplayName -like '*Rocket*') { $dirs += $j.InstallLocation } } catch {} } }
+  $steam = Join-Path ${env:ProgramFiles(x86)} 'Steam'
+  $libs = @($steam)
+  $vdf = Join-Path $steam 'steamapps\libraryfolders.vdf'
+  if (Test-Path $vdf) { [regex]::Matches((Get-Content $vdf -Raw), '"path"\s+"([^"]+)"') | ForEach-Object { $libs += $_.Groups[1].Value.Replace('\', '\') } }
+  $libs | ForEach-Object { $dirs += (Join-Path $_ 'steamapps\common\rocketleague') }
+  $dirs += 'C:\Program Files\Epic Games\rocketleague'
+  $changed = 0
+  foreach ($d in ($dirs | Select-Object -Unique)) {
+    $cfg = Join-Path $d 'TAGame\Config'
+    if (-not (Test-Path $cfg)) { continue }
+    foreach ($n in @('DefaultStatsAPI.ini', 'TAStatsAPI.ini')) {
+      $f = Join-Path $cfg $n
+      if ($n -eq 'TAStatsAPI.ini' -and -not (Test-Path $f)) { continue }
+      $old = ''; if (Test-Path $f) { $old = Get-Content $f -Raw; if ($old -eq $null) { $old = '' } }
+      if ($old -match '(?ms)^\[TAGame\.MatchStatsExporter_TA\][^\[]*PacketSendRate=([1-9]\d*)' -and $old -match "(?ms)^\[TAGame\.MatchStatsExporter_TA\][^\[]*Port=$port") { continue }
+      if ($old -and -not (Test-Path "$f.bak")) { Set-Content -LiteralPath "$f.bak" -Value $old -NoNewline }
+      $lines = @($old -split "`n" | ForEach-Object { $_.TrimEnd([char]13) } | Where-Object { $_ -ne '' })
+      $out = @(); $in = $false
+      foreach ($l in $lines) {
+        if ($l.Trim().StartsWith('[')) { $in = ($l.Trim() -eq '[TAGame.MatchStatsExporter_TA]') }
+        elseif ($in -and $l -match '^\s*(PacketSendRate|Port)\s*=') { continue }
+        $out += $l
+        if ($in -and $l.Trim().StartsWith('[')) { $out += 'PacketSendRate=30'; $out += "Port=$port" }
+      }
+      if (-not ($lines | Where-Object { $_.Trim() -eq '[TAGame.MatchStatsExporter_TA]' })) { $out += '[TAGame.MatchStatsExporter_TA]'; $out += 'PacketSendRate=30'; $out += "Port=$port" }
+      Set-Content -LiteralPath $f -Value (($out -join "`r`n") + "`r`n") -NoNewline
+      Write-Host "Turned on Rocket League's Stats API in $f"
+      $changed++
+    }
+  }
+  if ($changed) { Write-Host 'Restart Rocket League now (fully close it and open it again) so it picks this up.' }
+}
+Enable-StatsApi
 while ($true) {
   try {
     $c = New-Object Net.Sockets.TcpClient('127.0.0.1', $port)
@@ -435,6 +473,80 @@ while ($true) {
 def observer_script(gfx, port=PORT):
     """The RL Observer client: a .cmd for the game PC (Windows, nothing to install)."""
     return OBSERVER.replace("__GFX__", gfx).replace("__PORT__", str(port)).replace(chr(10), chr(13) + chr(10))
+
+
+SECTION = "[TAGame.MatchStatsExporter_TA]"
+
+
+def set_ini(text, rate=30, port=PORT):
+    """The Stats API switched on in an ini's text: PacketSendRate and Port under its section (added when missing)."""
+    want = {"PacketSendRate": str(rate), "Port": str(port)}
+    lines, out, inside, seen = text.splitlines(), [], False, set()
+    for ln in lines:
+        st = ln.strip()
+        if st.startswith("["):
+            if inside:
+                out += [f"{k}={v}" for k, v in want.items() if k not in seen]
+            inside = st.lower() == SECTION.lower()
+        elif inside and "=" in st and st.split("=", 1)[0].strip() in want:
+            k = st.split("=", 1)[0].strip()
+            seen.add(k)
+            out.append(f"{k}={want[k]}")
+            continue
+        out.append(ln)
+    if inside:
+        out += [f"{k}={v}" for k, v in want.items() if k not in seen]
+    if not any(l.strip().lower() == SECTION.lower() for l in lines):
+        out += ([""] if out and out[-1].strip() else []) + [SECTION] + [f"{k}={v}" for k, v in want.items()]
+    return "\r\n".join(out) + "\r\n"
+
+
+def installs():
+    """Rocket League folders on this PC (Epic manifests, Steam libraries, the usual places)."""
+    found = []
+    man = os.path.join(os.environ.get("PROGRAMDATA", r"C:\ProgramData"), "Epic", "EpicGamesLauncher", "Data", "Manifests")
+    for f in (os.listdir(man) if os.path.isdir(man) else []):
+        try:
+            with open(os.path.join(man, f), encoding="utf-8") as fh:
+                m = json.load(fh)
+            if "rocket" in str(m.get("DisplayName", "")).lower():
+                found.append(m.get("InstallLocation", ""))
+        except (OSError, ValueError):
+            pass
+    steam = os.path.join(os.environ.get("PROGRAMFILES(X86)", r"C:\Program Files (x86)"), "Steam")
+    libs = [steam]
+    try:
+        with open(os.path.join(steam, "steamapps", "libraryfolders.vdf"), encoding="utf-8") as fh:
+            libs += [m.replace("\\\\", "\\") for m in re.findall(r'"path"\s+"([^"]+)"', fh.read())]
+    except OSError:
+        pass
+    found += [os.path.join(l, "steamapps", "common", "rocketleague") for l in libs]
+    found.append(r"C:\Program Files\Epic Games\rocketleague")
+    out = []
+    for d in found:
+        if d and os.path.isdir(os.path.join(d, "TAGame", "Config")) and os.path.normcase(d) not in [os.path.normcase(o) for o in out]:
+            out.append(d)
+    return out
+
+
+def enable_stats_api():
+    """Turn the Stats API on in every Rocket League found here (the old file kept as .bak). -> the files changed."""
+    done = []
+    for d in installs():
+        for name in ("DefaultStatsAPI.ini", "TAStatsAPI.ini"):
+            f = os.path.join(d, "TAGame", "Config", name)
+            if name == "TAStatsAPI.ini" and not os.path.isfile(f):
+                continue
+            old = open(f, encoding="utf-8", errors="replace").read() if os.path.isfile(f) else ""
+            if old and not os.path.exists(f + ".bak"):
+                with open(f + ".bak", "w", encoding="utf-8") as fh:
+                    fh.write(old)
+            with open(f, "w", encoding="utf-8", newline="") as fh:
+                fh.write(set_ini(old))
+            done.append(f)
+    if not done:
+        raise ValueError("Rocket League isn't installed on this PC. If it runs on another PC, the observer client turns it on there.")
+    return done
 
 
 def sweep(own, port, timeout=0.4):

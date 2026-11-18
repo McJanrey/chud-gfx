@@ -1138,6 +1138,8 @@ class Engine:
             if n is None:
                 raise ValueError("Nothing to save yet: no Rocket League game has sent anything")
             result = {"game": n}
+        elif path == "/api/rl/enable":   # (the game on this PC: its Stats API ini switched on)
+            return {"files": rocket.enable_stats_api()}
         elif path == "/api/rl/clear":
             self.rl.clear()
         elif path == "/api/workspace/unremove":

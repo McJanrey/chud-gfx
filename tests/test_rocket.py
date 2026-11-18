@@ -163,3 +163,12 @@ class RocketLeagueHonest(unittest.TestCase):
             self.assertNotIn("RL Scorebug", names())
         finally:
             conn.close(); game.close()
+
+
+class StatsApiIni(unittest.TestCase):
+    def test_switches_on_keeps_rest(self):
+        from sgfx.rocket import set_ini
+        self.assertEqual(set_ini(""), "[TAGame.MatchStatsExporter_TA]\r\nPacketSendRate=30\r\nPort=49123\r\n")
+        out = set_ini("[A]\r\nX=1\r\n[TAGame.MatchStatsExporter_TA]\r\nPacketSendRate=0\r\n[B]\r\nY=2\r\n")
+        self.assertEqual(out, "[A]\r\nX=1\r\n[TAGame.MatchStatsExporter_TA]\r\nPacketSendRate=30\r\nPort=49123\r\n[B]\r\nY=2\r\n")
+        self.assertEqual(set_ini(out), out)
