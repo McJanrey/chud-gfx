@@ -60,7 +60,7 @@ jobs:
       - name: Silent install test
         shell: pwsh
         run: |
-          $p = Start-Process installer\Output\Chud-GFX-Baby-Setup.exe -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /TASKS=" -Wait -PassThru
+          $p = Start-Process installer\Output\Chud-GFX-Baby-Setup.exe -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /TASKS= /NOLAUNCH" -Wait -PassThru
           if ($p.ExitCode -ne 0) { exit 1 }
           $p = Start-Process "C:\Chud GFX Baby\ChudGFX.exe" -ArgumentList "--smoke-test" -Wait -PassThru
           if ($p.ExitCode -ne 0) { exit 1 }

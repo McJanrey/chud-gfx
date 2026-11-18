@@ -34,8 +34,15 @@ Name: "desktopicon"; Description: "Create a desktop shortcut"
 [Run]
 Filename: "{app}\ChudGFX.exe"; Description: "Open Chud GFX Baby"; Flags: nowait postinstall skipifsilent
 ; (an update from inside the app runs silent: it opens the app again by itself)
-Filename: "{app}\ChudGFX.exe"; Flags: nowait runasoriginaluser; Check: WizardSilent
+Filename: "{app}\ChudGFX.exe"; Flags: nowait runasoriginaluser; Check: WizardSilent and not NoLaunch
 
 [InstallDelete]
 ; GFX Baby's old program files (its libraries): the new ones replace them. Workspaces, library and settings stay.
 Type: filesandordirs; Name: "{app}\_internal"
+
+[Code]
+// /NOLAUNCH: a silent install that must not open the app (the build's install test waits for setup to finish)
+function NoLaunch: Boolean;
+begin
+  Result := Pos('/NOLAUNCH', UpperCase(GetCmdTail)) > 0;
+end;
