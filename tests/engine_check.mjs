@@ -185,9 +185,9 @@ assert.deepEqual(kf, [{ opacity: 0 }, { opacity: 0.6 }]);
 }
 console.log("engine checks OK");
 
-// Fly from right: starts exactly past the page's right edge, wherever the layer sits; Out goes back the same way
+// Fly from right: every layer travels the whole page width (so a graphic flies as one piece); Out goes back the same way
 await play(el, { x: 1500, w: 300, anim: { in: { type: "fly-right" } } }, "in");
-assert.deepEqual(kf[0], { translate: "420px 0" });
+assert.deepEqual(kf[0], { translate: "1920px 0" });
 await play(el, { x: 1500, w: 300, anim: { out: { type: "fly-right" } } }, "out");
-assert.equal(kf.at(-1).translate, "420px 0");
+assert.equal(kf.at(-1).translate, "1920px 0");
 console.log("animation checks OK");
