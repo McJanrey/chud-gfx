@@ -10,11 +10,13 @@ export function obsCard() {
   const saveRules = () => api("/api/obs", { rules });
   const host = el("input", { value: o.host || "127.0.0.1", "aria-label": "OBS PC" });
   const port = el("input", { type: "number", value: o.port || 4455, "aria-label": "Port" });
-  const pw = el("input", { type: "password", autocomplete: "off", placeholder: o.has_password ? "(saved)" : "", "aria-label": "Password" });
+  const pw = el("input", { type: "password", autocomplete: "off", placeholder: o.has_password ? "Saved ✓ (type to change)" : "From OBS: Show Connect Info", "aria-label": "Password" });
   return el("div", { class: "card", id: "obs-card" }, el("div", { class: "row" }, el("h3", {}, "OBS Studio"),
       el("label", { class: "switch" }, el("input", { type: "checkbox", checked: !!o.on, onchange: e => api("/api/obs", { on: e.target.checked }) }), o.on ? "On" : "Off"),
       el("span", { class: "pill" + (st.state === "on" ? " ok" : st.state === "error" ? " warn" : "") }, STATE[st.state] || st.state || "Off")),
-    st.detail ? el("p", { class: st.state === "error" ? "err small" : "muted small" }, st.detail) : null,
+    // (what's happening, in words: the password box empties once saved, so this is how you know it worked)
+    el("p", { class: "obs-status " + (st.state || "off") }, st.state === "on" ? `Connected to OBS at ${o.host || "127.0.0.1"}:${o.port || 4455}${st.scene ? `: on scene "${st.scene}"` : ""} (${(st.scenes || []).length} scenes)`
+      : st.state === "connecting" ? `Connecting to ${st.detail || "OBS"}…` : st.state === "error" ? st.detail || "Not connected" : o.on ? "Waiting to connect…" : "Off: turn it on to connect"),
     el("p", { class: "muted small" }, "In OBS: Tools › WebSocket Server Settings: turn it on, then Show Connect Info for the password. Then Control shows OBS's scene, LIVE and REC, and switches scenes."),
     el("div", { class: "three" }, el("label", { class: "f" }, el("span", {}, "OBS PC"), host), el("label", { class: "f" }, el("span", {}, "Port"), port), el("label", { class: "f" }, el("span", {}, "Password"), pw)),
     el("div", { class: "row" },

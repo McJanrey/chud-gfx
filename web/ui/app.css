@@ -396,3 +396,6 @@ button.danger { background: var(--red); color: #fff; box-shadow: none; font-weig
 .cmp-snap.x { width: 1px; }
 .cmp-snap.y { height: 1px; }
 .cmp-band { position: absolute; border: 1px solid var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); pointer-events: none; z-index: 6; }
+.obs-status { margin: 0; padding: 8px 12px; border-radius: 8px; background: var(--fill); font-size: 13px; }
+.obs-status.on { color: #7ee08a; }
+.obs-status.error { color: var(--red); }
