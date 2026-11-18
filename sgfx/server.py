@@ -27,7 +27,7 @@ from .net import Net
 from .obs import OBS
 from .buses import Buses
 from . import logs
-from . import hudlink
+from . import hudlink, rocket
 from .logs import log
 
 WEB = os.path.join(getattr(sys, "_MEIPASS", ""), "web") if getattr(sys, "frozen", False) else os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "web")
@@ -282,6 +282,8 @@ class Engine:
         found["HUDs"] = [["Field", "Value"]] + [[n, "on" if time.time() - h["at"] < 10 else "off"] for n, h in hud.items()]
         for n, h in hud.items():
             found[n] = h["rows"]
+        if hasattr(self, "rl"):
+            found.update(self.rl.tables())
         data = {"tables": found}
         return {"project": self.project, "live": live, "data": data, "fonts": self.fonts(), "now": time.time(),
                 "outputs": dict(getattr(self, "outputs", {})), "teams": self.teams(), "ros": self.ros_state(), "playing": self.playing,
@@ -289,6 +291,7 @@ class Engine:
                 "stream": self.stream.public() if hasattr(self, "stream") else None,
                 "jobs": self.jobs.public() if hasattr(self, "jobs") else [],
                 "obs": self.obs.public() if hasattr(self, "obs") else None,
+                "rl": self.rl.public() if hasattr(self, "rl") else None,
                 "update": {k: v for k, v in getattr(self, "update", {}).items() if k in ("current", "version", "update", "state", "detail", "progress")},
                 "trash": [{"id": t["comp"]["id"], "name": t["comp"].get("name", ""), "at": t.get("at", 0)} for t in self.project.get("trash") or []], "app": {"version": __import__("sgfx").__version__, "port": self.port, "addresses": self.addresses(), "network": dict(self.net.cfg) if hasattr(self, "net") else {}}}
 
@@ -1128,6 +1131,15 @@ class Engine:
             self.ws_rename(body.get("folder"), body.get("name"))
         elif path == "/api/workspace/remove":
             self.ws_remove(body.get("folder"))
+        elif path == "/api/rl":
+            self.rl.set(body)
+        elif path == "/api/rl/save":
+            n = self.rl.snapshot("manual")
+            if n is None:
+                raise ValueError("Nothing to save yet: no Rocket League game has sent anything")
+            result = {"game": n}
+        elif path == "/api/rl/clear":
+            self.rl.clear()
         elif path == "/api/workspace/unremove":
             self.ws_unremove(body.get("folder"))
         elif path == "/api/part/make":
@@ -1487,6 +1499,7 @@ def make_server(workspace, library=None, port=7800):
     engine.port = server.server_address[1]
     engine.net = Net(library or os.path.dirname(os.path.abspath(workspace)), engine.port)
     hudlink.start(engine)
+    rocket.start(engine)
     return engine, server
 
 

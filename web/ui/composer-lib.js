@@ -73,7 +73,18 @@ function liveTab() {
       tile("Caster cameras", "on the caster boxes (moving with them), or two to place", () => casterCams())),
     group("Tournament", tile("Knockout bracket", "8 or 16", () => addLayers([{ type: "bracket", name: "Bracket", font: "Bebas Neue", color: "#ffffff", gold: "#b28a1d", dark: "#000b05", line: "#b28a1d", w: 1566, h: 748 }])),
       tile("Champion", "", () => addLayers([T("{{Tournament!Top champion}}", 64, { name: "Champion" })]))),
+    ...rlGroups(),
     ...(hudGroups.length ? hudGroups : [el("p", { class: "muted small" }, "Game HUDs show up here once one sends its data (Outputs › HUD link).")])];
+}
+
+// Rocket League (Outputs › Rocket League): the live match, and the last finished game for a post-game card.
+// (the player lines, Blue 1 goals and so on, are in Pick live data on any text)
+function rlGroups() {
+  const t = (App.state.data || {}).tables || {};
+  const tiles = n => (t[n] || []).slice(1).map(([f]) => f).filter(f => !/^(Blue|Orange) \d /.test(f))
+    .map(f => tile(f, "", () => addLayers([T(`{{${n}!${f}}}`, /score$/.test(f) ? 96 : 40, { name: f })])));
+  return [t["Rocket League"] ? group("Rocket League (live)", ...tiles("Rocket League")) : null,
+    t["RL Last game"] ? group("Rocket League (last finished game)", ...tiles("RL Last game")) : null].filter(Boolean);
 }
 
 // One camera per caster box (Caster 1-4), placed above the box and moved / shown by the same live data,

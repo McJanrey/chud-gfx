@@ -1,6 +1,7 @@
 // Transitions and Outputs pages, and the "Program connected" check in the page bar.
 import { $, el, api, App, pages, picker, toast, typingIn } from "./lib.js";
 import { obsCard } from "./obs.js";
+import { rlCard } from "./rocket.js";
 
 // --- Transitions ----------------------------------------------------------------
 const list = () => (App.state.project.transitions || []).map(t => ({ ...t }));
@@ -85,7 +86,7 @@ function renderOutputs() {
           onchange: e => api("/api/comp", { comp: { ...(App.state.project.compositions.find(x => x.id === c.id) || c), output: e.target.checked } }) }), ""),
         copyRow(c.name, base(hosts[hosts.length - 1]) + "/output?comp=" + c.id, outs["comp:" + c.id])))),
     networkCard(), exportCard());
-  $("#out-list").prepend(obsCard());
+  $("#out-list").prepend(obsCard(), rlCard());
 }
 function exportCard() {
   const comps = App.state.project.compositions || [], boxes = comps.map(c => el("input", { type: "checkbox", value: c.id }));
