@@ -433,6 +433,7 @@ export const composer = {
 // --- properties ---------------------------------------------------------------------
 const FONTS = ["Inter", "Montserrat", "Barlow Condensed", "Bebas Neue", "Anton", "Permanent Marker", "Vazirmatn"];
 const SHAPES = ["rect", "pill", "ellipse", "triangle", "diamond", "polygon", "star", "parallelogram", "trapezoid", "chevron", "tab", "arrow", "shield", "path"];
+const EASE_OPTS = [["", "Smooth"], ["sharp", "Sharp (no easing)"], ["in", "Ease in"], ["out", "Ease out"], ["inout", "Ease in and out"], ["snappy", "Snappy"], ["overshoot", "Overshoot"]];
 const ANIMS = [["none", "None"], ["fade", "Fade"],
   ["fly-left", "Fly from left (off screen)"], ["fly-right", "Fly from right (off screen)"], ["fly-top", "Fly from top (off screen)"], ["fly-bottom", "Fly from bottom (off screen)"],
   ["fly-left-bounce", "Fly from left + bounce"], ["fly-right-bounce", "Fly from right + bounce"], ["drop", "Drop and bounce"], ["rise", "Rise"],
@@ -469,7 +470,8 @@ function renderPropsNumbers() {   // (while dragging: just the position boxes)
 function animSect(l) {
   const a = l.anim = l.anim || {};
   const row = dir => { const d = a[dir] = a[dir] || {}; return el("div", { class: "three" },
-    lab(dir === "in" ? "In" : "Out", bind(d, "type", "select", { options: ANIMS, def: "none" })), lab("Length (ms)", bind(d, "dur", "number", { def: 400, step: 50 })), lab("Delay (ms)", bind(d, "delay", "number", { def: 0, step: 50 }))); };
+    lab(dir === "in" ? "In" : "Out", bind(d, "type", "select", { options: ANIMS, def: "none" })), lab("Length (ms)", bind(d, "dur", "number", { def: 400, step: 50 })), lab("Delay (ms)", bind(d, "delay", "number", { def: 0, step: 50 })),
+    lab("Easing", bind(d, "ease", "select", { options: EASE_OPTS, def: "" }))); };
   return el("section", { class: "sect" }, el("h4", {}, "Animation"), row("in"), row("out"));
 }
 // Slots: shows as many as there are (casters). Each layer's slot is set in its own settings.
@@ -653,11 +655,12 @@ function multiEdit(ls) {
   }
   // their In / Out animations, all at once
   const anim = dir => { const ds = ls.map(l => { const a = l.anim = l.anim || {}; return a[dir] = a[dir] || {}; }), m = {};
-    for (const [k, d] of [["type", "none"], ["dur", 400], ["delay", 0]])
+    for (const [k, d] of [["type", "none"], ["dur", 400], ["delay", 0], ["ease", ""]])
       Object.defineProperty(m, k, { get: () => { const v = ds.map(x => x[k] ?? d); return v.every(x => String(x) === String(v[0])) ? v[0] : undefined; },
-        set: v => { if (v === "") return; for (const x of ds) x[k] = v; } });
+        set: v => { if (v === "" && k !== "ease" || v === "__mixed") return; for (const x of ds) x[k] = v; } });   // ("" is Smooth for easing)
     return el("div", { class: "three" }, lab(dir === "in" ? "In" : "Out", bind(m, "type", "select", { options: [["", "(mixed)"], ...ANIMS] })),
-      lab("Length (ms)", bind(m, "dur", "number", { def: "", step: 50 })), lab("Delay (ms)", bind(m, "delay", "number", { def: "", step: 50 }))); };
+      lab("Length (ms)", bind(m, "dur", "number", { def: "", step: 50 })), lab("Delay (ms)", bind(m, "delay", "number", { def: "", step: 50 })),
+      lab("Easing", bind(m, "ease", "select", { options: [["__mixed", "(mixed)"], ...EASE_OPTS], def: "__mixed" }))); };
   out.push(el("section", { class: "sect" }, el("h4", {}, `Animation: all ${ls.length}`), anim("in"), anim("out")));
   const all = many(ls, { opacity: 1 });
   out.push(el("section", { class: "sect" }, el("h4", {}, `All ${ls.length}`), lab("Opacity", bind(all, "opacity", "number", { def: "", step: 0.05, min: 0 }))));

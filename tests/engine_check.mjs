@@ -191,3 +191,11 @@ assert.deepEqual(kf[0], { translate: "1920px 0" });
 await play(el, { x: 1500, w: 300, anim: { out: { type: "fly-right" } } }, "out");
 assert.equal(kf.at(-1).translate, "1920px 0");
 console.log("animation checks OK");
+
+// Easing pick: "sharp" is constant speed; blank keeps the default
+let opts; const el2 = { animate: (k, o) => { opts = o; return { finished: Promise.resolve(), cancel() {} }; } };
+await play(el2, { anim: { in: { type: "fly-right", ease: "sharp" } } }, "in");
+assert.equal(opts.easing, "linear");
+await play(el2, { anim: { in: { type: "fly-right" } } }, "in");
+assert.notEqual(opts.easing, "linear");
+console.log("easing checks OK");

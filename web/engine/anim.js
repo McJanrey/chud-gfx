@@ -40,7 +40,10 @@ const K = {
   "type-on": [{ clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0 0 0)" }],
   "glitch": [{ opacity: 0, translate: "-20px 0" }, { opacity: 1, translate: "14px 0", offset: 0.2 }, { opacity: 0.4, translate: "-10px 0", offset: 0.35 }, { opacity: 1, translate: "6px 0", offset: 0.55 }, { opacity: 0.7, translate: "-3px 0", offset: 0.75 }, { opacity: 1, translate: "0 0" }],
 };
-const STEPPED = { "type-on": "steps(12, end)" };   // (the typewriter reveals in jumps, not smoothly)
+const STEPPED = { "type-on": "steps(12, end)" };
+// The layer's own easing pick (anim.in.ease / anim.out.ease); blank keeps each direction's default.
+export const EASES = { sharp: "linear", in: "cubic-bezier(.55,0,1,.45)", out: "cubic-bezier(0,.55,.45,1)", inout: "cubic-bezier(.65,0,.35,1)",
+  snappy: "cubic-bezier(.16,1,.3,1)", overshoot: "cubic-bezier(.34,1.56,.64,1)" };   // (the typewriter reveals in jumps, not smoothly)
 const EASE_IN = "cubic-bezier(.2,.8,.2,1)", EASE_OUT = "cubic-bezier(.6,0,.8,.2)";
 
 // Plays a layer's "in" or "out"; resolves when it's done.
@@ -52,7 +55,7 @@ export function play(el, layer, dir) {
   const kf = (dir === "out" ? [...frames].reverse().map((f, i, all) => ({ ...f, offset: f.offset != null ? 1 - f.offset : undefined })) : frames)
     .map(f => f.opacity != null ? { ...f, opacity: f.opacity * base } : f);
   const anim = el.animate(kf, { duration: Math.max(0, +a.dur || 400), delay: Math.max(0, +a.delay || 0),
-    easing: STEPPED[a.type] || (dir === "out" ? EASE_OUT : EASE_IN), fill: "both" });
+    easing: STEPPED[a.type] || EASES[a.ease] || (dir === "out" ? EASE_OUT : EASE_IN), fill: "both" });
   // (an In lets go once done: its last frame would otherwise sit on top of the layer's own move, rotation, frame and blur)
   return anim.finished.then(() => { if (dir === "in") anim.cancel(); }, () => {});
 }
