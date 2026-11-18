@@ -440,7 +440,8 @@ const ANIMS = [["none", "None"], ["fade", "Fade"],
   ["slide-left", "Slide in from right (short)"], ["slide-right", "Slide in from left (short)"], ["slide-up", "Slide up (short)"], ["slide-down", "Slide down (short)"], ["blur-slide", "Blur slide"],
   ["wipe-right", "Wipe right"], ["wipe-left", "Wipe left"], ["wipe-down", "Wipe down"], ["wipe-up", "Wipe up"], ["blinds", "Open from the middle"], ["blinds-y", "Open from the middle (up/down)"], ["iris", "Iris (circle)"], ["type-on", "Typewriter"],
   ["grow-x", "Grow across"], ["grow-y", "Grow down"], ["scale", "Scale"], ["zoom-in", "Zoom in"], ["zoom-out", "Zoom out"], ["pop", "Pop"], ["elastic", "Elastic pop"],
-  ["flip-x", "Flip (sideways)"], ["flip-y", "Flip (over)"], ["swing", "Swing down"], ["spin", "Spin in"], ["blur", "Blur"], ["glitch", "Glitch"]];   // ([saved name, what it's called]; Out plays each one backwards)
+  ["flip-x", "Flip (sideways)"], ["flip-y", "Flip (over)"], ["swing", "Swing down"], ["spin", "Spin in"], ["blur", "Blur"], ["glitch", "Glitch"],
+  ["dissolve", "Dissolve"], ["nano", "Nano drones (glowing edge)"], ["parasite", "Parasites (eaten away)"]];   // ([saved name, what it's called]; Out plays each one backwards)
 function bind(l, key, kind = "text", extra = {}) {
   const set = v => { snapshot(); l[key] = v; changed({ keepList: key !== "name" && key !== "field", keepProps: true }); };
   if (kind === "select") return el("select", { onchange: e => set(extra.num && e.target.value !== "" ? +e.target.value : e.target.value) }, ...extra.options.map(o => Array.isArray(o) ? el("option", { value: o[0], selected: String(l[key] ?? extra.def ?? "") === String(o[0]) }, o[1]) : el("option", { value: o, selected: (l[key] ?? extra.def) === o }, o)));

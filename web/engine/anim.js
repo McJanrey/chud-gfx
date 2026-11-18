@@ -46,9 +46,50 @@ export const EASES = { sharp: "linear", in: "cubic-bezier(.55,0,1,.45)", out: "c
   snappy: "cubic-bezier(.16,1,.3,1)", overshoot: "cubic-bezier(.34,1.56,.64,1)" };   // (the typewriter reveals in jumps, not smoothly)
 const EASE_IN = "cubic-bezier(.2,.8,.2,1)", EASE_OUT = "cubic-bezier(.6,0,.8,.2)";
 
+// Dissolves: the layer appears / goes in noise, cut out by an SVG filter whose threshold moves with the animation.
+// freq: the noise grain; edge: a glowing band at the front (nano drones building or eating it), none for a plain dissolve.
+const DISSOLVE = { dissolve: { freq: 0.035, oct: 2, edge: "", band: 0 }, nano: { freq: 0.07, oct: 2, edge: "#7df9ff", band: 0.025 }, parasite: { freq: 0.006, oct: 4, edge: "#b6ff2e", band: 0.06 } };
+let fx = 0;
+function dissolve(el, kind, dir, timing, base) {
+  const d = DISSOLVE[kind], id = "sg-dz" + (++fx), NS = "http://www.w3.org/2000/svg", S = 40;
+  const svg = document.createElementNS(NS, "svg");
+  svg.setAttribute("width", "0"); svg.setAttribute("height", "0");
+  svg.style.position = "absolute";
+  svg.innerHTML = `<filter id="${id}" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB">
+    <feTurbulence type="fractalNoise" baseFrequency="${d.freq}" numOctaves="${d.oct}" seed="${1 + Math.floor(Math.random() * 999)}" result="n"/>
+    <feComponentTransfer in="n" result="keep"><feFuncA type="linear" slope="${S}" intercept="${-S}"/></feComponentTransfer>
+    <feComponentTransfer in="n" result="front"><feFuncA type="linear" slope="${S}" intercept="${-S}"/></feComponentTransfer>
+    <feComposite in="SourceGraphic" in2="keep" operator="in" result="shown"/>
+    ${d.edge ? `<feComposite in="front" in2="keep" operator="out" result="band"/><feComposite in="SourceGraphic" in2="band" operator="in" result="bandOn"/>
+    <feFlood flood-color="${d.edge}"/><feComposite in2="bandOn" operator="in" result="glow"/><feGaussianBlur in="glow" stdDeviation="1.5" result="soft"/>
+    <feMerge><feMergeNode in="shown"/><feMergeNode in="soft"/><feMergeNode in="glow"/></feMerge>` : ""}
+  </filter>`;
+  document.body.appendChild(svg);
+  const [keep, front] = svg.querySelectorAll("feFuncA");
+  // (a stand-in Web Animation carries the timing: a TAKE that finishes animations finishes this one too)
+  const clock = el.animate([{ opacity: base }, { opacity: base }], timing);
+  const set = p => {   // p 0 -> nothing shown, 1 -> all shown
+    keep.setAttribute("intercept", String(-S * (1 - p * 1.15)));
+    front.setAttribute("intercept", String(-S * (1 - Math.min(1, p * 1.15 + d.band))));
+  };
+  el.style.filter = `url(#${id})`;
+  const progress = () => { const t = clock.effect.getComputedTiming(); return t.progress == null ? (t.activeDuration && clock.currentTime >= timing.delay ? 1 : 0) : t.progress; };
+  const tick = () => { if (!svg.isConnected) return; const p = progress(); set(dir === "in" ? p : 1 - p); if (clock.playState === "running" || clock.playState === "pending") requestAnimationFrame(tick); };
+  set(dir === "in" ? 0 : 1);
+  requestAnimationFrame(tick);
+  return clock.finished.then(() => {
+    set(dir === "in" ? 1 : 0);
+    if (dir === "in") { el.style.filter = ""; svg.remove(); clock.cancel(); }   // (shown whole: the layer's own look back)
+  }, () => { el.style.filter = ""; svg.remove(); });
+}
+
 // Plays a layer's "in" or "out"; resolves when it's done.
 export function play(el, layer, dir) {
   const a = ((layer.anim || {})[dir]) || {};
+  if (DISSOLVE[a.type]) {
+    const base = layer.opacity != null && layer.opacity !== "" ? +layer.opacity : 1;
+    return dissolve(el, a.type, dir, { duration: Math.max(0, +a.dur || 400), delay: Math.max(0, +a.delay || 0), easing: EASES[a.ease] || "linear", fill: "both" }, base);
+  }
   const k = K[a.type] || (dir === "in" || dir === "out" ? K.none : K.fade), frames = typeof k === "function" ? k(layer) : k;
   if (!a.type || a.type === "none") return Promise.resolve();
   const base = layer.opacity != null && layer.opacity !== "" ? +layer.opacity : 1;   // (a fade ends at the layer's own opacity, not 100%)
