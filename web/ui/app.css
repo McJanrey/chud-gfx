@@ -389,3 +389,9 @@ button.danger { background: var(--red); color: #fff; box-shadow: none; font-weig
 .upd-bar[hidden] { display: none; }
 
 .chip-field { display: grid; gap: 6px; }
+
+/* Composer snap lines: what the dragged layer lines up with */
+.cmp-snaps { position: absolute; inset: 0; pointer-events: none; z-index: 6; }
+.cmp-snap { position: absolute; background: #ff3ea5; }
+.cmp-snap.x { width: 1px; }
+.cmp-snap.y { height: 1px; }

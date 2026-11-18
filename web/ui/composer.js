@@ -214,15 +214,32 @@ function layerAt(x, y) {
   return best;
 }
 const toStage = e => { const r = sheet.getBoundingClientRect(); return [(e.clientX - r.left) / scale, (e.clientY - r.top) / scale]; };
-// Snapping: edges and centres of the canvas and the other layers, within 8 px.
+// Snapping: edges and centres of the canvas and the other layers (a square's or circle's middle too) and the
+// ruler guides, within 8 screen px; the lines it snapped to show while dragging (pink), so you see what lines up.
+function snapTargets() {
+  const others = comp.layers.filter(l => !sel.has(l.id) && l.visible !== false), guides = comp.guides || [];
+  return { xs: [0, W / 2, W, ...others.flatMap(o => [o.x, o.x + o.w / 2, o.x + o.w]), ...guides.filter(g => g.axis === "x").map(g => g.at)],
+    ys: [0, H / 2, H, ...others.flatMap(o => [o.y, o.y + o.h / 2, o.y + o.h]), ...guides.filter(g => g.axis === "y").map(g => g.at)] };
+}
+function nearest(edges, targets) {   // -> [shift, the line it snapped to] or [0, null]
+  let d = null, at = null;
+  for (const e of edges) for (const t of targets) if (Math.abs(t - e) <= 8 / scale && (d === null || Math.abs(t - e) < Math.abs(d))) { d = t - e; at = t; }
+  return d === null ? [0, null] : [d, at];
+}
 function snap(ls, dx, dy) {
-  const others = comp.layers.filter(l => !sel.has(l.id) && l.visible !== false);
-  const guides = comp.guides || [];
-  const xs = [0, W / 2, W, ...others.flatMap(o => [o.x, o.x + o.w / 2, o.x + o.w]), ...guides.filter(g => g.axis === "x").map(g => g.at)];
-  const ys = [0, H / 2, H, ...others.flatMap(o => [o.y, o.y + o.h / 2, o.y + o.h]), ...guides.filter(g => g.axis === "y").map(g => g.at)];
+  const { xs, ys } = snapTargets();
   const x0 = Math.min(...ls.map(l => l.x)) + dx, x1 = Math.max(...ls.map(l => l.x + l.w)) + dx, y0 = Math.min(...ls.map(l => l.y)) + dy, y1 = Math.max(...ls.map(l => l.y + l.h)) + dy;
-  const best = (edges, targets) => { let d = null; for (const e of edges) for (const t of targets) if (Math.abs(t - e) <= 8 / scale * 0.5 && (d === null || Math.abs(t - e) < Math.abs(d))) d = t - e; return d || 0; };
-  return [dx + best([x0, (x0 + x1) / 2, x1], xs), dy + best([y0, (y0 + y1) / 2, y1], ys)];
+  const [sx, lx] = nearest([x0, (x0 + x1) / 2, x1], xs), [sy, ly] = nearest([y0, (y0 + y1) / 2, y1], ys);
+  showSnap(lx, ly);
+  return [dx + sx, dy + sy];
+}
+const snapLines = el("div", { class: "cmp-snaps" });
+view.appendChild(snapLines);
+function showSnap(x, y) {
+  if (x == null && y == null) return snapLines.replaceChildren();
+  const r = sheet.getBoundingClientRect(), v = view.getBoundingClientRect(), ox = r.left - v.left + view.scrollLeft, oy = r.top - v.top + view.scrollTop;
+  snapLines.replaceChildren(...(x != null ? [el("div", { class: "cmp-snap x", style: `left:${ox + x * scale}px;top:${oy}px;height:${H * scale}px` })] : []),
+    ...(y != null ? [el("div", { class: "cmp-snap y", style: `top:${oy + y * scale}px;left:${ox}px;width:${W * scale}px` })] : []));
 }
 let pen = null;   // [[x, y], ...] while drawing with the pen
 const penLayer = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -275,6 +292,14 @@ view.addEventListener("mousedown", e => {
       if (h.includes("w")) { s0.l.x = s0.x + Math.min(dx, s0.w - 4); s0.l.w = s0.w - Math.min(dx, s0.w - 4); }
       if (h.includes("n")) { s0.l.y = s0.y + Math.min(dy, s0.h - 4); s0.l.h = s0.h - Math.min(dy, s0.h - 4); }
       if (ev.shiftKey && s0.w && s0.h) s0.l.h = Math.round(s0.l.w * s0.h / s0.w);   // (Shift keeps the shape)
+      if (!ev.altKey) {   // (the edge being pulled snaps too, with its line)
+        const { xs, ys } = snapTargets(), L = s0.l;
+        const [ex, lx] = h.includes("e") ? nearest([L.x + L.w], xs) : h.includes("w") ? nearest([L.x], xs) : [0, null];
+        const [ey, ly] = h.includes("s") ? nearest([L.y + L.h], ys) : h.includes("n") ? nearest([L.y], ys) : [0, null];
+        if (h.includes("e")) L.w += ex; else if (h.includes("w")) { L.x += ex; L.w -= ex; }
+        if (h.includes("s")) L.h += ey; else if (h.includes("n")) { L.y += ey; L.h -= ey; }
+        showSnap(lx, ly);
+      }
     } else {
       if (!ev.altKey) [dx, dy] = snap(start.map(s => ({ ...s.l, x: s.x, y: s.y })), dx, dy);
       for (const s of start) { s.l.x = s.x + dx; s.l.y = s.y + dy; }
@@ -289,7 +314,7 @@ view.addEventListener("mousedown", e => {
     drawSelection();
     renderPropsNumbers();
   };
-  const up = () => { removeEventListener("mousemove", move); removeEventListener("mouseup", up); dragging = false; if (moved) changed({ keepList: true }); };
+  const up = () => { removeEventListener("mousemove", move); removeEventListener("mouseup", up); dragging = false; showSnap(); if (moved) changed({ keepList: true }); };
   addEventListener("mousemove", move); addEventListener("mouseup", up);
 });
 addEventListener("keydown", e => {
