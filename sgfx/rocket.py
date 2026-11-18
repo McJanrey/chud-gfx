@@ -16,6 +16,8 @@ import os
 import socket
 import threading
 import time
+import uuid
+from concurrent.futures import ThreadPoolExecutor
 
 log = logging.getLogger("sgfx.rocket")
 PORT = 49123
@@ -123,6 +125,7 @@ class Rocket:
         self.status, self.detail, self.at = "off", "", 0
         self._games, self._folder = [], None
         self._sock = None
+        self._obs_lock, self._obs_ip, self._obs_at, self._obs_buf, self._obs_dec = threading.Lock(), None, 0, "", json.JSONDecoder()
 
     # --- settings (per workspace, in the project) ---
     def cfg(self):
@@ -134,8 +137,14 @@ class Rocket:
         for k in ("on", "series"):
             if k in body:
                 c[k] = bool(body[k])
+        if "host" in body:   # (blank: find the game on this PC or the local network by itself)
+            c["host"] = str(body.get("host") or "").strip()[:100]
+            self._found = None
         if "port" in body:
-            c["port"] = max(1, min(65535, int(body.get("port") or PORT)))
+            port = max(1, min(65535, int(body.get("port") or PORT)))
+            if port == getattr(self.engine, "port", None) and not c.get("host"):
+                raise ValueError(f"{port} is this app's own port. Rocket League's Stats API uses {PORT}.")
+            c["port"] = port
         self.engine.project["rl"] = c
         self.engine.save_project()
         self._drop()   # (reconnect with the new settings)
@@ -212,7 +221,7 @@ class Rocket:
 
     def public(self):
         c = self.cfg()
-        return {"on": c.get("on", True), "port": c.get("port", PORT), "series": c.get("series", True), "status": self.status, "detail": self.detail,
+        return {"on": c.get("on", True), "port": c.get("port", PORT), "host": c.get("host", ""), "found": getattr(self, "_found", None) or "", "series": c.get("series", True), "status": self.status, "detail": self.detail,
                 "games": [{"n": i + 1, "winner": g.get("winner"), "score": [g["fields"].get("Blue score"), g["fields"].get("Orange score")], "why": g.get("why", "")} for i, g in enumerate(self.games())]}
 
     # --- one message from the game ---
@@ -224,6 +233,9 @@ class Rocket:
             except ValueError:
                 d = {}
         d = d if isinstance(d, dict) else {}
+        if ev and self.status != "on":   # (only real game messages count as reading)
+            self._set("on", f"Reading Rocket League from {getattr(self, '_port', PORT)}")
+            self.add_hud()
         m = self.match
         guid = d.get("MatchGuid") or ""
         if ev == "MatchCreated" or (ev == "MatchInitialized" and (m.saved or (guid and guid != m.guid))):
@@ -259,6 +271,18 @@ class Rocket:
             except OSError:
                 pass
 
+    def add_hud(self):
+        """The ready-made graphics, added once each to the workspace (one deleted stays gone)."""
+        done = self.engine.project.setdefault("hud_pages", [])
+        new = [x for x in hud_comps() if x[0] not in done]
+        for key, name, kind, layers in new:
+            done.append(key)
+            self.engine.comps().append({"id": "c" + uuid.uuid4().hex[:8], "name": name, "hud_page": key, "group": "Game HUD",
+                                        "kind": kind, "layer": 0, "layers": layers, "slots": {}})
+        if new:
+            self.engine.save_project()
+            self.engine.changed()
+
     def _set(self, status, detail=""):
         if (status, detail) != (self.status, self.detail):
             self.status, self.detail = status, detail
@@ -267,27 +291,79 @@ class Rocket:
     def run(self):
         while True:
             c = self.cfg()
+            if self.observer_live():   # (the observer client is sending: it owns the status)
+                time.sleep(2)
+                continue
             if not c.get("on", True):
                 self._set("off")
                 time.sleep(2)
                 continue
-            port = c.get("port", PORT)
-            try:
-                s = socket.create_connection(("127.0.0.1", port), timeout=2)
-            except OSError:
-                self._set("waiting", f"Waiting for Rocket League on port {port}")
+            port, host = c.get("port", PORT), c.get("host", "")
+            if port == getattr(self.engine, "port", None) and host in ("", "127.0.0.1", "localhost"):   # (it would read this app itself)
+                self._set("waiting", f"Port {port} is this app's own port. Set the port to {PORT}, the game's Stats API port")
+                time.sleep(3)
+                continue
+            s = self._connect(host, port)
+            if self.observer_live():   # (the observer client started sending during the search)
+                if s:
+                    s.close()
+                continue
+            if not s:
+                where = host or "this PC or the network"
+                self._set("waiting", f"Looking for Rocket League on {where} (port {port})")
                 time.sleep(3)
                 continue
             self._sock = s
             s.settimeout(5)
-            self._set("on", f"Reading Rocket League on port {port}")
+            self._port = f"{s.getpeername()[0]}:{port}"
+            self._set("waiting", f"Connected to {self._port}. Waiting for game data: start or spectate a match")
             try:
                 self.read(s)
             except Exception as e:   # (the game closed, or a bad message: start over)
                 log.info("rocket league socket: %s", e)
             self._drop()
-            self._set("waiting", f"Waiting for Rocket League on port {port}")
+            if not self.observer_live():
+                self._set("waiting", f"Waiting for Rocket League on port {port}")
             time.sleep(1)
+
+    def feed_raw(self, data, ip):
+        """Bytes of the game's stream from the observer client on the game PC (it reads the game there and posts here)."""
+        if not self.cfg().get("on", True):
+            return
+        with self._obs_lock:
+            if ip != self._obs_ip or time.time() - self._obs_at > 30:
+                self._obs_dec, self._obs_buf = json.JSONDecoder(), ""
+            self._obs_ip, self._obs_at, self._port = ip, time.time(), f"the observer client on {ip}"
+            if data:
+                self._obs_buf = self.feed(self._obs_dec, self._obs_buf + data.decode("utf-8", "replace"))
+                if len(self._obs_buf) > 4 << 20:
+                    self._obs_buf = ""
+            elif self.status != "on":
+                self._set("waiting", f"Observer client on {ip} is running. Waiting for game data: start or spectate a match")
+
+    def observer_live(self):
+        return time.time() - self._obs_at < 10
+
+    def _connect(self, host, port):
+        """A socket to the game: the set Game PC, else this PC, the last place it was found, then a sweep of
+        the local network (every 20 s at most) for a PC with the Stats API port open."""
+        tries = [host] if host else ["127.0.0.1"] + ([self._found] if getattr(self, "_found", None) else [])
+        for h in tries:
+            try:
+                return socket.create_connection((h, port), timeout=2)
+            except OSError:
+                pass
+        if host or time.time() - getattr(self, "_swept", 0) < 20:
+            return None
+        self._swept = time.time()
+        hit = sweep(self.engine.addresses(), port)
+        if hit:
+            self._found = hit
+            try:
+                return socket.create_connection((hit, port), timeout=2)
+            except OSError:
+                pass
+        return None
 
     def read(self, s):
         dec, buf = json.JSONDecoder(), ""
@@ -319,6 +395,120 @@ class Rocket:
                     self.handle(msg)
                 except Exception:
                     log.exception("rocket league message")
+
+
+OBSERVER = r"""@echo off
+title RL Observer for StandBy GFX
+powershell -NoProfile -ExecutionPolicy Bypass -Command "iex (((Get-Content -LiteralPath '%~f0' -Raw) -split '#PS#')[2])"
+pause
+exit /b
+#PS#
+$gfx = '__GFX__'
+$port = __PORT__
+Write-Host "RL Observer: reads Rocket League on this PC and sends it to StandBy GFX at $gfx"
+Write-Host 'Keep this window open during the show. Close it to stop.'
+$enc = [Text.Encoding]::UTF8
+while ($true) {
+  try {
+    $c = New-Object Net.Sockets.TcpClient('127.0.0.1', $port)
+  } catch {
+    Write-Host "Waiting for Rocket League (port $port). Is PacketSendRate set in TAStatsAPI.ini, and the game restarted?"
+    try { Invoke-WebRequest -UseBasicParsing -Method Post -Uri "$gfx/api/rl/feed" -Body ([byte[]]@()) | Out-Null } catch { Write-Host "Can't reach StandBy GFX at $gfx (is it shared on the network?)" }
+    Start-Sleep 3; continue
+  }
+  Write-Host 'Connected to Rocket League. Sending...'
+  $s = $c.GetStream(); $s.ReadTimeout = 3000
+  $buf = New-Object byte[] 262144; $dec = $enc.GetDecoder(); $chars = New-Object char[] 262144
+  while ($true) {
+    try { $n = $s.Read($buf, 0, $buf.Length) } catch { $n = -1 }
+    if ($n -eq 0) { break }
+    $body = [byte[]]@()
+    if ($n -gt 0) { $k = $dec.GetChars($buf, 0, $n, $chars, 0); $body = $enc.GetBytes($chars, 0, $k) }
+    try { Invoke-WebRequest -UseBasicParsing -Method Post -Uri "$gfx/api/rl/feed" -Body $body -ContentType 'text/plain' | Out-Null }
+    catch { Write-Host "Can't reach StandBy GFX at $gfx" ; Start-Sleep 1 }
+  }
+  $c.Close(); Write-Host 'Rocket League closed the connection. Retrying...'; Start-Sleep 2
+}
+"""
+
+
+def observer_script(gfx, port=PORT):
+    """The RL Observer client: a .cmd for the game PC (Windows, nothing to install)."""
+    return OBSERVER.replace("__GFX__", gfx).replace("__PORT__", str(port)).replace(chr(10), chr(13) + chr(10))
+
+
+def sweep(own, port, timeout=0.4):
+    """The first other PC on this PC's local networks (the /24 around each address) with the port open."""
+    hosts = []
+    for ip in own:
+        a = ip.split(".")
+        if len(a) == 4 and not ip.startswith("169.254."):
+            hosts += [f"{a[0]}.{a[1]}.{a[2]}.{i}" for i in range(1, 255) if str(i) != a[3]]
+
+    def probe(h):
+        try:
+            socket.create_connection((h, port), timeout=timeout).close()
+            return h
+        except OSError:
+            return None
+    with ThreadPoolExecutor(64) as ex:
+        return next((h for h in ex.map(probe, hosts) if h), None)
+
+
+def _layer(kind, name, x, y, w, h, **kw):
+    l = {"id": "l" + uuid.uuid4().hex[:8], "name": name, "type": kind, "x": x, "y": y, "w": w, "h": h, "opacity": 1, "rotation": 0,
+         "visible": True, "blend": "normal", "field": "", "anim": {"in": {"dur": 0, "delay": 0, "type": "fade"}, "out": {"dur": 0, "delay": 0, "type": "fade"}}}
+    if kind == "rect":
+        l.update({"fill": "#000000", "radius": 0, "stroke": "#000000", "strokeWidth": 0})
+    else:
+        l.update({"text": "", "font": "Anton", "size": 40, "color": "#ffffff", "align": "center", "valign": "middle", "tracking": 0, "caps": True,
+                  "lineHeight": 1.15, "fit": "shrink", "weight": 700, "italic": False, "scroll": 0})
+    l.update(kw)
+    return l
+
+
+BLUE, ORANGE, DARK = "#1e5bd8", "#e8661c", "#0d1117"
+
+
+def hud_comps():
+    """The ready-made Rocket League graphics: a live scorebug and a final score board from the last finished game."""
+    t = "Rocket League"
+    bug = [
+        _layer("rect", "Blue bar", 540, 24, 290, 64, fill=BLUE, radius=6),
+        _layer("text", "Blue name", 556, 24, 258, 64, text=f"{{{{{t}!Blue name}}}}", size=36, align="left"),
+        _layer("rect", "Blue score box", 830, 24, 70, 64, fill="#123a8c"),
+        _layer("text", "Blue score", 830, 24, 70, 64, text=f"{{{{{t}!Blue score}}}}", size=46),
+        _layer("rect", "Clock box", 900, 24, 120, 64, fill=DARK),
+        _layer("text", "Clock", 900, 24, 120, 64, text=f"{{{{{t}!Clock}}}}", size=38),
+        _layer("rect", "Orange score box", 1020, 24, 70, 64, fill="#9c3f0c"),
+        _layer("text", "Orange score", 1020, 24, 70, 64, text=f"{{{{{t}!Orange score}}}}", size=46),
+        _layer("rect", "Orange bar", 1090, 24, 290, 64, fill=ORANGE, radius=6),
+        _layer("text", "Orange name", 1106, 24, 258, 64, text=f"{{{{{t}!Orange name}}}}", size=36, align="right"),
+        _layer("rect", "Watching box", 40, 960, 420, 80, fill=DARK, opacity=0.85, radius=6),
+        _layer("text", "Watching", 56, 960, 280, 80, text=f"{{{{{t}!Watching}}}}", size=34, align="left"),
+        _layer("text", "Boost", 336, 960, 110, 80, text=f"{{{{{t}!Watching boost}}}}", size=46, color="#f5c518", align="right"),
+    ]
+    g = "RL Last game"
+    board = [
+        _layer("rect", "Backdrop", 0, 0, 1920, 1080, fill=DARK, opacity=0.92),
+        _layer("text", "Title", 360, 90, 1200, 80, text="Final score", size=56, color="#9aa4b2"),
+        _layer("rect", "Blue bar", 360, 190, 520, 120, fill=BLUE, radius=8),
+        _layer("text", "Blue name", 380, 190, 360, 120, text=f"{{{{{g}!Blue name}}}}", size=52, align="left"),
+        _layer("text", "Blue score", 740, 190, 130, 120, text=f"{{{{{g}!Blue score}}}}", size=90),
+        _layer("rect", "Orange bar", 1040, 190, 520, 120, fill=ORANGE, radius=8),
+        _layer("text", "Orange score", 1050, 190, 130, 120, text=f"{{{{{g}!Orange score}}}}", size=90),
+        _layer("text", "Orange name", 1180, 190, 360, 120, text=f"{{{{{g}!Orange name}}}}", size=52, align="right"),
+    ]
+    for side, x0 in (("Blue", 360), ("Orange", 1040)):
+        board.append(_layer("text", f"{side} header", x0, 340, 250, 40, text="Player", size=24, color="#9aa4b2", align="left", font="Inter"))
+        for j, h in enumerate(("G", "A", "SV", "SH")):
+            board.append(_layer("text", f"{side} header {h}", x0 + 250 + j * 66, 340, 60, 40, text=h, size=24, color="#9aa4b2", font="Inter"))
+        for i in range(1, SLOTS + 1):
+            y = 390 + (i - 1) * 70
+            board.append(_layer("text", f"{side} {i} name", x0, y, 250, 60, text=f"{{{{{g}!{side} {i} name}}}}", size=30, align="left", caps=False))
+            for j, s in enumerate(("goals", "assists", "saves", "shots")):
+                board.append(_layer("text", f"{side} {i} {s}", x0 + 250 + j * 66, y, 60, 60, text=f"{{{{{g}!{side} {i} {s}}}}}", size=30))
+    return [("rl:scorebug", "RL Scorebug", "overlay", bug), ("rl:final", "RL Final score", "board", board)]
 
 
 def start(engine):

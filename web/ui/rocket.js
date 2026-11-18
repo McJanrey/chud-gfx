@@ -8,13 +8,18 @@ const SIDE = ["Blue", "Orange"];
 export function rlCard() {
   const r = App.state.rl || { on: true, port: 49123, series: true, status: "off", games: [] };
   const port = el("input", { type: "number", value: r.port || 49123, "aria-label": "Port", onchange: e => api("/api/rl", { port: +e.target.value || 49123 }) });
+  const host = el("input", { type: "text", value: r.host || "", placeholder: r.found || "Find it by itself", "aria-label": "Game PC address",
+    onchange: e => api("/api/rl", { host: e.target.value.trim() }) });
   return el("div", { class: "card", id: "rl-card" },
     el("div", { class: "row" }, el("h3", {}, "Rocket League"),
       el("label", { class: "switch" }, el("input", { type: "checkbox", checked: r.on !== false, onchange: e => api("/api/rl", { on: e.target.checked }) }), r.on !== false ? "On" : "Off"),
       el("span", { class: "pill" + (r.status === "on" ? " ok" : "") }, STATE[r.status] || r.status)),
     el("p", { class: "obs-status " + (r.status === "on" ? "on" : "off") }, r.detail || "Off: turn it on to read the game"),
-    el("p", { class: "muted small" }, "In the game's folder, open TAGame\\Config\\TAStatsAPI.ini (or DefaultStatsAPI.ini) and under [TAGame.MatchStatsExporter_TA] set PacketSendRate=30 and Port=49123. Save, then start Rocket League. Pick fields from the \"Rocket League\" table in Composer."),
+    el("p", { class: "muted small" }, "In the game's folder, open TAGame\\Config\\TAStatsAPI.ini (or DefaultStatsAPI.ini) and under [TAGame.MatchStatsExporter_TA] set PacketSendRate=30 and Port=49123. Save, then start Rocket League. The game can run on this PC or another PC on the same network: leave Game PC blank to find it, or type that PC's address. Pick fields from the \"Rocket League\" table in Composer."),
+    el("p", { class: "muted small" }, "Game on another PC? Open this app's address on that PC (Outputs › From other PCs, without /output), download the observer client below there, and double-click it. It reads the game on that PC and sends it here; keep its window open."),
+    el("div", { class: "row" }, el("a", { class: "button small", href: "/rl-observer.cmd", download: "RL Observer.cmd" }, "Download observer client")),
     el("div", { class: "three" },
+      el("label", { class: "f" }, el("span", {}, "Game PC"), host),
       el("label", { class: "f" }, el("span", {}, "Port"), port),
       el("label", { class: "f" }, el("span", {}, "Series score"),
         el("label", { class: "switch" }, el("input", { type: "checkbox", checked: r.series !== false, onchange: e => api("/api/rl", { series: e.target.checked }) }), "A win adds 1 (Blue = left, Orange = right)"))),

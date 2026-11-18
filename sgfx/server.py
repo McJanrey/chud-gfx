@@ -1348,6 +1348,17 @@ def handler(engine):
                 with engine.lock:
                     g = json.dumps(hudlink.global_for_hud(engine, self._base()))
                 return self._send(200, g)
+            if path == "/rl-observer.cmd":   # (download on the game PC: it forwards the game's stats to this engine)
+                host = (self.headers.get("Host") or "").split(":")[0]
+                if host in ("", "127.0.0.1", "localhost"):
+                    host = next(iter(engine.addresses()), "127.0.0.1")
+                data = rocket.observer_script(f"http://{host}:{engine.port}").encode("utf-8")
+                self.send_response(200)
+                self.send_header("Content-Type", "application/octet-stream")
+                self.send_header("Content-Disposition", 'attachment; filename="RL Observer.cmd"')
+                self.send_header("Content-Length", str(len(data)))
+                self.end_headers()
+                return self.wfile.write(data)
             if path == "/api/teams.csv":
                 data = tables.teams_csv(engine.teams()).encode("utf-8-sig")
                 self.send_response(200)
@@ -1415,6 +1426,12 @@ def handler(engine):
                     name = unquote((q.get("name") or [""])[0])
                     data = self.rfile.read(length)
                     return self._upload(q, name, data)
+                if urlparse(self.path).path == "/api/rl/feed":   # (the RL observer client on the game PC: the game's raw stream)
+                    length = int(self.headers.get("Content-Length") or 0)
+                    if length > 4 << 20:
+                        raise ValueError("Too much at once")
+                    engine.rl.feed_raw(self.rfile.read(length), self.client_address[0])
+                    return self._send(200, b'{"ok": true}')
                 body = json.loads(self.rfile.read(int(self.headers.get("Content-Length") or 0)) or b"{}")
                 path = urlparse(self.path).path
                 if path == "/api/ingest":   # (a game HUD's send)

@@ -108,3 +108,58 @@ class RocketLeague(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class RocketLeagueHonest(unittest.TestCase):
+    """Connected is not reading: only real game messages say Reading, the app's own port is refused, and the
+    ready-made scorebug + final score graphics arrive once with the first real data."""
+    def setUp(self):
+        d = Path(tempfile.mkdtemp())
+        self.engine, self.srv = make_server(str(pick_workspace_in(d)), str(d / "library"), 0)
+        threading.Thread(target=self.srv.serve_forever, daemon=True).start()
+
+    def tearDown(self):
+        self.srv.shutdown()
+
+    def rl(self):
+        return call(self.engine.port, "/api/state")[1]["rl"]
+
+    def wait(self, check):
+        for _ in range(200):   # (a network search for the game may run first: up to a few seconds)
+            r = self.rl()
+            if check(r):
+                return r
+            time.sleep(0.1)
+        self.fail("timed out: " + json.dumps(self.rl()))
+
+    def test_own_port_refused(self):
+        code, body = call(self.engine.port, "/api/rl", {"port": self.engine.port})
+        self.assertEqual(code, 400)
+        self.assertIn("49123", json.dumps(body))
+        self.engine.project["rl"] = {"port": self.engine.port}   # (an older setting already saved with it)
+        r = self.wait(lambda r: "own port" in (r.get("detail") or ""))
+        self.assertNotEqual(r["status"], "on")
+
+    def test_reading_only_on_game_data_and_hud_added_once(self):
+        game = socket.socket(); game.bind(("127.0.0.1", 0)); game.listen(1); game.settimeout(10)
+        call(self.engine.port, "/api/rl", {"port": game.getsockname()[1]})
+        conn, _ = game.accept()
+        try:
+            r = self.wait(lambda r: "Connected" in (r.get("detail") or ""))
+            self.assertEqual(r["status"], "waiting")
+            names = lambda: [c["name"] for c in self.engine.comps()]
+            self.assertNotIn("RL Scorebug", names())
+            conn.sendall(json.dumps(state([p("Ann", 0, 1)], 1, 0, 30)).encode())
+            self.wait(lambda r: r["status"] == "on")
+            for _ in range(30):
+                if "RL Final score" in names():
+                    break
+                time.sleep(0.1)
+            self.assertEqual(names().count("RL Scorebug"), 1)
+            self.assertEqual(names().count("RL Final score"), 1)
+            # a deleted one stays gone
+            self.engine.comps()[:] = [c for c in self.engine.comps() if c["name"] != "RL Scorebug"]
+            self.engine.rl.add_hud()
+            self.assertNotIn("RL Scorebug", names())
+        finally:
+            conn.close(); game.close()
