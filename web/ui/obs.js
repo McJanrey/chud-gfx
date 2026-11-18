@@ -10,7 +10,9 @@ export function obsCard() {
   const saveRules = () => api("/api/obs", { rules });
   const host = el("input", { value: o.host || "127.0.0.1", "aria-label": "OBS PC" });
   const port = el("input", { type: "number", value: o.port || 4455, "aria-label": "Port" });
-  const pw = el("input", { type: "password", autocomplete: "off", placeholder: o.has_password ? "Saved ✓ (type to change)" : "From OBS: Show Connect Info", "aria-label": "Password" });
+  // (saved the moment you leave the box: clicking "Save and connect" redrew the card mid-click, so the password never got sent)
+  const pw = el("input", { type: "password", autocomplete: "off", placeholder: o.has_password ? "Saved ✓ (type to change)" : "From OBS: Show Connect Info", "aria-label": "Password",
+    onchange: e => { if (e.target.value) api("/api/obs", { password: e.target.value, on: true }).then(() => toast("Password saved: connecting to OBS…")); } });
   return el("div", { class: "card", id: "obs-card" }, el("div", { class: "row" }, el("h3", {}, "OBS Studio"),
       el("label", { class: "switch" }, el("input", { type: "checkbox", checked: !!o.on, onchange: e => api("/api/obs", { on: e.target.checked }) }), o.on ? "On" : "Off"),
       el("span", { class: "pill" + (st.state === "on" ? " ok" : st.state === "error" ? " warn" : "") }, STATE[st.state] || st.state || "Off")),
@@ -47,9 +49,11 @@ function bar() {
     el("span", { class: "pill" + (st.live ? " live" : "") }, st.live ? "● LIVE" : "Not live"),
     el("span", { class: "pill" + (st.rec ? " live" : "") }, st.rec ? "● REC" : "Not recording"));
 }
+let obsSig = "";
 App.on((st, msg) => {
   if (!msg || msg.obs) {
     bar();
-    if (App.page === "outputs") { const c = $("#obs-card"), f = typingIn(c); if (c && !f) c.replaceWith(obsCard()); }
+    const sig = JSON.stringify([st.obs, (st.project || {}).compositions && st.project.compositions.map(c => [c.id, c.name])]);
+    if (App.page === "outputs" && sig !== obsSig) { const c = $("#obs-card"), f = typingIn(c); if (c && !f) { obsSig = sig; c.replaceWith(obsCard()); } }   // (only when something changed)
   }
 });
