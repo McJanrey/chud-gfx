@@ -241,6 +241,33 @@ function showSnap(x, y) {
   snapLines.replaceChildren(...(x != null ? [el("div", { class: "cmp-snap x", style: `left:${ox + x * scale}px;top:${oy}px;height:${H * scale}px` })] : []),
     ...(y != null ? [el("div", { class: "cmp-snap y", style: `top:${oy + y * scale}px;left:${ox}px;width:${W * scale}px` })] : []));
 }
+// Drag on empty canvas: a box picks every layer it touches (Shift adds to what's picked).
+const band = el("div", { class: "cmp-band", hidden: true });
+view.appendChild(band);
+function marquee(e, sx, sy, under) {
+  const keep = e.shiftKey || e.ctrlKey ? new Set(sel) : new Set();
+  let rect = null;
+  const move = ev => {
+    const [mx, my] = toStage(ev);
+    rect = { x0: Math.min(sx, mx), y0: Math.min(sy, my), x1: Math.max(sx, mx), y1: Math.max(sy, my) };
+    const r = sheet.getBoundingClientRect(), v = view.getBoundingClientRect();
+    band.hidden = false;
+    Object.assign(band.style, { left: r.left - v.left + rect.x0 * scale + "px", top: r.top - v.top + rect.y0 * scale + "px", width: (rect.x1 - rect.x0) * scale + "px", height: (rect.y1 - rect.y0) * scale + "px" });
+  };
+  const up = () => {
+    removeEventListener("mousemove", move); removeEventListener("mouseup", up);
+    band.hidden = true;
+    if (!rect || rect.x1 - rect.x0 < 3 / scale && rect.y1 - rect.y0 < 3 / scale) return pick(under ? under.id : null, e.shiftKey || e.ctrlKey);   // (a click, not a drag: what's under it, or nothing)
+    sel = keep;
+    for (const l of comp.layers) {
+      if (l.visible === false || l.locked) continue;
+      const b = shown(l);
+      if (b.x < rect.x1 && b.x + b.w > rect.x0 && b.y < rect.y1 && b.y + b.h > rect.y0) sel.add(l.id);
+    }
+    renderLayers(); drawSelection(); renderProps();
+  };
+  addEventListener("mousemove", move); addEventListener("mouseup", up);
+}
 let pen = null;   // [[x, y], ...] while drawing with the pen
 const penLayer = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 penLayer.classList.add("cmp-pen");
@@ -275,7 +302,8 @@ view.addEventListener("mousedown", e => {
   const [sx, sy] = toStage(e);
   if (!handle) {
     const hit = layerAt(sx, sy);
-    if (!hit) { pick(null); return; }
+    const b = hit && shown(hit);   // (a background filling the whole page counts as empty: on a board everything sits on one)
+    if (!hit || (!sel.has(hit.id) && b.x <= 0 && b.y <= 0 && b.x + b.w >= W && b.y + b.h >= H)) return marquee(e, sx, sy, hit);
     if (!sel.has(hit.id)) pick(hit.id, e.shiftKey || e.ctrlKey);
   }
   const ls = picked(), start = ls.map(l => ({ l, x: l.x, y: l.y, w: l.w, h: l.h }));
@@ -408,10 +436,13 @@ const SHAPES = ["rect", "pill", "ellipse", "triangle", "diamond", "polygon", "st
 const ANIMS = ["none", "fade", "slide-left", "slide-right", "slide-up", "slide-down", "wipe-right", "wipe-left", "wipe-down", "wipe-up", "grow-x", "grow-y", "scale", "pop", "blur"];
 function bind(l, key, kind = "text", extra = {}) {
   const set = v => { snapshot(); l[key] = v; changed({ keepList: key !== "name" && key !== "field", keepProps: true }); };
-  if (kind === "select") return el("select", { onchange: e => set(extra.num ? +e.target.value : e.target.value) }, ...extra.options.map(o => Array.isArray(o) ? el("option", { value: o[0], selected: String(l[key] ?? extra.def ?? "") === String(o[0]) }, o[1]) : el("option", { value: o, selected: (l[key] ?? extra.def) === o }, o)));
+  if (kind === "select") return el("select", { onchange: e => set(extra.num && e.target.value !== "" ? +e.target.value : e.target.value) }, ...extra.options.map(o => Array.isArray(o) ? el("option", { value: o[0], selected: String(l[key] ?? extra.def ?? "") === String(o[0]) }, o[1]) : el("option", { value: o, selected: (l[key] ?? extra.def) === o }, o)));
   if (kind === "check") return el("label", { class: "switch" }, el("input", { type: "checkbox", checked: !!l[key], onchange: e => set(e.target.checked) }), extra.label);
   if (kind === "color") return el("input", { type: "color", value: /^#[0-9a-f]{6}$/i.test(l[key] || "") ? l[key] : "#ffffff", onchange: e => set(e.target.value) });
-  if (kind === "number") return el("input", { type: "number", value: l[key] ?? extra.def ?? 0, step: extra.step || 1, min: extra.min, "data-k": key, onchange: e => set(+e.target.value || 0) });
+  if (kind === "number") return el("input", { type: "number", value: l[key] ?? extra.def ?? 0, step: extra.step || 1, min: extra.min, "data-k": key,
+    onfocus: () => snapshot(),   // (one undo step per box, however many changes while typing)
+    oninput: e => { if (e.target.value === "" || isNaN(+e.target.value)) return; l[key] = +e.target.value; changed({ keepList: key !== "name" && key !== "field", keepProps: true }); },   // (the canvas follows as you type)
+    onchange: e => set(+e.target.value || 0) });
   if (kind === "chip") {   // (live data as labelled chips, plus a list to pick it from: no {{...}} to type)
     const box = chipBox(l[key] ?? "", set, { placeholder: extra.placeholder || "", label: extra.label || key });
     const tables = (App.state && App.state.data && App.state.data.tables) || {};
@@ -522,7 +553,8 @@ function renderProps() {
     return box.replaceChildren(...[partSect].filter(Boolean), el("section", { class: "sect" }, el("h4", {}, `${ls.length} layers`),
       el("div", { class: "three" }, ...[["Left", l => l.x = Math.min(...ls.map(o => o.x))], ["Centre", l => l.x = Math.round((Math.min(...ls.map(o => o.x)) + Math.max(...ls.map(o => o.x + o.w)) - l.w) / 2)], ["Right", l => l.x = Math.max(...ls.map(o => o.x + o.w)) - l.w],
         ["Top", l => l.y = Math.min(...ls.map(o => o.y))], ["Middle", l => l.y = Math.round((Math.min(...ls.map(o => o.y)) + Math.max(...ls.map(o => o.y + o.h)) - l.h) / 2)], ["Bottom", l => l.y = Math.max(...ls.map(o => o.y + o.h)) - l.h]]
-        .map(([t, fn]) => el("button", { class: "small", onclick: () => { snapshot(); ls.forEach(fn); changed({ keepList: true }); } }, t)))));
+        .map(([t, fn]) => el("button", { class: "small", onclick: () => { snapshot(); ls.forEach(fn); changed({ keepList: true }); } }, t)))),
+      ...multiEdit(ls));
   }
   const l = ls[0], T = l.type;
   const sects = [el("section", { class: "sect" }, el("h4", {}, ({ text: "Text", rect: "Box", shape: "Shape", image: "Picture", video: "Video", rotator: "Rotator", ticker: "Ticker", bracket: "Bracket", web: "Web page", lottie: "Lottie", camera: "Camera" })[T] || T),
@@ -589,6 +621,34 @@ function renderProps() {
   box.replaceChildren(...sects);
 }
 
+// Several layers picked: one box changes them all (a box shows a value only when they all have the same one).
+function many(ls, defs = {}) {
+  const m = {};
+  for (const k of ["font", "size", "weight", "color", "tracking", "align", "valign", "lineHeight", "caps", "italic", "opacity", "fill", "radius", "stroke", "strokeWidth"])
+    Object.defineProperty(m, k, { enumerable: true, get: () => { const v = ls.map(l => l[k] ?? defs[k]); return v.every(x => String(x) === String(v[0])) ? v[0] : undefined; },
+      set: v => { if (v === "") return; for (const l of ls) l[k] = v; } });   // ("(mixed)" picked: leaves them as they are)
+  return m;
+}
+function multiEdit(ls) {
+  const texts = ls.filter(l => l.type === "text"), boxes = ls.filter(l => l.type === "rect" || l.type === "shape"), out = [];
+  if (texts.length) {
+    const m = many(texts, { font: "Inter", size: 32, weight: 400, align: "left", valign: "middle", lineHeight: 1.15 });
+    out.push(el("section", { class: "sect" }, el("h4", {}, `Text: all ${texts.length}`),
+      el("div", { class: "two" }, lab("Font", bind(m, "font", "select", { options: ["", ...new Set(texts.flatMap(fontList))].map(f => [f, f || "(mixed)"]) })), lab("Size", bind(m, "size", "number", { def: "" }))),
+      el("div", { class: "three" }, lab("Colour", bind(m, "color", "color")), lab("Weight", bind(m, "weight", "select", { options: [["", "(mixed)"], ...[300, 400, 500, 600, 700, 800, 900].map(n => [n, String(n)])], num: true })), lab("Spacing", bind(m, "tracking", "number", { def: "" }))),
+      el("div", { class: "three" }, lab("Across", bind(m, "align", "select", { options: [["", "(mixed)"], "left", "center", "right"] })), lab("Down", bind(m, "valign", "select", { options: [["", "(mixed)"], "top", "middle", "bottom"] })), lab("Line height", bind(m, "lineHeight", "number", { def: "", step: 0.05 }))),
+      el("div", { class: "row" }, bind(m, "caps", "check", { label: "Capitals" }), bind(m, "italic", "check", { label: "Italic" }))));
+  }
+  if (boxes.length) {
+    const m = many(boxes);
+    out.push(el("section", { class: "sect" }, el("h4", {}, `Boxes and shapes: all ${boxes.length}`),
+      el("div", { class: "two" }, lab("Fill", bind(m, "fill", "color")), lab("Corner radius", bind(m, "radius", "number", { def: "" }))),
+      el("div", { class: "two" }, lab("Border", bind(m, "stroke", "color")), lab("Border width", bind(m, "strokeWidth", "number", { def: "" })))));
+  }
+  const all = many(ls, { opacity: 1 });
+  out.push(el("section", { class: "sect" }, el("h4", {}, `All ${ls.length}`), lab("Opacity", bind(all, "opacity", "number", { def: "", step: 0.05, min: 0 }))));
+  return out;
+}
 const fontList = l => [...new Set([...FONTS, ...(App.state.fonts || []).map(f => f.name), l.font].filter(Boolean))];
 // Rotator / ticker items: typed in, or one per row of a data table.
 function itemsSect(l) {
