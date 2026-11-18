@@ -40,26 +40,24 @@ App.on((st, msg) => {
   if (!msg || msg.workspaces || msg.backups || msg.project) render();
 });
 
-// The page bar: a newer StandBy GFX is out (installs and restarts; never while something is on air).
+// The update bar (as the Albion app): a newer StandBy GFX is out -> Update now downloads it (checked against
+// GitHub's sha256), installs it and the app closes and opens again by itself. Later hides it until the next version.
 App.on((st, msg) => {
-  if (msg && !msg.update && !msg.live) return;
-  const u = st.update || {}, b = $("#upd-pill");
-  if (!b) return;
-  b.hidden = !(u.update || u.state === "installing");
-  b.disabled = u.state === "installing";
+  if (msg && !msg.update && !msg.live && !msg.app) return;
+  const u = st.update || {}, bar = $("#upd-bar");
   const v = $("#app-version"), ver = (st.app || {}).version || u.current;   // (the version this app is, in the sidebar)
   if (v && ver) v.textContent = "StandBy GFX v" + ver;
-  b.textContent = u.state === "installing" ? `Updating… ${u.progress || 0}%` : `Update to ${u.version}`;
-  const install = async () => { if (await ask(`Install StandBy GFX ${u.version}?`, "It closes and opens again in a few seconds. Clear Program first: it won't update while something is on air.", { ok: "Install" })) api("/api/update/install").catch(() => {}); };
-  b.onclick = install;
-  // a new version pops up once (the pill stays for later); never while something is on air or on Control, it'd block TAKE
-  const onAir = st.live && st.live.program.on.length;
-  let seen = "";
-  try { seen = localStorage.getItem("sg-update-asked") || ""; } catch (e) {}
-  if (u.update && u.state !== "installing" && seen !== u.version && !onAir && App.page !== "control" && !document.querySelector("dialog[open]")) {
-    try { localStorage.setItem("sg-update-asked", u.version); } catch (e) {}
-    install();
-  }
+  if (!bar) return;
+  let later = "";
+  try { later = localStorage.getItem("sg-update-later") || ""; } catch (e) {}
+  const busy = u.state === "installing", failed = u.state === "error" && u.update;
+  bar.hidden = !(busy || failed || (u.update && later !== u.version));
+  $("#upd-text").textContent = busy ? (u.progress >= 100 ? "Installing. StandBy GFX closes and opens again by itself" : `Downloading StandBy GFX ${u.version}: ${u.progress || 0}%`)
+    : failed ? `Update didn't work: ${u.detail || "try again"}` : `StandBy GFX ${u.version} is ready (you have ${ver}). Clear Program, then update`;
+  $("#upd-go").hidden = $("#upd-later").hidden = busy;
+  $("#upd-go").textContent = failed ? "Try again" : "Update now";
+  $("#upd-go").onclick = () => api("/api/update/install").catch(() => {});
+  $("#upd-later").onclick = () => { try { localStorage.setItem("sg-update-later", u.version); } catch (e) {} bar.hidden = true; };
 });
 
 // Show check: what could go wrong on air, worst first, each with the page that fixes it.

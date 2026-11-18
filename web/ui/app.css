@@ -381,3 +381,9 @@ button.danger { background: var(--red); color: #fff; box-shadow: none; font-weig
 .chipbox:focus { border-color: var(--accent); }
 .chipbox:empty::before { content: attr(data-placeholder); color: var(--muted); }
 .chipbox .chip { display: inline-block; padding: 0 8px; margin: 0 2px; border-radius: 6px; background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--text); font-size: .92em; line-height: 20px; white-space: nowrap; user-select: all; }
+
+/* the update bar (in the page bar, as the Albion app: never a popup over Control's buttons) */
+.upd-bar { display: flex; align-items: center; gap: 8px; padding: 4px 4px 4px 12px; border: 1px solid var(--line-2); border-radius: 8px; background: var(--fill); color: var(--text); font-size: 13px; min-width: 0; }
+#upd-text { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.upd-bar button, .bar > button, .bar > .pill { flex: none; }
+.upd-bar[hidden] { display: none; }
