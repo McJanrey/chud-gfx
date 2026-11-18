@@ -51,7 +51,7 @@ def refresh_secs(v):
         return 10.0
 
 
-# The old starter set's stand-in pictures (Owen's art) -> ours, from MJ's Claude reference folder.
+# The old starter set's stand-in pictures -> ours.
 # Swapped in memory when a workspace opens; the workspace's own files are never changed.
 PLACEHOLDERS = {"player.png": "placeholders/player.png", "replace with tournament logo.png": "placeholders/logo.png"}
 
