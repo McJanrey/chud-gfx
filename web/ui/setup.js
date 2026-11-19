@@ -70,7 +70,7 @@ let oSig = "";
 function renderOutputs() {
   const st = App.state, outs = st.outputs || {};
   const s = JSON.stringify([st.project.compositions.map(c => [c.id, c.name, c.output !== false]), outs, st.app]);
-  if (s === oSig) return;
+  if (s === oSig || typingIn($("#out-list"))) return;
   oSig = s;
   const net = (st.app || {}).network || {};
   const port = (st.app || {}).port || location.port, hosts = ["localhost", ...(net.network ? (net.bind ? [net.bind] : (st.app || {}).addresses || []) : [])];

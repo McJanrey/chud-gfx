@@ -160,9 +160,8 @@ export const ask = (title, body, opts) => {
 export const askText = (title, value = "", opts = {}) => dialog(title, opts.body, { ...opts, input: { value, placeholder: opts.placeholder } });
 
 // Is the person in the middle of typing in this part of the page? Then a redraw waits, and only then:
-// a box with typed words not yet saved, or a field touched in the last moment (just clicked into, a dropdown
-// or slider being moved). Once the words are saved (Enter, Tab, clicking off) the page catches up at once,
-// even though the cursor is still in the box.
+// any box, dropdown or slider with the cursor in it (redrawing would throw the cursor out or close the list).
+// Clicking away, Tab or a save (change) catches up at once.
 const FIELD = "input:not([type=checkbox]):not([type=radio]):not([type=button]):not([type=color]), textarea, select, [contenteditable=true]";
 let unsaved = null, touched = 0, again = 0;
 function later() { setTimeout(catchUp, 700); }   // (once more when the engine's answer to a save has surely arrived)
@@ -190,10 +189,7 @@ export const typingIn = box => {
   if (box && pressed && box.contains(pressed) && held > 0) { clearTimeout(again); again = setTimeout(catchUp, held); return true; }
   const a = document.activeElement;
   if (!box || !a || !box.contains(a) || !a.matches(FIELD)) return false;
-  if (a === unsaved) return true;
-  const wait = 900 - (Date.now() - touched);
-  if (wait > 0) { clearTimeout(again); again = setTimeout(catchUp, wait); return true; }
-  return false;
+  return true;   // (a box or dropdown with the cursor in it, typing or not, stays put; clicking away catches up)
 };
 
 // Chip boxes: text with live-data codes, the codes shown as labelled chips ("{{Global!Left name}}" reads
