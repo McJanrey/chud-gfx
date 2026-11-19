@@ -7,10 +7,11 @@ import { bracket } from "./layers/bracket.js";
 import { rotator, ticker } from "./layers/rotator.js";
 import { lottie } from "./layers/lottie.js";
 import { camera } from "./layers/camera.js";
+import { shader } from "./layers/shader.js";
 import { play } from "./anim.js";
 import { resolve, setNow, ticks, nowSkew } from "./data.js";
 
-const DRAW = { rect, image, video, web, text, shape, bracket, rotator, ticker, lottie, camera };
+const DRAW = { rect, image, video, web, text, shape, bracket, rotator, ticker, lottie, camera, shader };
 const KIND_ORDER = { board: 0, overlay: 1, "lower third": 2 };
 export const W = 1920, H = 1080;
 const truthy = v => { const t = String(v).trim().toLowerCase(); return t !== "" && t !== "0" && t !== "false" && t !== "off" && t !== "no"; };

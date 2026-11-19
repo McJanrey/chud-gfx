@@ -45,6 +45,7 @@ async function mediaTab() {
   return [group("Add",
       tile("Picture", "pick its file on the right", () => addLayers([{ type: "image", name: "Picture", src: "", fit: "contain", w: 600, h: 400 }])),
       tile("Video", "", () => addLayers([{ type: "video", name: "Video", src: "", fit: "cover", loop: true, w: 960, h: 540 }])),
+      tile("Shader", "animated GPU background", () => addLayers([{ type: "shader", name: "Shader", look: "aurora", a: "#0b1026", b: "#3b2bd6", c: "#19e3c4", speed: 1, quality: 0.5, x: 0, y: 0, w: 1920, h: 1080 }])),
       tile("Lottie", "After Effects animation (.json)", () => addLayers([{ type: "lottie", name: "Lottie", src: "", loop: true, w: 600, h: 600 }])),
       tile("Web page", "", () => addLayers([{ type: "web", name: "Web page", src: "https://", w: 960, h: 540 }]))),
     el("h4", {}, "This workspace's files (click to add)"),

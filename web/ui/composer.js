@@ -4,6 +4,7 @@ import { $, el, api, App, pages, picker, toast, upload, askText, typingIn, chipB
 import { Stage, W, H } from "../engine/stage.js";
 import { play } from "../engine/anim.js";
 import { clipShapes } from "../engine/layers/box.js";
+import { LOOKS } from "../engine/layers/shader.js";
 
 let comp = null, compId = null, sel = new Set(), undo = [], redo = [], saveTimer = null, dirty = false, dragging = false;
 const layerById = id => comp && comp.layers.find(l => l.id === id);
@@ -54,7 +55,7 @@ $("#cmp-new").addEventListener("click", async () => {
 });
 
 // --- layers list ----------------------------------------------------------------
-const ICON = { text: "T", rect: "▭", shape: "◆", image: "▣", video: "▶", rotator: "↻", ticker: "⇆", bracket: "⊢", web: "◎", lottie: "✧", camera: "◉" };
+const ICON = { text: "T", rect: "▭", shape: "◆", image: "▣", video: "▶", rotator: "↻", ticker: "⇆", bracket: "⊢", web: "◎", lottie: "✧", camera: "◉", shader: "◍" };
 function renderLayers() {
   if (!comp) return $("#cmp-layers").replaceChildren(el("p", { class: "muted empty" }, "Pick a graphic or make one with + New."));
   // top of the list = in front (the last layer)
@@ -443,7 +444,7 @@ const ANIMS = [["none", "None"], ["fade", "Fade"],
   ["flip-x", "Flip (sideways)"], ["flip-y", "Flip (over)"], ["swing", "Swing down"], ["spin", "Spin in"], ["blur", "Blur"], ["glitch", "Glitch"],
   ["dissolve", "Dissolve"], ["nano", "Nano drones (glowing edge)"], ["parasite", "Parasites (eaten away)"]];   // ([saved name, what it's called]; Out plays each one backwards)
 function bind(l, key, kind = "text", extra = {}) {
-  const set = v => { snapshot(); l[key] = v; changed({ keepList: key !== "name" && key !== "field", keepProps: true }); };
+  const set = v => { snapshot(); l[key] = v; changed({ keepList: key !== "name" && key !== "field", keepProps: !extra.redraw }); };
   if (kind === "select") return el("select", { onchange: e => set(extra.num && e.target.value !== "" ? +e.target.value : e.target.value) }, ...extra.options.map(o => Array.isArray(o) ? el("option", { value: o[0], selected: String(l[key] ?? extra.def ?? "") === String(o[0]) }, o[1]) : el("option", { value: o, selected: (l[key] ?? extra.def) === o }, o)));
   if (kind === "check") return el("label", { class: "switch" }, el("input", { type: "checkbox", checked: !!l[key], onchange: e => set(e.target.checked) }), extra.label);
   if (kind === "color") return el("input", { type: "color", value: /^#[0-9a-f]{6}$/i.test(l[key] || "") ? l[key] : "#ffffff", onchange: e => set(e.target.value) });
@@ -566,7 +567,7 @@ function renderProps() {
       ...multiEdit(ls));
   }
   const l = ls[0], T = l.type;
-  const sects = [el("section", { class: "sect" }, el("h4", {}, ({ text: "Text", rect: "Box", shape: "Shape", image: "Picture", video: "Video", rotator: "Rotator", ticker: "Ticker", bracket: "Bracket", web: "Web page", lottie: "Lottie", camera: "Camera" })[T] || T),
+  const sects = [el("section", { class: "sect" }, el("h4", {}, ({ text: "Text", rect: "Box", shape: "Shape", image: "Picture", video: "Video", rotator: "Rotator", ticker: "Ticker", bracket: "Bracket", web: "Web page", lottie: "Lottie", camera: "Camera", shader: "Shader" })[T] || T),
     lab("Name", bind(l, "name")),
     lab("Field (set from Control)", bind(l, "field", "text", { placeholder: "(fixed: not a field)" })),
     el("div", { class: "four" }, ...["x", "y", "w", "h"].map(k => lab(k.toUpperCase(), bind(l, k, "number")))),
@@ -622,6 +623,13 @@ function renderProps() {
     lab("Animation (.json from After Effects / Bodymovin)", picker("data", (l.src || "").startsWith("assets/") ? l.src : "", v => { snapshot(); l.src = v; changed({ keepProps: true }); }, comp.name)),
     el("div", { class: "three" }, bind(l, "loop", "check", { label: "Loop" }), lab("Speed", bind(l, "speed", "number", { def: 1, step: 0.1 })),
       lab("Fit", bind(l, "fit", "select", { options: [["contain", "Fit inside"], ["cover", "Fill and crop"]], def: "contain" })))));
+  if (T === "shader") sects.push(el("section", { class: "sect" }, el("h4", {}, "Shader"),
+    lab("Look", bind(l, "look", "select", { options: [...Object.entries(LOOKS).map(([k, v]) => [k, v[0]]), ["custom", "Custom (GLSL)"]], def: "aurora", redraw: true })),
+    el("div", { class: "three" }, lab("Colour 1", bind(l, "a", "color")), lab("Colour 2", bind(l, "b", "color")), lab("Colour 3", bind(l, "c", "color"))),
+    el("div", { class: "two" }, lab("Speed", bind(l, "speed", "number", { def: 1, step: 0.1, min: 0 })),
+      lab("Sharpness", bind(l, "quality", "select", { options: [["0.25", "Soft (lightest)"], ["0.5", "Normal"], ["1", "Full (heaviest)"]], def: "0.5" }))),
+    l.look === "custom" ? lab("GLSL (set gl_FragColor; u_time, u_res, u_a, u_b, u_c and fbm(p) are ready)", bind(l, "code", "area")) : "",
+    el("p", { class: "muted small" }, "Runs on the graphics card in OBS or vMix. Keep big shaders on Soft or Normal.")));
   if (T === "web") sects.push(el("section", { class: "sect" }, el("h4", {}, "Web page"), lab("Address", bind(l, "src", "text", { placeholder: "https://" }))));
   if (T === "image" || T === "video") sects.push(picSect(l));
   if (partSect) sects.unshift(partSect);
