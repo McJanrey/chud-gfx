@@ -1,5 +1,5 @@
 // OBS Studio: connection + rules (Outputs page) and the scene bar on Control.
-import { $, el, api, App, pages, toast, typingIn } from "./lib.js";
+import { $, el, api, App, pages, toast, morph } from "./lib.js";
 
 const O = () => App.state.obs || { status: {}, rules: [] };
 const STATE = { off: "Off", connecting: "Connecting…", on: "Connected", error: "Not connected" };
@@ -8,10 +8,10 @@ export function obsCard() {
   const o = O(), st = o.status || {}, comps = App.state.project.compositions || [];
   const rules = JSON.parse(JSON.stringify(o.rules || []));
   const saveRules = () => api("/api/obs", { rules });
-  const host = el("input", { value: o.host || "127.0.0.1", "aria-label": "OBS PC" });
-  const port = el("input", { type: "number", value: o.port || 4455, "aria-label": "Port" });
+  const host = el("input", { value: o.host || "127.0.0.1", "aria-label": "OBS PC", "data-keep": true });
+  const port = el("input", { type: "number", value: o.port || 4455, "aria-label": "Port", "data-keep": true });
   // (saved the moment you leave the box: clicking "Save and connect" redrew the card mid-click, so the password never got sent)
-  const pw = el("input", { type: "password", autocomplete: "off", placeholder: o.has_password ? "Saved ✓ (type to change)" : "From OBS: Show Connect Info", "aria-label": "Password",
+  const pw = el("input", { type: "password", autocomplete: "off", placeholder: o.has_password ? "Saved ✓ (type to change)" : "From OBS: Show Connect Info", "aria-label": "Password", "data-keep": true,
     onchange: e => { if (e.target.value) api("/api/obs", { password: e.target.value, on: true }).then(() => toast("Password saved: connecting to OBS…")); } });
   return el("div", { class: "card", id: "obs-card" }, el("div", { class: "row" }, el("h3", {}, "OBS Studio"),
       el("label", { class: "switch" }, el("input", { type: "checkbox", checked: !!o.on, onchange: e => api("/api/obs", { on: e.target.checked }) }), o.on ? "On" : "Off"),
@@ -22,7 +22,7 @@ export function obsCard() {
     el("p", { class: "muted small" }, "In OBS: Tools › WebSocket Server Settings: turn it on, then Show Connect Info for the password. Then Control shows OBS's scene, LIVE and REC, and switches scenes."),
     el("div", { class: "three" }, el("label", { class: "f" }, el("span", {}, "OBS PC"), host), el("label", { class: "f" }, el("span", {}, "Port"), port), el("label", { class: "f" }, el("span", {}, "Password"), pw)),
     el("div", { class: "row" },
-      el("button", { class: "small primary", onclick: () => api("/api/obs", { host: host.value.trim(), port: +port.value || 4455, password: pw.value, on: true }).then(() => toast("Connecting to OBS…")) }, "Save and connect"),
+      el("button", { class: "small primary", onclick: e => { const q = l => e.target.closest(".card").querySelector(`[aria-label="${l}"]`).value; return api("/api/obs", { host: q("OBS PC").trim(), port: +q("Port") || 4455, password: q("Password"), on: true }).then(() => toast("Connecting to OBS…")); } }, "Save and connect"),
       st.state === "on" ? el("button", { class: "small", onclick: () => api("/api/obs/add", {}).then(r => toast(r.added.length ? `Added ${r.added.join(", ")} to OBS` : "Already in OBS")) }, "Add StandBy GFX to OBS") : null),
     el("h4", {}, "When OBS shows a scene"),
     el("p", { class: "muted small" }, "Take a graphic in or out by itself when OBS switches to a scene. (To switch OBS when a graphic goes on air, pick the scene in Composer › the graphic.)"),
@@ -54,6 +54,6 @@ App.on((st, msg) => {
   if (!msg || msg.obs) {
     bar();
     const sig = JSON.stringify([st.obs, (st.project || {}).compositions && st.project.compositions.map(c => [c.id, c.name])]);
-    if (App.page === "outputs" && sig !== obsSig) { const c = $("#obs-card"), f = typingIn(c); if (c && !f) { obsSig = sig; c.replaceWith(obsCard()); } }   // (only when something changed)
+    if (App.page === "outputs" && sig !== obsSig) { const c = $("#obs-card"); if (c) { obsSig = sig; morph(c, obsCard()); } }   // (only when something changed)
   }
 });

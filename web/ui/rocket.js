@@ -1,6 +1,6 @@
 // Rocket League (Outputs page): the game's own Stats API, live into the "Rocket League" table, and every
 // finished game frozen as "RL Game N" so a player who quits straight away keeps their final line.
-import { $, el, api, App, ask, toast, typingIn } from "./lib.js";
+import { $, el, api, App, ask, toast, morph } from "./lib.js";
 
 const STATE = { off: "Off", waiting: "Waiting for the game", on: "Reading" };
 const SIDE = ["Blue", "Orange"];
@@ -41,5 +41,5 @@ let sig = "";
 App.on((st, msg) => {
   if (msg && !msg.rl) return;
   const s = JSON.stringify(st.rl);
-  if (App.page === "outputs" && s !== sig) { const c = $("#rl-card"); if (c && !typingIn(c)) { sig = s; c.replaceWith(rlCard()); } }
+  if (App.page === "outputs" && s !== sig) { const c = $("#rl-card"); if (c) { sig = s; morph(c, rlCard()); } }   // (in place: a box being typed in stays put)
 });

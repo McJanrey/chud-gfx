@@ -1,5 +1,5 @@
 // Transitions and Outputs pages, and the "Program connected" check in the page bar.
-import { $, el, api, App, pages, picker, toast, typingIn } from "./lib.js";
+import { $, el, api, App, pages, picker, toast, typingIn, morphKids } from "./lib.js";
 import { obsCard } from "./obs.js";
 import { rlCard } from "./rocket.js";
 
@@ -70,12 +70,12 @@ let oSig = "";
 function renderOutputs() {
   const st = App.state, outs = st.outputs || {};
   const s = JSON.stringify([st.project.compositions.map(c => [c.id, c.name, c.output !== false]), outs, st.app]);
-  if (s === oSig || typingIn($("#out-list"))) return;
+  if (s === oSig) return;
   oSig = s;
   const net = (st.app || {}).network || {};
   const port = (st.app || {}).port || location.port, hosts = ["localhost", ...(net.network ? (net.bind ? [net.bind] : (st.app || {}).addresses || []) : [])];
   const base = h => `http://${h}:${port}`;
-  $("#out-list").replaceChildren(
+  morphKids($("#out-list"), [obsCard(), rlCard(),   // (in place: typing in any card, or an open dropdown, is never interrupted)
     ...hosts.map(h => el("div", { class: "card" }, el("h3", {}, h === "localhost" ? "On this PC" : `From other PCs (${h})`),
       copyRow("Program", base(h) + "/output", outs.program), copyRow("Preview", base(h) + "/output?bus=preview", outs.preview))),
     el("div", { class: "card" }, el("h3", {}, "One graphic each"),
@@ -85,12 +85,11 @@ function renderOutputs() {
           // (the live graphic: this list only redraws on name/output, so c can hold old layers)
           onchange: e => api("/api/comp", { comp: { ...(App.state.project.compositions.find(x => x.id === c.id) || c), output: e.target.checked } }) }), ""),
         copyRow(c.name, base(hosts[hosts.length - 1]) + "/output?comp=" + c.id, outs["comp:" + c.id])))),
-    networkCard(), exportCard());
-  $("#out-list").prepend(obsCard(), rlCard());
+    networkCard(), exportCard()]);
 }
 function exportCard() {
-  const comps = App.state.project.compositions || [], boxes = comps.map(c => el("input", { type: "checkbox", value: c.id }));
-  const ids = () => boxes.filter(b => b.checked).map(b => b.value).join(",");
+  const comps = App.state.project.compositions || [], boxes = comps.map(c => el("input", { type: "checkbox", value: c.id, "data-keep": true }));
+  const ids = () => [...document.querySelectorAll(".export-list input:checked")].map(b => b.value).join(",");
   const go = path => { const i = ids(); if (!i) return toast("Tick the graphics first"); location.href = `${path}?ids=${encodeURIComponent(i)}`; };
   return el("div", { class: "card" }, el("h3", {}, "Export"),
     el("p", { class: "muted small" }, "The ticked graphics, to take to another StandBy GFX (pack) or to play without the engine (HTML: CasparCG / SPX template, or any browser; play(), stop(), next(), update(data))."),

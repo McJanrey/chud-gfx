@@ -9,7 +9,11 @@ export const $ = s => document.querySelector(s);
 export const el = (tag, attrs = {}, ...kids) => {
   const e = document.createElement(tag);
   for (const [k, v] of Object.entries(attrs || {})) {
-    if (k.startsWith("on") && typeof v === "function") e.addEventListener(k.slice(2), v);
+    if (k.startsWith("on") && typeof v === "function") {   // (through e._on, so morph() can hand a redrawn element's handlers to the old one)
+      const t = k.slice(2);
+      if (!(e._on ||= {})[t]) e.addEventListener(t, ev => e._on[t] && e._on[t].call(e, ev));
+      e._on[t] = v;
+    }
     else if (k === "class") e.className = v;
     else if (k === "value") e.value = v;
     else if (k === "checked") e.checked = !!v;
@@ -191,6 +195,32 @@ export const typingIn = box => {
   if (!box || !a || !box.contains(a) || !a.matches(FIELD)) return false;
   return true;   // (a box or dropdown with the cursor in it, typing or not, stays put; clicking away catches up)
 };
+
+// Update a part of the page in place to look like a freshly built copy: text, attributes, handlers and values
+// change, nodes are added or removed, but the field with the cursor (and an open dropdown) is left exactly as it
+// is, so live info keeps coming in while someone types. Same-place matching: fine for cards and lists.
+const FORM = "input, select, textarea";
+export function morph(a, b) {
+  if (a.nodeType !== b.nodeType || a.nodeName !== b.nodeName || (a.nodeType === 1 && a.type !== b.type)) { a.replaceWith(b); return; }
+  if (a.nodeType === 3 || a.nodeType === 8) { if (a.data !== b.data) a.data = b.data; return; }
+  if (a.nodeType !== 1) return;
+  const busy = a === document.activeElement && a.matches(FIELD);
+  for (const { name } of [...a.attributes]) if (!b.hasAttribute(name)) a.removeAttribute(name);
+  for (const { name, value } of [...b.attributes]) if (a.getAttribute(name) !== value) a.setAttribute(name, value);
+  if (b._on) a._on = b._on;
+  if (busy) return;   // (its typed words, its open list: untouched)
+  morphKids(a, [...b.childNodes]);
+  if (a.matches(FORM) && !a.hasAttribute("data-keep")) {   // (data-keep: a draft the person is filling in, saved by a button)
+    if (a.type === "checkbox" || a.type === "radio") a.checked = b.checked;
+    else if (a.value !== b.value) a.value = b.value;
+  }
+}
+export function morphKids(parent, kids) {
+  const ak = [...parent.childNodes];
+  kids = kids.flat().filter(k => k != null && k !== false).map(k => typeof k === "string" ? document.createTextNode(k) : k);
+  kids.forEach((k, i) => i < ak.length ? morph(ak[i], k) : parent.append(k));
+  for (let i = kids.length; i < ak.length; i++) ak[i].remove();
+}
 
 // Chip boxes: text with live-data codes, the codes shown as labelled chips ("{{Global!Left name}}" reads
 // "Left name"), as GFX Baby had. The saved value is still the plain text with its codes; a code typed in
