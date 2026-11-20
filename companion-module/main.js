@@ -155,6 +155,26 @@ class StandByGFX extends InstanceBase {
 			playlist_stop: { name: "Playlist: stop", options: [], callback: () => this.post("/api/playlist/stop") },
 			cam_look: { name: "Cameras: recall a look", options: [{ type: "dropdown", id: "name", label: "Look", choices: c.looks, default: c.looks[0] ? c.looks[0].id : "", allowCustom: true }],
 				callback: (a) => this.post("/api/cams/look", { action: "recall", name: a.options.name }) },
+			timer: { name: "Timer", options: [{ type: "dropdown", id: "do", label: "Do", choices: [{ id: "toggle", label: "Start / pause" }, { id: "start", label: "Start" }, { id: "pause", label: "Pause" }, { id: "reset", label: "Reset" }], default: "toggle" }],
+				callback: (a) => this.post("/api/timer", { action: a.options.do === "toggle" ? (this.timerRunning() ? "pause" : "start") : a.options.do }) },
+			score: { name: "Score", options: [{ type: "dropdown", id: "side", label: "Side", choices: [{ id: "left", label: "Left" }, { id: "right", label: "Right" }], default: "left" },
+					{ type: "dropdown", id: "do", label: "Do", choices: [{ id: "up", label: "+1" }, { id: "down", label: "-1" }, { id: "set", label: "Set to" }], default: "up" },
+					{ type: "number", id: "value", label: "Value (for Set to)", default: 0, min: 0, max: 99 }],
+				callback: (a) => {
+					const now = Number((this.global()[a.options.side] || {}).score || 0)
+					const v = a.options.do === "up" ? now + 1 : a.options.do === "down" ? Math.max(0, now - 1) : Number(a.options.value) || 0
+					return this.post("/api/global", { global: { [a.options.side]: { score: v } } })
+				} },
+			score_reset: { name: "Scores: reset both to 0", options: [], callback: () => this.post("/api/global", { global: { left: { score: 0 }, right: { score: 0 } } }) },
+			swap: { name: "Swap left and right teams", options: [], callback: () => {
+					const g = this.global(), L = g.left || {}, R = g.right || {}, left = {}, right = {}
+					for (const k of new Set([...Object.keys(L), ...Object.keys(R)])) { left[k] = R[k] ?? ""; right[k] = L[k] ?? "" }
+					return this.post("/api/global", { global: { left, right } })
+				} },
+			stream: { name: "Streaming: go live / stop", options: [{ type: "dropdown", id: "do", label: "Do", choices: [{ id: "toggle", label: "Toggle" }, { id: "on", label: "Go live" }, { id: "off", label: "Stop" }], default: "toggle" }],
+				callback: (a) => this.post("/api/stream/on", { on: a.options.do === "toggle" ? !this.streaming() : a.options.do === "on" }) },
+			rl_save: { name: "Rocket League: save this game now", options: [], callback: () => this.post("/api/rl/save") },
+			rl_series: { name: "Rocket League: new series", options: [], callback: () => this.post("/api/rl/clear") },
 			obs_scene: { name: "OBS: switch scene", options: [{ type: "dropdown", id: "scene", label: "Scene", choices: c.scenes, default: c.scenes[0] ? c.scenes[0].id : "", allowCustom: true }],
 				callback: (a) => this.post("/api/obs/scene", { scene: a.options.scene }) },
 		})
@@ -170,6 +190,10 @@ class StandByGFX extends InstanceBase {
 				options: [{ type: "dropdown", id: "id", label: "Camera", choices: c.cams, default: c.cams[0] ? c.cams[0].id : "" }],
 				callback: (f) => (((this.state && this.state.cam_status) || {})[f.options.id] || {}).state === "live" },
 			obs_live: { type: "boolean", name: "OBS is live", defaultStyle: lit, options: [], callback: () => !!((this.state && this.state.obs && this.state.obs.status) || {}).live },
+			timer_running: { type: "boolean", name: "Timer running", defaultStyle: { bgcolor: combineRgb(40, 170, 80), color: combineRgb(255, 255, 255) }, options: [], callback: () => this.timerRunning() },
+			streaming: { type: "boolean", name: "Streaming live", defaultStyle: lit, options: [], callback: () => this.streaming() },
+			rl_reading: { type: "boolean", name: "Rocket League: reading the game", defaultStyle: { bgcolor: combineRgb(40, 170, 80), color: combineRgb(255, 255, 255) }, options: [],
+				callback: () => ((this.state && this.state.rl) || {}).status === "on" },
 			playing: { type: "boolean", name: "Playlist playing", defaultStyle: lit, options: [{ type: "dropdown", id: "id", label: "Playlist", choices: c.playlists, default: c.playlists[0] ? c.playlists[0].id : "" }],
 				callback: (f) => !!(this.state && this.state.playing && this.state.playing.id === f.options.id) },
 		})
@@ -178,6 +202,8 @@ class StandByGFX extends InstanceBase {
 			{ variableId: "program", name: "On Program" }, { variableId: "preview", name: "On Preview" },
 			{ variableId: "segment", name: "Run of show: now" }, { variableId: "segment_next", name: "Run of show: next" }, { variableId: "segment_left", name: "Run of show: time left" },
 			{ variableId: "obs_scene", name: "OBS scene" }, { variableId: "left_score", name: "Left score" }, { variableId: "right_score", name: "Right score" },
+			{ variableId: "left_name", name: "Left team" }, { variableId: "right_name", name: "Right team" }, { variableId: "timer", name: "Timer" },
+			{ variableId: "rl_blue", name: "Rocket League: Blue score" }, { variableId: "rl_orange", name: "Rocket League: Orange score" }, { variableId: "rl_clock", name: "Rocket League: clock" },
 		])
 
 		// one PVW and one IN button per graphic, and TAKE / CUT
@@ -186,6 +212,18 @@ class StandByGFX extends InstanceBase {
 				steps: [{ down: [{ actionId: "take", options: { transition: "" } }], up: [] }], feedbacks: [] },
 			cut: { type: "button", category: "Take", name: "CUT", style: { text: "CUT", size: "24", color: combineRgb(255, 255, 255), bgcolor: combineRgb(40, 40, 40) },
 				steps: [{ down: [{ actionId: "cut", options: {} }], up: [] }], feedbacks: [] },
+			timer: { type: "button", category: "Timer and scores", name: "Timer start / pause", style: { text: "TIMER\\n$(standby-gfx:timer)", size: "14", color: combineRgb(255, 255, 255), bgcolor: combineRgb(30, 30, 30) },
+				steps: [{ down: [{ actionId: "timer", options: { do: "toggle" } }], up: [] }], feedbacks: [{ feedbackId: "timer_running", options: {} }] },
+			left_up: { type: "button", category: "Timer and scores", name: "Left +1", style: { text: "$(standby-gfx:left_name)\\n+1 ($(standby-gfx:left_score))", size: "auto", color: combineRgb(255, 255, 255), bgcolor: combineRgb(20, 60, 140) },
+				steps: [{ down: [{ actionId: "score", options: { side: "left", do: "up", value: 0 } }], up: [] }], feedbacks: [] },
+			right_up: { type: "button", category: "Timer and scores", name: "Right +1", style: { text: "$(standby-gfx:right_name)\\n+1 ($(standby-gfx:right_score))", size: "auto", color: combineRgb(255, 255, 255), bgcolor: combineRgb(150, 60, 20) },
+				steps: [{ down: [{ actionId: "score", options: { side: "right", do: "up", value: 0 } }], up: [] }], feedbacks: [] },
+			swap: { type: "button", category: "Timer and scores", name: "Swap sides", style: { text: "SWAP\\nSIDES", size: "18", color: combineRgb(255, 255, 255), bgcolor: combineRgb(30, 30, 30) },
+				steps: [{ down: [{ actionId: "swap", options: {} }], up: [] }], feedbacks: [] },
+			stream: { type: "button", category: "Streaming", name: "Go live / stop", style: { text: "STREAM", size: "18", color: combineRgb(255, 255, 255), bgcolor: combineRgb(30, 30, 30) },
+				steps: [{ down: [{ actionId: "stream", options: { do: "toggle" } }], up: [] }], feedbacks: [{ feedbackId: "streaming", options: {} }] },
+			rl_score: { type: "button", category: "Rocket League", name: "RL score (press: save game)", style: { text: "RL\\n$(standby-gfx:rl_blue) - $(standby-gfx:rl_orange)\\n$(standby-gfx:rl_clock)", size: "14", color: combineRgb(255, 255, 255), bgcolor: combineRgb(30, 30, 30) },
+				steps: [{ down: [{ actionId: "rl_save", options: {} }], up: [] }], feedbacks: [{ feedbackId: "rl_reading", options: {} }] },
 			next: { type: "button", category: "Run of show", name: "Next segment", style: { text: "NEXT\\n$(standby-gfx:segment_left)", size: "14", color: combineRgb(255, 255, 255), bgcolor: combineRgb(30, 30, 30) },
 				steps: [{ down: [{ actionId: "ros_next", options: {} }], up: [] }], feedbacks: [] },
 		}
@@ -200,6 +238,20 @@ class StandByGFX extends InstanceBase {
 				steps: [{ down: [{ actionId: "obs_scene", options: { scene: s.id } }], up: [] }], feedbacks: [{ feedbackId: "obs_scene", options: { scene: s.id } }] }
 		}
 		this.setPresetDefinitions(presets)
+	}
+
+	global() { return (this.state && this.state.project && this.state.project.global) || {} }
+	timerRunning() { return !!(this.global().timer || {}).started }
+	timerText() {
+		const t = this.global().timer || {}, ran = t.started ? Math.max(0, Date.now() / 1000 + (this.skew || 0) - t.started) : 0
+		const s = Math.max(0, Math.floor(t.down ? (t.secs || 0) - ran : (t.secs || 0) + ran))
+		return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`
+	}
+	streaming() { return !!((this.state && this.state.stream) || {}).on }
+	rl(field) {
+		const rows = (((this.state || {}).data || {}).tables || {})["Rocket League"] || []
+		const r = rows.find((x) => x[0] === field)
+		return r ? String(r[1] ?? "") : ""
 	}
 
 	on(bus, id) {
@@ -220,6 +272,8 @@ class StandByGFX extends InstanceBase {
 			segment: seg.now, segment_next: seg.next, segment_left: seg.left,
 			obs_scene: ((this.state.obs && this.state.obs.status) || {}).scene || "",
 			left_score: String((g.left || {}).score ?? ""), right_score: String((g.right || {}).score ?? ""),
+			left_name: String((g.left || {}).name ?? ""), right_name: String((g.right || {}).name ?? ""), timer: this.timerText(),
+			rl_blue: this.rl("Blue score"), rl_orange: this.rl("Orange score"), rl_clock: this.rl("Clock"),
 		})
 	}
 }

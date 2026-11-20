@@ -70,6 +70,7 @@ jobs:
         run: |
           npm ci
           node test.js
+          npm version $env:VERSION --no-git-tag-version --allow-same-version   # (each release a new module version: Companion refuses a version it already has)
           npx companion-module-build --ignore-license-rules --output Chud-GFX-Companion-module
 
       # A push builds and tests only. Releasing (the in-app update everyone gets) is by hand:
