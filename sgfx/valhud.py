@@ -108,7 +108,7 @@ def fields(m, g):
         locked = ok and bool(p.get("locked"))
         f.update({f"{k} pick art": f"/val-img/agent/{aid}/fullportrait.png" if ok else "",
                   f"{k} locked": "yes" if on and locked else "", f"{k} hovering": "yes" if on and ok and not locked else "", f"{k} empty": "yes" if on and not ok else "",
-                  f"{k} pick name": (roles.get(aid) or {}).get("name", "").upper() if ok else "",
+                  f"{k} pick name": (roles.get(aid) or {}).get("name", "").upper() if ok else "", f"{k} pick locked": "yes" if locked else "",
                   f"{k} select name": p.get("name") or ""})
     f["Banner"] = getattr(m, "banner", "")
     f["Banner color"] = f[f"{SIDES[m.banner_side]} color"] if getattr(m, "banner_side", None) in (0, 1) else "#ffffff"

@@ -149,7 +149,7 @@ function draw() {
       const cur = (field(`${k} pick art`).match(/agent\/([0-9a-f-]{36})\//) || [])[1] || "";
       return `<div class="row"><span style="min-width:110px">${esc(field(`${k} name`) || `${S2} ${n}`)}</span>
         <select data-pick="${t},${n}" style="flex:1"><option value="">(none)</option>${cat.agents.map(a => `<option value="${a.id}" ${a.id === cur ? "selected" : ""}>${esc(a.name)}</option>`).join("")}</select>
-        <label class="muted"><input type="checkbox" data-lock="${t},${n}" ${field(`${k} locked`) === "yes" ? "checked" : ""} style="width:auto"> Locked</label></div>`; }).join("")}</div>`).join("");
+        <label class="muted"><input type="checkbox" data-lock="${t},${n}" ${field(`${k} pick locked`) === "yes" ? "checked" : ""} style="width:auto"> Locked</label></div>`; }).join("")}</div>`).join("");
     picks.querySelectorAll("[data-pick]").forEach(e => e.onchange = () => { const [t, n] = e.dataset.pick.split(",").map(Number); ingest({ players: [{ team: t, slot: n, pick: e.value }] }).then(refresh); });
     picks.querySelectorAll("[data-lock]").forEach(e => e.onchange = () => { const [t, n] = e.dataset.lock.split(",").map(Number); ingest({ players: [{ team: t, slot: n, locked: e.checked }] }).then(refresh); });
   }
