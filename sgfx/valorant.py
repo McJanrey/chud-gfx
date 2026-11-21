@@ -31,6 +31,31 @@ from .rocket import _layer, rows
 SIDES = ("Left", "Right")
 SLOTS = 5
 PLAYER = ("name", "agent", "agent_id", "alive", "health", "shields", "armor", "credits", "weapon", "weapon_id", "ult", "ult_max", "kills", "deaths", "assists", "spike")
+UUID = __import__("re").compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
+IMG_DIR = os.path.join(os.environ.get("LOCALAPPDATA") or os.path.expanduser("~"), "StandBy GFX", "val-img")
+ABILITY = ("ability1", "ability2", "grenade", "ultimate")
+PICS = {"agent": ("displayicon", "killfeedportrait", "fullportrait") + ABILITY, "weapon": ("killstreamicon",)}
+
+
+def image(kind, uid, part):
+    """An official picture (valorant-api.com's media), fetched once and kept on this PC: the file's path, or None."""
+    if kind not in PICS or part not in PICS[kind] or not UUID.match(uid or ""):
+        return None
+    path = os.path.join(IMG_DIR, kind, uid, part + ".png")
+    if not os.path.isfile(path):
+        base = f"https://media.valorant-api.com/{'agents' if kind == 'agent' else 'weapons'}/{uid}"
+        url = f"{base}/abilities/{part}/displayicon.png" if part in ABILITY else f"{base}/{part}.png"
+        try:
+            data = urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "StandBy GFX"}), timeout=10).read()
+        except Exception:
+            return None
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path + ".tmp", "wb") as f:
+            f.write(data)
+        os.replace(path + ".tmp", path)
+    return path
+
+
 HOW = {"elimination": "Elimination", "spike": "Spike detonated", "defuse": "Spike defused", "time": "Time ran out"}
 
 
@@ -289,6 +314,23 @@ class Val:
             except Exception:
                 pass
         threading.Thread(target=go, daemon=True).start()
+
+    # --- our own VAL HUD (web/val-hud.html) reads this ---
+    def hud(self):
+        m, g = self.match, self.engine.project.get("global") or {}
+        atk = attackers(m.round, m.first)
+        teams = []
+        for i, side in enumerate(("left", "right")):
+            t, gt = m.teams[i], g.get(side) or {}
+            teams.append({"name": gt.get("name") or t["name"] or ("Team A", "Team B")[i], "short": gt.get("short") or "", "logo": gt.get("logo") or "",
+                          "color": gt.get("color") or ("#21c7b0", "#ff4f5e")[i], "score": int(t["score"] or 0), "side": "ATK" if atk == i else "DEF",
+                          "series": gt.get("score") or 0, "timeouts": int(t.get("timeouts") if t.get("timeouts") is not None else 2)})
+        players = [[], []]
+        for (team, slot), p in sorted(m.players.items()):
+            players[team].append(dict({k: p.get(k) for k in PLAYER}, slot=slot, abilities=p.get("abilities") or {}))
+        return {"live": self.live(), "teams": teams, "round": m.round, "phase": m.phase, "timer": m.timer, "spike": m.spike, "map": m.map,
+                "best_of": g.get("best_of") or 3, "history": [{"winner": h["winner"], "how": h["how"]} for h in m.history],
+                "last": self.last_round, "players": players, "feed": [dict(k, age=round(time.time() - k["t"], 1)) for k in m.feed if time.time() - k["t"] < 8]}
 
     # --- for the engine state ---
     def live(self):

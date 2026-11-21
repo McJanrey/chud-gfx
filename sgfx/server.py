@@ -1402,6 +1402,13 @@ def handler(engine):
                 return self.wfile.write(data)
             if path == "/api/assets":
                 return self._send(200, json.dumps({"assets": engine.assets()}))
+            if path == "/api/val/hud":   # (our own VAL HUD's data)
+                with engine.lock:
+                    h = json.dumps(engine.val.hud())
+                return self._send(200, h)
+            if path.startswith("/val-img/"):   # (/val-img/agent/<uuid>/<picture>.png, /val-img/weapon/<uuid>/killstreamicon.png)
+                bits = path[len("/val-img/"):].removesuffix(".png").split("/")
+                return self._file(valorant.image(*bits) if len(bits) == 3 else None)
             if path == "/api/state":
                 with engine.lock:
                     st = json.dumps(engine.state())
