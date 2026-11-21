@@ -1426,7 +1426,7 @@ def handler(engine):
                 data = pic.encode("utf-8")
                 self.send_response(200)
                 self.send_header("Content-Type", "image/svg+xml")
-                self.send_header("Cache-Control", "max-age=86400")
+                self.send_header("Cache-Control", "max-age=60")
                 self.send_header("Content-Length", str(len(data)))
                 self.end_headers()
                 return self.wfile.write(data)
@@ -1482,6 +1482,21 @@ def handler(engine):
             if origin and urlparse(origin).netloc != self.headers.get("Host"):
                 return self._send(403, b'{"error": "other site"}')
             try:
+                if urlparse(self.path).path == "/api/hud/figma":   # (a Figma file into a HUD: each frame a part)
+                    from . import figma, huds
+                    q = parse_qs(urlparse(self.path).query)
+                    length = int(self.headers.get("Content-Length") or 0)
+                    if length > 200 << 20:
+                        raise ValueError("That Figma file is too big (200 MB at most)")
+                    blob = self.rfile.read(length)
+                    with engine.lock:
+                        hud = huds.find(engine, (q.get("hud") or [""])[0])
+                        if not hud:
+                            raise ValueError("Pick a HUD first")
+                        parts, layers, skipped = figma.import_into(engine, hud, blob)
+                        engine.save_project()
+                        engine.changed()
+                    return self._send(200, json.dumps({"parts": parts, "layers": layers, "vectors_left_out": skipped}))
                 if urlparse(self.path).path == "/api/upload":
                     q = parse_qs(urlparse(self.path).query)
                     length = int(self.headers.get("Content-Length") or 0)

@@ -180,8 +180,8 @@ def _armor(kind):
     if kind not in ("heavy", "light"):
         raise ValueError(kind)
     return ('<svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21">'   # (an outlined badge with the shield's points in it)
-            '<path d="M10.5 1.6 18.2 4.6v6.2c0 3.9-3.1 7.1-7.7 8.6-4.6-1.5-7.7-4.7-7.7-8.6V4.6z" fill="none" stroke="#fff" stroke-width="1.3" stroke-linejoin="round"/>'
-            f'<text x="10.5" y="13.6" font-family="Arial" font-weight="700" font-size="7.6" text-anchor="middle" fill="#fff">{50 if kind == "heavy" else 25}</text></svg>')
+            '<polygon points="10.5,1.3 18.7,4.4 17.3,14.4 10.5,19.7 3.7,14.4 2.3,4.4" fill="none" stroke="#dfe3e8" stroke-width="1.2" stroke-linejoin="round"/>'
+            f'<text x="10.5" y="13.9" font-family="Arial" font-weight="700" font-size="8.4" text-anchor="middle" fill="#fff">{50 if kind == "heavy" else 25}</text></svg>')
 
 
 WIN_MARK = {
