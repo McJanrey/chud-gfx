@@ -4,7 +4,13 @@ import struct
 import tempfile
 import unittest
 import zipfile
-from compression import zstd
+try:
+    from compression import zstd
+except ImportError:   # (Python 3.13: the zstandard package)
+    import zstandard
+
+    class zstd:
+        compress = staticmethod(lambda b: zstandard.ZstdCompressor().compress(b))
 
 from sgfx import figma
 

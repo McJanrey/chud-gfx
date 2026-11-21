@@ -108,8 +108,12 @@ def decode(schema, data, root="Message"):
 # --- the file -------------------------------------------------------------------------------------------
 def _inflate(c):
     if c[:4] == b"\x28\xb5\x2f\xfd":
-        from compression import zstd   # (Python 3.14)
-        return zstd.decompress(c)
+        try:
+            from compression import zstd   # (Python 3.14)
+            return zstd.decompress(c)
+        except ImportError:
+            import zstandard   # (the app's Python 3.13)
+            return zstandard.ZstdDecompressor().decompressobj().decompress(c)
     try:
         return zlib.decompress(c, -15)
     except zlib.error:

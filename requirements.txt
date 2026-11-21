@@ -3,6 +3,7 @@ pywebview==6.2.1    # the desktop window
 pyinstaller==6.22.3 # building the app
 imageio-ffmpeg      # FFmpeg bundled with the app (multistream, video conversion, stinger cut)
 mss                 # screen capture (the VALORANT screen reader)
+zstandard           # Figma files (.fig) are zstd-compressed (Python 3.14 has it built in)
 winrt-runtime       # Windows' own text recognition (VALORANT reader names, banners, timer)
 winrt-Windows.Media.Ocr
 winrt-Windows.Graphics.Imaging
