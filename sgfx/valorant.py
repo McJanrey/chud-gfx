@@ -8,6 +8,8 @@ A reader POSTs partial JSON to /api/val/ingest as often as it likes; only what i
                   "shields": 50, "armor": "heavy" | "light" | "regen" | "", "credits": 3900, "weapon": "Vandal",
                   "weapon_id": "<valorant-api uuid>", "ult": 5, "ult_max": 7, "abilities": {"C": [1, 2], "Q": [0, 1], "E": [1, 1]},
                   "kills": 12, "deaths": 9, "assists": 4, "spike": false}],
+     "kills": [{"killer": "Kai", "killer_team": 0, "victim": "Onyx", "victim_team": 1, "weapon": "Vandal",
+                "weapon_id": "<uuid>", "headshot": true}],   # (each kill once, as it happens)
      "event": "round_end", "winner": 0, "how": "elimination" | "spike" | "defuse" | "time"
        or "event": "map_end", "winner": 0}
 A reader that only sends scores (the screen reader) still gets its rounds: a score one up on one side alone is taken as
@@ -51,6 +53,7 @@ class Match:
         self.round, self.phase, self.spike, self.map, self.first, self.timer = 1, "", "", "", 0, ""
         self.players = {}   # (team, slot) -> fields
         self.history = []   # [{"round", "winner", "how"}]
+        self.feed = []      # the latest kills, newest last: [{"killer", "victim", ..., "t"}]
 
     def merge(self, b):
         for i, t in enumerate((b.get("teams") or [])[:2]):
@@ -65,6 +68,11 @@ class Match:
                 setattr(self, a, str(b[k] or ""))
         if b.get("first_attack") in (0, 1):
             self.first = b["first_attack"]
+        for k in b.get("kills") or []:
+            if isinstance(k, dict) and k.get("killer_team") in (0, 1) and k.get("victim_team") in (0, 1):
+                self.feed = (self.feed + [{"killer": str(k.get("killer") or "")[:40], "victim": str(k.get("victim") or "")[:40],
+                                           "killer_team": k["killer_team"], "victim_team": k["victim_team"], "weapon": str(k.get("weapon") or "")[:30],
+                                           "weapon_id": str(k.get("weapon_id") or "")[:40], "headshot": bool(k.get("headshot")), "t": time.time()}])[-8:]
         for p in b.get("players") or []:
             if isinstance(p, dict) and p.get("team") in (0, 1) and 1 <= int(p.get("slot") or 0) <= SLOTS:
                 row = self.players.setdefault((p["team"], int(p["slot"])), {})
@@ -91,6 +99,10 @@ class Match:
                     f[f"{s} {n} {k.replace('_', ' ')}"] = yes(v) if k in ("alive", "spike") else ("" if v is None else v)
                 k, d = p.get("kills"), p.get("deaths")
                 f[f"{s} {n} kd"] = f"{k}/{d}/{p.get('assists', 0)}" if k is not None and d is not None else ""
+        for n in range(1, 6):   # (Kill 1 = the newest)
+            k = self.feed[-n] if len(self.feed) >= n else {}
+            f.update({f"Kill {n} killer": k.get("killer", ""), f"Kill {n} victim": k.get("victim", ""), f"Kill {n} weapon": k.get("weapon", ""),
+                      f"Kill {n} headshot": yes(k.get("headshot")) if k else "", f"Kill {n} killer side": SIDES[k["killer_team"]] if k else ""})
         return f
 
 
@@ -217,6 +229,10 @@ class Val:
                 vals[f"valBomb{n}"] = 1 if p["spike"] else 0
             for k, (have, most) in (p.get("abilities") or {}).items():
                 vals[f"valAb{k}{n}"], vals[f"valAbMax{k}{n}"] = have, most
+        agent = {(t, p.get("name")): p.get("agent_id") or "" for (t, _), p in m.players.items()}
+        vals["valFeed"] = [{"k": k["killer"], "ka": agent.get((k["killer_team"], k["killer"]), ""), "ks": k["killer_team"], "v": k["victim"],
+                            "va": agent.get((k["victim_team"], k["victim"]), ""), "vs": k["victim_team"], "gun": k["weapon_id"], "hs": k["headshot"],
+                            "t": int(k["t"] * 1000)} for k in m.feed if time.time() - k["t"] < 10]   # (Chud Hud's own kill-feed rows)
         return [{"Event": "UpdateState", "Data": {"Game": game}}, {"Event": "ValOcr", "Data": {"values": vals}}]
 
     OWEN = "http://127.0.0.1:8778/api/ingest"

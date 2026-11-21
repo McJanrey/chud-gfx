@@ -74,7 +74,7 @@ class Demo:
             for secs in range(100, -1, -5):   # the fight
                 if self.wait(0.7):
                     return
-                t = rnd.randrange(2)
+                t, kills = rnd.randrange(2), []
                 live = [s for s in range(5) if alive[t][s]]
                 other = [s for s in range(5) if alive[1 - t][s]]
                 if live and other and rnd.random() < 0.45:
@@ -86,6 +86,8 @@ class Demo:
                             mates = [s for s in range(5) if alive[1 - t][s]]
                             carrier[0] = (1 - t, rnd.choice(mates)) if mates else None
                         kda[t][k][0] += 1
+                        kills.append({"killer": NAMES[t][k], "killer_team": t, "victim": NAMES[1 - t][v], "victim_team": 1 - t,
+                                      "weapon": gun(t, k), "weapon_id": guns.get(gun(t, k), ""), "headshot": rnd.random() < 0.35})
                         kda[1 - t][v][1] += 1
                         ult[t][k] = min(maxult[t][k], ult[t][k] + 1)
                 if rnd.random() < 0.3:   # (someone uses an ability)
@@ -94,7 +96,7 @@ class Demo:
                 if not planted and secs < 60 and carrier[0] and rnd.random() < 0.2:
                     planted, carrier[0] = True, None
                 self.send({"phase": "combat", "timer": "" if planted else f"{secs // 60}:{secs % 60:02d}", "spike": "planted" if planted else "",
-                           "players": players(alive, hp)})
+                           "players": players(alive, hp), **({"kills": kills} if kills else {})})
                 if not any(alive[0]) or not any(alive[1]):
                     break
             won = 0 if sum(alive[0]) > sum(alive[1]) else 1 if sum(alive[1]) > sum(alive[0]) else rnd.randrange(2)

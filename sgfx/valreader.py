@@ -11,6 +11,7 @@ frames: Windows' text recognition is unreliable on lone digits); names and banne
 parse(frame) -> a partial update in the shape /api/val/ingest takes. Reader(engine).run() captures a screen over and
 over and feeds the changes in.
 """
+import difflib
 import json
 import os
 import re
@@ -292,6 +293,76 @@ def loadout(img, y):
     return weapon, armor
 
 
+# --- kill feed (top right, newest at the bottom): killer, gun, headshot, victim; bar colour = team ----------------
+FEED_TOP, FEED_PITCH, FEED_ROWS = 96, 39, 6
+
+
+def _team_colours(a):
+    """Teal (team 0) and red (team 1) by hue, so the bars' dark gradient ends count too."""
+    r, g, b = a[..., 0], a[..., 1], a[..., 2]
+    teal = (g > 50) & (g * 10 > r * 14) & (b * 10 > r * 12)
+    red = (r > 60) & (r * 10 > g * 18) & (r * 10 > b * 18)
+    return teal, red
+
+
+def _runs(flags, gap=0, least=1):
+    """[(start, end)] of runs of True in a 1-D array, joining runs split by up to `gap` False."""
+    out, s, last = [], None, None
+    for i, v in enumerate(list(flags) + [False] * (gap + 1)):
+        if v:
+            s, last = (i if s is None else s), i
+        elif s is not None and i - last > gap:
+            if last + 1 - s >= least:
+                out.append((s, last + 1))
+            s = None
+    return out
+
+
+def killfeed(img):
+    """The kill-feed bars on screen, top to bottom: [{"killer", "victim", "killer_team", "victim_team", "weapon",
+    "weapon_id", "headshot"}] (teal = team 0, red = team 1; names as read, a gun only when its silhouette is sure)."""
+    a = np.asarray(img.convert("RGB"), dtype=np.int16)
+    teal, red = _team_colours(a)
+    weapons = (gear() or {}).get("weapons", [])
+    out = []
+    for n in range(FEED_ROWS):
+        top = FEED_TOP + n * FEED_PITCH
+        if (teal | red)[top + 16, 1300:1915].mean() < 0.15:
+            break
+        bars = _runs(a[top + 16, 1300:1915].max(1) > 40, gap=3, least=200)   # (the bar runs unbroken to the right edge)
+        if not bars:
+            break
+        x0, x1 = 1300 + bars[-1][0], 1300 + bars[-1][1]
+        try:
+            words = winocr.read(img.crop((x0, top, x1 + 12, top + 34)), 3)
+        except Exception:
+            words = []
+        white = a[top + 2:top + 32, x0:x1].min(2) > 215
+        spans = [(int(x) - 2, int(x + w) + 2) for _, x, _, w, _ in words]
+        free = [c >= 2 and not any(l <= i <= r for l, r in spans) for i, c in enumerate(white.sum(0))]
+        marks = _runs(free, gap=1, least=8)
+        row = {"headshot": False, "weapon": "", "weapon_id": ""}
+        gun = max((m for m in marks if m[1] - m[0] > 25), key=lambda m: m[1] - m[0], default=None)
+        if gun:
+            q = _shape(white[:, gun[0]:gun[1]], (64, 20))
+            if q and weapons:
+                score, name, uid = max((max(_iou(q[0], r), _iou(q[0], r[:, ::-1])) - 0.15 * abs(np.log(q[1] / ar)), n_, u) for n_, u, r, ar in weapons)
+                if score > 0.6:
+                    row["weapon"], row["weapon_id"] = name, uid
+            vx = min((x for _, x, _, w, _ in words if x > gun[1]), default=len(free))
+            row["headshot"] = sum(m[1] - m[0] for m in marks if gun[1] < m[0] and m[1] <= vx) >= 12   # (the split crosshair between gun and victim)
+            cut_l, cut_r = gun[0], gun[1]
+        else:
+            cut_l = cut_r = (x1 - x0) // 2
+        side = lambda l, r: int(red[top + 3:top + 30, x0 + l:x0 + r].sum() > teal[top + 3:top + 30, x0 + l:x0 + r].sum())
+        row["killer_team"], row["victim_team"] = side(0, cut_l), side(cut_r, x1 - x0)   # (each half's bar colour)
+        row["killer"] = " ".join(t for t, x, _, w, _ in words if x + w / 2 < cut_l and not re.fullmatch(r"[Il1|]{1,4}", t)).strip()   # (not the multi-kill "III")
+        row["victim"] = " ".join(t for t, x, _, w, _ in words if x + w / 2 > cut_r).strip()
+        if row["killer"] or row["victim"]:
+            out.append(row)
+    return out
+
+
 def spike_planted(img):
     """While the spike is planted the round timer is replaced by a red spike icon."""
     a = np.asarray(img.crop((915, 18, 1005, 92)), dtype=np.int16)
@@ -372,6 +443,9 @@ def parse(img):
     if any(teams):
         out["teams"] = teams
     out["players"] = players
+    feed = killfeed(img)
+    if feed:
+        out["feed"] = feed
     return out
 
 
@@ -381,6 +455,7 @@ class Reader:
     def __init__(self, engine):
         self.engine, self.on, self.screen, self.status, self.last = engine, False, 1, "off", {}
         self.names = [[None] * 5, [None] * 5]   # (team, slot) -> name, learnt from the scoreboard
+        self.seen = {}   # kill-feed bar -> when first read (a bar stays up a few seconds: one kill, sent once)
         self.votes = {}                          # (team, slot) -> {agent: times seen}: an agent is locked in once seen 3 times
 
     def frame(self):
@@ -413,6 +488,20 @@ class Reader:
             if best and best[1] >= 3:
                 p["agent"], p["agent_id"] = best[0]
         body["players"] = players
+        kills, now = [], time.time()
+        self.seen = {k: t for k, t in self.seen.items() if now - t < 12}
+        for row in d.get("feed") or []:
+            for who in ("killer", "victim"):   # (a misread name snaps to the scoreboard's spelling)
+                t = row[f"{who}_team"]
+                close = difflib.get_close_matches(row[who], [n for n in self.names[t] if n], 1, 0.6)
+                if close:
+                    row[who] = close[0]
+            key = (row["killer"], row["victim"], d.get("round"))
+            if row["killer"] and row["victim"] and key not in self.seen:
+                self.seen[key] = now
+                kills.append(row)
+        if kills:
+            body["kills"] = kills
         if d.get("sides"):
             body["first_attack"] = None   # (sides come from the round number; kept for later)
             body.pop("first_attack")
@@ -425,7 +514,7 @@ class Reader:
                 continue
             try:
                 d = parse(self.frame())
-                if d.get("timer") or d.get("roster"):
+                if d.get("timer") or d.get("roster") or d.get("feed"):
                     self.engine.val.ingest(self.update(d))
                     self.status = "reading"
                 else:

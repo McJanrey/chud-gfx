@@ -25,3 +25,10 @@ class ValReader(unittest.TestCase):
         # loadout: official silhouettes; the dead players' rows are empty
         self.assertEqual({n: (r["weapon"], r["armor"]) for n, r in rows.items() if r["weapon"] or r["armor"]},
                          {"crippled kid": ("Vandal", "heavy"), "meowpilled": ("Vandal", "heavy"), "ludociel": ("Vandal", "")})
+
+    def test_killfeed_frame(self):
+        """Kill feed: killer, gun silhouette, headshot mark, victim, and each side's team colour (teal 0, red 1)."""
+        from sgfx import valreader as V
+        d = V.killfeed(V.normalise(Image.open(os.path.join(HERE, "fixtures", "val_killfeed.png"))))
+        self.assertEqual([(r["killer"], r["killer_team"], r["weapon"], r["headshot"], r["victim"], r["victim_team"]) for r in d],
+                         [("ludociel", 1, "Guardian", True, "meowpilled", 0), ("SCCProd2", 0, "Bulldog", True, "Himmy Butler", 1)])
