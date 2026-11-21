@@ -25,7 +25,7 @@ from .rocket import _layer, rows
 
 SIDES = ("Left", "Right")
 SLOTS = 5
-PLAYER = ("name", "agent", "alive", "health", "shields", "credits", "weapon", "ult", "ult_max", "kills", "deaths", "assists", "spike")
+PLAYER = ("name", "agent", "agent_id", "alive", "health", "shields", "credits", "weapon", "ult", "ult_max", "kills", "deaths", "assists", "spike")
 HOW = {"elimination": "Elimination", "spike": "Spike detonated", "defuse": "Spike defused", "time": "Time ran out"}
 
 
@@ -106,6 +106,9 @@ class Val:
                 c[k] = bool(body[k])
         if "chud" in body:
             c["chud"] = str(body.get("chud") or "").strip()[:200]
+        if body.get("target") in ("chud", "owen", "off"):   # (which HUD draws it: Chud Hud, or the SCC Broadcast Engine's VAL HUD)
+            c["target"] = body["target"]
+            c["chud"] = ""
         self.engine.project["val"] = c
         self.engine.save_project()
 
@@ -186,18 +189,44 @@ class Val:
             if not p.get("name"):
                 continue
             n += 1
-            for key, k in (("Name", "name"), ("Ult", "ult"), ("UltMax", "ult_max"), ("Cr", "credits"), ("Hp", "health"), ("K", "kills"), ("D", "deaths"), ("A", "assists")):
+            for key, k in (("Name", "name"), ("Agent", "agent_id"), ("Ult", "ult"), ("UltMax", "ult_max"), ("Cr", "credits"), ("Hp", "health"), ("K", "kills"), ("D", "deaths"), ("A", "assists")):
                 if p.get(k) is not None:
                     vals[f"val{key}{n}"] = p[k]
             if p.get("alive") is not None:
                 vals[f"valAlive{n}"] = 1 if p["alive"] else 0
         return [{"Event": "UpdateState", "Data": {"Game": game}}, {"Event": "ValOcr", "Data": {"values": vals}}]
 
+    OWEN = "http://127.0.0.1:8778/api/ingest"
+
+    def owen_update(self):
+        """The match as the SCC Broadcast Engine's VAL HUD takes it ({"match", "players"}, teams "left" / "right")."""
+        m, sides = self.match, ("left", "right")
+        mm = __import__("re").fullmatch(r"(\d+):(\d\d)", m.timer or "")
+        match = {"round": m.round, "phase": m.phase, "score": {"left": int(m.teams[0]["score"] or 0), "right": int(m.teams[1]["score"] or 0)},
+                 "attackers": sides[attackers(m.round, m.first)], "spike": {"state": m.spike or ""}}
+        if m.map:
+            match["map"] = m.map
+        if mm:
+            match["timer"] = int(mm.group(1)) * 60 + int(mm.group(2))
+        players = []
+        for (team, slot), p in sorted(m.players.items()):
+            q = {"team": sides[team], "slot": slot}
+            for k, o in (("name", "name"), ("agent", "agent"), ("alive", "alive"), ("health", "health"), ("credits", "credits"),
+                         ("kills", "kills"), ("deaths", "deaths"), ("assists", "assists"), ("ult", "ult_points"), ("ult_max", "ult_max"), ("weapon", "weapon")):
+                if p.get(k) is not None:
+                    q[o] = p[k]
+            players.append(q)
+        return {"match": match, "players": players}
+
     def forward(self):
         c = self.cfg()
-        if not c.get("chud_on", True) or time.time() - getattr(self, "_sent", 0) < 0.4:
+        target = c.get("target", "chud" if c.get("chud_on", True) else "off")
+        if target == "off" or time.time() - getattr(self, "_sent", 0) < 0.4:
             return
-        self._sent, url, body = time.time(), c.get("chud") or self.CHUD, json.dumps(self.chud_messages()).encode()
+        if target == "owen":
+            self._sent, url, body = time.time(), c.get("chud") or self.OWEN, json.dumps(self.owen_update()).encode()
+        else:
+            self._sent, url, body = time.time(), c.get("chud") or self.CHUD, json.dumps(self.chud_messages()).encode()
 
         def go():   # (in the background: Chud Hud closed or slow never holds up the engine)
             try:
@@ -232,7 +261,8 @@ class Val:
         return {"on": c.get("on", True), "series": c.get("series", True), "status": "on" if self.live() else "waiting" if self.at else "off",
                 "reader": {"on": r.on, "screen": r.screen, "status": r.status} if r else None,
                 "demo": bool(getattr(getattr(self.engine, "valdemo", None), "on", False)),
-                "chud": {"on": c.get("chud_on", True), "url": c.get("chud") or self.CHUD, "ok": time.time() - getattr(self, "chud_ok", 0) < 5},
+                "chud": {"target": c.get("target", "chud" if c.get("chud_on", True) else "off"), "url": c.get("chud") or (self.OWEN if c.get("target") == "owen" else self.CHUD),
+                         "ok": time.time() - getattr(self, "chud_ok", 0) < 5},
                 "source": self.source, "ago": round(time.time() - self.at) if self.at else None,
                 "maps": [{"n": i + 1, "map": m.get("map", ""), "winner": m.get("winner"),
                           "score": [m["fields"].get("Left score"), m["fields"].get("Right score")]} for i, m in enumerate(self.maps())]}

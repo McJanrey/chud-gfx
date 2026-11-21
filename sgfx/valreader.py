@@ -18,7 +18,7 @@ import threading
 import time
 
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageOps
 
 from . import winocr
 
@@ -150,6 +150,68 @@ def match_slots(img, team, rows_y):
     return out
 
 
+# --- agents: official icons from valorant-api.com, kept on this PC ---------------------------------------
+AGENT_DIR = os.path.join(os.environ.get("LOCALAPPDATA") or os.path.expanduser("~"), "StandBy GFX", "val-agents")
+_agents = None
+
+
+def _norm(im):
+    a = np.asarray(im.convert("RGB").resize((32, 32)), dtype=np.float32)
+    a = a - a.mean((0, 1))
+    return a / (a.std() + 1e-3)
+
+
+def agents():
+    """[(name, uuid, normalised icon)] for every playable agent (fetched once, then from the folder)."""
+    global _agents
+    if _agents is not None:
+        return _agents
+    import urllib.request
+    os.makedirs(AGENT_DIR, exist_ok=True)
+    lst = os.path.join(AGENT_DIR, "agents.json")
+    get = lambda u: urllib.request.urlopen(urllib.request.Request(u, headers={"User-Agent": "StandBy GFX"}), timeout=15).read()
+    try:
+        if not os.path.isfile(lst) or time.time() - os.path.getmtime(lst) > 3 * 86400:   # (new agents show up)
+            data = json.loads(get("https://valorant-api.com/v1/agents?isPlayableCharacter=true"))["data"]
+            with open(lst, "w", encoding="utf-8") as f:
+                json.dump([[a["uuid"], a["displayName"]] for a in data], f)
+    except Exception:
+        pass
+    out = []
+    try:
+        with open(lst, encoding="utf-8") as f:
+            items = json.load(f)
+    except (OSError, ValueError):
+        items = []
+    for uid, name in items:
+        pic = os.path.join(AGENT_DIR, uid + ".png")
+        try:
+            if not os.path.isfile(pic):
+                with open(pic, "wb") as f:
+                    f.write(get(f"https://media.valorant-api.com/agents/{uid}/displayicon.png"))
+            icon = Image.open(pic).convert("RGBA")
+        except Exception:
+            continue
+        for bg in ((60, 60, 60), (30, 120, 110), (150, 50, 50)):   # (the top bar's teal / red / grey behind the portrait)
+            b = Image.new("RGBA", icon.size, bg + (255,))
+            b.alpha_composite(icon)
+            out.append((name, uid, _norm(b)))
+    _agents = out if out else None
+    return out
+
+
+def agent_at(img, team, slot):
+    """(name, uuid) of the agent in a top-bar slot (the right team's portraits face left: mirrored back first)."""
+    refs = agents()
+    if not refs:
+        return None
+    x = (LEFT_SLOTS if team == 0 else RIGHT_SLOTS)[slot - 1]
+    c = img.crop((x - 22, 30, x + 22, 72))
+    q = _norm(ImageOps.mirror(c) if team else c)
+    score, name, uid = max((float((q * r).mean()), n, u) for n, u, r in refs)
+    return (name, uid) if score > 0.35 else None
+
+
 def spike_planted(img):
     """While the spike is planted the round timer is replaced by a red spike icon."""
     a = np.asarray(img.crop((915, 18, 1005, 92)), dtype=np.int16)
@@ -195,7 +257,12 @@ def parse(img):
     for team, slots in ((0, LEFT_SLOTS), (1, RIGHT_SLOTS)):
         for s, x in enumerate(slots, 1):
             hp = _bar(img, x)
-            players.append({"team": team, "slot": s, "alive": hp is not None, **({"health": hp} if hp is not None else {})})
+            p = {"team": team, "slot": s, "alive": hp is not None, **({"health": hp} if hp is not None else {})}
+            if hp is not None:   # (a dead player's portrait is greyed out: only read alive ones)
+                a = agent_at(img, team, s)
+                if a:
+                    p["agent"], p["agent_id"] = a
+            players.append(p)
     if scoreboard_open(img):
         names = {}
         for team, rows in ((0, ROWS_TOP), (1, ROWS_BOTTOM)):
@@ -231,6 +298,7 @@ class Reader:
     def __init__(self, engine):
         self.engine, self.on, self.screen, self.status, self.last = engine, False, 1, "off", {}
         self.names = [[None] * 5, [None] * 5]   # (team, slot) -> name, learnt from the scoreboard
+        self.votes = {}                          # (team, slot) -> {agent: times seen}: an agent is locked in once seen 3 times
 
     def frame(self):
         import mss
@@ -252,6 +320,15 @@ class Reader:
                     continue
                 self.names[team][slot - 1] = row["name"]   # (the top bar's alive / health is by slot: kept with its name)
                 players.append({"team": team, "slot": slot, **row})
+        for p in players:   # (agents don't change mid-match: a slot keeps the agent it was seen as most)
+            key = (p["team"], p["slot"])
+            if p.get("agent"):
+                v = self.votes.setdefault(key, {})
+                v[(p["agent"], p["agent_id"])] = v.get((p["agent"], p["agent_id"]), 0) + 1
+            best = max(self.votes.get(key, {}).items(), key=lambda kv: kv[1], default=None)
+            p.pop("agent", None), p.pop("agent_id", None)
+            if best and best[1] >= 3:
+                p["agent"], p["agent_id"] = best[0]
         body["players"] = players
         if d.get("sides"):
             body["first_attack"] = None   # (sides come from the round number; kept for later)

@@ -40,7 +40,12 @@ class Demo:
         score, credits, ult = [0, 0], [[800] * 5, [800] * 5], [[0] * 5, [0] * 5]
         kda = [[[0, 0, 0] for _ in range(5)] for _ in range(2)]
         maxult = [[7, 8, 7, 8, 6], [8, 7, 9, 7, 8]]
-        players = lambda alive, hp: [{"team": t, "slot": s + 1, "name": NAMES[t][s], "agent": AGENTS[t * 5 + s], "alive": alive[t][s],
+        try:   # (official agent ids, so a HUD shows the agents' own art)
+            from .valreader import agents
+            ids = {n: u for n, u, _ in agents()}
+        except Exception:
+            ids = {}
+        players = lambda alive, hp: [{"team": t, "slot": s + 1, "name": NAMES[t][s], "agent": AGENTS[t * 5 + s], "agent_id": ids.get(AGENTS[t * 5 + s]), "alive": alive[t][s],
                                       "health": hp[t][s], "credits": credits[t][s], "ult": ult[t][s], "ult_max": maxult[t][s],
                                       "kills": kda[t][s][0], "deaths": kda[t][s][1], "assists": kda[t][s][2], "weapon": "Vandal" if credits[t][s] > 2900 else "Classic"}
                                      for t in range(2) for s in range(5)]
