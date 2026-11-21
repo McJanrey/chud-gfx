@@ -16,7 +16,9 @@ map win adds one to that side's series score in Global (left team = first team),
 """
 import json
 import os
+import threading
 import time
+import urllib.request
 import uuid
 
 from .rocket import _layer, rows
@@ -99,9 +101,11 @@ class Val:
 
     def set(self, body):
         c = dict(self.cfg())
-        for k in ("on", "series"):
+        for k in ("on", "series", "chud_on"):
             if k in body:
                 c[k] = bool(body[k])
+        if "chud" in body:
+            c["chud"] = str(body.get("chud") or "").strip()[:200]
         self.engine.project["val"] = c
         self.engine.save_project()
 
@@ -165,6 +169,43 @@ class Val:
         if first:
             self.add_hud()
         self.engine.changed()
+        self.forward()
+
+    # --- Chud Hud: its own VALORANT HUD draws what's read here ---
+    CHUD = "http://127.0.0.1:7777/api/ingest"
+
+    def chud_messages(self):
+        """The match as Chud Hud's intake takes it: an UpdateState (scores, clock) and a ValOcr (each player, by name)."""
+        m = self.match
+        game = {"Teams": [{"TeamNum": i, "Score": int(t["score"] or 0), **({"Name": t["name"]} if t["name"] else {})} for i, t in enumerate(m.teams)]}
+        mm = __import__("re").fullmatch(r"(\d+):(\d\d)", m.timer or "")
+        if mm:
+            game["TimeSeconds"] = int(mm.group(1)) * 60 + int(mm.group(2))
+        vals, n = {"valPhase": m.phase, "valSpike": m.spike, "valRound": m.round}, 0
+        for (team, slot), p in sorted(m.players.items()):
+            if not p.get("name"):
+                continue
+            n += 1
+            for key, k in (("Name", "name"), ("Ult", "ult"), ("UltMax", "ult_max"), ("Cr", "credits"), ("Hp", "health"), ("K", "kills"), ("D", "deaths"), ("A", "assists")):
+                if p.get(k) is not None:
+                    vals[f"val{key}{n}"] = p[k]
+            if p.get("alive") is not None:
+                vals[f"valAlive{n}"] = 1 if p["alive"] else 0
+        return [{"Event": "UpdateState", "Data": {"Game": game}}, {"Event": "ValOcr", "Data": {"values": vals}}]
+
+    def forward(self):
+        c = self.cfg()
+        if not c.get("chud_on", True) or time.time() - getattr(self, "_sent", 0) < 0.4:
+            return
+        self._sent, url, body = time.time(), c.get("chud") or self.CHUD, json.dumps(self.chud_messages()).encode()
+
+        def go():   # (in the background: Chud Hud closed or slow never holds up the engine)
+            try:
+                urllib.request.urlopen(urllib.request.Request(url, data=body, headers={"Content-Type": "application/json"}), timeout=1.5).read()
+                self.chud_ok = time.time()
+            except Exception:
+                pass
+        threading.Thread(target=go, daemon=True).start()
 
     # --- for the engine state ---
     def live(self):
@@ -191,6 +232,7 @@ class Val:
         return {"on": c.get("on", True), "series": c.get("series", True), "status": "on" if self.live() else "waiting" if self.at else "off",
                 "reader": {"on": r.on, "screen": r.screen, "status": r.status} if r else None,
                 "demo": bool(getattr(getattr(self.engine, "valdemo", None), "on", False)),
+                "chud": {"on": c.get("chud_on", True), "url": c.get("chud") or self.CHUD, "ok": time.time() - getattr(self, "chud_ok", 0) < 5},
                 "source": self.source, "ago": round(time.time() - self.at) if self.at else None,
                 "maps": [{"n": i + 1, "map": m.get("map", ""), "winner": m.get("winner"),
                           "score": [m["fields"].get("Left score"), m["fields"].get("Right score")]} for i, m in enumerate(self.maps())]}

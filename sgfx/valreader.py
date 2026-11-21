@@ -131,6 +131,25 @@ def _text(img, box, scale=2):
         return ""
 
 
+def _icon(img, box):
+    """An agent portrait as a small grey patch, normalised (so a greyed-out dead portrait still matches)."""
+    a = np.asarray(img.crop(box).convert("L").resize((20, 20)), dtype=np.float32)
+    return (a - a.mean()) / (a.std() + 1e-3)
+
+
+def match_slots(img, team, rows_y):
+    """Which top-bar slot (1-5) each scoreboard row is, by comparing its agent portrait with the top bar's."""
+    slots = LEFT_SLOTS if team == 0 else RIGHT_SLOTS
+    tops = [_icon(img, (x - 20, 32, x + 20, 70)) for x in slots]
+    rows = [_icon(img, (574, y - 15, 604, y + 15)) for y in rows_y]
+    score = np.array([[float((r * t).mean()) for t in tops] for r in rows])
+    out, used = {}, set()
+    for _ in range(len(rows)):   # (greedy: the surest pair first)
+        i, j = np.unravel_index(np.argmax(np.where(np.isin(np.arange(5), list(used))[None, :] | np.isin(np.arange(len(rows)), list(out))[:, None], -9, score)), score.shape)
+        out[int(i)], _ = int(j) + 1, used.add(int(j))
+    return out
+
+
 def spike_planted(img):
     """While the spike is planted the round timer is replaced by a red spike icon."""
     a = np.asarray(img.crop((915, 18, 1005, 92)), dtype=np.int16)
@@ -180,13 +199,14 @@ def parse(img):
     if scoreboard_open(img):
         names = {}
         for team, rows in ((0, ROWS_TOP), (1, ROWS_BOTTOM)):
-            for y in rows:
+            slot_of = match_slots(img, team, rows)
+            for ri, y in enumerate(rows):
                 cell = lambda k: img.crop((COLS[k][0], y - 14, COLS[k][1], y + 14))
                 name = _text(img, (COLS["name"][0], y - 14, COLS["name"][1], y + 14), 3).strip()
                 if not name:
                     continue
                 ult = digits(cell("ult"))
-                row = {"name": name, "kills": number(cell("k")), "deaths": number(cell("d")), "assists": number(cell("a")),
+                row = {"name": name, "slot": slot_of.get(ri), "kills": number(cell("k")), "deaths": number(cell("d")), "assists": number(cell("a")),
                        "credits": number(cell("credits"))}
                 if re.fullmatch(r"\d+/\d+", ult or ""):
                     row["ult"], row["ult_max"] = (int(v) for v in ult.split("/"))
@@ -227,13 +247,10 @@ class Reader:
         for team, rows in (d.get("roster") or {}).items():
             team = int(team)
             for row in rows:
-                if row["name"] in self.names[team]:
-                    slot = self.names[team].index(row["name"]) + 1
-                elif None in self.names[team]:
-                    slot = self.names[team].index(None) + 1
-                    self.names[team][slot - 1] = row["name"]
-                else:
+                slot = row.pop("slot", None)
+                if not slot:
                     continue
+                self.names[team][slot - 1] = row["name"]   # (the top bar's alive / health is by slot: kept with its name)
                 players.append({"team": team, "slot": slot, **row})
         body["players"] = players
         if d.get("sides"):
