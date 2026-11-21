@@ -75,6 +75,7 @@ function liveTab() {
     group("Tournament", tile("Knockout bracket", "8 or 16", () => addLayers([{ type: "bracket", name: "Bracket", font: "Bebas Neue", color: "#ffffff", gold: "#b28a1d", dark: "#000b05", line: "#b28a1d", w: 1566, h: 748 }])),
       tile("Champion", "", () => addLayers([T("{{Tournament!Top champion}}", 64, { name: "Champion" })]))),
     ...rlGroups(),
+    ...valGroups(),
     ...(hudGroups.length ? hudGroups : [el("p", { class: "muted small" }, "Game HUDs show up here once one sends its data (Outputs › HUD link).")])];
 }
 
@@ -86,6 +87,16 @@ function rlGroups() {
     .map(f => tile(f, "", () => addLayers([T(`{{${n}!${f}}}`, /score$/.test(f) ? 96 : 40, { name: f })])));
   return [t["Rocket League"] ? group("Rocket League (live)", ...tiles("Rocket League")) : null,
     t["RL Last game"] ? group("Rocket League (last finished game)", ...tiles("RL Last game")) : null].filter(Boolean);
+}
+
+// VALORANT (Outputs › VALORANT): the live match, the last round and the last finished map.
+// (the player lines, Left 1 agent and so on, are in Pick live data on any text)
+function valGroups() {
+  const t = (App.state.data || {}).tables || {};
+  const tiles = n => (t[n] || []).slice(1).map(([f]) => f).filter(f => !/^(Left|Right) \d /.test(f))
+    .map(f => tile(f, "", () => addLayers([T(`{{${n}!${f}}}`, /score$/.test(f) ? 96 : 40, { name: f })])));
+  return [["VALORANT", "VALORANT (live)"], ["VAL Last round", "VALORANT (last round)"], ["VAL Last map", "VALORANT (last finished map)"]]
+    .filter(([n]) => t[n]).map(([n, label]) => group(label, ...tiles(n)));
 }
 
 // One camera per caster box (Caster 1-4), placed above the box and moved / shown by the same live data,

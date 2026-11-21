@@ -2,6 +2,7 @@
 import { $, el, api, App, pages, picker, toast, typingIn, morphKids } from "./lib.js";
 import { obsCard } from "./obs.js";
 import { rlCard } from "./rocket.js";
+import { valCard } from "./valorant.js";
 
 // --- Transitions ----------------------------------------------------------------
 const list = () => (App.state.project.transitions || []).map(t => ({ ...t }));
@@ -75,7 +76,7 @@ function renderOutputs() {
   const net = (st.app || {}).network || {};
   const port = (st.app || {}).port || location.port, hosts = ["localhost", ...(net.network ? (net.bind ? [net.bind] : (st.app || {}).addresses || []) : [])];
   const base = h => `http://${h}:${port}`;
-  morphKids($("#out-list"), [obsCard(), rlCard(),   // (in place: typing in any card, or an open dropdown, is never interrupted)
+  morphKids($("#out-list"), [obsCard(), rlCard(), valCard(),   // (in place: typing in any card, or an open dropdown, is never interrupted)
     ...hosts.map(h => el("div", { class: "card" }, el("h3", {}, h === "localhost" ? "On this PC" : `From other PCs (${h})`),
       copyRow("Program", base(h) + "/output", outs.program), copyRow("Preview", base(h) + "/output?bus=preview", outs.preview))),
     el("div", { class: "card" }, el("h3", {}, "One graphic each"),
