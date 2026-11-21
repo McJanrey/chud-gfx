@@ -58,6 +58,28 @@ class Demo:
                                       "abilities": charges[(t, s)]}
                                      for t in range(2) for s in range(5)]
         self.send({"teams": [{"name": TEAMS[0], "score": 0}, {"name": TEAMS[1], "score": 0}], "map": "Ascent", "first_attack": 1, "round": 1})
+        # agent select first: everyone hovers, then locks in, while the clock runs down
+        try:
+            from .valorant import catalog
+            ascent = next((m["id"] for m in catalog().get("maps", []) if m["name"] == "Ascent"), "")
+        except Exception:
+            ascent = ""
+        names = [{"team": t, "slot": s + 1, "name": NAMES[t][s]} for t in range(2) for s in range(5)]
+        self.send({"select": {"on": True, "timer": "20", "map_id": ascent, "reset": True}, "players": names})
+        order = list(range(10))
+        rnd.shuffle(order)
+        for step, secs in enumerate(range(20, 0, -1)):
+            ch = []
+            if step < 10:   # (one player hovers each second)
+                i = order[step]
+                ch.append({"team": i // 5, "slot": i % 5 + 1, "pick": ids.get(AGENTS[(i + 3) % 10], "")})
+            if 3 <= step < 13:   # (and locks three seconds later, on their own agent)
+                i = order[step - 3]
+                ch.append({"team": i // 5, "slot": i % 5 + 1, "pick": ids.get(AGENTS[i], ""), "locked": True})
+            self.send({"select": {"timer": str(secs)}, "players": ch})
+            if self.wait(0.6):
+                return
+        self.send({"select": {"on": False}})
         r = 1
         while self.on and max(score) < 13 or (self.on and abs(score[0] - score[1]) < 2):
             alive = [[True] * 5, [True] * 5]

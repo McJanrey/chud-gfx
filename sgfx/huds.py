@@ -47,6 +47,8 @@ def save(engine, body):
             parts.append({"id": str(p.get("id") or _id())[:40], "name": str(p.get("name") or "Part")[:80], "on": p.get("on", True) is not False,
                           "layers": clean_layers(p.get("layers"))})
     hud = {"id": hid or _id(), "name": str(body.get("name") or "HUD")[:80], "game": body.get("game") if body.get("game") in GAMES else "other", "parts": parts}
+    if isinstance(body.get("built"), list):
+        hud["built"] = [str(x)[:40] for x in body["built"]][:50]
     if body.get("key"):
         hud["key"] = str(body["key"])[:40]
     lst = huds(engine)
@@ -72,17 +74,50 @@ def delete(engine, hid):
     engine.changed()
 
 
+def builtin(key):
+    """The built-in parts for a built-in HUD's key, or None."""
+    if key == "val27":
+        from . import valhud
+        return [(k, n.replace("VAL HUD · ", ""), kd, l) for k, n, kd, l in valhud.comps()]
+    return None
+
+
+def rebuild(engine, hid):
+    """A built-in HUD back to its built-in look (which parts are on is kept; the old one goes to the bin)."""
+    h = find(engine, hid)
+    parts = builtin((h or {}).get("key"))
+    if not h or not parts:
+        raise ValueError("Only a built-in HUD can be reset")
+    engine.project.setdefault("hud_bin", []).append(dict(h))
+    on = {p["id"]: p.get("on", True) for p in h.get("parts") or []}
+    h["parts"] = [{"id": pk.split(":")[-1], "name": pn, "on": on.get(pk.split(":")[-1], True), "layers": layers} for pk, pn, _, layers in parts]
+    h["built"] = [p["id"] for p in h["parts"]]
+    engine.save_project()
+    engine.changed()
+    return h
+
+
 def ensure(engine, key, name, game, parts):
     """The built-in HUD for a game (added once; one you deleted stays deleted). Any of its parts made as graphics
     before the HUD Builder existed are moved in, so they leave the composer."""
     done = engine.project.setdefault("hud_pages", [])
-    if key in done:
-        return None
+    if key in done:   # (made already: a built-in part added since then is added once; one you deleted stays deleted)
+        h = find(engine, key)
+        if not h:
+            return None
+        built = h.setdefault("built", [p["id"] for p in h.get("parts") or []])
+        new = [(pk.split(":")[-1], pn, layers) for pk, pn, _, layers in parts if pk.split(":")[-1] not in built]
+        for pid, pn, layers in new:
+            h["parts"].append({"id": pid, "name": pn, "on": True, "layers": layers})
+            built.append(pid)
+        if new:
+            engine.save_project()
+        return h if new else None
     done.append(key)
     comps = engine.comps()
     for c in [c for c in comps if str(c.get("hud_page", "")).startswith(key + ":")]:
         comps.remove(c)
-    hud = {"id": key, "key": key, "name": name, "game": game,
+    hud = {"id": key, "key": key, "name": name, "game": game, "built": [pk.split(":")[-1] for pk, _, _, _ in parts],
            "parts": [{"id": pk.split(":")[-1], "name": pn, "on": True, "layers": layers} for pk, pn, _, layers in parts]}
     old = find(engine, key)
     if not old:

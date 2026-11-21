@@ -34,7 +34,10 @@ export function image(el, layer, ctx) {
     const d = document.createElement("div");
     d.className = "sg-fill";
     const u = `url("${ctx.url(src)}")`;
-    Object.assign(d.style, { background: tint, maskImage: u, webkitMaskImage: u, maskSize: "100% 100%", webkitMaskSize: "100% 100%", maskRepeat: "no-repeat", webkitMaskRepeat: "no-repeat" });
+    const size = layer.fit === "cover" ? "cover" : "100% 100%", pos = SIDE[layer.position] || "50% 50%";   // (cover keeps the shape; otherwise stretched, as before)
+    Object.assign(d.style, { background: tint, maskImage: u, webkitMaskImage: u, maskSize: size, webkitMaskSize: size, maskPosition: pos, webkitMaskPosition: pos,
+      maskRepeat: "no-repeat", webkitMaskRepeat: "no-repeat" });
+    if (layer.pic && layer.pic.flipX) d.style.transform = "scaleX(-1)";
     el.appendChild(d);
     return;
   }

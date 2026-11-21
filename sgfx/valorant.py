@@ -34,7 +34,7 @@ PLAYER = ("name", "agent", "agent_id", "alive", "health", "shields", "armor", "c
 UUID = __import__("re").compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
 IMG_DIR = os.path.join(os.environ.get("LOCALAPPDATA") or os.path.expanduser("~"), "StandBy GFX", "val-img")
 ABILITY = ("ability1", "ability2", "grenade", "ultimate")
-PICS = {"agent": ("displayicon", "killfeedportrait", "fullportrait") + ABILITY, "weapon": ("killstreamicon",)}
+PICS = {"agent": ("displayicon", "killfeedportrait", "fullportrait") + ABILITY, "weapon": ("killstreamicon",), "map": ("splash", "listviewicon")}
 
 
 def image(kind, uid, part):
@@ -43,7 +43,7 @@ def image(kind, uid, part):
         return None
     path = os.path.join(IMG_DIR, kind, uid, part + ".png")
     if not os.path.isfile(path):
-        base = f"https://media.valorant-api.com/{'agents' if kind == 'agent' else 'weapons'}/{uid}"
+        base = f"https://media.valorant-api.com/{ {'agent': 'agents', 'weapon': 'weapons', 'map': 'maps'}[kind] }/{uid}"
         url = f"{base}/abilities/{part}/displayicon.png" if part in ABILITY else f"{base}/{part}.png"
         try:
             data = urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "StandBy GFX"}), timeout=10).read()
@@ -54,6 +54,32 @@ def image(kind, uid, part):
             f.write(data)
         os.replace(path + ".tmp", path)
     return path
+
+
+_catalog = None
+
+
+def catalog():
+    """{"agents": [{id, name, role}], "maps": [{id, name}]} from valorant-api.com (fetched once a week, kept on this PC)."""
+    global _catalog
+    if _catalog is not None:
+        return _catalog
+    path = os.path.join(IMG_DIR, "catalog.json")
+    try:
+        if not os.path.isfile(path) or time.time() - os.path.getmtime(path) > 7 * 86400:
+            get = lambda u: json.loads(urllib.request.urlopen(urllib.request.Request(u, headers={"User-Agent": "StandBy GFX"}), timeout=15).read())["data"]
+            cat = {"agents": sorted(({"id": a["uuid"], "name": a["displayName"], "role": (a.get("role") or {}).get("displayName", "")}
+                                     for a in get("https://valorant-api.com/v1/agents?isPlayableCharacter=true")), key=lambda a: a["name"]),
+                   "maps": sorted(({"id": m["uuid"], "name": m["displayName"]} for m in get("https://valorant-api.com/v1/maps")
+                                   if m.get("splash") and m.get("tacticalDescription")), key=lambda m: m["name"])}
+            os.makedirs(IMG_DIR, exist_ok=True)
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(cat, f)
+        with open(path, encoding="utf-8") as f:
+            _catalog = json.load(f)
+    except (OSError, ValueError, KeyError):
+        return {"agents": [], "maps": []}   # (offline: try again next time)
+    return _catalog
 
 
 HOW = {"elimination": "Elimination", "spike": "Spike detonated", "defuse": "Spike defused", "time": "Time ran out"}
@@ -80,6 +106,7 @@ class Match:
         self.history = []   # [{"round", "winner", "how"}]
         self.feed = []      # the latest kills, newest last: [{"killer", "victim", ..., "t"}]
         self.banner, self.banner_side = "", None   # the line under the top bar (a timeout, a tech pause): set from the control page
+        self.select = {"on": False, "timer": "", "map_id": ""}   # agent select (players' "pick" / "locked" hold their choices)
 
     def merge(self, b):
         for i, t in enumerate((b.get("teams") or [])[:2]):
@@ -92,6 +119,17 @@ class Match:
         for k, a in (("phase", "phase"), ("spike", "spike"), ("map", "map"), ("timer", "timer")):
             if k in b:
                 setattr(self, a, str(b[k] or ""))
+        if isinstance(b.get("select"), dict):
+            s = b["select"]
+            if "on" in s:
+                self.select["on"] = bool(s["on"])
+            if "timer" in s:
+                self.select["timer"] = str(s["timer"] or "")[:8]
+            if "map_id" in s and (not s["map_id"] or UUID.match(str(s["map_id"]))):
+                self.select["map_id"] = str(s["map_id"] or "")
+            if s.get("reset"):   # (a new map's agent select: every choice cleared)
+                for p in self.players.values():
+                    p.pop("pick", None), p.pop("locked", None)
         if "banner" in b:
             self.banner = str(b.get("banner") or "")[:60]
             self.banner_side = b.get("banner_side") if b.get("banner_side") in (0, 1) else None
@@ -106,6 +144,10 @@ class Match:
             if isinstance(p, dict) and p.get("team") in (0, 1) and 1 <= int(p.get("slot") or 0) <= SLOTS:
                 row = self.players.setdefault((p["team"], int(p["slot"])), {})
                 row.update({k: p[k] for k in PLAYER if k in p})
+                if "pick" in p and (not p["pick"] or UUID.match(str(p["pick"]))):
+                    row["pick"] = str(p["pick"] or "")
+                if "locked" in p:
+                    row["locked"] = bool(p["locked"])
                 if isinstance(p.get("abilities"), dict):
                     row["abilities"] = {k: [int(x) for x in v[:2]] for k, v in p["abilities"].items() if k in ("C", "Q", "E") and isinstance(v, (list, tuple)) and len(v) >= 2}
                 if p.get("ult_ready") and row.get("ult_max"):   # (the scoreboard says READY instead of "7 / 7")
@@ -372,7 +414,7 @@ class Val:
     def add_hud(self):
         done = self.engine.project.setdefault("hud_pages", [])
         from . import huds, valhud
-        if huds.ensure(self.engine, "val27", "VAL HUD (SCC 2027)", "valorant", [(k, n.replace("VAL HUD · ", ""), kd, l) for k, n, kd, l in valhud.comps()]):
+        if huds.ensure(self.engine, "val27", "VAL HUD (SCC 2027)", "valorant", huds.builtin("val27")):
             self.engine.changed()
         new = [x for x in hud_comps() if x[0] not in done]
         for key, name, kind, layers in new:

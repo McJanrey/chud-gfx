@@ -1151,6 +1151,9 @@ class Engine:
         elif path == "/api/hud":   # (the HUD Builder: a whole HUD saved)
             from . import huds
             result = {"hud": huds.save(self, body)}
+        elif path == "/api/hud/rebuild":   # (a built-in HUD back to its built-in look)
+            from . import huds
+            result = {"hud": huds.rebuild(self, str(body.get("id") or ""))}
         elif path == "/api/hud/delete":
             from . import huds
             huds.delete(self, str(body.get("id") or ""))
@@ -1408,6 +1411,8 @@ def handler(engine):
                 return self.wfile.write(data)
             if path == "/api/assets":
                 return self._send(200, json.dumps({"assets": engine.assets()}))
+            if path == "/api/val/catalog":   # (every agent and map, for pickers)
+                return self._send(200, json.dumps(valorant.catalog()))
             if path == "/api/val/hud":   # (our own VAL HUD's data)
                 with engine.lock:
                     h = json.dumps(engine.val.hud())

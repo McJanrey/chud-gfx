@@ -89,7 +89,9 @@ function drawTools() {
     el("button", { class: "small", onclick: () => window.open(`/hud/${hud.id}/control`, "_blank") }, "Control page"),
     el("button", { class: "small", onclick: () => window.open(`/hud/${hud.id}`, "_blank") }, "Open the HUD"),
     el("button", { class: "small", onclick: () => navigator.clipboard.writeText(url).then(() => toast("Browser source link copied")) }, "Copy OBS link"),
-    el("button", { class: "small", onclick: renameHud }, "Rename"), el("button", { class: "small", onclick: deleteHud }, "Delete HUD"));
+    el("button", { class: "small", onclick: renameHud }, "Rename"),
+    hud.key ? el("button", { class: "small", onclick: rebuildHud, title: "Back to the built-in look, with the latest improvements" }, "Reset to built-in") : "",
+    el("button", { class: "small", onclick: deleteHud }, "Delete HUD"));
   $("#hb-url").textContent = `OBS / vMix browser source: ${url}  (1920 x 1080). Always live: each layer shows itself from the game's data.`;
 }
 
@@ -160,6 +162,10 @@ async function newPart() {
   const p = { id: uid(), name, on: true, layers: [] }; edit(() => hud.parts.push(p), true); partId = p.id; drawAll();
 }
 async function renameHud() { const n = await askText("HUD name", hud.name); if (n) edit(() => { hud.name = n; }, true); setTimeout(drawHuds, 400); }
+async function rebuildHud() {
+  if (!(await ask(`Reset "${hud.name}" to the built-in look?`, "Your changes to its layers are replaced by the latest built-in version. The current one is kept in the workspace's bin. Which parts are shown stays as it is."))) return;
+  await save(); await api("/api/hud/rebuild", { id: hud.id }); toast("Reset to the built-in look"); setTimeout(() => open(hud.id), 300);
+}
 async function deleteHud() { if (!(await ask(`Delete "${hud.name}"?`, "It's put aside in the workspace's bin, not deleted for good."))) return; await api("/api/hud/delete", { id: hud.id }); hudId = hud = null; drawAll(); }
 
 async function figma(e) {

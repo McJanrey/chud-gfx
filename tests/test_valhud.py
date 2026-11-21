@@ -24,6 +24,20 @@ class ValHud(unittest.TestCase):
         f = valhud.fields(m, {})
         self.assertEqual((f["Left 1 here"], f["Left 1 board"], f["Buy phase"]), ("", "yes", "yes"))   # (tabs step aside for the board)
 
+    def test_agent_select(self):
+        m = Match(("Saints", "Lancers"))
+        aid = "add6443a-41bd-e414-f6ad-e58d267f4e95"
+        m.merge({"players": [{"team": 0, "slot": 1, "name": "Kai", "pick": aid, "locked": True}, {"team": 0, "slot": 2, "name": "Rook", "pick": aid}]})
+        f = valhud.fields(m, {})
+        self.assertEqual((f["Left 1 locked"], f["Left 2 hovering"], f["Left 3 empty"]), ("", "", ""))   # (nothing shows outside agent select)
+        m.merge({"select": {"on": True, "timer": "11"}, "first_attack": 1})
+        f = valhud.fields(m, {})
+        self.assertEqual((f["Select on"], f["Select timer"], f["Locked count"], f["Left select side"], f["Right select side"]), ("yes", "11", "1/10", "DEFEND", "ATTACK"))
+        self.assertEqual((f["Left 1 locked"], f["Left 2 hovering"], f["Left 3 empty"], f["Left 1 pick art"]),
+                         ("yes", "yes", "yes", f"/val-img/agent/{aid}/fullportrait.png"))
+        m.merge({"select": {"reset": True}})
+        self.assertEqual(valhud.fields(m, {})["Locked count"], "0/10")
+
     def test_pictures_take_only_their_own_shapes(self):
         for good in ("ring/3/7.svg", "marks/1/2.svg", "bar/62/66b5f4.svg", "dot/66b5f4/1.svg", "armor/regen.svg", "spike/ink.svg", "tracker/0e1s/66b5f4/ee5b58.svg"):
             self.assertTrue(valhud.svg(good).startswith("<svg"), good)
@@ -32,6 +46,6 @@ class ValHud(unittest.TestCase):
 
     def test_graphics_are_plain_layers(self):
         names = [n for _, n, _, _ in valhud.comps()]
-        self.assertEqual(names, ["VAL HUD · Top bar", "VAL HUD · Players", "VAL HUD · Buy phase", "VAL HUD · Round win"])
+        self.assertEqual(names, ["VAL HUD · Top bar", "VAL HUD · Players", "VAL HUD · Buy phase", "VAL HUD · Round win", "VAL HUD · Agent select"])
         for _, _, _, layers in valhud.comps():
             self.assertTrue(all(l["type"] in ("rect", "text", "image") for l in layers))

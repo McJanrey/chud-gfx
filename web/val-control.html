@@ -70,6 +70,18 @@
   </section>
 
   <section style="grid-column: 1 / -1">
+    <h2>Agent select</h2>
+    <div class="row">
+      <button id="selOn">Show agent select</button>
+      <label class="f" style="max-width:120px">Timer<input id="selTimer" maxlength="5" placeholder="30"></label>
+      <label class="f">Map<select id="selMap"><option value="">(none)</option></select></label>
+      <button id="selReset" style="align-self:end">Clear the picks</button>
+    </div>
+    <div class="row" id="picks" style="align-items:flex-start"></div>
+    <p class="muted">Pick each player's agent as they hover it (a grey shadow on the card), then tick Locked (the full picture). The screen reader fills this in once it learns the agent-select screen.</p>
+  </section>
+
+  <section style="grid-column: 1 / -1">
     <h2>Teams</h2>
     <div class="row" id="teams" style="align-items:flex-start"></div>
   </section>
@@ -125,6 +137,22 @@ function draw() {
   $("timeouts").innerHTML = [0, 1].map(i => `<button data-to="${i}">Timeout · ${esc(field(SIDES[i][0].toUpperCase() + SIDES[i].slice(1) + " tricode") || names[i])} (${to[i]} left)</button>`).join("");
   $("timeouts").querySelectorAll("[data-to]").forEach(b => b.onclick = () => { const i = +b.dataset.to;
     ingest({ teams: i ? [{}, { timeouts: Math.max(0, to[1] - 1) }] : [{ timeouts: Math.max(0, to[0] - 1) }, {}], banner: `TACTICAL TIMEOUT · ${names[i]}`, banner_side: i }).then(refresh); });
+  // agent select
+  const selOn = field("Select on") === "yes";
+  $("selOn").className = selOn ? "on" : ""; $("selOn").textContent = selOn ? "Hide agent select" : "Show agent select";
+  if (document.activeElement !== $("selTimer")) $("selTimer").value = field("Select timer");
+  if (document.activeElement !== $("selMap")) $("selMap").value = (field("Select map pic").match(/map\/([0-9a-f-]{36})\//) || [])[1] || "";
+  const picks = $("picks");
+  if (!picks.contains(document.activeElement)) {
+    const cat = window.CATALOG || { agents: [] };
+    picks.innerHTML = [0, 1].map(t => `<div style="flex:1;min-width:320px">${[1, 2, 3, 4, 5].map(n => { const S2 = t ? "Right" : "Left", k = `${S2} ${n}`;
+      const cur = (field(`${k} pick art`).match(/agent\/([0-9a-f-]{36})\//) || [])[1] || "";
+      return `<div class="row"><span style="min-width:110px">${esc(field(`${k} name`) || `${S2} ${n}`)}</span>
+        <select data-pick="${t},${n}" style="flex:1"><option value="">(none)</option>${cat.agents.map(a => `<option value="${a.id}" ${a.id === cur ? "selected" : ""}>${esc(a.name)}</option>`).join("")}</select>
+        <label class="muted"><input type="checkbox" data-lock="${t},${n}" ${field(`${k} locked`) === "yes" ? "checked" : ""} style="width:auto"> Locked</label></div>`; }).join("")}</div>`).join("");
+    picks.querySelectorAll("[data-pick]").forEach(e => e.onchange = () => { const [t, n] = e.dataset.pick.split(",").map(Number); ingest({ players: [{ team: t, slot: n, pick: e.value }] }).then(refresh); });
+    picks.querySelectorAll("[data-lock]").forEach(e => e.onchange = () => { const [t, n] = e.dataset.lock.split(",").map(Number); ingest({ players: [{ team: t, slot: n, locked: e.checked }] }).then(refresh); });
+  }
   // teams (Global: every graphic uses them)
   const teams = $("teams");
   if (!teams.contains(document.activeElement)) {
@@ -151,6 +179,10 @@ document.querySelectorAll("[data-phase]").forEach(b => b.onclick = () => ingest(
 $("tech").onclick = () => ingest({ banner: "TECHNICAL PAUSE" }).then(refresh);
 $("clearBanner").onclick = () => ingest({ banner: "" }).then(refresh);
 $("sayIt").onclick = () => ingest({ banner: $("custom").value.trim().toUpperCase() }).then(refresh);
+$("selOn").onclick = () => ingest({ select: { on: field("Select on") !== "yes" } }).then(refresh);
+$("selTimer").onchange = () => ingest({ select: { timer: $("selTimer").value.trim() } }).then(refresh);
+$("selMap").onchange = () => ingest({ select: { map_id: $("selMap").value } }).then(refresh);
+$("selReset").onclick = () => ingest({ select: { reset: true } }).then(refresh);
 $("demo").onclick = () => post("/api/val/demo", { on: !(S.val || {}).demo }).then(refresh);
 $("reader").onclick = () => post("/api/val/reader", { on: !((S.val || {}).reader || {}).on }).then(refresh);
 
@@ -159,6 +191,8 @@ async function refresh() {
 }
 (async () => {
   try { window.ASSETS = ((await (await fetch("/api/assets")).json()).assets || []).map(a => a.path || a).filter(a => /\.(png|jpe?g|svg|webp|gif)$/i.test(a)); } catch (e) { window.ASSETS = []; }
+  try { window.CATALOG = await (await fetch("/api/val/catalog")).json(); } catch (e) { window.CATALOG = { agents: [], maps: [] }; }
+  $("selMap").innerHTML = '<option value="">(none)</option>' + (window.CATALOG.maps || []).map(m => `<option value="${m.id}">${esc(m.name)}</option>`).join("");
   refresh(); setInterval(refresh, 1000);
 })();
 </script>

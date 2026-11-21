@@ -33,12 +33,14 @@ def fields(m, g):
     """The fields the SCC-layout graphics read (added to the VALORANT table)."""
     from .valorant import attackers
     f, atk = {}, attackers(m.round, m.first)
-    secs, planted, buy = _secs(m.timer), m.spike == "planted", m.phase == "buy"
+    picking = bool((getattr(m, "select", {}) or {}).get("on"))   # (agent select: the in-round HUD steps aside)
+    secs, planted, buy = _secs(m.timer), m.spike == "planted" and not picking, m.phase == "buy" and not picking
     cond = planted or (m.phase == "combat" and secs is not None and secs <= 79)   # (names tuck away 20 s into the round, or at the plant)
     won = m.history[-1] if m.history and m.phase == "end" else None
     need = max(1, (int((g.get("best_of") or 3)) + 1) // 2)
-    f.update({"Buy phase": "yes" if buy else "", "In round": "" if buy else "yes", "Planted": "yes" if planted else "",
-              "Names": "" if cond else "yes", "Condensed": "yes" if cond else "", "Round label": f"ROUND {m.round}",
+    f.update({"Buy phase": "yes" if buy else "", "In round": "" if buy or picking else "yes", "Planted": "yes" if planted else "",
+              "Names": "" if cond or picking else "yes", "Condensed": "yes" if cond and not picking else "", "Top on": "" if picking else "yes",
+              "Round label": f"ROUND {m.round}",
               "Round won": "yes" if won else ""})
     for i, s in enumerate(SIDES):
         gt, t = g.get(s.lower()) or {}, m.teams[i]
@@ -61,7 +63,7 @@ def fields(m, g):
             aid, gid = p.get("agent_id") or "", p.get("weapon_id") or ""
             ab = p.get("abilities") or {}
             ult, most = int(p.get("ult") or 0), int(p.get("ult_max") or 7)
-            show = have and not buy   # (the tabs step aside for the buy-phase board)
+            show = have and not buy and not picking   # (the tabs step aside for the buy-phase board and agent select)
             f.update({f"{k} here": "yes" if show else "", f"{k} up": "yes" if show and not dead else "", f"{k} down": "yes" if show and dead else "",
                       f"{k} board": "yes" if have and buy else "",
                       f"{k} pic": f"/val-img/agent/{aid}/displayicon.png" if UUID.match(aid) else "",
@@ -81,6 +83,33 @@ def fields(m, g):
                 f[f"{k} {key} pic"] = f"/val-img/agent/{aid}/{part}.png" if UUID.match(aid) else ""
                 f[f"{k} {key} marks"] = f"/val-svg/marks/{int(c[0])}/{int(c[1])}.svg"
                 f[f"{k} {key} out"] = "" if c[0] else "yes"
+    # agent select
+    from . import valorant as V
+    cat = V._catalog or {}
+    roles = {a["id"]: a for a in cat.get("agents", [])}
+    sel = getattr(m, "select", {}) or {}
+    picks = [(i, n, m.players.get((i, n), {})) for i in (0, 1) for n in range(1, 6)]
+    first = m.first if m.first in (0, 1) else 0
+    mp = next((x for x in cat.get("maps", []) if x["id"] == sel.get("map_id")), None)
+    try:
+        game_no = int(g.get("game") or 0) or sum(int((g.get(k) or {}).get("score") or 0) for k in ("left", "right")) + 1
+    except (TypeError, ValueError):
+        game_no = 1
+    f.update({"Select on": "yes" if sel.get("on") else "", "Select timer": sel.get("timer", ""), "Map number": f"MAP {game_no}",
+              "Locked count": f"{sum(1 for _, _, p in picks if p.get('locked') and p.get('pick'))}/10",
+              "Select map": (mp or {}).get("name", m.map or "").upper(),
+              "Select map pic": f"/val-img/map/{mp['id']}/splash.png" if mp else ""})
+    for i, s in enumerate(SIDES):
+        f[f"{s} select side"] = "ATTACK" if first == i else "DEFEND"
+    for i, n, p in picks:
+        k, aid = f"{SIDES[i]} {n}", p.get("pick") or ""
+        on = bool(sel.get("on"))
+        ok = bool(UUID.match(aid))
+        locked = ok and bool(p.get("locked"))
+        f.update({f"{k} pick art": f"/val-img/agent/{aid}/fullportrait.png" if ok else "",
+                  f"{k} locked": "yes" if on and locked else "", f"{k} hovering": "yes" if on and ok and not locked else "", f"{k} empty": "yes" if on and not ok else "",
+                  f"{k} pick name": (roles.get(aid) or {}).get("name", "").upper() if ok else "",
+                  f"{k} select name": p.get("name") or ""})
     f["Banner"] = getattr(m, "banner", "")
     f["Banner color"] = f[f"{SIDES[m.banner_side]} color"] if getattr(m, "banner_side", None) in (0, 1) else "#ffffff"
     f["Round tracker"] = f"/val-svg/tracker/{_track(m)}/{f['Left color'][1:]}/{f['Right color'][1:]}.svg"
@@ -331,6 +360,8 @@ def comps():
     A = lambda kind, dur=400, delay=0, out=None, ease="": {"in": {"dur": dur, "delay": delay, "type": kind, **({"ease": ease} if ease else {})},
                                                           "out": {"dur": out or int(dur * .75), "delay": 0, "type": kind}}
     for l in top:
+        l.setdefault("show", v("Top on"))
+        l["show"] = l["show"] or v("Top on")
         l["anim"] = A("pop", 420) if l["name"].startswith("Spike") else A("slide-down", 380) if l["name"].startswith("Banner") else A("fade", 350)
     for l in tabs:
         side, n = l["name"].split(" ")[0], int(l["name"].split(" ")[1])
@@ -345,6 +376,44 @@ def comps():
         kind = {"Win crest": "pop", "Win logo": "pop", "Win words": "scale", "Win bar": "grow-x"}.get(l["name"], "fade")
         delay = {"Win panel": 0, "Win crest": 120, "Win logo": 160, "Win words": 220, "Win bar": 360, "Win team": 520}.get(l["name"], 0)
         l["anim"] = A(kind, 480, delay, 300)
+    # agent select: both teams' five cards and the map in the middle (from the SCC agent-select screens, at 1920 x 1080)
+    sel = [R("Select shade", 0, 690, 1920, 390, "linear-gradient(rgba(8,10,16,0), rgba(8,10,16,.88) 22%)"),
+           T("Map number", 794, 696, 308, 20, v("Map number"), 15, font="Barlow Condensed", weight=600, tracking=4, color="#c9ced6"),
+           R("Map card", 794, 728, 308, 352, "#141a24", radius="14 14 0 0"),
+           I("Map picture", 794, 728, 308, 268, v("Select map pic"), fit="cover", radius="14 14 0 0"),
+           R("Map fade", 794, 860, 308, 136, "linear-gradient(rgba(20,26,36,0), rgba(20,26,36,.85))"),
+           T("Map name", 794, 896, 308, 72, v("Select map"), 66, font="Anton", weight=400),
+           R("Select panel", 794, 996, 308, 84, "#10151e"),
+           T("Agent select words", 830, 1001, 90, 16, "AGENT", 13, font="Barlow Condensed", weight=600, tracking=3, align="left", color="#c9ced6"),
+           T("Agent select words 2", 830, 1017, 90, 16, "SELECT", 13, font="Barlow Condensed", weight=600, tracking=3, align="left", color="#c9ced6"),
+           T("Select timer", 896, 990, 104, 56, v("Select timer"), 52, font="Anton", weight=400),
+           T("Locked", 990, 1001, 100, 16, v("Locked count"), 13, font="Barlow Condensed", weight=600, tracking=3, align="left", color="#c9ced6"),
+           T("Locked 2", 990, 1017, 100, 16, "LOCKED", 13, font="Barlow Condensed", weight=600, tracking=3, align="left", color="#c9ced6")]
+    for i, s in enumerate(SIDES):
+        right = i == 1
+        col = v(f"{s} color")
+        sel += [I(f"{s} select logo", 1782 if right else 62, 712, 44, 44, v(f"{s} logo")),
+                T(f"{s} select team", 1100 if right else 120, 708, 664, 56, v(f"{s} full name"), 52, font="Anton", weight=400, align="right" if right else "left"),
+                R(f"{s} select tag", 1373 if right else 507, 718, 96, 26, "transparent", radius=2, stroke=col, strokeWidth=1.5),
+                T(f"{s} select tag words", 1373 if right else 507, 718, 96, 26, v(f"{s} select side"), 13, font="Barlow Condensed", weight=600, tracking=4, color=col)]
+        for n in range(1, 6):
+            k = f"{s} {n}"
+            x = (1105 + 148 * (n - 1)) if right else (55 + 148.5 * (n - 1))
+            x = round(x)
+            sel += [R(f"{k} card", x, 776, 142, 287, "linear-gradient(#1a2130, #0e131c)", radius=2),
+                    R(f"{k} card hover edge", x, 776, 142, 287, "transparent", radius=2, stroke=col, strokeWidth=1.5, show=v(f"{k} hovering")),
+                    T(f"{k} card empty", x, 860, 142, 80, "?", 56, font="Anton", weight=400, color="rgba(255,255,255,.12)", show=v(f"{k} empty")),
+                    I(f"{k} card shadow", x, 776, 142, 287, v(f"{k} pick art"), fit="cover", position="top", opacity=.5, recolor="#9aa0aa", pic={"flipX": right}, show=v(f"{k} hovering")),
+                    I(f"{k} card art", x, 776, 142, 287, v(f"{k} pick art"), fit="cover", position="top", pic={"flipX": right}, show=v(f"{k} locked")),
+                    R(f"{k} card fade", x, 950, 142, 113, "linear-gradient(rgba(10,13,20,0), rgba(10,13,20,.92) 60%)"),
+                    T(f"{k} card agent", x + 10, 1004, 122, 20, v(f"{k} pick name"), 15, font="Barlow Condensed", weight=600, tracking=3, color=col,
+                      align="right" if right else "left"),
+                    T(f"{k} card player", x + 8, 1026, 126, 30, v(f"{k} select name"), 22, align="right" if right else "left"),
+                    R(f"{k} card bar", x, 1059, 142, 4, col, show=v(f"{k} locked"))]
+    for l in sel:
+        l["anim"] = A("fade", 300) if "card" in l["name"] and ("shadow" in l["name"] or "art" in l["name"] or "edge" in l["name"] or "bar" in l["name"]) else A("push-up", 520)
+    sel = [dict(l, show=l.get("show") or v("Select on")) for l in sel]
     return [("val27:top", "VAL HUD · Top bar", "overlay", top), ("val27:tabs", "VAL HUD · Players", "overlay", tabs),
             ("val27:board", "VAL HUD · Buy phase", "overlay", [dict(l, show=l.get("show") or v("Buy phase")) if not l.get("show") else l for l in board]),
-            ("val27:win", "VAL HUD · Round win", "overlay", [dict(l, show=v("Round won")) for l in win])]
+            ("val27:win", "VAL HUD · Round win", "overlay", [dict(l, show=v("Round won")) for l in win]),
+            ("val27:select", "VAL HUD · Agent select", "overlay", sel)]
