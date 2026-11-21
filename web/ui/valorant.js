@@ -18,7 +18,7 @@ export function valCard() {
       el("span", { class: "muted small" }, (v.reader || {}).on ? (v.reader.status || "") : "")),
     el("label", { class: "f" }, el("span", {}, "Send to a HUD"),
       el("select", { "aria-label": "Send to a HUD", onchange: e => api("/api/val", { target: e.target.value }) },
-        ...[["chud", "Chud Hud (VALORANT HUD)"], ["owen", "SCC Broadcast Engine (VAL HUD, port 8778)"], ["off", "Off"]].map(([k, t]) => el("option", { value: k, selected: ((v.chud || {}).target || "chud") === k }, t))),
+        ...[["owen", "SCC Broadcast Engine (VAL HUD, port 8778)"], ["chud", "Chud Hud (VALORANT HUD)"], ["off", "Off"]].map(([k, t]) => el("option", { value: k, selected: ((v.chud || {}).target || "owen") === k }, t))),
       el("span", { class: "muted small" }, v.chud && v.chud.target !== "off" ? (v.chud.ok ? "Sending" : "Not reachable: is that HUD open?") : "")),
     el("div", { class: "row" },
       el("button", { class: "small", onclick: () => api("/api/val/demo", { on: !v.demo }) }, v.demo ? "Stop demo match" : "Demo match"),

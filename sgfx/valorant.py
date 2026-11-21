@@ -274,10 +274,10 @@ class Val:
 
     def forward(self):
         c = self.cfg()
-        target = c.get("target", "chud" if c.get("chud_on", True) else "off")
+        target = c.get("target", "owen" if c.get("chud_on", True) else "off")
         if target == "off" or time.time() - getattr(self, "_sent", 0) < 0.4:
             return
-        if target == "owen":
+        if target == "owen":   # (the default: the SCC Broadcast Engine's VAL HUD draws it until our own HUD is built)
             self._sent, url, body = time.time(), c.get("chud") or self.OWEN, json.dumps(self.owen_update()).encode()
         else:
             self._sent, url, body = time.time(), c.get("chud") or self.CHUD, json.dumps(self.chud_messages()).encode()
@@ -315,7 +315,7 @@ class Val:
         return {"on": c.get("on", True), "series": c.get("series", True), "status": "on" if self.live() else "waiting" if self.at else "off",
                 "reader": {"on": r.on, "screen": r.screen, "status": r.status} if r else None,
                 "demo": bool(getattr(getattr(self.engine, "valdemo", None), "on", False)),
-                "chud": {"target": c.get("target", "chud" if c.get("chud_on", True) else "off"), "url": c.get("chud") or (self.OWEN if c.get("target") == "owen" else self.CHUD),
+                "chud": {"target": c.get("target", "owen" if c.get("chud_on", True) else "off"), "url": c.get("chud") or (self.CHUD if c.get("target") == "chud" else self.OWEN),
                          "ok": time.time() - getattr(self, "chud_ok", 0) < 5},
                 "source": self.source, "ago": round(time.time() - self.at) if self.at else None,
                 "maps": [{"n": i + 1, "map": m.get("map", ""), "winner": m.get("winner"),
