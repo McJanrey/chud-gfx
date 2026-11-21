@@ -26,6 +26,23 @@ class ValReader(unittest.TestCase):
         self.assertEqual({n: (r["weapon"], r["armor"]) for n, r in rows.items() if r["weapon"] or r["armor"]},
                          {"crippled kid": ("Vandal", "heavy"), "meowpilled": ("Vandal", "heavy"), "ludociel": ("Vandal", "")})
 
+    def test_round_timer(self):
+        """The round clock by digit shape (Windows' text recognition misses it often), from five real frames."""
+        from sgfx import valreader as V
+        strip = Image.open(os.path.join(HERE, "fixtures", "val_timers.png")).convert("RGB")
+        got = []
+        for k in range(5):
+            frame = Image.new("RGB", (1920, 1080))
+            frame.paste(strip.crop((k * 130, 0, k * 130 + 130, 56)), (895, 22))
+            got.append(V.round_timer(frame))
+        self.assertEqual(got, ["1:35", "1:09", "0:04", "0:54", "1:39"])
+
+    def test_map_from_the_loading_screen(self):
+        from sgfx import valreader as V
+        frame = Image.new("RGB", (1920, 1080))
+        frame.paste(Image.open(os.path.join(HERE, "fixtures", "val_map_banner.png")).convert("RGB"), (560, 110))
+        self.assertEqual(V.parse(frame).get("map"), "Ascent")
+
     def test_killfeed_frame(self):
         """Kill feed: killer, gun silhouette, headshot mark, victim, and each side's team colour (teal 0, red 1)."""
         from sgfx import valreader as V

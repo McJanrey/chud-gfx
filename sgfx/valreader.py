@@ -363,6 +363,37 @@ def killfeed(img):
     return out
 
 
+_maps = None
+
+
+def maps():
+    """Every map's name (from valorant-api.com, kept a week on this PC); a short built-in list if that can't be reached."""
+    global _maps
+    if _maps is None:
+        path = os.path.join(GEAR_DIR, "maps.json")
+        try:
+            if not os.path.isfile(path) or time.time() - os.path.getmtime(path) > 7 * 86400:
+                import urllib.request
+                data = json.loads(urllib.request.urlopen(urllib.request.Request("https://valorant-api.com/v1/maps", headers={"User-Agent": "StandBy GFX"}), timeout=15).read())["data"]
+                os.makedirs(GEAR_DIR, exist_ok=True)
+                with open(path, "w", encoding="utf-8") as f:
+                    json.dump(sorted({m["displayName"] for m in data if m.get("displayName")}), f)
+            with open(path, encoding="utf-8") as f:
+                _maps = json.load(f)
+        except (OSError, ValueError, KeyError):
+            _maps = ["Abyss", "Ascent", "Bind", "Breeze", "Corrode", "Fracture", "Haven", "Icebox", "Lotus", "Pearl", "Split", "Sunset"]
+    return _maps
+
+
+def round_timer(img):
+    """The round clock ("1:35") by digit shape, from just the inside of its grey box (the box's edges kept out); None if unsure."""
+    cs = [char(g) for g in glyphs(img.crop((922, 30, 1000, 68)), 200)]
+    if len(cs) == 4 and cs[1] is None:   # (the colon: two dots, tall enough to count as a glyph)
+        cs = cs[:1] + cs[2:]
+    d = "".join(c or "?" for c in cs)
+    return f"{d[0]}:{d[1:]}" if re.fullmatch(r"[0-9][0-5][0-9]", d) else None
+
+
 def spike_planted(img):
     """While the spike is planted the round timer is replaced by a red spike icon."""
     a = np.asarray(img.crop((915, 18, 1005, 92)), dtype=np.int16)
@@ -389,7 +420,8 @@ def parse(img):
         out["spike"], out["phase"] = "planted", "combat"
     else:
         out["spike"] = ""
-        t = _text(img, (895, 22, 1025, 78), 3)
+        clock = round_timer(img)
+        t = clock or _text(img, (895, 22, 1025, 78), 3)
         m = re.search(r"(\d{1,2})[:.](\d\d)", t)
         d = digits(img.crop((895, 22, 1025, 78)))
         if m:
@@ -397,6 +429,10 @@ def parse(img):
         elif re.fullmatch(r"\d{3}", d or ""):    # (the colon is too small to be a glyph: "137" = 1:37)
             out["timer"] = f"{d[0]}:{d[1:]}"
     banner = _text(img, (560, 110, 1360, 320)).upper()
+    if "ROUND" not in banner and "BUY" not in banner:   # (the loading screen: the map's name first, big, then the mode)
+        hit = next((m for m in maps() if (banner + " ").startswith(m.upper() + " ")), None)
+        if hit:
+            out["map"] = hit
     m = re.search(r"ROUND\s*([0-9IL]{1,2})", banner)
     if m:
         out["round"] = int(m.group(1).replace("I", "1").replace("L", "1"))
@@ -468,7 +504,7 @@ class Reader:
 
     def update(self, d):
         """Turn a parse() result into an ingest body, placing scoreboard rows into slots by name."""
-        body = {k: d[k] for k in ("teams", "round", "phase", "spike", "timer") if k in d}
+        body = {k: d[k] for k in ("teams", "round", "phase", "spike", "timer", "map") if k in d}
         players = d.get("players", [])
         for team, rows in (d.get("roster") or {}).items():
             team = int(team)
@@ -514,7 +550,7 @@ class Reader:
                 continue
             try:
                 d = parse(self.frame())
-                if d.get("timer") or d.get("roster") or d.get("feed"):
+                if d.get("timer") or d.get("roster") or d.get("feed") or d.get("map"):
                     self.engine.val.ingest(self.update(d))
                     self.status = "reading"
                 else:

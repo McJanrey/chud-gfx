@@ -20,6 +20,7 @@
   table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums } td { padding: 6px 4px; border-bottom: 1px solid var(--line) }
   .hp { width: 90px; height: 8px; background: #222; border-radius: 4px; overflow: hidden } .hp i { display: block; height: 100% }
   .dead td { opacity: .4 } .k { color: var(--muted); font-size: 12px }
+  .feed { max-width: 1100px; margin: 18px auto 0 } .hs { color: #ff4d4d; font-size: 12px }
   .status { max-width: 1100px; margin: 0 auto 10px; color: var(--muted); font-size: 13px }
 </style>
 </head>
@@ -27,6 +28,7 @@
 <div class="status" id="status">Connecting…</div>
 <div class="bar"><div class="team l" id="lt"></div><div class="mid" id="mid"></div><div class="team r" id="rt"></div></div>
 <div class="grid"><div class="p"><table id="L"></table></div><div class="p"><table id="R"></table></div></div>
+<div class="p feed"><table id="K"></table></div>
 <script>
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]);
@@ -42,15 +44,19 @@ async function tick() {
     $("mid").innerHTML = f.Spike === "planted" ? `<div class="t spike">SPIKE</div><div class="r">planted · round ${esc(f.Round)}</div>`
       : `<div class="t">${esc(f.Timer || "–")}</div><div class="r">round ${esc(f.Round)} · ${esc(f.Phase || "")}</div>`;
     for (const [id, s] of [["L", "Left"], ["R", "Right"]]) {
-      let h = `<tr class="k"><td>player</td><td>health</td><td>ult</td><td>K/D/A</td><td>credits</td></tr>`;
+      let h = `<tr class="k"><td>player</td><td>health</td><td>ult</td><td>K/D/A</td><td>credits</td><td>weapon</td><td>armor</td></tr>`;
       for (let n = 1; n <= 5; n++) {
         const g = k => f[`${s} ${n} ${k}`], hp = +g("health") || 0, alive = g("alive") !== "no";
         h += `<tr class="${alive ? "" : "dead"}"><td>${esc(g("name") || "slot " + n)}</td>
           <td>${alive ? `<div class="hp"><i style="width:${hp}%;background:${hp > 50 ? "#3fb950" : hp > 25 ? "#d29922" : "#f85149"}"></i></div>` : "dead"}</td>
-          <td>${esc(g("ult"))}${g("ult max") ? "/" + esc(g("ult max")) : ""}</td><td>${esc(g("kd"))}</td><td>${esc(g("credits"))}</td></tr>`;
+          <td>${esc(g("ult"))}${g("ult max") ? "/" + esc(g("ult max")) : ""}</td><td>${esc(g("kd"))}</td><td>${esc(g("credits"))}</td><td>${esc(g("weapon"))}</td><td>${esc(g("armor"))}</td></tr>`;
       }
       $(id).innerHTML = h;
     }
+    let k = `<tr class="k"><td>kill feed (newest first)</td><td></td><td></td></tr>`;
+    for (let n = 1; n <= 5; n++) if (f[`Kill ${n} killer`]) k += `<tr><td>${esc(f[`Kill ${n} killer`])} <span class="k">(${esc(f[`Kill ${n} killer side`])})</span></td>
+      <td>${esc(f[`Kill ${n} weapon`] || "?")}${f[`Kill ${n} headshot`] === "yes" ? ' <span class="hs">headshot</span>' : ""}</td><td>${esc(f[`Kill ${n} victim`])}</td></tr>`;
+    $("K").innerHTML = k;
   } catch (e) { $("status").textContent = "Engine not reachable"; }
 }
 setInterval(tick, 500); tick();
