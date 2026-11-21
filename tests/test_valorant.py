@@ -65,6 +65,27 @@ class Valorant(unittest.TestCase):
         self.send({"event": "map_end", "winner": 0})
         self.assertFalse((self.engine.project.get("global") or {}).get("left", {}).get("score"))
 
+    def test_scores_only_reader_gets_rounds_and_the_map(self):
+        """The screen reader sends only scores: one side one up is a round (spike / defuse told from the spike), 13 clear is the map."""
+        self.send({"teams": [{"name": "Saints", "score": 0}, {"name": "Lancers", "score": 0}], "first_attack": 0,
+                   "players": [{"team": 0, "slot": 1, "name": "Kai", "armor": "heavy", "weapon": "Vandal", "weapon_id": "9c82e19d-4575-0200-1a81-3eacf00cf872",
+                                "spike": True, "abilities": {"C": [1, 2], "Q": [0, 1], "X": [9, 9]}}]})
+        o = self.engine.val.owen_update()
+        kai = o["players"][0]
+        self.assertEqual((kai["shield"], kai["regen_shield"], kai["weapon"], kai["abilities"]), (50, False, "Vandal", {"C": [1, 2], "Q": [0, 1]}))
+        self.assertEqual(o["match"]["spike"], {"state": "carried", "carrier": ["left", 1]})
+        self.send({"spike": "planted"})
+        self.send({"teams": [{"score": 1}, {"score": 0}], "spike": ""})   # attackers (left) won with the spike down
+        self.send({"teams": [{"score": 1}, {"score": 0}]})                 # the same score again is not another round
+        self.send({"teams": [{"score": 1}, {"score": 7}]})                 # a misread jump is not a round
+        self.send({"teams": [{"score": 1}, {"score": 1}]})
+        self.assertEqual([(h["winner"], h["how"]) for h in self.engine.val.match.history], [(0, "spike"), (1, "elimination")])
+        self.assertEqual(self.engine.val.owen_update()["match"]["rounds"], [{"winner": "left", "win_type": "Detonation"}, {"winner": "right", "win_type": "Elimination"}])
+        for n in range(2, 14):
+            self.send({"teams": [{"score": n}, {"score": 1}]})
+        self.assertEqual(str(self.table("VAL Last map")["Left score"]), "13")
+        self.assertEqual(self.engine.val.match.history, [])   # (a fresh map)
+
     def test_off_refuses(self):
         call(self.engine.port, "/api/val", {"on": False})
         code, r = call(self.engine.port, "/api/val/ingest", {"round": 3})

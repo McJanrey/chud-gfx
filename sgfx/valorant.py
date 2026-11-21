@@ -5,10 +5,13 @@ A reader POSTs partial JSON to /api/val/ingest as often as it likes; only what i
      "round": 15, "phase": "buy" | "combat" | "end", "spike": "planted" | "defused" | "", "map": "Ascent",
      "first_attack": 0,                     # which team attacked in round 1 (sides are worked out from it)
      "players": [{"team": 0, "slot": 1, "name": "Kai", "agent": "Jett", "alive": true, "health": 100,
-                  "shields": 50, "credits": 3900, "weapon": "Vandal", "ult": 5, "ult_max": 7,
+                  "shields": 50, "armor": "heavy" | "light" | "regen" | "", "credits": 3900, "weapon": "Vandal",
+                  "weapon_id": "<valorant-api uuid>", "ult": 5, "ult_max": 7, "abilities": {"C": [1, 2], "Q": [0, 1], "E": [1, 1]},
                   "kills": 12, "deaths": 9, "assists": 4, "spike": false}],
      "event": "round_end", "winner": 0, "how": "elimination" | "spike" | "defuse" | "time"
        or "event": "map_end", "winner": 0}
+A reader that only sends scores (the screen reader) still gets its rounds: a score one up on one side alone is taken as
+that round's end, won by spike / defuse if the spike was down, else by elimination.
 
 Live data is the table "VALORANT". Every finished round is kept as "VAL Last round"; every finished map is frozen as
 "VAL Map N" and "VAL Last map" (also written to val-maps.json in the workspace, so a restart keeps them), and a
@@ -25,7 +28,7 @@ from .rocket import _layer, rows
 
 SIDES = ("Left", "Right")
 SLOTS = 5
-PLAYER = ("name", "agent", "agent_id", "alive", "health", "shields", "credits", "weapon", "ult", "ult_max", "kills", "deaths", "assists", "spike")
+PLAYER = ("name", "agent", "agent_id", "alive", "health", "shields", "armor", "credits", "weapon", "weapon_id", "ult", "ult_max", "kills", "deaths", "assists", "spike")
 HOW = {"elimination": "Elimination", "spike": "Spike detonated", "defuse": "Spike defused", "time": "Time ran out"}
 
 
@@ -66,6 +69,8 @@ class Match:
             if isinstance(p, dict) and p.get("team") in (0, 1) and 1 <= int(p.get("slot") or 0) <= SLOTS:
                 row = self.players.setdefault((p["team"], int(p["slot"])), {})
                 row.update({k: p[k] for k in PLAYER if k in p})
+                if isinstance(p.get("abilities"), dict):
+                    row["abilities"] = {k: [int(x) for x in v[:2]] for k, v in p["abilities"].items() if k in ("C", "Q", "E") and isinstance(v, (list, tuple)) and len(v) >= 2}
                 if p.get("ult_ready") and row.get("ult_max"):   # (the scoreboard says READY instead of "7 / 7")
                     row["ult"] = row["ult_max"]
 
@@ -148,8 +153,18 @@ class Val:
             raise ValueError("Send a set of fields")
         first = not self.at
         self.at, self.source = time.time(), ip
+        base = getattr(self.match, "base", None)   # (the last score pair taken as true: a misread never moves it)
+        spike, atk = self.match.spike, attackers(self.match.round, self.match.first)
         self.match.merge(body)
         ev, w = body.get("event"), body.get("winner")
+        if not ev and "teams" in body:   # (scores only: a round won is a score one up on one side alone)
+            after = [int(t["score"] or 0) for t in self.match.teams]
+            if base is None:   # (joined mid-match: the first scores seen are the start)
+                self.match.base = after
+            up = [i for i in (0, 1) if base and after[i] == base[i] + 1 and after[1 - i] == base[1 - i]]
+            if up:
+                self.match.base, ev, w = after, "round_end", up[0]
+                body = dict(body, how=("spike" if w == atk else "defuse") if spike == "planted" else "elimination", auto=True)
         if ev == "round_end" and w in (0, 1):
             m = self.match
             m.history.append({"round": m.round, "winner": w, "how": str(body.get("how") or "")})
@@ -171,6 +186,9 @@ class Val:
             self.match, self.last_round = Match((m.teams[0]["name"], m.teams[1]["name"])), None
         if first:
             self.add_hud()
+        sc = [int(t["score"] or 0) for t in self.match.teams]
+        if body.get("auto") and max(sc) >= 13 and abs(sc[0] - sc[1]) >= 2:   # (first to 13, two clear in overtime)
+            return self.ingest({"event": "map_end", "winner": 0 if sc[0] > sc[1] else 1}, ip)
         self.engine.changed()
         self.forward()
 
@@ -184,16 +202,21 @@ class Val:
         mm = __import__("re").fullmatch(r"(\d+):(\d\d)", m.timer or "")
         if mm:
             game["TimeSeconds"] = int(mm.group(1)) * 60 + int(mm.group(2))
-        vals, n = {"valPhase": m.phase, "valSpike": m.spike, "valRound": m.round}, 0
+        vals, n = {"valPhase": m.phase, "valSpike": m.spike, "valRound": m.round,
+                   "valHistory": " ".join(f"{h['winner']}{h['how'][:1] or 'e'}" for h in m.history)}, 0   # ("0e 1s 0d": winner, how)
         for (team, slot), p in sorted(m.players.items()):
             if not p.get("name"):
                 continue
             n += 1
-            for key, k in (("Name", "name"), ("Agent", "agent_id"), ("Ult", "ult"), ("UltMax", "ult_max"), ("Cr", "credits"), ("Hp", "health"), ("K", "kills"), ("D", "deaths"), ("A", "assists")):
+            for key, k in (("Name", "name"), ("Agent", "agent_id"), ("Ult", "ult"), ("UltMax", "ult_max"), ("Cr", "credits"), ("Hp", "health"), ("K", "kills"), ("D", "deaths"), ("A", "assists"), ("Gun", "weapon_id"), ("Armor", "armor")):
                 if p.get(k) is not None:
                     vals[f"val{key}{n}"] = p[k]
             if p.get("alive") is not None:
                 vals[f"valAlive{n}"] = 1 if p["alive"] else 0
+            if p.get("spike") is not None:
+                vals[f"valBomb{n}"] = 1 if p["spike"] else 0
+            for k, (have, most) in (p.get("abilities") or {}).items():
+                vals[f"valAb{k}{n}"], vals[f"valAbMax{k}{n}"] = have, most
         return [{"Event": "UpdateState", "Data": {"Game": game}}, {"Event": "ValOcr", "Data": {"values": vals}}]
 
     OWEN = "http://127.0.0.1:8778/api/ingest"
@@ -206,6 +229,13 @@ class Val:
                  "attackers": sides[attackers(m.round, m.first)], "spike": {"state": m.spike or ""}}
         if m.map:
             match["map"] = m.map
+        win = {"elimination": "Elimination", "spike": "Detonation", "defuse": "Deactivation", "time": "Time"}
+        match["rounds"] = [{"winner": sides[h["winner"]], "win_type": win.get(h["how"], "Elimination")} for h in m.history]
+        if m.history and m.phase == "end":
+            match["round_winner"], match["win_type"] = match["rounds"][-1]["winner"], match["rounds"][-1]["win_type"]
+        carrier = next(((t, s) for (t, s), p in m.players.items() if p.get("spike") is True), None)
+        if carrier and not m.spike:
+            match["spike"] = {"state": "carried", "carrier": [sides[carrier[0]], carrier[1]]}
         if mm:
             match["timer"] = int(mm.group(1)) * 60 + int(mm.group(2))
         players = []
@@ -215,6 +245,14 @@ class Val:
                          ("kills", "kills"), ("deaths", "deaths"), ("assists", "assists"), ("ult", "ult_points"), ("ult_max", "ult_max"), ("weapon", "weapon")):
                 if p.get(k) is not None:
                     q[o] = p[k]
+            if p.get("armor") is not None:   # (light armor 25, heavy 50; the regen shield is its own flag)
+                q["shield"], q["regen_shield"] = {"heavy": 50, "light": 25}.get(p["armor"], 0), p["armor"] == "regen"
+            elif p.get("shields") is not None:
+                q["shield"] = p["shields"]
+            if p.get("spike") is not None:
+                q["spike"] = bool(p["spike"])
+            if p.get("abilities"):
+                q["abilities"] = p["abilities"]
             players.append(q)
         return {"match": match, "players": players}
 

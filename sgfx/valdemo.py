@@ -6,6 +6,8 @@ import random
 import threading
 import time
 
+from .valorant import attackers
+
 AGENTS = ("Jett", "Sova", "Omen", "Killjoy", "Skye", "Raze", "Fade", "Viper", "Cypher", "Breach")
 NAMES = (("Kai", "Rook", "Vesper", "Lumen", "Brick"), ("Ember", "Sable", "Tidal", "Quill", "Onyx"))
 TEAMS = ("Saints", "Lancers")
@@ -40,19 +42,29 @@ class Demo:
         score, credits, ult = [0, 0], [[800] * 5, [800] * 5], [[0] * 5, [0] * 5]
         kda = [[[0, 0, 0] for _ in range(5)] for _ in range(2)]
         maxult = [[7, 8, 7, 8, 6], [8, 7, 9, 7, 8]]
-        try:   # (official agent ids, so a HUD shows the agents' own art)
-            from .valreader import agents
+        try:   # (official agent and weapon ids, so a HUD shows the game's own art)
+            from .valreader import agents, gear
             ids = {n: u for n, u, _ in agents()}
+            guns = {w[0]: w[1] for w in (gear() or {}).get("weapons", [])}
         except Exception:
-            ids = {}
+            ids, guns = {}, {}
+        carrier = [None]   # (team, slot) holding the spike
+        charges = {(t, s): {"C": [2, 2], "Q": [1, 1], "E": [1, 1]} for t in range(2) for s in range(5)}
+        gun = lambda t, s: "Vandal" if credits[t][s] > 2900 else "Spectre" if credits[t][s] > 1600 else "Classic"
         players = lambda alive, hp: [{"team": t, "slot": s + 1, "name": NAMES[t][s], "agent": AGENTS[t * 5 + s], "agent_id": ids.get(AGENTS[t * 5 + s]), "alive": alive[t][s],
                                       "health": hp[t][s], "credits": credits[t][s], "ult": ult[t][s], "ult_max": maxult[t][s],
-                                      "kills": kda[t][s][0], "deaths": kda[t][s][1], "assists": kda[t][s][2], "weapon": "Vandal" if credits[t][s] > 2900 else "Classic"}
+                                      "kills": kda[t][s][0], "deaths": kda[t][s][1], "assists": kda[t][s][2], "weapon": gun(t, s), "weapon_id": guns.get(gun(t, s), ""),
+                                      "armor": "heavy" if credits[t][s] > 3900 else "light" if credits[t][s] > 1200 else "", "spike": carrier[0] == (t, s),
+                                      "abilities": charges[(t, s)]}
                                      for t in range(2) for s in range(5)]
         self.send({"teams": [{"name": TEAMS[0], "score": 0}, {"name": TEAMS[1], "score": 0}], "map": "Ascent", "first_attack": 1, "round": 1})
         r = 1
         while self.on and max(score) < 13 or (self.on and abs(score[0] - score[1]) < 2):
             alive = [[True] * 5, [True] * 5]
+            atk = attackers(r, 1)
+            carrier[0] = (atk, rnd.randrange(5))
+            for c in charges.values():
+                c.update({"C": [2, 2], "Q": [1, 1], "E": [1, 1]})
             hp = [[100] * 5, [100] * 5]
             for secs in range(30, -1, -6):   # buy phase
                 self.send({"round": r, "phase": "buy", "timer": f"0:{secs:02d}", "spike": "", "players": players(alive, hp)})
@@ -70,11 +82,17 @@ class Demo:
                     hp[1 - t][v] -= rnd.choice((30, 60, 100, 100))
                     if hp[1 - t][v] <= 0:
                         hp[1 - t][v], alive[1 - t][v] = 0, False
+                        if carrier[0] == (1 - t, v):   # (the spike drops; a team-mate picks it up)
+                            mates = [s for s in range(5) if alive[1 - t][s]]
+                            carrier[0] = (1 - t, rnd.choice(mates)) if mates else None
                         kda[t][k][0] += 1
                         kda[1 - t][v][1] += 1
                         ult[t][k] = min(maxult[t][k], ult[t][k] + 1)
-                if not planted and secs < 60 and rnd.random() < 0.2:
-                    planted = True
+                if rnd.random() < 0.3:   # (someone uses an ability)
+                    c = charges[(t, rnd.randrange(5))][rnd.choice("CQE")]
+                    c[0] = max(0, c[0] - 1)
+                if not planted and secs < 60 and carrier[0] and rnd.random() < 0.2:
+                    planted, carrier[0] = True, None
                 self.send({"phase": "combat", "timer": "" if planted else f"{secs // 60}:{secs % 60:02d}", "spike": "planted" if planted else "",
                            "players": players(alive, hp)})
                 if not any(alive[0]) or not any(alive[1]):

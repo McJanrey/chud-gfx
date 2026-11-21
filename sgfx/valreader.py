@@ -3,7 +3,7 @@
 Every frame is scaled to 1920x1080 first, so the positions below work at any resolution. What it reads:
   - the top bar (always on): both scores, the round timer, which players are alive and their health bars;
   - the centre banner: "ROUND n" and the buy phase;
-  - the Tab scoreboard, while it's open: names, ultimate points, kills / deaths / assists and credits, and which
+  - the Tab scoreboard, while it's open: names, ultimate points, kills / deaths / assists, credits, weapon and armor, and which
     side (DEF / ATK) each team is on.
 Numbers are read by matching each digit's shape against the HUD's own digits (val_glyphs.json, learnt from real
 frames: Windows' text recognition is unreliable on lone digits); names and banners by Windows' text recognition.
@@ -212,6 +212,86 @@ def agent_at(img, team, slot):
     return (name, uid) if score > 0.35 else None
 
 
+# --- loadout: official weapon and armor silhouettes from valorant-api.com, kept on this PC -----------------------
+GEAR_DIR = os.path.join(os.path.dirname(AGENT_DIR), "val-gear")
+ARMOR = {"heavy": "822bcab2-40a2-324e-c137-e09195ad7692", "light": "4dec83d5-4902-9ab3-bed6-a7a390761157", "regen": "b1b9086d-41bd-a516-5d29-e3b34a6f1644"}
+WEAPON_BOX, ARMOR_BOX = (1065, 1165), (1170, 1215)   # Tab scoreboard loadout column (x), per row
+_gear = None
+
+
+def _shape(mask, size):
+    """A white silhouette cut to its own outline and scaled to one size, plus its width / height."""
+    ys, xs = np.where(mask)
+    if len(xs) < 20:
+        return None
+    m = Image.fromarray((mask[ys.min():ys.max() + 1, xs.min():xs.max() + 1] * 255).astype(np.uint8)).resize(size)
+    return np.asarray(m) > 127, (xs.max() - xs.min() + 1) / (ys.max() - ys.min() + 1)
+
+
+def _iou(a, b):
+    return float(np.logical_and(a, b).sum() / max(1, np.logical_or(a, b).sum()))
+
+
+def gear():
+    """{"weapons": [(name, uuid, silhouette, aspect)], "armor": [(kind, silhouette)]} (fetched once, then from the folder)."""
+    global _gear
+    if _gear is not None:
+        return _gear
+    import urllib.request
+    os.makedirs(GEAR_DIR, exist_ok=True)
+    get = lambda u: urllib.request.urlopen(urllib.request.Request(u, headers={"User-Agent": "StandBy GFX"}), timeout=15).read()
+    lst = os.path.join(GEAR_DIR, "weapons.json")
+    try:
+        if not os.path.isfile(lst) or time.time() - os.path.getmtime(lst) > 7 * 86400:
+            data = json.loads(get("https://valorant-api.com/v1/weapons"))["data"]
+            with open(lst, "w", encoding="utf-8") as f:
+                json.dump([[w["uuid"], w["displayName"]] for w in data], f)
+        with open(lst, encoding="utf-8") as f:
+            items = json.load(f)
+    except (OSError, ValueError):
+        items = []
+
+    def pic(url, name):
+        path = os.path.join(GEAR_DIR, name)
+        if not os.path.isfile(path):
+            with open(path, "wb") as f:
+                f.write(get(url))
+        return np.asarray(Image.open(path).convert("RGBA"))[..., 3] > 100
+    out = {"weapons": [], "armor": []}
+    for uid, name in items:
+        try:
+            sh = _shape(pic(f"https://media.valorant-api.com/weapons/{uid}/killstreamicon.png", uid + ".png"), (64, 20))
+        except Exception:
+            continue
+        if sh:
+            out["weapons"].append((name, uid, *sh))
+    for kind, uid in ARMOR.items():
+        try:
+            sh = _shape(pic(f"https://media.valorant-api.com/gear/{uid}/displayicon.png", "armor-" + uid + ".png"), (24, 24))
+        except Exception:
+            continue
+        if sh:
+            out["armor"].append((kind, sh[0]))
+    _gear = out if out["weapons"] else None
+    return out
+
+
+def loadout(img, y):
+    """(weapon (name, uuid) or None, armor kind or None) in one scoreboard row; a dead player's row is empty."""
+    g = gear() or {"weapons": [], "armor": []}
+    grey = img.convert("L")
+    weapon = armor = None
+    q = _shape(np.asarray(grey.crop((WEAPON_BOX[0], y - 14, WEAPON_BOX[1], y + 14))) > 200, (64, 20))
+    if q and g["weapons"]:
+        score, name, uid = max((_iou(q[0], r) - 0.15 * abs(np.log(q[1] / ar)), n, u) for n, u, r, ar in g["weapons"])
+        weapon = (name, uid) if score > 0.6 else None
+    q = _shape(np.asarray(grey.crop((ARMOR_BOX[0], y - 14, ARMOR_BOX[1], y + 14))) > 200, (24, 24))
+    if q and g["armor"]:
+        score, kind = max((_iou(q[0], r), k) for k, r in g["armor"])
+        armor = kind if score > 0.6 else None
+    return weapon, armor
+
+
 def spike_planted(img):
     """While the spike is planted the round timer is replaced by a red spike icon."""
     a = np.asarray(img.crop((915, 18, 1005, 92)), dtype=np.int16)
@@ -275,6 +355,9 @@ def parse(img):
                 ult = digits(cell("ult"))
                 row = {"name": name, "slot": slot_of.get(ri), "kills": number(cell("k")), "deaths": number(cell("d")), "assists": number(cell("a")),
                        "credits": number(cell("credits"))}
+                weapon, armor = loadout(img, y)
+                row["weapon"], row["weapon_id"] = weapon or ("", "")
+                row["armor"] = armor or ""
                 if re.fullmatch(r"\d+/\d+", ult or ""):
                     row["ult"], row["ult_max"] = (int(v) for v in ult.split("/"))
                 elif "READY" in _text(img, (COLS["ult"][0], y - 14, COLS["ult"][1], y + 14), 3).upper():

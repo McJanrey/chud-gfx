@@ -22,3 +22,6 @@ class ValReader(unittest.TestCase):
             r = rows[name]
             self.assertEqual((r["kills"], r["deaths"], r["assists"], r["credits"]), (k, dd, a, cr), name)
             self.assertEqual(r.get("ult_ready", False) if ult is True else (r.get("ult"), r.get("ult_max")), ult, name)
+        # loadout: official silhouettes; the dead players' rows are empty
+        self.assertEqual({n: (r["weapon"], r["armor"]) for n, r in rows.items() if r["weapon"] or r["armor"]},
+                         {"crippled kid": ("Vandal", "heavy"), "meowpilled": ("Vandal", "heavy"), "ludociel": ("Vandal", "")})
