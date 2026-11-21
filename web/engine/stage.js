@@ -65,9 +65,9 @@ export function usedTables(comp, values, tables) {
 }
 
 export class Stage {
-  constructor(root, { bus = "program", comp = null, muted = false, base = "", editor = false } = {}) {
+  constructor(root, { bus = "program", comp = null, hud = null, muted = false, base = "", editor = false } = {}) {
     this.root = root;
-    this.opts = { bus, comp, muted, base, editor };
+    this.opts = { bus, comp, hud, muted, base, editor };
     this.on = new Map();          // comp id -> {el, sig}
     this.cutSeq = null;
     root.classList.add("sg-stage");
@@ -78,6 +78,11 @@ export class Stage {
 
   // What this output should show now: [ids], and each one's values.
   wanted(state) {
+    if (this.opts.hud) {   // (a HUD's browser source: every part that's on, always; layers show themselves from live data)
+      const h = (state.project.huds || []).find(x => x.id === this.opts.hud);
+      const parts = ((h && h.parts) || []).filter(p => p.on !== false).map((p, i) => ({ ...p, id: `hud-${h.id}-${p.id}`, kind: "overlay", layer: i }));
+      return { ids: parts.map(p => p.id), comps: new Map(parts.map(p => [p.id, p])), values: {} };
+    }
     const comps = new Map(state.project.compositions.map(c => [c.id, c]));
     const c = this.opts.comp;
     // (a graphic's own output switched off in Outputs shows nothing)

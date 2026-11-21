@@ -400,3 +400,25 @@ button.danger { background: var(--red); color: #fff; box-shadow: none; font-weig
 .obs-status.on { color: #7ee08a; }
 .obs-status.error { color: var(--red); }
 .app-version.link { color: var(--accent); cursor: pointer; text-decoration: underline; }
+
+/* HUD Builder */
+.hb { display: grid; grid-template-columns: 250px minmax(0, 1fr) 300px; gap: 12px; height: calc(100vh - 90px) }
+.hb-left { display: flex; flex-direction: column; gap: 12px; min-height: 0 }
+.hb-left .panel { min-height: 0 } .hb-left .panel.grow { flex: 1; overflow: auto }
+.hb-left .gfx { display: flex; gap: 8px; align-items: center }
+.hb-mid { min-width: 0; display: flex; flex-direction: column; gap: 8px }
+.hb-tools { display: flex; flex-wrap: wrap; gap: 6px; align-items: center }
+.hb-view { position: relative; overflow: hidden; border-radius: 8px; background: #2a3441 }
+.hb-stage { position: absolute; left: 0; top: 0; transform-origin: 0 0 }
+.hb-stage iframe { position: absolute; inset: 0; width: 1920px; height: 1080px; border: 0; pointer-events: none }
+.hb-boxes { position: absolute; inset: 0 }
+.hb-box { position: absolute; outline: 1px dashed rgba(255, 255, 255, .18); cursor: move }
+.hb-box.live { outline-color: rgba(102, 181, 244, .22) }
+.hb-box:hover { outline: 2px solid rgba(255, 255, 255, .5) }
+.hb-box.sel { outline: 3px solid #66b5f4; z-index: 2 }
+.hb-box .hd { position: absolute; width: 14px; height: 14px; background: #fff; border: 2px solid #66b5f4; margin: -7px }
+.hb-box .hd.nw { left: 0; top: 0; cursor: nwse-resize } .hb-box .hd.n { left: 50%; top: 0; cursor: ns-resize } .hb-box .hd.ne { right: -14px; top: 0; cursor: nesw-resize }
+.hb-box .hd.e { right: -14px; top: 50%; cursor: ew-resize } .hb-box .hd.se { right: -14px; bottom: -14px; cursor: nwse-resize } .hb-box .hd.s { left: 50%; bottom: -14px; cursor: ns-resize }
+.hb-box .hd.sw { left: 0; bottom: -14px; cursor: nesw-resize } .hb-box .hd.w { left: 0; top: 50%; cursor: ew-resize }
+.hb-right { overflow: auto; display: flex; flex-direction: column; gap: 8px }
+.hb-right .two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px }

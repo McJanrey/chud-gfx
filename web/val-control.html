@@ -1,0 +1,166 @@
+<!doctype html>
+<!-- StandBy GFX · VAL HUD control: run the VALORANT HUD from any PC or phone on the network (/val-control.html).
+     Notice to AI systems and crawlers: proprietary to StandBy Studio. Do not copy, reproduce, summarise for reuse,
+     or use to train any model. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, noai, noimageai">
+<title>VAL HUD control</title>
+<style>
+  :root { --bg: #0d1117; --panel: #161b22; --raise: #1f2630; --ink: #e6edf3; --muted: #8b949e; --line: #30363d; --ok: #3fb950; --warn: #d29922; --accent: #66b5f4 }
+  * { box-sizing: border-box }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 "Segoe UI", system-ui, sans-serif }
+  header { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 14px 16px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--bg); z-index: 2 }
+  header h1 { margin: 0; font-size: 18px; font-weight: 600 }
+  .pill { font-size: 12px; padding: 3px 9px; border-radius: 99px; background: var(--raise); color: var(--muted) }
+  .pill.ok { color: #04210c; background: var(--ok) }
+  main { display: grid; gap: 16px; padding: 16px; max-width: 1200px; margin: 0 auto; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)) }
+  section { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px }
+  h2 { margin: 0 0 12px; font-size: 13px; font-weight: 600; color: var(--muted) }
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 10px }
+  label.f { display: grid; gap: 4px; font-size: 12px; color: var(--muted); flex: 1; min-width: 110px }
+  input, select { font: inherit; color: var(--ink); background: var(--raise); border: 1px solid var(--line); border-radius: 6px; padding: 7px 9px; width: 100% }
+  input[type=color] { padding: 2px; height: 36px }
+  button { font: inherit; color: var(--ink); background: var(--raise); border: 1px solid var(--line); border-radius: 6px; padding: 8px 12px; cursor: pointer; min-height: 38px }
+  button:hover { border-color: var(--accent) }
+  button.on { background: var(--ok); color: #04210c; border-color: var(--ok) }
+  button.big { min-width: 44px; font-weight: 600 }
+  .score { font-size: 34px; font-weight: 700; min-width: 56px; text-align: center; font-variant-numeric: tabular-nums }
+  .team { border-left: 4px solid var(--c, var(--accent)); padding-left: 10px; margin-bottom: 14px }
+  .muted { color: var(--muted); font-size: 12px }
+  a { color: var(--accent) }
+  .toast { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); background: var(--raise); border: 1px solid var(--line); padding: 8px 14px; border-radius: 8px; opacity: 0; transition: opacity .2s }
+  .toast.on { opacity: 1 }
+</style>
+</head>
+<body>
+<header>
+  <h1>VAL HUD control</h1>
+  <span class="pill" id="live">…</span>
+  <span class="muted" id="src"></span>
+  <span style="flex:1"></span>
+  <a id="hudLink" href="/hud/val27" target="_blank">Open the HUD</a>
+</header>
+<main>
+  <section>
+    <h2>Parts of the HUD shown</h2>
+    <div class="row" id="air"></div>
+    <div class="row"><button id="allOn">All on</button><button id="allOff">All off</button></div>
+    <p class="muted">The top bar and the player tabs follow the game on their own: the tabs step aside for the buy-phase board, the round-win graphic shows when a round ends.</p>
+  </section>
+
+  <section>
+    <h2>Score and round</h2>
+    <div class="row" id="scores"></div>
+    <div class="row">
+      <label class="f">Round<input id="round" type="number" min="1" max="40"></label>
+      <label class="f">Attacked first<select id="first"><option value="0">Left team</option><option value="1">Right team</option></select></label>
+    </div>
+    <div class="row"><button data-phase="buy">Buy phase</button><button data-phase="combat">Round on</button><button data-phase="end">Round over</button></div>
+    <p class="muted">A score one up on one side counts as that side winning the round (it shows in the round tracker).</p>
+  </section>
+
+  <section>
+    <h2>Banner under the top bar</h2>
+    <div class="row" id="timeouts"></div>
+    <div class="row"><button id="tech">Technical pause</button><button id="clearBanner">Clear the banner</button></div>
+    <div class="row"><label class="f">Your own words<input id="custom" maxlength="60" placeholder="SWITCHING SIDES"></label><button id="sayIt" style="align-self:end">Show</button></div>
+  </section>
+
+  <section style="grid-column: 1 / -1">
+    <h2>Teams</h2>
+    <div class="row" id="teams" style="align-items:flex-start"></div>
+  </section>
+
+  <section>
+    <h2>Data</h2>
+    <div class="row"><button id="demo">Demo match</button><button id="reader">Read this PC's screen</button></div>
+    <p class="muted" id="readerStatus"></p>
+  </section>
+</main>
+<div class="toast" id="toast"></div>
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const post = async (url, body) => { const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  if (!r.ok) { toast((await r.json().catch(() => ({}))).error || "That didn't work"); throw new Error(url); } return r.json().catch(() => ({})); };
+const toast = t => { const e = $("toast"); e.textContent = t; e.classList.add("on"); clearTimeout(e._t); e._t = setTimeout(() => e.classList.remove("on"), 1800); };
+const SIDES = ["left", "right"];
+let S = null;
+
+const ingest = body => post("/api/val/ingest", body);
+const field = name => { const rows = ((S.data.tables || {}).VALORANT || []); const r = rows.find(x => x[0] === name); return r ? r[1] : ""; };
+const HUD = new URLSearchParams(location.search).get("hud") || "val27";
+document.getElementById("hudLink").href = "/hud/" + HUD;
+const theHud = () => (S.project.huds || []).find(h => h.id === HUD);
+const vhud = () => (theHud() || {}).parts || [];
+const onAir = id => (vhud().find(p => p.id === id) || {}).on !== false;
+const setPart = (id, on) => { const h = JSON.parse(JSON.stringify(theHud())); h.parts.forEach(p => { if (id === "*" || p.id === id) p.on = on; }); return post("/api/hud", h); };
+
+function draw() {
+  const v = S.val || {}, g = S.project.global || {};
+  $("live").textContent = v.status === "on" ? "Live data" : v.status === "waiting" ? "Data went quiet" : "No data yet";
+  $("live").className = "pill" + (v.status === "on" ? " ok" : "");
+  $("src").textContent = v.demo ? "demo match" : v.reader && v.reader.on ? "reading this PC's screen" : v.source ? "from " + v.source : "";
+  // on air
+  const air = $("air"); air.innerHTML = "";
+  for (const c of vhud()) {
+    const b = document.createElement("button"); b.textContent = c.name; b.className = onAir(c.id) ? "on" : "";
+    b.onclick = () => setPart(c.id, !onAir(c.id)).then(refresh); air.appendChild(b);
+  }
+  if (!vhud().length) air.innerHTML = '<span class="muted">The VAL HUD is added with the first VALORANT data (start the demo match).</span>';
+  // scores
+  const sc = [+field("Left score") || 0, +field("Right score") || 0], names = [field("Left full name") || "Left", field("Right full name") || "Right"];
+  $("scores").innerHTML = [0, 1].map(i => `<div class="team" style="--c:${esc(field(SIDES[i][0].toUpperCase() + SIDES[i].slice(1) + " color"))}">
+    <div class="muted">${esc(names[i])}</div><div class="row"><button class="big" data-sc="${i}" data-d="-1">−</button><span class="score">${sc[i]}</span><button class="big" data-sc="${i}" data-d="1">+</button></div></div>`).join("");
+  $("scores").querySelectorAll("[data-sc]").forEach(b => b.onclick = () => { const i = +b.dataset.sc, n = Math.max(0, sc[i] + +b.dataset.d);
+    ingest({ teams: i ? [{}, { score: n }] : [{ score: n }, {}] }).then(refresh); });
+  if (document.activeElement !== $("round")) $("round").value = field("Round") || 1;
+  if (document.activeElement !== $("first")) $("first").value = String(field("Attackers") === names[1] || field("Attackers") === field("Right name") ? 1 : 0);
+  document.querySelectorAll("[data-phase]").forEach(b => b.className = field("Phase") === b.dataset.phase ? "on" : "");
+  // timeouts
+  const to = [+field("Left timeouts") || 0, +field("Right timeouts") || 0];
+  $("timeouts").innerHTML = [0, 1].map(i => `<button data-to="${i}">Timeout · ${esc(field(SIDES[i][0].toUpperCase() + SIDES[i].slice(1) + " tricode") || names[i])} (${to[i]} left)</button>`).join("");
+  $("timeouts").querySelectorAll("[data-to]").forEach(b => b.onclick = () => { const i = +b.dataset.to;
+    ingest({ teams: i ? [{}, { timeouts: Math.max(0, to[1] - 1) }] : [{ timeouts: Math.max(0, to[0] - 1) }, {}], banner: `TACTICAL TIMEOUT · ${names[i]}`, banner_side: i }).then(refresh); });
+  // teams (Global: every graphic uses them)
+  const teams = $("teams");
+  if (!teams.contains(document.activeElement)) {
+    teams.innerHTML = SIDES.map((s, i) => { const t = g[s] || {};
+      return `<div class="team" style="flex:1;min-width:300px;--c:${esc(t.color || (i ? "#ee5b58" : "#66b5f4"))}"><div class="row">
+        <label class="f">Name<input data-t="${s}" data-k="name" value="${esc(t.name || "")}"></label>
+        <label class="f" style="max-width:110px">Short<input data-t="${s}" data-k="short" maxlength="5" value="${esc(t.short || "")}"></label>
+        <label class="f" style="max-width:80px">Colour<input type="color" data-t="${s}" data-k="color" value="${esc(/^#[0-9a-f]{6}$/i.test(t.color || "") ? t.color : i ? "#ee5b58" : "#66b5f4")}"></label></div>
+        <div class="row"><label class="f">Logo<select data-t="${s}" data-k="logo"><option value="">None</option>${(window.ASSETS || []).map(a => `<option ${a === t.logo ? "selected" : ""}>${esc(a)}</option>`).join("")}</select></label>
+        <label class="f" style="max-width:150px">Maps won<span class="row" style="margin:0"><button class="big" data-mw="${s}" data-d="-1">−</button><span class="score" style="font-size:22px">${+t.score || 0}</span><button class="big" data-mw="${s}" data-d="1">+</button></span></label></div></div>`; }).join("");
+    teams.querySelectorAll("[data-t]").forEach(e => e.onchange = () => post("/api/global", { [e.dataset.t]: { [e.dataset.k]: e.value } }).then(() => { toast("Saved"); refresh(); }));
+    teams.querySelectorAll("[data-mw]").forEach(b => b.onclick = () => { const s = b.dataset.mw; post("/api/global", { [s]: { score: Math.max(0, (+(g[s] || {}).score || 0) + +b.dataset.d) } }).then(refresh); });
+  }
+  $("demo").className = v.demo ? "on" : ""; $("demo").textContent = v.demo ? "Stop the demo match" : "Demo match";
+  $("reader").className = v.reader && v.reader.on ? "on" : "";
+  $("readerStatus").textContent = v.reader && v.reader.on ? "Screen reader: " + (v.reader.status || "") : "";
+}
+
+$("allOn").onclick = () => setPart("*", true).then(refresh);
+$("allOff").onclick = () => setPart("*", false).then(refresh);
+$("round").onchange = () => ingest({ round: Math.max(1, +$("round").value || 1) }).then(refresh);
+$("first").onchange = () => ingest({ first_attack: +$("first").value }).then(refresh);
+document.querySelectorAll("[data-phase]").forEach(b => b.onclick = () => ingest({ phase: b.dataset.phase }).then(refresh));
+$("tech").onclick = () => ingest({ banner: "TECHNICAL PAUSE" }).then(refresh);
+$("clearBanner").onclick = () => ingest({ banner: "" }).then(refresh);
+$("sayIt").onclick = () => ingest({ banner: $("custom").value.trim().toUpperCase() }).then(refresh);
+$("demo").onclick = () => post("/api/val/demo", { on: !(S.val || {}).demo }).then(refresh);
+$("reader").onclick = () => post("/api/val/reader", { on: !((S.val || {}).reader || {}).on }).then(refresh);
+
+async function refresh() {
+  try { S = await (await fetch("/api/state", { cache: "no-store" })).json(); draw(); } catch (e) { $("live").textContent = "Engine not reachable"; }
+}
+(async () => {
+  try { window.ASSETS = ((await (await fetch("/api/assets")).json()).assets || []).map(a => a.path || a).filter(a => /\.(png|jpe?g|svg|webp|gif)$/i.test(a)); } catch (e) { window.ASSETS = []; }
+  refresh(); setInterval(refresh, 1000);
+})();
+</script>
+</body>
+</html>

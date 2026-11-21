@@ -1148,6 +1148,12 @@ class Engine:
             return {"files": rocket.enable_stats_api()}
         elif path == "/api/rl/clear":
             self.rl.clear()
+        elif path == "/api/hud":   # (the HUD Builder: a whole HUD saved)
+            from . import huds
+            result = {"hud": huds.save(self, body)}
+        elif path == "/api/hud/delete":
+            from . import huds
+            huds.delete(self, str(body.get("id") or ""))
         elif path == "/api/val":
             self.val.set(body)
         elif path == "/api/val/ingest":   # (any VALORANT reader: Chud Hud, a screen reader, a person)
@@ -1406,6 +1412,12 @@ def handler(engine):
                 with engine.lock:
                     h = json.dumps(engine.val.hud())
                 return self._send(200, h)
+            m = re.fullmatch(r"/hud/([a-z0-9-]{1,40})(/control)?/?", path)
+            if m:   # (a HUD's browser source, or its control page)
+                self.send_response(302)
+                self.send_header("Location", f"/val-control.html?hud={m.group(1)}" if m.group(2) else f"/output?hud={m.group(1)}")
+                self.end_headers()
+                return
             if path.startswith("/val-svg/"):   # (the VAL HUD's drawn pieces: ult ring, charges, health bar, armor, round tracker)
                 from . import valhud
                 pic = valhud.svg(path[len("/val-svg/"):])

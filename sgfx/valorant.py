@@ -79,6 +79,7 @@ class Match:
         self.players = {}   # (team, slot) -> fields
         self.history = []   # [{"round", "winner", "how"}]
         self.feed = []      # the latest kills, newest last: [{"killer", "victim", ..., "t"}]
+        self.banner, self.banner_side = "", None   # the line under the top bar (a timeout, a tech pause): set from the control page
 
     def merge(self, b):
         for i, t in enumerate((b.get("teams") or [])[:2]):
@@ -91,6 +92,9 @@ class Match:
         for k, a in (("phase", "phase"), ("spike", "spike"), ("map", "map"), ("timer", "timer")):
             if k in b:
                 setattr(self, a, str(b[k] or ""))
+        if "banner" in b:
+            self.banner = str(b.get("banner") or "")[:60]
+            self.banner_side = b.get("banner_side") if b.get("banner_side") in (0, 1) else None
         if b.get("first_attack") in (0, 1):
             self.first = b["first_attack"]
         for k in b.get("kills") or []:
@@ -367,8 +371,10 @@ class Val:
     # --- ready-made graphics, added once each (one deleted stays gone) ---
     def add_hud(self):
         done = self.engine.project.setdefault("hud_pages", [])
-        from . import valhud
-        new = [x for x in hud_comps() + valhud.comps() if x[0] not in done]
+        from . import huds, valhud
+        if huds.ensure(self.engine, "val27", "VAL HUD (SCC 2027)", "valorant", [(k, n.replace("VAL HUD · ", ""), kd, l) for k, n, kd, l in valhud.comps()]):
+            self.engine.changed()
+        new = [x for x in hud_comps() if x[0] not in done]
         for key, name, kind, layers in new:
             done.append(key)
             self.engine.comps().append({"id": "c" + uuid.uuid4().hex[:8], "name": name, "hud_page": key, "group": "Game HUD",

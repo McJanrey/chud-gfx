@@ -43,6 +43,12 @@ export const clipShapes = Object.keys(CLIPS);
 
 export function effects(el, layer, resolve) {
   if (CLIPS[layer.clip]) el.style.clipPath = CLIPS[layer.clip];
+  // radius "tl tr br bl" (each corner its own, any layer: what's inside is cut to it); a single number on a picture too
+  const r = String(layer.radius ?? "").trim();
+  if (/^\d+(\.\d+)?(\s+\d+(\.\d+)?){3}(\s*\/(\s*\d+(\.\d+)?){4})?$/.test(r) || (layer.type !== "rect" && +r > 0)) {   // (+ " / v v v v": elliptical)
+    el.style.borderRadius = r.replace(/\//g, " / ").split(/\s+/).filter(Boolean).map(x => x === "/" ? x : x + "px").join(" ");
+    el.style.overflow = "hidden";
+  }
   // (GFX Baby keeps an effect that's switched off with "on": false)
   const fx = Object.fromEntries(Object.entries(layer.fx || {}).filter(([, v]) => v && v.on !== false)), f = [];
   const n = (o, k, d) => (o && o[k] != null && o[k] !== "" ? +o[k] : d);

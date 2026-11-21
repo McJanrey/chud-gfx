@@ -75,12 +75,14 @@ def fields(m, g):
                       f"{k} main gun": f"/val-img/weapon/{gid}/killstreamicon.png" if UUID.match(gid) and p.get("weapon") not in SIDEARMS else "",
                       f"{k} gun": f"/val-img/weapon/{gid}/killstreamicon.png" if UUID.match(gid) else "",
                       f"{k} carrying": "yes" if p.get("spike") is True and not dead else "",
-                      f"{k} kda": f"{int(p.get('kills') or 0)} / {int(p.get('deaths') or 0)} / {int(p.get('assists') or 0)}" if have else ""})
+                      f"{k} kda": f"{int(p.get('kills') or 0)}/{int(p.get('deaths') or 0)}/{int(p.get('assists') or 0)}" if have else ""})
             for key, part in (("c", "grenade"), ("q", "ability1"), ("e", "ability2")):
                 c = ab.get(key.upper()) or [0, 1]
                 f[f"{k} {key} pic"] = f"/val-img/agent/{aid}/{part}.png" if UUID.match(aid) else ""
                 f[f"{k} {key} marks"] = f"/val-svg/marks/{int(c[0])}/{int(c[1])}.svg"
                 f[f"{k} {key} out"] = "" if c[0] else "yes"
+    f["Banner"] = getattr(m, "banner", "")
+    f["Banner color"] = f[f"{SIDES[m.banner_side]} color"] if getattr(m, "banner_side", None) in (0, 1) else "#ffffff"
     f["Round tracker"] = f"/val-svg/tracker/{_track(m)}/{f['Left color'][1:]}/{f['Right color'][1:]}.svg"
     if won:
         w = won["winner"]
@@ -143,10 +145,13 @@ def _ring(have, most):
         a0 = -math.pi / 2 + i * seg + gap / 2
         a1 = a0 + seg - gap
         p = lambda a: f"{20.5 + r * math.cos(a):.2f} {20.5 + r * math.sin(a):.2f}"
-        col = "#ffffff" if i < have else "rgba(255,255,255,.22)"
-        d.append(f'<path d="M{p(a0)} A{r} {r} 0 {1 if seg - gap > math.pi else 0} 1 {p(a1)}" stroke="{col}" stroke-width="3" fill="none"/>')
-    glow = '<defs><filter id="g"><feGaussianBlur stdDeviation="1"/></filter></defs><g filter="url(#g)" opacity=".8">' + "".join(d) + "</g>" if have >= most else ""
-    return f'<svg xmlns="http://www.w3.org/2000/svg" width="41" height="41" viewBox="0 0 41 41">{glow}{"".join(d)}</svg>'
+        col = "#ffffff" if i < have else "rgba(6,9,15,.8)"
+        d.append(f'<path d="M{p(a0)} A{r} {r} 0 {1 if seg - gap > math.pi else 0} 1 {p(a1)}" stroke="{col}" stroke-width="3.6" fill="none"/>')
+    if have >= most:   # (ready: one whole ring, glowing)
+        return ('<svg xmlns="http://www.w3.org/2000/svg" width="41" height="41" viewBox="0 0 41 41"><defs><filter id="g" x="-30%" y="-30%" width="160%" height="160%">'
+                '<feGaussianBlur stdDeviation="1.4"/></filter></defs><circle cx="20.5" cy="20.5" r="18" stroke="#fff" stroke-width="3.6" fill="none" filter="url(#g)" opacity=".9"/>'
+                '<circle cx="20.5" cy="20.5" r="18" stroke="#fff" stroke-width="3.6" fill="none"/></svg>')
+    return f'<svg xmlns="http://www.w3.org/2000/svg" width="41" height="41" viewBox="0 0 41 41">{"".join(d)}</svg>'
 
 
 def _marks(have, most):
@@ -174,8 +179,9 @@ def _armor(kind):
                 '<path d="M9.3 5.5h2.4v3.8h3.8v2.4h-3.8v3.8H9.3v-3.8H5.5V9.3h3.8z" fill="#fff"/></svg>')
     if kind not in ("heavy", "light"):
         raise ValueError(kind)
-    return ('<svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21"><path d="M10.5 1 2.5 4v6c0 4.6 3.4 8 8 9.5 4.6-1.5 8-4.9 8-9.5V4z" fill="#fff"/>'
-            f'<text x="10.5" y="13.4" font-family="Arial" font-weight="700" font-size="8" text-anchor="middle" fill="{NAVY}">{50 if kind == "heavy" else 25}</text></svg>')
+    return ('<svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21">'   # (an outlined badge with the shield's points in it)
+            '<path d="M10.5 1.6 18.2 4.6v6.2c0 3.9-3.1 7.1-7.7 8.6-4.6-1.5-7.7-4.7-7.7-8.6V4.6z" fill="none" stroke="#fff" stroke-width="1.3" stroke-linejoin="round"/>'
+            f'<text x="10.5" y="13.6" font-family="Arial" font-weight="700" font-size="7.6" text-anchor="middle" fill="#fff">{50 if kind == "heavy" else 25}</text></svg>')
 
 
 WIN_MARK = {
@@ -238,6 +244,9 @@ def comps():
             T("Left score", 860, 12, 60, 48, v("Left score"), 52, font="Barlow Condensed"),
             T("Right score", 998, 12, 60, 48, v("Right score"), 52, font="Barlow Condensed"),
             T("Round", 910, 6, 100, 18, v("Round label"), 14, font="Barlow Condensed", tracking=3, show=v("In round")),
+            R("Banner", 710, 80, 500, 40, NAVY, radius=10, stroke="#ffffff", strokeWidth=1, show=v("Banner")),
+            R("Banner bar", 711, 81, 8, 38, v("Banner color"), radius="9 0 0 9", show=v("Banner")),
+            T("Banner words", 719, 80, 491, 40, v("Banner"), 20, font="Barlow Condensed", tracking=2, show=v("Banner")),
             R("Spike box", 914, 6, 95, 65, "linear-gradient(#2a0d10, #120607)", radius=8, show=v("Planted")),
             I("Spike", 934, 10, 55, 57, "/val-svg/spike/on.svg", show=v("Planted"))]
 
@@ -248,29 +257,32 @@ def comps():
             k, y0, right = f"{s} {n}", 551 + 106 * (n - 1), i == 1
             x0 = 1593 if right else 17
             X = (lambda a, w: x0 + 310 - a - w) if right else (lambda a, w: x0 + a)   # (the right team laid out from its right edge)
+            corner = (lambda r: f"0 {r} 0 {r}") if right else (lambda r: f"{r} 0 {r} 0")
+            cash = (lambda c: c + " ¤") if right else (lambda c: "¤ " + c)   # (the credits sign on the outer side)   # (the agent box's two rounded corners, mirrored on the right)
             here, up, down = v(f"{k} here"), v(f"{k} up"), v(f"{k} down")
             col = v(f"{s} color")
             tabs += [R(f"{k} tab", x0, y0, 310, 88, "linear-gradient(rgba(102,102,102,.2), rgba(0,0,0,.2)), rgba(17,24,35,.5)", radius=25, stroke="#ffffff", strokeWidth=1, show=up),
                      R(f"{k} tab dead", x0, y0, 310, 88, f"linear-gradient({270 if right else 90}deg, rgba(58,58,58,.9), rgba(58,58,58,0)), rgba(0,0,0,.25)", radius=25, show=down),
-                     R(f"{k} agent box", X(-1, 51), y0 - 1, 51, 51, col, radius=12, stroke="#ffffff", strokeWidth=1, show=up),
-                     R(f"{k} agent box dead", X(-1, 51), y0 - 1, 51, 51, "#393939", radius=12, show=down),
-                     I(f"{k} agent", X(0, 49), y0, 49, 49, v(f"{k} pic"), fit="cover", show=here, pic={"flipX": right}),
+                     R(f"{k} agent box", X(-1, 51), y0 - 1, 51, 51, col, radius=corner(25), stroke="#ffffff", strokeWidth=1, show=up),
+                     R(f"{k} agent box dead", X(-1, 51), y0 - 1, 51, 51, "#393939", radius=corner(25), show=down),
+                     I(f"{k} agent", X(0, 49), y0, 49, 49, v(f"{k} pic"), fit="cover", radius=corner(24), show=up, pic={"flipX": right}),
+                     I(f"{k} agent dead", X(0, 49), y0, 49, 49, v(f"{k} pic"), fit="cover", radius=corner(24), show=down, pic={"flipX": right, "gray": 100}),
                      T(f"{k} name", X(62, 108), y0 + 12, 108, 24, v(f"{k} name"), 19, align="right" if right else "left", show=here)]
             for a, key in enumerate("cqe"):
                 tabs += [I(f"{k} {key.upper()}", X(172 + 31 * a, 21), y0 + 14, 21, 21, v(f"{k} {key} pic"), show=up),
                          I(f"{k} {key.upper()} charges", X(166 + 31 * a, 33), y0 + 37, 33, 2, v(f"{k} {key} marks"), fit="fill", show=up)]
             tabs += [I(f"{k} ult ring", X(263, 41), y0 + 4, 41, 41, v(f"{k} ult ring"), show=here),
                      I(f"{k} ult", X(274.5, 18), y0 + 15.5, 18, 18, v(f"{k} ult pic"), show=here),
-                     T(f"{k} credits", X(12, 96), y0 + 54, 96, 22, "¤ " + v(f"{k} cash"), 19, weight=400, align="right" if right else "left", show=up),
+                     T(f"{k} credits", X(12, 96), y0 + 54, 96, 22, cash(v(f"{k} cash")), 19, weight=400, align="right" if right else "left", show=up),
                      I(f"{k} side gun", X(107, 30), y0 + 55, 30, 18, v(f"{k} side gun"), show=up, pic={"flipX": not right}),
                      I(f"{k} main gun", X(141, 62), y0 + 55, 62, 18, v(f"{k} main gun"), show=up, pic={"flipX": not right}),
                      I(f"{k} armor", X(242, 21), y0 + 54, 21, 21, v(f"{k} armor pic"), show=up),
-                     T(f"{k} health", X(263, 42), y0 + 54, 42, 22, v(f"{k} hp"), 19, weight=500, align="left" if right else "right", show=up),
+                     T(f"{k} health", X(263, 42), y0 + 54, 42, 22, v(f"{k} hp"), 20, weight=700, align="left" if right else "right", show=up),
                      T(f"{k} K/D/A", X(7, 120), y0 + 54, 120, 22, v(f"{k} kda"), 19, weight=400, align="right" if right else "left", show=down),
-                     T(f"{k} credits (dead)", X(233, 70), y0 + 54, 70, 22, "¤ " + v(f"{k} cash"), 19, weight=400, align="left" if right else "right", show=down),
-                     I(f"{k} health bar", x0 + 1, y0 + 79, 308, 8, v(f"{k} hp bar"), fit="fill", show=here, pic={"flipX": right}),
-                     R(f"{k} spike badge", X(36, 26), y0 + 30, 26, 26, "#c4c5ca", radius=13, show=v(f"{k} carrying")),
-                     I(f"{k} spike", X(40, 18), y0 + 34, 18, 18, "/val-svg/spike/ink.svg", show=v(f"{k} carrying"))]
+                     T(f"{k} credits (dead)", X(233, 70), y0 + 54, 70, 22, cash(v(f"{k} cash")), 19, weight=400, align="left" if right else "right", show=down),
+                     I(f"{k} health bar", x0 + 1, y0 + 79, 308, 8, v(f"{k} hp bar"), fit="fill", radius="0 0 24 24 / 0 0 8 8", show=here, pic={"flipX": right}),
+                     R(f"{k} spike badge", X(-6, 26), y0 - 4, 26, 26, "#c4c5ca", radius=13, show=v(f"{k} carrying")),
+                     I(f"{k} spike", X(-2, 18), y0, 18, 18, "/val-svg/spike/ink.svg", show=v(f"{k} carrying"))]
 
     # buy phase: the board and the round tracker
     board = [R("Board", 0, 765, 1920, 340, f"linear-gradient(rgba(102,102,102,.2), rgba(0,0,0,.2)), {NAVY}", radius=10),
@@ -319,16 +331,16 @@ def comps():
     A = lambda kind, dur=400, delay=0, out=None, ease="": {"in": {"dur": dur, "delay": delay, "type": kind, **({"ease": ease} if ease else {})},
                                                           "out": {"dur": out or int(dur * .75), "delay": 0, "type": kind}}
     for l in top:
-        l["anim"] = A("pop", 420) if l["name"].startswith("Spike") else A("fade", 350)
+        l["anim"] = A("pop", 420) if l["name"].startswith("Spike") else A("slide-down", 380) if l["name"].startswith("Banner") else A("fade", 350)
     for l in tabs:
         side, n = l["name"].split(" ")[0], int(l["name"].split(" ")[1])
         here = "here}}" in str(l.get("show"))
-        l["anim"] = A("slide-right" if side == "Left" else "slide-left", 460, 45 * (n - 1)) if here else A("fade", 260)
+        l["anim"] = A("push-right" if side == "Left" else "push-left", 500, 40 * (n - 1)) if here else A("fade", 260)
         if "carrying" in str(l.get("show")):
             l["anim"] = A("pop", 380)
     for l in board:
         m = re.match(r"(Left|Right) (\d) ", l["name"])
-        l["anim"] = A("slide-up", 520, 35 * (int(m.group(2)) - 1) if m else 0)
+        l["anim"] = A("push-up", 520, 30 * (int(m.group(2)) - 1) if m else 0)
     for l in win:
         kind = {"Win crest": "pop", "Win logo": "pop", "Win words": "scale", "Win bar": "grow-x"}.get(l["name"], "fade")
         delay = {"Win panel": 0, "Win crest": 120, "Win logo": 160, "Win words": 220, "Win bar": 360, "Win team": 520}.get(l["name"], 0)

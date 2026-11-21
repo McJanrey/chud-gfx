@@ -438,7 +438,7 @@ const EASE_OPTS = [["", "Smooth"], ["sharp", "Sharp (no easing)"], ["in", "Ease 
 const ANIMS = [["none", "None"], ["fade", "Fade"],
   ["fly-left", "Fly from left (off screen)"], ["fly-right", "Fly from right (off screen)"], ["fly-top", "Fly from top (off screen)"], ["fly-bottom", "Fly from bottom (off screen)"],
   ["fly-left-bounce", "Fly from left + bounce"], ["fly-right-bounce", "Fly from right + bounce"], ["drop", "Drop and bounce"], ["rise", "Rise"],
-  ["slide-left", "Slide in from right (short)"], ["slide-right", "Slide in from left (short)"], ["slide-up", "Slide up (short)"], ["slide-down", "Slide down (short)"], ["blur-slide", "Blur slide"],
+  ["slide-left", "Slide in from right (short)"], ["slide-right", "Slide in from left (short)"], ["slide-up", "Slide up (short)"], ["slide-down", "Slide down (short)"], ["push-right", "Push in from the left (a side panel)"], ["push-left", "Push in from the right (a side panel)"], ["push-up", "Push up from the bottom (a board)"], ["blur-slide", "Blur slide"],
   ["wipe-right", "Wipe right"], ["wipe-left", "Wipe left"], ["wipe-down", "Wipe down"], ["wipe-up", "Wipe up"], ["blinds", "Open from the middle"], ["blinds-y", "Open from the middle (up/down)"], ["iris", "Iris (circle)"], ["type-on", "Typewriter"],
   ["grow-x", "Grow across"], ["grow-y", "Grow down"], ["scale", "Scale"], ["zoom-in", "Zoom in"], ["zoom-out", "Zoom out"], ["pop", "Pop"], ["elastic", "Elastic pop"],
   ["flip-x", "Flip (sideways)"], ["flip-y", "Flip (over)"], ["swing", "Swing down"], ["spin", "Spin in"], ["blur", "Blur"], ["glitch", "Glitch"],

@@ -19,7 +19,7 @@ class ValHud(unittest.TestCase):
         self.assertTrue(f["Left 1 side gun"] and not f["Left 1 main gun"])
         self.assertEqual((f["Left 1 hp bar"], f["Left 1 ult ring"], f["Left 1 c marks"], f["Left 1 armor pic"]),
                          ("/val-svg/bar/62/123456.svg", "/val-svg/ring/3/7.svg", "/val-svg/marks/1/2.svg", "/val-svg/armor/heavy.svg"))
-        self.assertEqual((f["Right 1 down"], f["Right 1 kda"]), ("yes", "2 / 1 / 0"))
+        self.assertEqual((f["Right 1 down"], f["Right 1 kda"]), ("yes", "2/1/0"))
         m.merge({"phase": "buy"})
         f = valhud.fields(m, {})
         self.assertEqual((f["Left 1 here"], f["Left 1 board"], f["Buy phase"]), ("", "yes", "yes"))   # (tabs step aside for the board)

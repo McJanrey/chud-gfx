@@ -7,6 +7,10 @@ const K = {
   "slide-right": [{ opacity: 0, translate: `-${MOVE}px 0` }, { opacity: 1, translate: "0 0" }],
   "slide-up": [{ opacity: 0, translate: `0 ${MOVE}px` }, { opacity: 1, translate: "0 0" }],
   "slide-down": [{ opacity: 0, translate: `0 -${MOVE}px` }, { opacity: 1, translate: "0 0" }],
+  // (a panel pushed in from just off its own edge: a HUD's player tabs, a board coming up from the bottom)
+  "push-right": [{ translate: "-400px 0" }, { translate: "0 0" }],
+  "push-left": [{ translate: "400px 0" }, { translate: "0 0" }],
+  "push-up": [{ translate: "0 480px" }, { translate: "0 0" }],
   "wipe-right": [{ clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0 0 0)" }],
   "wipe-left": [{ clipPath: "inset(0 0 0 100%)" }, { clipPath: "inset(0 0 0 0)" }],
   "wipe-down": [{ clipPath: "inset(0 0 100% 0)" }, { clipPath: "inset(0 0 0 0)" }],
