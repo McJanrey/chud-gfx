@@ -315,8 +315,24 @@ def comps():
            R("Win bar", 627, 346, 680, 45, "linear-gradient(90deg, rgba(249,194,41,0), #f9c229 20%, #f9c229 80%, rgba(249,194,41,0))"),
            T("Win team", 627, 346, 680, 45, v("Round winner") + "  ·  " + v("Round winner side") + "  ·  " + v("Round winner how"), 26,
              font="Anton", weight=400, color=NAVY)]
+    # the moves: what appears plays its In, what goes its Out (the stage plays them as the live data changes)
+    A = lambda kind, dur=400, delay=0, out=None, ease="": {"in": {"dur": dur, "delay": delay, "type": kind, **({"ease": ease} if ease else {})},
+                                                          "out": {"dur": out or int(dur * .75), "delay": 0, "type": kind}}
+    for l in top:
+        l["anim"] = A("pop", 420) if l["name"].startswith("Spike") else A("fade", 350)
+    for l in tabs:
+        side, n = l["name"].split(" ")[0], int(l["name"].split(" ")[1])
+        here = "here}}" in str(l.get("show"))
+        l["anim"] = A("slide-right" if side == "Left" else "slide-left", 460, 45 * (n - 1)) if here else A("fade", 260)
+        if "carrying" in str(l.get("show")):
+            l["anim"] = A("pop", 380)
+    for l in board:
+        m = re.match(r"(Left|Right) (\d) ", l["name"])
+        l["anim"] = A("slide-up", 520, 35 * (int(m.group(2)) - 1) if m else 0)
     for l in win:
-        l["anim"] = {"in": {"dur": 450, "delay": 0, "type": "fade"}, "out": {"dur": 350, "delay": 0, "type": "fade"}}
+        kind = {"Win crest": "pop", "Win logo": "pop", "Win words": "scale", "Win bar": "grow-x"}.get(l["name"], "fade")
+        delay = {"Win panel": 0, "Win crest": 120, "Win logo": 160, "Win words": 220, "Win bar": 360, "Win team": 520}.get(l["name"], 0)
+        l["anim"] = A(kind, 480, delay, 300)
     return [("val27:top", "VAL HUD · Top bar", "overlay", top), ("val27:tabs", "VAL HUD · Players", "overlay", tabs),
             ("val27:board", "VAL HUD · Buy phase", "overlay", [dict(l, show=l.get("show") or v("Buy phase")) if not l.get("show") else l for l in board]),
             ("val27:win", "VAL HUD · Round win", "overlay", [dict(l, show=v("Round won")) for l in win])]

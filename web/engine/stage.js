@@ -229,6 +229,7 @@ export class Stage {
       if (o && o.sig === sig) continue;
       const el = this.build(comp, want.values[id], tables, !o);
       if (o && [...o.el.children].some(c => c._keep)) { this.patch(o.el, el); this.carryIn(o.el, o.el); this.on.set(id, { el: o.el, sig }); }
+      else if (o && !(o.el._in && o.el._in.at) && (comp.layers || []).some(l => l.show)) { this.live(o.el, el); this.on.set(id, { el: o.el, sig }); }   // (not while its own In still plays)
       else if (o) { o.el.replaceWith(el); el._later.forEach(fn => fn()); this.carryIn(o.el, el); this.on.set(id, { el, sig }); }
       else if (this.warm && this.warm.has(id)) {   // (it was waiting, hidden, with its cameras connected)
         const w = this.warm.get(id);
@@ -323,6 +324,33 @@ export class Stage {
 
   // Redraw a graphic without touching its cameras and videos (a new iframe reconnects, a new video restarts):
   // the new layers go in around the ones that stay (those with the same _keep key).
+  // An update in place for a graphic with "show only while" layers (a live HUD): what didn't change stays exactly as it
+  // is, a layer that appears plays its In, one that goes plays its Out before it leaves, and a changed one (a number, a
+  // picture, a health bar) fades in over the old for a moment instead of popping.
+  live(oldEl, newEl) {
+    const key = l => `${(l._layer.name || "").trim().toLowerCase()}|${l._layer.type}`;
+    const olds = new Map();
+    for (const l of [...oldEl.children]) { if (!l._layer || l._going) continue; const k = key(l); if (!olds.has(k)) olds.set(k, []); olds.get(k).push(l); }
+    let cursor = null;
+    const place = x => { if (cursor) cursor.after(x); else oldEl.prepend(x); cursor = x; };
+    const gone = l => { l._going = true; setTimeout(() => l.remove(), 260); };
+    for (const n of [...newEl.children]) {
+      if (!n._layer) continue;
+      const old = (olds.get(key(n)) || []).shift();
+      if (old && (old.outerHTML === n.outerHTML || (old._drawn != null && old._drawn === n._drawn))) { place(old); continue; }
+      if (old) { place(old); place(n); n.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 240, easing: "ease-out" }); gone(old); continue; }
+      place(n);
+      if (n._layer.show) play(n, n._layer, "in");
+    }
+    for (const list of olds.values()) for (const l of list) {
+      l._going = true;
+      if (l._layer.show && ((l._layer.anim || {}).out || {}).type) play(l, l._layer, "out").then(() => l.remove());
+      else l.remove();
+    }
+    oldEl._ticks = newEl._ticks;
+    newEl._later.forEach(fn => fn());
+  }
+
   patch(oldEl, newEl) {
     const keep = new Map([...oldEl.children].filter(c => c._keep).map(c => [c._keep, c]));
     const stay = new Set();
