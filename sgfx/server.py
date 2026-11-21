@@ -1406,6 +1406,18 @@ def handler(engine):
                 with engine.lock:
                     h = json.dumps(engine.val.hud())
                 return self._send(200, h)
+            if path.startswith("/val-svg/"):   # (the VAL HUD's drawn pieces: ult ring, charges, health bar, armor, round tracker)
+                from . import valhud
+                pic = valhud.svg(path[len("/val-svg/"):])
+                if pic is None:
+                    return self._send(404, b"not found", "text/plain")
+                data = pic.encode("utf-8")
+                self.send_response(200)
+                self.send_header("Content-Type", "image/svg+xml")
+                self.send_header("Cache-Control", "max-age=86400")
+                self.send_header("Content-Length", str(len(data)))
+                self.end_headers()
+                return self.wfile.write(data)
             if path.startswith("/val-img/"):   # (/val-img/agent/<uuid>/<picture>.png, /val-img/weapon/<uuid>/killstreamicon.png)
                 bits = path[len("/val-img/"):].removesuffix(".png").split("/")
                 return self._file(valorant.image(*bits) if len(bits) == 3 else None)

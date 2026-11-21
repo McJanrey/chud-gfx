@@ -341,7 +341,8 @@ class Val:
         if not self.cfg().get("on", True):
             return out
         if self.at:
-            out["VALORANT"] = rows(dict(self.match.fields(), Status="on" if self.live() else "waiting"))
+            from . import valhud
+            out["VALORANT"] = rows(dict(self.match.fields(), **valhud.fields(self.match, self.engine.project.get("global") or {}), Status="on" if self.live() else "waiting"))
         if self.last_round:
             out["VAL Last round"] = rows(self.last_round)
         maps = self.maps()
@@ -366,7 +367,8 @@ class Val:
     # --- ready-made graphics, added once each (one deleted stays gone) ---
     def add_hud(self):
         done = self.engine.project.setdefault("hud_pages", [])
-        new = [x for x in hud_comps() if x[0] not in done]
+        from . import valhud
+        new = [x for x in hud_comps() + valhud.comps() if x[0] not in done]
         for key, name, kind, layers in new:
             done.append(key)
             self.engine.comps().append({"id": "c" + uuid.uuid4().hex[:8], "name": name, "hud_page": key, "group": "Game HUD",
