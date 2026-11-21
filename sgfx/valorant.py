@@ -43,7 +43,7 @@ def yes(v):
 class Match:
     def __init__(self, names=("", "")):
         self.teams = [{"name": names[0], "score": 0, "timeouts": 2}, {"name": names[1], "score": 0, "timeouts": 2}]
-        self.round, self.phase, self.spike, self.map, self.first = 1, "", "", "", 0
+        self.round, self.phase, self.spike, self.map, self.first, self.timer = 1, "", "", "", 0, ""
         self.players = {}   # (team, slot) -> fields
         self.history = []   # [{"round", "winner", "how"}]
 
@@ -55,7 +55,7 @@ class Match:
                         self.teams[i][k] = t[k]
         if "round" in b:
             self.round = max(1, int(b["round"] or 1))
-        for k, a in (("phase", "phase"), ("spike", "spike"), ("map", "map")):
+        for k, a in (("phase", "phase"), ("spike", "spike"), ("map", "map"), ("timer", "timer")):
             if k in b:
                 setattr(self, a, str(b[k] or ""))
         if b.get("first_attack") in (0, 1):
@@ -64,6 +64,8 @@ class Match:
             if isinstance(p, dict) and p.get("team") in (0, 1) and 1 <= int(p.get("slot") or 0) <= SLOTS:
                 row = self.players.setdefault((p["team"], int(p["slot"])), {})
                 row.update({k: p[k] for k in PLAYER if k in p})
+                if p.get("ult_ready") and row.get("ult_max"):   # (the scoreboard says READY instead of "7 / 7")
+                    row["ult"] = row["ult_max"]
 
     def fields(self):
         a = attackers(self.round, self.first)
@@ -73,7 +75,7 @@ class Match:
             f.update({f"{s} name": t["name"], f"{s} score": t["score"], f"{s} side": "ATK" if a == i else "DEF",
                       f"{s} timeouts": t["timeouts"], f"{s} history": " ".join("W" if h["winner"] == i else "L" for h in self.history[-24:])})
         f.update({"Round": self.round, "Half": "Overtime" if self.round > 24 else "Second half" if self.round > 12 else "First half",
-                  "Phase": self.phase, "Spike": self.spike, "Map": self.map, "Attackers": self.teams[a]["name"]})
+                  "Phase": self.phase, "Timer": self.timer, "Spike": self.spike, "Map": self.map, "Attackers": self.teams[a]["name"]})
         for i, s in enumerate(SIDES):
             for n in range(1, SLOTS + 1):
                 p = self.players.get((i, n), {})
@@ -185,7 +187,10 @@ class Val:
 
     def public(self):
         c = self.cfg()
+        r = getattr(self.engine, "valreader", None)
         return {"on": c.get("on", True), "series": c.get("series", True), "status": "on" if self.live() else "waiting" if self.at else "off",
+                "reader": {"on": r.on, "screen": r.screen, "status": r.status} if r else None,
+                "demo": bool(getattr(getattr(self.engine, "valdemo", None), "on", False)),
                 "source": self.source, "ago": round(time.time() - self.at) if self.at else None,
                 "maps": [{"n": i + 1, "map": m.get("map", ""), "winner": m.get("winner"),
                           "score": [m["fields"].get("Left score"), m["fields"].get("Right score")]} for i, m in enumerate(self.maps())]}
@@ -214,7 +219,10 @@ def hud_comps():
         _layer("text", "Left side", 790, 20, 60, 60, text=v(t, "Left side"), size=18, color=INK),
         _layer("rect", "Score box", 860, 20, 200, 60, fill=INK),
         _layer("text", "Left score", 860, 20, 70, 60, text=v(t, "Left score"), size=40),
-        _layer("text", "Round", 930, 20, 60, 60, text="R" + v(t, "Round"), size=18, color="#9aa4b2"),
+        _layer("rect", "Timer box", 910, 80, 100, 44, fill=INK, radius=4),
+        _layer("text", "Timer", 910, 80, 100, 30, text=v(t, "Timer"), size=26),
+        _layer("text", "Spike", 910, 80, 100, 30, text=v(t, "Spike"), size=22, color=CORAL),
+        _layer("text", "Round", 910, 106, 100, 18, text="Round " + v(t, "Round"), size=13, color="#9aa4b2", caps=False),
         _layer("text", "Right score", 990, 20, 70, 60, text=v(t, "Right score"), size=40),
         _layer("rect", "Right bar", 1060, 20, 300, 60, fill=CORAL, radius=4),
         _layer("text", "Right side", 1070, 20, 60, 60, text=v(t, "Right side"), size=18, color=INK),

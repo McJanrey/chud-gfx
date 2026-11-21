@@ -27,7 +27,7 @@ from .net import Net
 from .obs import OBS
 from .buses import Buses
 from . import logs
-from . import hudlink, rocket, valorant
+from . import hudlink, league, rocket, valdemo, valorant, valreader
 from .logs import log
 
 WEB = os.path.join(getattr(sys, "_MEIPASS", ""), "web") if getattr(sys, "frozen", False) else os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "web")
@@ -286,6 +286,8 @@ class Engine:
             found.update(self.rl.tables())
         if hasattr(self, "val"):
             found.update(self.val.tables())
+        if hasattr(self, "lol"):
+            found.update(self.lol.tables())
         data = {"tables": found}
         return {"project": self.project, "live": live, "data": data, "fonts": self.fonts(), "now": time.time(),
                 "outputs": dict(getattr(self, "outputs", {})), "teams": self.teams(), "ros": self.ros_state(), "playing": self.playing,
@@ -295,6 +297,7 @@ class Engine:
                 "obs": self.obs.public() if hasattr(self, "obs") else None,
                 "rl": self.rl.public() if hasattr(self, "rl") else None,
                 "val": self.val.public() if hasattr(self, "val") else None,
+                "lol": self.lol.public() if hasattr(self, "lol") else None,
                 "update": {k: v for k, v in getattr(self, "update", {}).items() if k in ("current", "version", "update", "state", "detail", "progress")},
                 "trash": [{"id": t["comp"]["id"], "name": t["comp"].get("name", ""), "at": t.get("at", 0)} for t in self.project.get("trash") or []], "app": {"version": __import__("sgfx").__version__, "port": self.port, "addresses": self.addresses(), "network": dict(self.net.cfg) if hasattr(self, "net") else {}}}
 
@@ -1151,6 +1154,25 @@ class Engine:
             self.val.ingest(body)
         elif path == "/api/val/clear":
             self.val.clear()
+        elif path == "/api/val/demo":   # (a made-up match, to try the HUD and graphics without a game)
+            (self.valdemo.start if body.get("on") else self.valdemo.stop)()
+            result = {"on": self.valdemo.on}
+        elif path == "/api/val/reader":   # (read this PC's screen: the observer's VALORANT)
+            r = self.valreader
+            r.on = bool(body.get("on", r.on))
+            r.screen = int(body.get("screen") or r.screen)
+            result = {"on": r.on, "screen": r.screen, "status": r.status}
+        elif path == "/api/lol":
+            self.lol.set(body)
+        elif path == "/api/lol/feed":   # (the League observer client: the game's live data from another PC)
+            self.lol.feed(body, "the observer client")
+        elif path == "/api/lol/save":
+            n = self.lol.snapshot("manual")
+            if n is None:
+                raise ValueError("Nothing to save yet: no League game has sent anything")
+            result = {"game": n}
+        elif path == "/api/lol/clear":
+            self.lol.clear()
         elif path == "/api/workspace/unremove":
             self.ws_unremove(body.get("folder"))
         elif path == "/api/part/make":
@@ -1529,6 +1551,9 @@ def make_server(workspace, library=None, port=7800):
     hudlink.start(engine)
     rocket.start(engine)
     valorant.start(engine)
+    league.start(engine)
+    valreader.start(engine)
+    valdemo.start(engine)
     return engine, server
 
 
