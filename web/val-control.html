@@ -21,12 +21,14 @@
   h2 { margin: 0 0 12px; font-size: 13px; font-weight: 600; color: var(--muted) }
   .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 10px }
   label.f { display: grid; gap: 4px; font-size: 12px; color: var(--muted); flex: 1; min-width: 110px }
-  input, select { font: inherit; color: var(--ink); background: var(--raise); border: 1px solid var(--line); border-radius: 6px; padding: 7px 9px; width: 100% }
+  input, select { font: inherit; font-size: 16px; color: var(--ink); background: var(--raise); border: 1px solid var(--line); border-radius: 6px; padding: 7px 9px; width: 100% }   /* (16px: iOS doesn't zoom in) */
   input[type=color] { padding: 2px; height: 36px }
   button { font: inherit; color: var(--ink); background: var(--raise); border: 1px solid var(--line); border-radius: 6px; padding: 8px 12px; cursor: pointer; min-height: 38px }
   button:hover { border-color: var(--accent) }
   button.on { background: var(--ok); color: #04210c; border-color: var(--ok) }
   button.big { min-width: 44px; font-weight: 600 }
+  @media (pointer: coarse) { button, input, select { min-height: 44px } input[type=checkbox] { min-height: 0; width: 22px; height: 22px } }   /* (thumbs: 44px targets on touch only) */
+  @media (max-width: 640px) { main { padding: 12px; grid-template-columns: minmax(0, 1fr) } .score { font-size: 30px; white-space: nowrap } }
   .score { font-size: 34px; font-weight: 700; min-width: 56px; text-align: center; font-variant-numeric: tabular-nums }
   .team { border-left: 4px solid var(--c, var(--accent)); padding-left: 10px; margin-bottom: 14px }
   .muted { color: var(--muted); font-size: 12px }
@@ -55,7 +57,7 @@
     <h2>Score and round</h2>
     <div class="row" id="scores"></div>
     <div class="row">
-      <label class="f">Round<input id="round" type="number" min="1" max="40"></label>
+      <label class="f">Round<input id="round" type="number" min="1" max="40" inputmode="numeric" enterkeyhint="done"></label>
       <label class="f">Attacked first<select id="first"><option value="0">Left team</option><option value="1">Right team</option></select></label>
     </div>
     <div class="row"><button data-phase="buy">Buy phase</button><button data-phase="combat">Round on</button><button data-phase="end">Round over</button></div>
@@ -73,7 +75,7 @@
     <h2>Agent select</h2>
     <div class="row">
       <button id="selOn">Show agent select</button>
-      <label class="f" style="max-width:120px">Timer<input id="selTimer" maxlength="5" placeholder="30"></label>
+      <label class="f" style="max-width:120px">Timer<input id="selTimer" maxlength="5" placeholder="30" inputmode="numeric" enterkeyhint="done"></label>
       <label class="f">Map<select id="selMap"><option value="">(none)</option></select></label>
       <button id="selReset" style="align-self:end">Clear the picks</button>
     </div>
