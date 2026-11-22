@@ -55,16 +55,60 @@ function build() {
           el("div", { class: "hb-stage", id: "hb-stage" }, el("iframe", { id: "hb-live", title: "The HUD, live" }), el("div", { class: "hb-boxes", id: "hb-boxes" })))),
       el("div", { class: "hb-right panel", id: "hb-props" })));
   $("#hb-boxes").addEventListener("pointerdown", down);
+  $("#hb-view").addEventListener("wheel", wheel, { passive: false });
+  $("#hb-view").addEventListener("pointerdown", pan, true);
+  new ResizeObserver(fit).observe($("#hb-view"));
+  addEventListener("keydown", e => { if (e.code === "Space" && App.page === "hudbuilder" && hud && !typingIn(document.body)) { spaceDown = true; $("#hb-view").classList.add("grab"); e.preventDefault(); } });
+  addEventListener("keyup", e => { if (e.code === "Space") { spaceDown = false; $("#hb-view").classList.remove("grab"); } });
   addEventListener("resize", fit);
   addEventListener("keydown", key);
 }
 function show(v) { view = v; if (v === "list") { save(); hudId = hud = null; } $("#hb-gallery").hidden = v !== "list"; $("#hb-editor").hidden = v === "list"; v === "list" ? drawGallery() : drawAll(); }
 
+// Zoom (as the Composer): "fit" or a fixed scale. Ctrl + scroll zooms at the pointer, scroll pans when zoomed in,
+// middle button or Space + drag pans; the header has - / % / + / Fit.
+let scale = 0.5, zoom = "fit", panX = 0, panY = 0, spaceDown = false;
 function fit() {
-  const v = $("#hb-view"); if (!v || !v.clientWidth) return;
-  const k = Math.min(v.clientWidth / W, (innerHeight - 230) / H);
-  const s = $("#hb-stage"); s.style.transform = `scale(${k})`; s.style.width = W + "px"; s.style.height = H + "px";
-  v.style.height = H * k + "px";
+  const v = $("#hb-view"), s = $("#hb-stage"); if (!v || !v.clientWidth) return;
+  v.style.height = Math.max(240, innerHeight - v.getBoundingClientRect().top - 24) + "px";
+  const r = v.getBoundingClientRect();
+  if (zoom === "fit") {
+    scale = Math.min(r.width / W, r.height / H);
+    panX = (r.width - W * scale) / 2; panY = (r.height - H * scale) / 2;
+  } else {
+    scale = zoom;
+    panX = Math.min(r.width - 80, Math.max(80 - W * scale, panX));
+    panY = Math.min(r.height - 80, Math.max(80 - H * scale, panY));
+  }
+  s.style.width = W + "px"; s.style.height = H + "px";
+  s.style.transform = `translate(${Math.round(panX)}px, ${Math.round(panY)}px) scale(${scale})`;
+  const z = $("#hb-zoom"); if (z) z.textContent = Math.round(scale * 100) + "%";
+}
+function zoomTo(next, cx, cy) {   // (cx, cy: the point in the view that stays put)
+  const r = $("#hb-view").getBoundingClientRect();
+  next = Math.max(0.1, Math.min(4, next));
+  if (cx == null) { cx = r.width / 2; cy = r.height / 2; }
+  const sx = (cx - panX) / scale, sy = (cy - panY) / scale;
+  zoom = next; panX = cx - sx * next; panY = cy - sy * next; fit();
+}
+const STEPS = [0.1, 0.25, 0.33, 0.5, 0.67, 0.75, 1, 1.25, 1.5, 2, 3, 4];
+const stepZoom = dir => zoomTo(dir > 0 ? (STEPS.find(z => z > scale + 0.001) || 4) : ([...STEPS].reverse().find(z => z < scale - 0.001) || 0.1));
+function wheel(e) {
+  if (!hud) return;
+  e.preventDefault();
+  const r = $("#hb-view").getBoundingClientRect();
+  if (e.ctrlKey || e.metaKey) return zoomTo(scale * Math.exp(-e.deltaY * 0.0015), e.clientX - r.left, e.clientY - r.top);
+  if (zoom === "fit") return;
+  panX -= e.shiftKey ? e.deltaY : e.deltaX; panY -= e.shiftKey ? 0 : e.deltaY; fit();
+}
+function pan(e) {   // (middle button, or Space + drag)
+  if (!(e.button === 1 || (e.button === 0 && spaceDown))) return;
+  e.preventDefault(); e.stopImmediatePropagation();
+  if (zoom === "fit") zoom = scale;
+  const sx = e.clientX - panX, sy = e.clientY - panY;
+  const mv = ev => { panX = ev.clientX - sx; panY = ev.clientY - sy; fit(); };
+  const end = () => { removeEventListener("pointermove", mv); removeEventListener("pointerup", end); };
+  addEventListener("pointermove", mv); addEventListener("pointerup", end);
 }
 
 function preview() {   // the iframe's link: the HUD, with the Show mode and background (the browser source itself stays live)
@@ -129,6 +173,10 @@ function drawTools() {
     el("h3", {}, hud.name), el("span", { class: "muted small" }, gameName(hud.game)),
     el("span", { class: "spacer" }),
     el("button", { class: "small", title: "Undo (Ctrl+Z)", onclick: doUndo, disabled: !undo.length }, "↶ Undo"),
+    el("div", { class: "seg zoom" }, el("button", { class: "small", title: "Zoom out", onclick: () => stepZoom(-1) }, "−"),
+      el("button", { class: "small", id: "hb-zoom", title: "100%", onclick: () => zoomTo(1) }, Math.round(scale * 100) + "%"),
+      el("button", { class: "small", title: "Zoom in (Ctrl + scroll)", onclick: () => stepZoom(1) }, "+"),
+      el("button", { class: "small", title: "Fit the whole HUD", onclick: () => { zoom = "fit"; fit(); } }, "Fit")),
     el("button", { class: "small", title: "Play the HUD's animations again", onclick: () => reload(true) }, "▶ Replay"),
     el("select", { class: "small", "aria-label": "Background", onchange: e => { bg = e.target.value; reload(); } },
       ...[["checker", "Checker"], ["dark", "Dark"], ["green", "Green"]].map(([v, n]) => el("option", { value: v, selected: bg === v }, n))),
