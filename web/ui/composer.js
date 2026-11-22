@@ -100,12 +100,12 @@ function renderLayers() {
   // top of the list = in front (the last layer)
   $("#cmp-layers").replaceChildren(...[...comp.layers].reverse().map(l => el("div", {
     class: "ly" + (sel.has(l.id) ? " sel" : "") + (l.visible === false ? " off" : ""), draggable: "true",
-    onclick: e => { pick(l.id, e.shiftKey || e.ctrlKey); },
+    onclick: e => { pick(l.id, e.shiftKey || e.ctrlKey, true); },   // (in the list: just that layer, even in a group)
     ondragstart: e => e.dataTransfer.setData("text/layer", l.id),
     ondragover: e => e.preventDefault(),
     ondrop: e => { e.preventDefault(); const from = e.dataTransfer.getData("text/layer"); if (from && from !== l.id) moveLayer(from, l.id); } },
     el("span", { class: "ly-ic" }, ICON[l.type] || "?"),
-    el("span", { class: "ly-name" }, l.name || l.type), l.field ? el("span", { class: "tag" }, "field") : "",
+    el("span", { class: "ly-name" }, l.name || l.type), l.group ? el("span", { class: "tag", title: "In a group: a click on the canvas picks the whole group" }, "group") : l.field ? el("span", { class: "tag" }, "field") : "",
     el("button", { class: "small ghost" + (l.locked ? " on-lock" : ""), "aria-label": l.locked ? "Unlock" : "Lock", title: l.locked ? "Locked: can't be picked on the canvas (click to unlock)" : "Lock (can't be picked on the canvas)",
       onclick: e => { e.stopPropagation(); snapshot(); l.locked = !l.locked; if (l.locked) sel.delete(l.id); changed(); } }, lockIcon(l.locked)),
     el("button", { class: "small ghost", "aria-label": l.visible === false ? "Show" : "Hide", onclick: e => { e.stopPropagation(); snapshot(); l.visible = l.visible === false; changed(); } }, l.visible === false ? "◌" : "●"))));
@@ -116,10 +116,44 @@ function moveLayer(fromId, toId) {
   comp.layers.splice(comp.layers.findIndex(l => l.id === toId) + 1, 0, item);
   changed();
 }
-function pick(id, add) {
+function pick(id, add, alone) {
   if (!add) sel = new Set();
-  if (id) sel.has(id) && add ? sel.delete(id) : sel.add(id);
+  const l = id && layerById(id), mates = l && l.group && !alone ? comp.layers.filter(o => o.group === l.group).map(o => o.id) : [id];
+  if (id) { if (sel.has(id) && add) mates.forEach(m => sel.delete(m)); else mates.forEach(m => sel.add(m)); }
   renderLayers(); drawSelection(); renderProps();
+}
+// Arrange: the list order is the stacking (last = in front).
+function arrange(how) {
+  const ls = picked(); if (!ls.length) return;
+  snapshot();
+  const rest = comp.layers.filter(l => !sel.has(l.id));
+  if (how === "front") comp.layers = [...rest, ...ls];
+  else if (how === "back") comp.layers = [...ls, ...rest];
+  else {
+    const order = comp.layers.slice(), step = how === "forward" ? 1 : -1;
+    const idx = ls.map(l => order.indexOf(l)).sort((a, b) => step > 0 ? b - a : a - b);
+    for (const i of idx) { const j = i + step; if (j < 0 || j >= order.length || sel.has(order[j].id)) continue; [order[i], order[j]] = [order[j], order[i]]; }
+    comp.layers = order;
+  }
+  changed();
+}
+function groupPicked() {
+  const ls = picked(); if (ls.length < 2) return toast("Pick two or more layers to group");
+  snapshot(); const g = uid("g"); ls.forEach(l => (l.group = g)); changed(); toast(`Grouped ${ls.length} layers (Ctrl+Shift+G to ungroup)`);
+}
+function ungroupPicked() {
+  const ls = picked().filter(l => l.group); if (!ls.length) return;
+  snapshot(); ls.forEach(l => delete l.group); changed(); toast("Ungrouped");
+}
+function distribute(axis) {   // (equal gaps between the picked layers, first and last stay put)
+  const ls = picked().slice(); if (ls.length < 3) return;
+  const P = axis === "x" ? "x" : "y", D = axis === "x" ? "w" : "h";
+  ls.sort((a, b) => a[P] - b[P]);
+  const span = ls[ls.length - 1][P] + ls[ls.length - 1][D] - ls[0][P], used = ls.reduce((t, l) => t + l[D], 0), gap = (span - used) / (ls.length - 1);
+  snapshot();
+  let at = ls[0][P];
+  for (const l of ls) { l[P] = Math.round(at); at += l[D] + gap; }
+  changed({ keepList: true });
 }
 
 // Import: graphic packs (.sgfx, GFX Baby .chudgfx) and Photoshop files become graphics here; so does a video
@@ -559,6 +593,29 @@ view.addEventListener("mousedown", e => {
     return drawPen();
   }
 }, true);
+view.addEventListener("dblclick", e => {
+  if (!comp || liner || pen) return;
+  const [x, y] = toStage(e), hit = layerAt(x, y);
+  if (!hit) return;
+  if (hit.group && !(sel.size === 1 && sel.has(hit.id))) { pick(hit.id, false, true); return; }
+  if (hit.type === "text") editTextInPlace(hit);
+});
+function editTextInPlace(l) {   // (a box over the layer, in its size and look; Enter keeps, Shift+Enter a new line, Esc cancels)
+  const b = shown(l), r = sheet.getBoundingClientRect(), v = view.getBoundingClientRect();
+  const ta = el("textarea", { class: "cmp-textedit", value: l.text ?? "", spellcheck: false });
+  ta.value = l.text ?? "";
+  Object.assign(ta.style, { left: r.left - v.left + b.x * scale + "px", top: r.top - v.top + b.y * scale + "px", width: Math.max(80, b.w * scale) + "px", height: Math.max(28, b.h * scale) + "px",
+    fontFamily: l.font || "Inter", fontSize: Math.max(10, (+l.size || 32) * scale) + "px", fontWeight: l.weight || 700, textAlign: l.align || "center", color: l.color || "#ffffff" });
+  let done = false;
+  const finish = keep => {
+    if (done) return; done = true;
+    if (keep && ta.value !== (l.text ?? "")) { snapshot(); l.text = ta.value; changed({ keepList: true }); }
+    ta.remove();
+  };
+  ta.addEventListener("keydown", ev => { ev.stopPropagation(); if (ev.key === "Escape") finish(false); else if (ev.key === "Enter" && !ev.shiftKey) { ev.preventDefault(); finish(true); } });
+  ta.addEventListener("blur", () => finish(true));
+  view.appendChild(ta); ta.focus(); ta.select();
+}
 view.addEventListener("mousedown", e => {
   if (!comp || e.button !== 0 || pen) return;
   const handle = e.target.closest("[data-h]");
@@ -582,6 +639,21 @@ view.addEventListener("mousedown", e => {
     let dx = Math.round(mx - sx), dy = Math.round(my - sy);
     if (!moved && Math.abs(dx) + Math.abs(dy) < 2) return;
     if (!moved) { snapshot(); moved = dragging = true; }   // (dragging: a server push mid-drag must not swap the layers out)
+    if (handle && handle.dataset.h === "rot") {   // (turning: about each layer's own middle; Shift: 15 degree steps)
+      const G = { x: Math.min(...start.map(s => s.x)), y: Math.min(...start.map(s => s.y)) };
+      const cx = (G.x + Math.max(...start.map(s => s.x + s.w))) / 2, cy = (G.y + Math.max(...start.map(s => s.y + s.h))) / 2;
+      const a0 = Math.atan2(sy - cy, sx - cx), a1 = Math.atan2(my - cy, mx - cx);
+      let d = (a1 - a0) * 180 / Math.PI;
+      for (const s of start) {
+        let r = (s.rot ?? (s.rot = +s.l.rotation || 0)) + d;
+        if (ev.shiftKey) r = Math.round(r / 15) * 15;
+        s.l.rotation = Math.round(((r % 360) + 540) % 360 - 180);
+      }
+      const node = sheet.firstChild;
+      for (const s of start) { const e2 = node && [...node.children].find(c => c._layer && c._layer.id === s.l.id); if (e2) e2.style.transform = `rotate(${s.l.rotation}deg)`; }
+      renderPropsNumbers(); drawSelection();
+      return;
+    }
     if (handle) {
       // (resizing: every picked layer, as one box: each keeps its place and share inside the box)
       const h = handle.dataset.h;
@@ -624,6 +696,34 @@ view.addEventListener("mousedown", e => {
   const up = () => { removeEventListener("mousemove", move); removeEventListener("mouseup", up); dragging = false; showSnap(); if (moved) changed({ keepList: true }); };
   addEventListener("mousemove", move); addEventListener("mouseup", up);
 });
+// Right-click on the canvas: what you'd reach for, with its keys.
+let menuEl = null;
+function closeMenu() { if (menuEl) { menuEl.remove(); menuEl = null; } }
+addEventListener("mousedown", e => { if (menuEl && !menuEl.contains(e.target)) closeMenu(); }, true);
+addEventListener("keydown", e => { if (menuEl && e.key === "Escape") closeMenu(); });
+view.addEventListener("contextmenu", e => {
+  if (!comp || liner || pen) return;
+  e.preventDefault(); closeMenu();
+  const [x, y] = toStage(e), hit = layerAt(x, y);
+  if (hit && !sel.has(hit.id)) pick(hit.id, false);
+  const n = picked().length, grouped = picked().some(l => l.group);
+  const key = (combo, fn) => () => { closeMenu(); fn(); };
+  const press = (k, mods = {}) => dispatchEvent(new KeyboardEvent("keydown", { key: k, ctrlKey: !!mods.ctrl, shiftKey: !!mods.shift, bubbles: true }));
+  const item = (label, keys, fn, on = true) => el("button", { disabled: !on, onclick: key(keys, fn) }, el("span", {}, label), el("kbd", {}, keys));
+  menuEl = el("div", { class: "cmp-menu", role: "menu", style: `left:${e.clientX}px;top:${e.clientY}px` },
+    item("Cut", "Ctrl+X", () => press("x", { ctrl: true }), n), item("Copy", "Ctrl+C", () => press("c", { ctrl: true }), n), item("Paste", "Ctrl+V", () => press("v", { ctrl: true })),
+    item("Duplicate", "Ctrl+D", () => press("d", { ctrl: true }), n), item("Delete", "Del", () => press("Delete"), n), el("hr"),
+    item("Bring to front", "Ctrl+Shift+]", () => arrange("front"), n), item("Bring forward", "Ctrl+]", () => arrange("forward"), n),
+    item("Send backward", "Ctrl+[", () => arrange("backward"), n), item("Send to back", "Ctrl+Shift+[", () => arrange("back"), n), el("hr"),
+    grouped ? item("Ungroup", "Ctrl+Shift+G", ungroupPicked, n) : item("Group", "Ctrl+G", groupPicked, n > 1),
+    item(picked().every(l => l.locked) && n ? "Unlock" : "Lock", "", () => { snapshot(); const lock = !picked().every(l => l.locked); picked().forEach(l => (l.locked = lock)); if (lock) sel = new Set(); changed(); }, n),
+    item("Hide", "", () => { snapshot(); picked().forEach(l => (l.visible = false)); sel = new Set(); changed(); }, n));
+  document.body.appendChild(menuEl);
+  const rr = menuEl.getBoundingClientRect();   // (kept inside the window)
+  if (rr.right > innerWidth) menuEl.style.left = innerWidth - rr.width - 8 + "px";
+  if (rr.bottom > innerHeight) menuEl.style.top = innerHeight - rr.height - 8 + "px";
+});
+
 // Copy / paste: Ctrl+C / Ctrl+X take the picked layers, Ctrl+V puts them in the open graphic or HUD part (new ids;
 // a few px down and right when the copies would sit exactly on their originals), and picks them.
 let clip = null;
@@ -648,6 +748,11 @@ addEventListener("keydown", e => {
   }
   if (/INPUT|TEXTAREA|SELECT/.test(a.tagName) || a.isContentEditable) return;   // (a chip box is typed in too)
   if (pen && (k === "enter" || k === "escape")) { e.preventDefault(); if (k === "escape") pen = []; finishPen(); return; }
+  if (mod && k === "g") { e.preventDefault(); e.shiftKey ? ungroupPicked() : groupPicked(); return; }
+  if (mod && (e.key === "]" || e.key === "[" || e.code === "BracketRight" || e.code === "BracketLeft")) {
+    e.preventDefault(); const up = e.code === "BracketRight" || e.key === "]";
+    arrange(e.shiftKey ? (up ? "front" : "back") : (up ? "forward" : "backward")); return;
+  }
   if (mod && k === "a") { e.preventDefault(); sel = new Set(comp.layers.filter(l => l.visible !== false).map(l => l.id)); renderLayers(); drawSelection(); renderProps(); return; }
   if (mod && k === "v") { e.preventDefault(); paste(); return; }
   const ls = picked();
@@ -677,7 +782,20 @@ let rulers = true;
 try { rulers = localStorage.getItem("sg-rulers") !== "off"; } catch (e) { /* */ }   // (on unless turned off on this PC)
 const rulerX = el("div", { class: "cmp-ruler x" }), rulerY = el("div", { class: "cmp-ruler y" }), guideBox = el("div", { class: "cmp-guides" });
 view.append(rulerX, rulerY, guideBox);
+// Safe areas (SMPTE): action safe 93% of the frame, title safe 90%, drawn over the canvas while editing only.
+let safeOn = false;
+try { safeOn = localStorage.getItem("sg-safe") === "on"; } catch (e) { /* */ }
+const safeBox = el("div", { class: "cmp-safe" });
+view.appendChild(safeBox);
+function drawSafe() {
+  if (!safeOn || !comp) return safeBox.replaceChildren();
+  const r = sheet.getBoundingClientRect(), v = view.getBoundingClientRect();
+  const frame = k => el("div", { class: "cmp-safe-frame" + (k < .92 ? " title" : ""), style: `left:${r.left - v.left + W * (1 - k) / 2 * scale}px;top:${r.top - v.top + H * (1 - k) / 2 * scale}px;width:${W * k * scale}px;height:${H * k * scale}px` },
+    el("span", {}, k < .92 ? "Title safe 90%" : "Action safe 93%"));
+  safeBox.replaceChildren(frame(.93), frame(.9));
+}
 function drawRulers() {
+  drawSafe();
   rulerX.hidden = rulerY.hidden = guideBox.hidden = !rulers;
   if (!rulers || !comp) return;
   const r = sheet.getBoundingClientRect(), v = view.getBoundingClientRect(), ox = r.left - v.left, oy = r.top - v.top;
@@ -707,6 +825,7 @@ function canvasTools() {
   t.replaceChildren(
     el("div", { class: "seg" }, el("button", { class: "small", id: "cmp-undo", "aria-label": "Undo", title: "Undo (Ctrl+Z)", disabled: true, onclick: () => back(undo, redo) }, "↶ Undo"),
       el("button", { class: "small", id: "cmp-redo", "aria-label": "Redo", title: "Redo (Ctrl+Y)", disabled: true, onclick: () => back(redo, undo) }, "Redo ↷")),
+    el("button", { class: "small" + (safeOn ? " on" : ""), title: "Action safe (93%) and title safe (90%): keep text inside the inner line", onclick: e => { safeOn = !safeOn; try { localStorage.setItem("sg-safe", safeOn ? "on" : "off"); } catch (x) { /* */ } e.target.classList.toggle("on", safeOn); drawSafe(); } }, "Safe areas"),
     el("button", { class: "small" + (rulers ? " on" : ""), onclick: e => { rulers = !rulers; try { localStorage.setItem("sg-rulers", rulers ? "on" : "off"); } catch (x) { /* */ } e.target.classList.toggle("on", rulers); drawRulers(); } }, "Rulers"),
     el("div", { class: "seg zoom" },
       el("button", { class: "small", "aria-label": "Zoom out", onclick: () => stepZoom(-1) }, "−"),
@@ -909,6 +1028,10 @@ function renderProps() {
       el("div", { class: "three" }, ...[["Left", l => l.x = Math.min(...ls.map(o => o.x))], ["Centre", l => l.x = Math.round((Math.min(...ls.map(o => o.x)) + Math.max(...ls.map(o => o.x + o.w)) - l.w) / 2)], ["Right", l => l.x = Math.max(...ls.map(o => o.x + o.w)) - l.w],
         ["Top", l => l.y = Math.min(...ls.map(o => o.y))], ["Middle", l => l.y = Math.round((Math.min(...ls.map(o => o.y)) + Math.max(...ls.map(o => o.y + o.h)) - l.h) / 2)], ["Bottom", l => l.y = Math.max(...ls.map(o => o.y + o.h)) - l.h]]
         .map(([t, fn]) => el("button", { class: "small", onclick: () => { snapshot(); ls.forEach(fn); changed({ keepList: true }); } }, t))),
+      ls.length >= 3 ? el("div", { class: "two" }, el("button", { class: "small", title: "Equal gaps across (the first and last stay put)", onclick: () => distribute("x") }, "Distribute across"),
+        el("button", { class: "small", title: "Equal gaps down", onclick: () => distribute("y") }, "Distribute down")) : "",
+      el("button", { class: "small", onclick: () => (ls.some(o => o.group) && ls.every(o => o.group === ls[0].group) ? ungroupPicked() : groupPicked()) },
+        ls.some(o => o.group) && ls.every(o => o.group === ls[0].group) ? "Ungroup (Ctrl+Shift+G)" : "Group (Ctrl+G)"),
       ls.filter(o => o.shape !== "line").length >= 2 ? el("button", { class: "small primary", title: "A line from each box to the next (in the order picked), bent at right angles; it follows the boxes",
         onclick: () => { const bs = ls.filter(o => o.shape !== "line"); for (let i = 1; i < bs.length; i++) connect(bs[i - 1], bs[i]); } }, "Connect with lines") : ""),
       ...multiEdit(ls));

@@ -494,3 +494,17 @@ input[type=range] { padding: 0; accent-color: var(--accent); }
 /* the line tool: a picked line's points (drag to move; they join other lines' points) */
 .cmp-pts { position: absolute; inset: 0; pointer-events: none; z-index: 7; }
 .cmp-pt { position: absolute; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; background: #fff; border: 2px solid var(--accent); pointer-events: auto; cursor: move; }
+/* batch: rotate handle, text editing on the canvas, right-click menu, safe areas */
+.cmp-sel i[data-h="rot"] { left: 50%; top: -26px; border-radius: 50%; cursor: grab; }
+.cmp-sel i[data-h="rot"]::after { content: ""; position: absolute; left: 50%; top: 100%; width: 1px; height: 16px; background: var(--accent); }
+.cmp-textedit { position: absolute; z-index: 8; padding: 0; margin: 0; border: 1.5px solid var(--accent); border-radius: 2px; background: rgb(0 0 0 / .55); resize: none; line-height: 1.15; overflow: hidden; outline: none; }
+.cmp-menu { position: fixed; z-index: 60; min-width: 220px; display: flex; flex-direction: column; padding: 4px; border-radius: 10px; background: var(--raised); border: 1px solid var(--line-2); box-shadow: 0 12px 32px rgba(0,0,0,.45); }
+.cmp-menu button { display: flex; justify-content: space-between; gap: 16px; box-shadow: none; padding: 7px 10px; border-radius: 6px; color: var(--text); font-size: 12.5px; }
+.cmp-menu button:hover:not([disabled]) { background: rgb(var(--ink) / .07); }
+.cmp-menu kbd { font: 11px var(--mono); color: var(--muted); }
+.cmp-menu hr { border: 0; border-top: 1px solid var(--line); margin: 4px 0; }
+.cmp-safe { position: absolute; inset: 0; pointer-events: none; z-index: 5; }
+.cmp-safe-frame { position: absolute; border: 1px dashed rgb(255 255 255 / .35); }
+.cmp-safe-frame.title { border-color: rgb(200 240 60 / .55); }
+.cmp-safe-frame span { position: absolute; right: 4px; top: 2px; font: 10px var(--mono); color: rgb(255 255 255 / .5); }
+.cmp-safe-frame.title span { color: rgb(200 240 60 / .7); top: auto; bottom: 2px; }
