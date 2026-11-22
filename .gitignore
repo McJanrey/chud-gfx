@@ -1,7 +1,7 @@
 __pycache__/
 *.pyc
-workspaces/
-library/
+/workspaces/
+/library/
 tests/compare/
 .venv/
 build/
