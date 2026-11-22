@@ -36,6 +36,7 @@ function undoButtons() {
   if (r) { r.disabled = !redo.length; r.title = `Redo (Ctrl+Y or Ctrl+Shift+Z)${redo.length ? ` · ${redo.length} step${redo.length === 1 ? "" : "s"}` : ""}`; }
 }
 function changed(opts = {}) {
+  reroute();
   dirty = true;
   clearTimeout(saveTimer);
   saveTimer = setTimeout(save, 350);
@@ -245,11 +246,12 @@ function shown(l) {
 function drawSelection() {
   const ls = picked().map(shown);
   box.hidden = !ls.length;
-  if (!ls.length) return;
+  if (!ls.length) { if (typeof drawPoints === "function") drawPoints(); return; }
   const x0 = Math.min(...ls.map(l => l.x)), y0 = Math.min(...ls.map(l => l.y));
   const x1 = Math.max(...ls.map(l => l.x + l.w)), y1 = Math.max(...ls.map(l => l.y + l.h));
   const r = sheet.getBoundingClientRect(), v = view.getBoundingClientRect();
   Object.assign(box.style, { left: r.left - v.left + x0 * scale + "px", top: r.top - v.top + y0 * scale + "px", width: (x1 - x0) * scale + "px", height: (y1 - y0) * scale + "px" });
+  if (typeof drawPoints === "function") drawPoints();
 }
 // The layer under the pointer: the smallest one there (a full-screen background never hides the text on it).
 // Picking on the canvas works as in Canva / Figma: the layer in front under the pointer; a layer filling (almost) the
@@ -373,6 +375,173 @@ function drawPen(mx, my) {
   const pts = [...pen, ...(mx != null ? [[mx, my]] : [])].map(([x, y]) => `${r.left - v.left + x * scale},${r.top - v.top + y * scale}`).join(" ");
   penLayer.innerHTML = `<polyline points="${pts}" fill="none" stroke="#c8f03c" stroke-width="2"/>` + pen.map(([x, y], i) => `<circle cx="${r.left - v.left + x * scale}" cy="${r.top - v.top + y * scale}" r="${i ? 3 : 6}" fill="${i ? "#c8f03c" : "none"}" stroke="#c8f03c" stroke-width="2"/>`).join("");
 }
+// --- the line tool: click points (Shift: straight, 45 degree steps), double-click / Enter / Esc to finish. A point
+// lands on another line's point when near it (they join); starting on a line's end carries that line on (one line).
+let liner = null;   // {pts: [[x, y]...], extend: {id, atStart}, from: {id, side}, to: {id, side}}
+
+// --- connectors: a line whose two ends sit on two boxes ({from: {id, side}, to: {id, side}}); it bends at right
+// angles between them and follows when either box moves. A box's spots: the middle of each side.
+const SIDES = ["top", "bottom", "left", "right"];
+function anchor(l, side) {
+  return { top: [l.x + l.w / 2, l.y], bottom: [l.x + l.w / 2, l.y + l.h], left: [l.x, l.y + l.h / 2], right: [l.x + l.w, l.y + l.h / 2] }[side];
+}
+function routeLine(a, as, b, bs) {
+  const V = s => s === "top" || s === "bottom", r = p => [Math.round(p[0]), Math.round(p[1])];
+  let pts;
+  if (V(as) && V(bs)) { const m = (a[1] + b[1]) / 2; pts = [a, [a[0], m], [b[0], m], b]; }
+  else if (!V(as) && !V(bs)) { const m = (a[0] + b[0]) / 2; pts = [a, [m, a[1]], [m, b[1]], b]; }
+  else if (V(as)) pts = [a, [a[0], b[1]], b];
+  else pts = [a, [b[0], a[1]], b];
+  pts = pts.map(r).filter((p, i, all) => !i || p[0] !== all[i - 1][0] || p[1] !== all[i - 1][1]);   // (no repeated points: a straight run stays one segment)
+  return pts.filter((p, i, all) => i === 0 || i === all.length - 1 || !((all[i - 1][0] === p[0] && p[0] === all[i + 1][0]) || (all[i - 1][1] === p[1] && p[1] === all[i + 1][1])));
+}
+function sidesFor(A, B) {   // (which sides face each other)
+  const ax = A.x + A.w / 2, ay = A.y + A.h / 2, bx = B.x + B.w / 2, by = B.y + B.h / 2;
+  if (B.y >= A.y + A.h) return ["bottom", "top"];
+  if (B.y + B.h <= A.y) return ["top", "bottom"];
+  if (B.x >= A.x + A.w) return ["right", "left"];
+  if (B.x + B.w <= A.x) return ["left", "right"];
+  return Math.abs(by - ay) >= Math.abs(bx - ax) ? (by > ay ? ["bottom", "top"] : ["top", "bottom"]) : (bx > ax ? ["right", "left"] : ["left", "right"]);
+}
+function reroute() {
+  if (!comp) return;
+  for (const l of comp.layers) {
+    if (l.shape !== "line" || !l.from || !l.to) continue;
+    const A = layerById(l.from.id), B = layerById(l.to.id);
+    if (!A || !B) { delete l.from; delete l.to; continue; }   // (a box gone: the line stays where it is)
+    setLinePts(l, routeLine(anchor(A, l.from.side), l.from.side, anchor(B, l.to.side), l.to.side));
+  }
+}
+function connect(A, B) {
+  const [as, bs] = sidesFor(A, B);
+  const l = { type: "shape", name: `Line: ${A.name || "box"} to ${B.name || "box"}`, shape: "line", stroke: "#ffffff", strokeWidth: 4, fill: "none", points: [],
+    from: { id: A.id, side: as }, to: { id: B.id, side: bs } };
+  setLinePts(l, routeLine(anchor(A, as), as, anchor(B, bs), bs));
+  addLayers([l], { keepPlace: true });
+}
+function boxSpot(x, y) {   // (the middle of a box's side under the pointer, within 12 screen px)
+  let best = null;
+  for (const l of comp.layers) {
+    if (l.shape === "line" || l.visible === false || l.locked || isBackground(l)) continue;
+    for (const side of SIDES) { const p = anchor(l, side), d = Math.hypot(p[0] - x, p[1] - y); if (d <= 12 / scale && (!best || d < best.d)) best = { d, p, id: l.id, side }; }
+  }
+  return best;
+}
+const lineLayers = () => comp.layers.filter(l => l.shape === "line" && l.visible !== false);
+function linePts(l) { return (l.points || []).map(([fx, fy]) => [l.x + fx * l.w, l.y + fy * l.h]); }
+function setLinePts(l, pts) {
+  const x0 = Math.min(...pts.map(p => p[0])), y0 = Math.min(...pts.map(p => p[1]));
+  const spanX = Math.max(...pts.map(p => p[0])) - x0, spanY = Math.max(...pts.map(p => p[1])) - y0;
+  l.x = Math.round(x0); l.y = Math.round(y0); l.w = Math.max(1, Math.round(spanX)); l.h = Math.max(1, Math.round(spanY));
+  l.points = pts.map(([x, y]) => [spanX ? +((x - x0) / spanX).toFixed(5) : 0, spanY ? +((y - y0) / spanY).toFixed(5) : 0]);
+}
+function snapPoint(x, y, prev, shift, skip) {
+  if (shift && prev) {   // (straight: across, down or diagonal from the last point)
+    const dx = x - prev[0], dy = y - prev[1], a = Math.round(Math.atan2(dy, dx) / (Math.PI / 4)) * (Math.PI / 4), d = Math.hypot(dx, dy);
+    x = prev[0] + Math.round(Math.cos(a) * d); y = prev[1] + Math.round(Math.sin(a) * d);
+  }
+  let best = null;   // (onto a point of another line, or of this one: a join)
+  for (const l of lineLayers()) {
+    if (l.id === skip) continue;
+    for (const p of linePts(l)) { const d = Math.hypot(p[0] - x, p[1] - y); if (d <= 10 / scale && (!best || d < best.d)) best = { d, p, l }; }
+  }
+  if (best) return { p: [Math.round(best.p[0]), Math.round(best.p[1])], on: best.l };
+  const spot = comp && boxSpot(x, y);
+  if (spot) return { p: [Math.round(spot.p[0]), Math.round(spot.p[1])], on: null, box: { id: spot.id, side: spot.side } };
+  if (!shift && prev) {   // (else line up with the last point: straight across or down)
+    if (Math.abs(x - prev[0]) <= 8 / scale) x = prev[0];
+    if (Math.abs(y - prev[1]) <= 8 / scale) y = prev[1];
+  }
+  return { p: [Math.round(x), Math.round(y)], on: null };
+}
+function drawLiner(mx, my) {
+  if (!liner) return drawPen();
+  const r = sheet.getBoundingClientRect(), v = view.getBoundingClientRect();
+  const P = ([x, y]) => [r.left - v.left + x * scale, r.top - v.top + y * scale];
+  penLayer.style.display = "block";
+  const pts = [...liner.pts, ...(mx != null ? [[mx, my]] : [])].map(p => P(p).join(",")).join(" ");
+  penLayer.innerHTML = `<polyline points="${pts}" fill="none" stroke="#c8f03c" stroke-width="2"/>` +
+    liner.pts.map(p => { const [cx, cy] = P(p); return `<circle cx="${cx}" cy="${cy}" r="4" fill="#c8f03c"/>`; }).join("");
+}
+function finishLine() {
+  const L = liner;
+  liner = null; drawPen(); view.classList.remove("pen");
+  if (!L || L.pts.length < 2) return;
+  if (L.extend) {   // (carried on from another line's end: that line gets the new points)
+    const l = layerById(L.extend.id);
+    if (l) {
+      snapshot();
+      const old = linePts(l), add = L.pts.slice(1);
+      setLinePts(l, L.extend.atStart ? [...add.reverse(), ...old] : [...old, ...add]);
+      sel = new Set([l.id]); changed(); return;
+    }
+  }
+  if (L.from && L.to && L.from.id !== L.to.id) {   // (box to box: a connector, bent at right angles, following the boxes)
+    const A = layerById(L.from.id), B = layerById(L.to.id);
+    if (A && B) {
+      const l = { type: "shape", name: `Line: ${A.name || "box"} to ${B.name || "box"}`, shape: "line", stroke: "#ffffff", strokeWidth: 4, fill: "none", points: [], from: L.from, to: L.to };
+      setLinePts(l, routeLine(anchor(A, L.from.side), L.from.side, anchor(B, L.to.side), L.to.side));
+      return addLayers([l], { keepPlace: true });
+    }
+  }
+  const l = { type: "shape", name: "Line", shape: "line", stroke: "#ffffff", strokeWidth: 4, fill: "none", points: [] };
+  setLinePts(l, L.pts);
+  addLayers([l], { keepPlace: true });
+}
+view.addEventListener("mousedown", e => {
+  if (!liner || e.button !== 0) return;
+  e.preventDefault(); e.stopImmediatePropagation();
+  const [x, y] = toStage(e), prev = liner.pts[liner.pts.length - 1];
+  const s = snapPoint(x, y, prev, e.shiftKey, liner.extend && liner.extend.id);
+  if (!liner.pts.length && s.on) {   // (starting on a line's end: carry that line on)
+    const ends = linePts(s.on);
+    const atStart = Math.hypot(ends[0][0] - s.p[0], ends[0][1] - s.p[1]) < 1, atEnd = Math.hypot(ends[ends.length - 1][0] - s.p[0], ends[ends.length - 1][1] - s.p[1]) < 1;
+    if (atStart || atEnd) liner.extend = { id: s.on.id, atStart: atStart && !atEnd };
+  }
+  if (!liner.pts.length) liner.from = s.box || null;
+  if (e.detail > 1) return finishLine();   // (double-click: done)
+  if (!prev || prev[0] !== s.p[0] || prev[1] !== s.p[1]) liner.pts.push(s.p);
+  liner.to = s.box || null;
+  drawLiner();
+}, true);
+view.addEventListener("mousemove", e => {
+  if (!liner) return;
+  const [x, y] = toStage(e), s = snapPoint(x, y, liner.pts[liner.pts.length - 1], e.shiftKey, liner.extend && liner.extend.id);
+  drawLiner(...s.p);
+});
+addEventListener("keydown", e => { if (liner && (e.key === "Enter" || e.key === "Escape")) { e.preventDefault(); finishLine(); } });
+
+// A picked line shows its points: drag one to move it (it joins another line's point when near; Shift: straight).
+var ptBox = el("div", { class: "cmp-pts" });   // (var: drawSelection can run before this line)
+view.appendChild(ptBox);
+function drawPoints() {
+  if (!ptBox) return;
+  const ls = picked();
+  if (ls.length !== 1 || ls[0].shape !== "line" || liner) return ptBox.replaceChildren();
+  const l = ls[0], r = sheet.getBoundingClientRect(), v = view.getBoundingClientRect();
+  ptBox.replaceChildren(...linePts(l).map(([x, y], i) => el("i", { class: "cmp-pt", "data-pt": String(i), style: `left:${r.left - v.left + x * scale}px;top:${r.top - v.top + y * scale}px` })));
+}
+ptBox.addEventListener("mousedown", e => {
+  const h = e.target.closest("[data-pt]"); if (!h) return;
+  e.preventDefault(); e.stopPropagation();
+  const l = picked()[0], i = +h.dataset.pt;
+  let moved = false;
+  const move = ev => {
+    const [x, y] = toStage(ev), pts = linePts(l);
+    if (!moved) { snapshot(); moved = dragging = true; }
+    const sp = snapPoint(x, y, pts[i - 1] || pts[i + 1], ev.shiftKey, l.id);
+    if (l.from && l.to && (i === 0 || i === pts.length - 1) && sp.box) {   // (a connector's end onto another box: re-routed)
+      l[i === 0 ? "from" : "to"] = sp.box; reroute();
+    } else {
+      if (l.from || l.to) { delete l.from; delete l.to; }   // (moved by hand: a plain line from here on)
+      pts[i] = sp.p; setLinePts(l, pts);
+    }
+    drawCanvas();
+  };
+  const up = () => { removeEventListener("mousemove", move); removeEventListener("mouseup", up); dragging = false; if (moved) changed({ keepList: true }); };
+  addEventListener("mousemove", move); addEventListener("mouseup", up);
+});
+
 function finishPen() {
   const pts = pen;
   pen = null; drawPen(); view.classList.remove("pen");
@@ -442,6 +611,7 @@ view.addEventListener("mousedown", e => {
       for (const s of start) { s.l.x = s.x + dx; s.l.y = s.y + dy; }
     }
     // (only the picked layers move while dragging; everything is drawn again on release)
+    if (comp.layers.some(c => c.shape === "line" && c.from && (sel.has(c.from.id) || sel.has(c.to.id)))) { reroute(); drawCanvas(); }   // (their connectors follow)
     const node = sheet.firstChild;
     for (const s of start) {
       const e = node && [...node.children].find(c => c._layer && c._layer.id === s.l.id);
@@ -591,6 +761,7 @@ export const composer = {
     $("#page-composer").appendChild(cmp);
     renderLayers(); drawCanvas(); renderProps();
   },
+  startLine() { if (!comp) return toast("Pick a graphic first"); liner = { pts: [] }; view.classList.add("pen"); sel = new Set(); drawSelection(); toast("Click to place points (Shift: straight). Start on a line's end to carry it on. Double-click or Enter to finish"); },
   startPen() { if (!comp) return toast("Pick a graphic first"); pen = []; view.classList.add("pen"); toast("Click points on the canvas; click the first one (or press Enter) to close"); },
 };
 
@@ -737,10 +908,17 @@ function renderProps() {
     return box.replaceChildren(...[partSect].filter(Boolean), el("section", { class: "sect" }, el("h4", {}, `${ls.length} layers`),
       el("div", { class: "three" }, ...[["Left", l => l.x = Math.min(...ls.map(o => o.x))], ["Centre", l => l.x = Math.round((Math.min(...ls.map(o => o.x)) + Math.max(...ls.map(o => o.x + o.w)) - l.w) / 2)], ["Right", l => l.x = Math.max(...ls.map(o => o.x + o.w)) - l.w],
         ["Top", l => l.y = Math.min(...ls.map(o => o.y))], ["Middle", l => l.y = Math.round((Math.min(...ls.map(o => o.y)) + Math.max(...ls.map(o => o.y + o.h)) - l.h) / 2)], ["Bottom", l => l.y = Math.max(...ls.map(o => o.y + o.h)) - l.h]]
-        .map(([t, fn]) => el("button", { class: "small", onclick: () => { snapshot(); ls.forEach(fn); changed({ keepList: true }); } }, t)))),
+        .map(([t, fn]) => el("button", { class: "small", onclick: () => { snapshot(); ls.forEach(fn); changed({ keepList: true }); } }, t))),
+      ls.filter(o => o.shape !== "line").length >= 2 ? el("button", { class: "small primary", title: "A line from each box to the next (in the order picked), bent at right angles; it follows the boxes",
+        onclick: () => { const bs = ls.filter(o => o.shape !== "line"); for (let i = 1; i < bs.length; i++) connect(bs[i - 1], bs[i]); } }, "Connect with lines") : ""),
       ...multiEdit(ls));
   }
   const l = ls[0], T = l.type;
+  const connSect = l.shape === "line" && l.from && l.to ? el("section", { class: "sect" }, el("h4", {}, "Connector"),
+    el("p", { class: "muted small" }, `From "${(layerById(l.from.id) || {}).name || "box"}" to "${(layerById(l.to.id) || {}).name || "box"}": it follows the boxes. Drag an end onto another box's side to move it.`),
+    el("div", { class: "two" },
+      lab("Leaves from", el("select", { onchange: e => { snapshot(); l.from.side = e.target.value; changed({ keepList: true }); } }, ...SIDES.map(sd => el("option", { value: sd, selected: l.from.side === sd }, sd)))),
+      lab("Arrives at", el("select", { onchange: e => { snapshot(); l.to.side = e.target.value; changed({ keepList: true }); } }, ...SIDES.map(sd => el("option", { value: sd, selected: l.to.side === sd }, sd)))))) : null;
   const sects = [el("section", { class: "sect" }, el("h4", {}, ({ text: "Text", rect: "Box", shape: "Shape", image: "Picture", video: "Video", rotator: "Rotator", ticker: "Ticker", bracket: "Bracket", web: "Web page", lottie: "Lottie", camera: "Camera", shader: "Shader" })[T] || T),
     lab("Name", bind(l, "name")),
     lab("Field (set from Control)", bind(l, "field", "text", { placeholder: "(fixed: not a field)" })),
@@ -807,6 +985,7 @@ function renderProps() {
   if (T === "web") sects.push(el("section", { class: "sect" }, el("h4", {}, "Web page"), lab("Address", bind(l, "src", "text", { placeholder: "https://" }))));
   if (T === "image" || T === "video") sects.push(picSect(l));
   if (partSect) sects.unshift(partSect);
+  if (connSect) sects.splice(1, 0, connSect);
   sects.push(fxSect(l));
   sects.push(animSect(l));
   box.replaceChildren(...sects);

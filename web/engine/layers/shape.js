@@ -27,6 +27,8 @@ export const SHAPES = {
   parallelogram: (w, h) => { const k = Math.min(w * 0.25, h); return poly([[k, 0], [w, 0], [w - k, h], [0, h]]); },
   trapezoid: (w, h) => { const k = w * 0.2; return poly([[k, 0], [w - k, 0], [w, h], [0, h]]); },
   chevron: (w, h) => { const k = Math.min(w * 0.3, h / 2); return poly([[0, 0], [w - k, 0], [w, h / 2], [w - k, h], [0, h], [k, h / 2]]); },
+  // a line (the line tool): open, through its points (fractions of the box), drawn by its stroke
+  line: (w, h, l) => (Array.isArray(l.points) && l.points.length > 1 ? "M" + l.points.map(([x, y]) => `${+(x * w).toFixed(2)} ${+(y * h).toFixed(2)}`).join("L") : ""),
   // drawn with the pen: points as fractions of the box, [[0..1, 0..1], ...]
   path: (w, h, l) => (Array.isArray(l.points) && l.points.length > 2 ? poly(l.points.map(([x, y]) => [x * w, y * h])) : ""),
   // broadcast pieces
@@ -36,7 +38,7 @@ export const SHAPES = {
 };
 
 export function shape(el, layer, ctx) {
-  if (layer.shape === "path" && typeof layer.points === "string") { try { layer = { ...layer, points: JSON.parse(layer.points) }; } catch (e) { /* */ } }
+  if ((layer.shape === "path" || layer.shape === "line") && typeof layer.points === "string") { try { layer = { ...layer, points: JSON.parse(layer.points) }; } catch (e) { /* */ } }
   const w = Math.max(1, layer.w || 1), h = Math.max(1, layer.h || 1);
   const make = SHAPES[layer.shape] || SHAPES.rect;
   const svg = document.createElementNS(NS, "svg");
@@ -76,6 +78,13 @@ export function shape(el, layer, ctx) {
   if (+layer.strokeWidth > 0) {
     path.setAttribute("stroke", ctx.resolve(layer.stroke || "#ffffff"));
     path.setAttribute("stroke-width", String(+layer.strokeWidth));
+  }
+  if (layer.shape === "line") {   // (a line is its stroke: no fill, round ends and corners, never thinner than 1 px)
+    path.setAttribute("fill", "none");
+    path.setAttribute("stroke", ctx.resolve(layer.stroke || "#ffffff"));
+    path.setAttribute("stroke-width", String(Math.max(1, +layer.strokeWidth || 4)));
+    path.setAttribute("stroke-linecap", layer.cap || "round");
+    path.setAttribute("stroke-linejoin", "round");
   }
   svg.appendChild(path);
   el.appendChild(svg);
