@@ -104,7 +104,7 @@ export function video(el, layer, ctx) {
   v.autoplay = true;
   v.playsInline = true;
   const speed = +ctx.resolve(String(layer.speed ?? ""));
-  if (speed > 0) v.playbackRate = speed;
+  if (speed > 0) { v.defaultPlaybackRate = v.playbackRate = speed; v.addEventListener("loadedmetadata", () => { v.playbackRate = speed; }); }   // (a video resets playbackRate as it loads: the default is what it keeps)
   // Tinted (a background loop in the team colour): the video in grey at its brightness, the colour multiplied over it.
   const tint = ctx.resolve(String(layer.tint || ""));
   if (tint) {
