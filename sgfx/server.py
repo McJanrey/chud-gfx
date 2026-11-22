@@ -28,6 +28,7 @@ from .obs import OBS
 from .buses import Buses
 from . import logs
 from . import hudlink, league, rocket, valdemo, valorant, valreader
+from .store import open_store
 from .logs import log
 
 WEB = os.path.join(getattr(sys, "_MEIPASS", ""), "web") if getattr(sys, "frozen", False) else os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "web")
@@ -102,16 +103,13 @@ class Engine:
         self._was_on = set(self.buses.state["program"]["on"])
 
     def _load(self, workspace):
-        with open(os.path.join(workspace, "project.json"), encoding="utf-8") as f:
-            project = json.load(f)
+        store = open_store(workspace)   # (files on this PC, or the website's database: sgfx/store.py)
+        project = store.read_json("project.json")
+        if project is None:
+            raise ValueError("No project.json in that workspace")
         swap_placeholders(project)
-        saved = {}
-        try:
-            with open(os.path.join(workspace, "live.json"), encoding="utf-8") as f:
-                saved = json.load(f)
-        except (OSError, ValueError):
-            pass
-        self.folder, self.project, self._backed = workspace, project, 0
+        saved = store.read_json("live.json", {}) or {}
+        self.folder, self.store, self.project, self._backed = workspace, store, project, 0
         self.buses = Buses(lambda: {c["id"]: c.get("kind") for c in self.project["compositions"]}, saved)
         self.__dict__.pop("_csv", None)
 
@@ -337,10 +335,7 @@ class Engine:
     def changed(self):
         with self.lock:
             self._on_air_scenes()
-            path = os.path.join(self.folder, "live.json")
-            with open(path + ".tmp", "w", encoding="utf-8") as f:
-                json.dump(self.buses.saved(), f)
-            os.replace(path + ".tmp", path)
+            self.store.write_json("live.json", self.buses.saved(), indent=None)
         with self.cond:
             self.version += 1
             self.cond.notify_all()
@@ -369,10 +364,7 @@ class Engine:
 
     def _save_project(self):
         text = json.dumps(self.project, indent=1)
-        path = os.path.join(self.folder, "project.json")
-        with open(path + ".tmp", "w", encoding="utf-8") as f:
-            f.write(text)
-        os.replace(path + ".tmp", path)
+        self.store.write_json("project.json", self.project)
         now = time.time()
         if now - getattr(self, "_backed", 0) >= self.BACKUP_EVERY:
             self._backed = now
