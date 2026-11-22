@@ -1,7 +1,17 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "outputDirectory": "web",
   "functions": {
     "api/index.py": { "includeFiles": "{sgfx/**,web/**}", "maxDuration": 30 }
   },
-  "rewrites": [{ "source": "/(.*)", "destination": "/api/index" }]
+  "rewrites": [
+    { "source": "/", "destination": "/api/index" },
+    { "source": "/output", "destination": "/api/index" },
+    { "source": "/control", "destination": "/api/index" },
+    { "source": "/hud/:path*", "destination": "/api/index" },
+    { "source": "/api/:path*", "destination": "/api/index" },
+    { "source": "/assets/:path*", "destination": "/api/index" },
+    { "source": "/val-svg/:path*", "destination": "/api/index" },
+    { "source": "/val-img/:path*", "destination": "/api/index" }
+  ]
 }

@@ -87,6 +87,17 @@ class SupabaseStore:
                 cls._conn = None   # (a dropped connection: one fresh try)
                 return cls._db().run(sql, **params)
 
+    @classmethod
+    def close(cls):
+        """Hands the connection back (the website: after each request, so idle server instances hold none)."""
+        with cls._lock:
+            if cls._conn is not None:
+                try:
+                    cls._conn.close()
+                except Exception:
+                    pass
+                cls._conn = None
+
     @staticmethod
     def _rel(rel):
         rel = str(rel).replace("\\", "/").lstrip("/")
