@@ -1,5 +1,5 @@
 # PyInstaller: one folder (fast start, small updates), windowed, the web files bundled next to the exe.
-a = Analysis(["ChudGFX.py"], datas=[("web", "web"), ("sgfx/val_glyphs.json", "sgfx")], hiddenimports=["webview.platforms.edgechromium", "webview.platforms.winforms", "psd_tools", "mss",
+a = Analysis(["ChudGFX.py"], datas=[("web", "web"), ("starter", "starter"), ("sgfx/val_glyphs.json", "sgfx")], hiddenimports=["webview.platforms.edgechromium", "webview.platforms.winforms", "psd_tools", "mss",
              "winrt.windows.media.ocr", "winrt.windows.graphics.imaging", "winrt.windows.storage.streams", "winrt.windows.globalization",
              "winrt.windows.foundation", "winrt.windows.foundation.collections"])
 pyz = PYZ(a.pure)

@@ -6,6 +6,7 @@ pages and state, and exits.
 """
 import argparse
 import json
+import shutil
 import logging
 import os
 import socket
@@ -31,6 +32,35 @@ def data_dir():
     (d / "workspaces").mkdir(parents=True, exist_ok=True)
     (d / "library").mkdir(parents=True, exist_ok=True)
     return d
+
+
+STARTER = Path(getattr(sys, "_MEIPASS", "")) / "starter" if getattr(sys, "frozen", False) else Path(__file__).resolve().parent.parent / "starter"
+
+
+def seed(d, starter=STARTER):
+    """The shows built into the app (starter/): each workspace and library file copied in once, the first time
+    this folder sees it. Never over the user's own, and never again after they delete it (starter.json)."""
+    if not starter.is_dir():
+        return
+    mark = d / "starter.json"
+    try:
+        done = set(json.loads(mark.read_text(encoding="utf-8")))
+    except (OSError, ValueError):
+        done = set()
+    items = [("workspaces", p) for p in sorted((starter / "workspaces").iterdir())] if (starter / "workspaces").is_dir() else []
+    items += [("library", p) for p in sorted((starter / "library").iterdir())] if (starter / "library").is_dir() else []
+    for kind, p in items:
+        key, dest = f"{kind}/{p.name}", d / kind / p.name
+        if key in done:
+            continue
+        if not dest.exists():
+            try:
+                shutil.copytree(p, dest) if p.is_dir() else shutil.copy2(p, dest)
+            except OSError as e:
+                log.warning("starter %s not copied: %s", key, e)
+                continue
+        done.add(key)
+    mark.write_text(json.dumps(sorted(done)), encoding="utf-8")
 
 
 def old_settings(d):
@@ -143,6 +173,7 @@ def main(argv=None):
         log.info("StandBy GFX is already running: this second launch closes")
         return 0
     migrate(d)
+    seed(d)
     port = free_port(old_settings(d).get("http_port"))   # (GFX Baby's port first: OBS sources pointing at it keep working)
     if not port:
         print("No free port (7820-7829).")
