@@ -285,17 +285,55 @@ function nearest(edges, targets) {   // -> [shift, the line it snapped to] or [0
 function snap(ls, dx, dy) {
   const { xs, ys } = snapTargets();
   const x0 = Math.min(...ls.map(l => l.x)) + dx, x1 = Math.max(...ls.map(l => l.x + l.w)) + dx, y0 = Math.min(...ls.map(l => l.y)) + dy, y1 = Math.max(...ls.map(l => l.y + l.h)) + dy;
-  const [sx, lx] = nearest([x0, (x0 + x1) / 2, x1], xs), [sy, ly] = nearest([y0, (y0 + y1) / 2, y1], ys);
-  showSnap(lx, ly);
-  return [dx + sx, dy + sy];
+  let [sx, lx] = nearest([x0, (x0 + x1) / 2, x1], xs), [sy, ly] = nearest([y0, (y0 + y1) / 2, y1], ys);
+  // equal spacing (as Figma): a gap to a neighbour the same as a gap between other layers, or the middle between two
+  const others = comp.layers.filter(l => !sel.has(l.id) && l.visible !== false).map(shown).filter(b => !isBackground(b));
+  const gx = gapSnap({ a0: x0, a1: x1, b0: y0, b1: y1 }, others.map(o => ({ a0: o.x, a1: o.x + o.w, b0: o.y, b1: o.y + o.h })));
+  const gy = gapSnap({ a0: y0, a1: y1, b0: x0, b1: x1 }, others.map(o => ({ a0: o.y, a1: o.y + o.h, b0: o.x, b1: o.x + o.w })));
+  let marks = [];
+  if (gx && (lx == null || Math.abs(gx.shift) <= Math.abs(sx))) { sx = gx.shift; lx = null; marks = marks.concat(gx.marks.map(m => ({ ...m, axis: "x" }))); }
+  if (gy && (ly == null || Math.abs(gy.shift) <= Math.abs(sy))) { sy = gy.shift; ly = null; marks = marks.concat(gy.marks.map(m => ({ ...m, axis: "y" }))); }
+  showSnap(lx, ly, marks);
+  return [Math.round(dx + sx), Math.round(dy + sy)];   // (whole pixels)
+}
+// One axis of equal spacing. Boxes as {a0, a1} along the axis and {b0, b1} across it; neighbours are the boxes that
+// overlap the moving one across the axis. Returns {shift, marks: [{from, to, at}]} or null (nothing within 8 screen px).
+function gapSnap(m, boxes) {
+  const tol = 8 / scale, w = m.a1 - m.a0;
+  const row = boxes.filter(o => o.b0 < m.b1 && o.b1 > m.b0);
+  const before = row.filter(o => o.a1 <= m.a0 + tol).sort((p, q) => q.a1 - p.a1)[0];
+  const after = row.filter(o => o.a0 >= m.a1 - tol).sort((p, q) => p.a0 - q.a0)[0];
+  const gaps = [];   // (gaps between neighbouring other boxes in the same row or column)
+  for (const o of boxes) {
+    const next = boxes.filter(q => q !== o && q.a0 >= o.a1 && q.b0 < o.b1 && q.b1 > o.b0).sort((p, q) => p.a0 - q.a0)[0];
+    if (next && next.a0 - o.a1 > 0) gaps.push({ g: next.a0 - o.a1, from: o.a1, to: next.a0, at: (Math.max(o.b0, next.b0) + Math.min(o.b1, next.b1)) / 2 });
+  }
+  const cand = [];
+  if (before && after) cand.push({ start: (before.a1 + after.a0 - w) / 2, mid: true });   // (the middle between the two)
+  for (const g of gaps) {
+    if (before) cand.push({ start: before.a1 + g.g, g });
+    if (after) cand.push({ start: after.a0 - g.g - w, g });
+  }
+  let best = null;
+  for (const c of cand) { const shift = c.start - m.a0; if (Math.abs(shift) <= tol && (!best || Math.abs(shift) < Math.abs(best.shift))) best = { ...c, shift }; }
+  if (!best) return null;
+  const s0 = best.start, s1 = s0 + w, mid = (m.b0 + m.b1) / 2, marks = [];
+  const g = best.mid ? Math.round(s0 - before.a1) : Math.round(best.g.g);
+  if (before && Math.abs(s0 - before.a1 - g) < 1) marks.push({ from: before.a1, to: s0, at: mid, g });
+  if (after && Math.abs(after.a0 - s1 - g) < 1) marks.push({ from: s1, to: after.a0, at: mid, g });
+  for (const q of gaps) if (Math.abs(q.g - g) < 1) marks.push({ from: q.from, to: q.to, at: q.at, g });
+  return marks.length >= 2 ? { shift: best.shift, marks } : null;
 }
 const snapLines = el("div", { class: "cmp-snaps" });
 view.appendChild(snapLines);
-function showSnap(x, y) {
-  if (x == null && y == null) return snapLines.replaceChildren();
+function showSnap(x, y, marks = []) {
+  if (x == null && y == null && !marks.length) return snapLines.replaceChildren();
   const r = sheet.getBoundingClientRect(), v = view.getBoundingClientRect(), ox = r.left - v.left + view.scrollLeft, oy = r.top - v.top + view.scrollTop;
+  const gap = m => m.axis === "x"   // (each equal gap: a pink bar with end ticks and its size in px)
+    ? el("div", { class: "cmp-gap x", style: `left:${ox + m.from * scale}px;top:${oy + m.at * scale}px;width:${(m.to - m.from) * scale}px` }, el("span", {}, String(m.g)))
+    : el("div", { class: "cmp-gap y", style: `top:${oy + m.from * scale}px;left:${ox + m.at * scale}px;height:${(m.to - m.from) * scale}px` }, el("span", {}, String(m.g)));
   snapLines.replaceChildren(...(x != null ? [el("div", { class: "cmp-snap x", style: `left:${ox + x * scale}px;top:${oy}px;height:${H * scale}px` })] : []),
-    ...(y != null ? [el("div", { class: "cmp-snap y", style: `top:${oy + y * scale}px;left:${ox}px;width:${W * scale}px` })] : []));
+    ...(y != null ? [el("div", { class: "cmp-snap y", style: `top:${oy + y * scale}px;left:${ox}px;width:${W * scale}px` })] : []), ...marks.map(gap));
 }
 // Drag on empty canvas: a box picks every layer it touches (Shift adds to what's picked).
 const band = el("div", { class: "cmp-band", hidden: true });

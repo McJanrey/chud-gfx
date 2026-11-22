@@ -464,3 +464,10 @@ button.danger { background: var(--red); color: #fff; box-shadow: none; font-weig
 .hb-menu .menu-list { inset-inline-start: auto; inset-inline-end: 0; }
 .hb-gal-head h2 { font-weight: 600; line-height: 1.2; } .hb-show { gap: 8px; }
 .ly .ghost:not(.on-lock)[aria-label="Lock"] { opacity: .35; } .ly:hover .ghost[aria-label="Lock"] { opacity: 1; }
+/* equal spacing marks while dragging: a pink bar with ticks at both ends and the gap in px */
+.cmp-gap { position: absolute; background: #ff3ea5; pointer-events: none; }
+.cmp-gap.x { height: 1px; } .cmp-gap.y { width: 1px; }
+.cmp-gap.x::before, .cmp-gap.x::after { content: ""; position: absolute; top: -4px; width: 1px; height: 9px; background: #ff3ea5; } .cmp-gap.x::before { left: 0; } .cmp-gap.x::after { right: 0; }
+.cmp-gap.y::before, .cmp-gap.y::after { content: ""; position: absolute; left: -4px; height: 1px; width: 9px; background: #ff3ea5; } .cmp-gap.y::before { top: 0; } .cmp-gap.y::after { bottom: 0; }
+.cmp-gap span { position: absolute; padding: 1px 4px; border-radius: 3px; background: #ff3ea5; color: #fff; font: 600 10px/1.2 var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.cmp-gap.x span { left: 50%; top: 4px; transform: translateX(-50%); } .cmp-gap.y span { top: 50%; left: 4px; transform: translateY(-50%); }
