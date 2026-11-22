@@ -8,37 +8,40 @@
 <link rel="stylesheet" href="ui/app.css">
 </head>
 <body>
-<aside class="side">
+<header class="top">
   <div class="brand"><img src="placeholders/logo.png" alt=""><span>StandBy <b>GFX</b></span></div>
-  <div class="ws"><span class="ws-name" id="ws-name">Workspace</span><small id="ws-page">Control</small></div>
   <nav id="nav" aria-label="Pages">
     <button data-page="home">Home</button>
-    <div class="group">Live</div>
     <button data-page="control" class="on">Control</button>
     <button data-page="ros">Run of show</button>
     <button data-page="cams">Cameras</button>
     <button data-page="stream">Stream</button>
-    <div class="group">Build</div>
-    <button data-page="composer">Composer</button>
-    <button data-page="hudbuilder">HUD Builder</button>
-    <div class="group">Event setup</div>
-    <button data-page="global">Global</button>
-    <button data-page="teams">Teams</button>
-    <button data-page="tournament">Tournament</button>
-    <button data-page="schedule">Upcoming Schedule</button>
-    <div class="group">More</div>
-    <button data-page="assets">Assets</button>
-    <button data-page="data">Data</button>
-    <button data-page="transitions">Transitions</button>
-    <button data-page="outputs">Outputs</button>
-    <button data-page="appearance">Appearance</button>
+    <details class="menu"><summary>Build</summary><div class="menu-list">
+      <button data-page="composer">Composer</button>
+      <button data-page="hudbuilder">HUD Builder</button>
+    </div></details>
+    <details class="menu"><summary>Event</summary><div class="menu-list">
+      <button data-page="global">Global</button>
+      <button data-page="teams">Teams</button>
+      <button data-page="tournament">Tournament</button>
+      <button data-page="schedule">Upcoming Schedule</button>
+    </div></details>
+    <details class="menu"><summary>More</summary><div class="menu-list">
+      <button data-page="assets">Assets</button>
+      <button data-page="data">Data</button>
+      <button data-page="transitions">Transitions</button>
+      <button data-page="outputs">Outputs</button>
+      <button data-page="appearance">Appearance</button>
+    </div></details>
   </nav>
+  <span class="spacer"></span>
   <small class="app-version muted" id="app-version"></small>
-</aside>
+  <div class="ws"><span class="ws-name" id="ws-name">Workspace</span><small id="ws-page">Control</small></div>
+</header>
 <header class="bar">
   <span class="crumb"><span id="crumb-ws">Workspace</span> / <b id="crumb-page">Control</b></span>
   <span class="spacer"></span>
-  <span class="upd-bar" id="upd-bar" role="status" hidden><span id="upd-text"></span><button class="small primary" id="upd-go">Update now</button><button class="small ghost" id="upd-later">Later</button><button class="small ghost" id="upd-off" title="Hide the update bar for good (the sidebar version still offers updates)">Turn off</button></span>
+  <span class="upd-bar" id="upd-bar" role="status" hidden><span id="upd-text"></span><button class="small primary" id="upd-go">Update now</button><button class="small ghost" id="upd-later">Later</button><button class="small ghost" id="upd-off" title="Hide the update bar for good (the version label still offers updates)">Turn off</button></span>
   <button class="small" id="check-btn">Show check</button>
   <span class="pill" id="out-pill">Program not connected</span>
   <span class="pill" id="air-pill">Nothing on air</span>

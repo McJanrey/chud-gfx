@@ -78,7 +78,7 @@ fetch("/api/state").then(r => r.json()).then(apply).finally(() => {
   es.onmessage = e => apply(JSON.parse(e.data));
 });
 
-// Pages: the sidebar's buttons show one <main class="page"> at a time (remembered per PC).
+// Pages: the top bar's buttons show one <main class="page"> at a time (remembered per PC).
 export const pages = {};
 export function show(name) {
   if (!document.getElementById("page-" + name)) name = "control";
@@ -90,7 +90,11 @@ export function show(name) {
   try { localStorage.setItem("sg-page", name); } catch (e) { /* private window */ }
   if (pages[name] && pages[name].shown) pages[name].shown();
 }
-document.addEventListener("click", e => { const b = e.target.closest("#nav button[data-page]"); if (b && !b.disabled) show(b.dataset.page); });
+document.addEventListener("click", e => {
+  const b = e.target.closest("#nav button[data-page]"); if (b && !b.disabled) show(b.dataset.page);
+  for (const d of document.querySelectorAll("#nav details[open]")) if (b || !d.contains(e.target)) d.open = false;   // (one menu at a time, closes on pick or outside click)
+});
+document.addEventListener("keydown", e => { if (e.key === "Escape") for (const d of document.querySelectorAll("#nav details[open]")) d.open = false; });
 addEventListener("load", () => { let p = "control"; try { p = localStorage.getItem("sg-page") || p; } catch (e) { /* */ } show(p); });
 
 // A picture picker: the workspace's images, plus "Add a file…".
