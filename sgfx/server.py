@@ -552,12 +552,13 @@ class Engine:
         os.replace(path, dst)
 
     # --- teams: one list for every workspace (library/teams.json) ---
+    def shared(self):
+        """The store for what every workspace shares (teams, run of show): the library, else the workspace."""
+        return open_store(self.library or self.folder)
+
     def teams(self):
-        try:
-            with open(os.path.join(self.library or self.folder, "teams.json"), encoding="utf-8") as f:
-                return [t for t in json.load(f).get("teams", []) if isinstance(t, dict)]
-        except (OSError, ValueError):
-            return []
+        doc = self.shared().read_json("teams.json", {}) or {}
+        return [t for t in (doc.get("teams") or []) if isinstance(t, dict)] if isinstance(doc, dict) else []
 
     def set_teams(self, teams):
         clean = []
@@ -568,11 +569,7 @@ class Engine:
                 clean.append({"id": t.get("id") or "tm" + os.urandom(4).hex(), "name": t["name"].strip()[:80],
                               "short": str(t.get("short", ""))[:12], "logo": str(t.get("logo", "")), "color": str(t.get("color", "")),
                               "game": str(t.get("game", "")), "players": players})
-        base = self.library or self.folder
-        os.makedirs(base, exist_ok=True)
-        with open(os.path.join(base, "teams.json.tmp"), "w", encoding="utf-8") as f:
-            json.dump({"teams": clean}, f, indent=1)
-        os.replace(os.path.join(base, "teams.json.tmp"), os.path.join(base, "teams.json"))
+        self.shared().write_json("teams.json", {"teams": clean})
         with self.cond:
             self.version += 1
             self.cond.notify_all()
@@ -823,22 +820,15 @@ class Engine:
 
     def ros(self):
         if not hasattr(self, "_ros"):
-            try:
-                with open(self._ros_path(), encoding="utf-8") as f:
-                    self._ros = json.load(f)
-            except (OSError, ValueError):
-                self._ros = {}
+            got = self.shared().read_json("run-of-show.json", {})
+            self._ros = got if isinstance(got, dict) else {}
             self._ros.setdefault("templates", [])
             self._ros.setdefault("show", None)
             self._ros.setdefault("auto", True)
         return self._ros
 
     def _ros_save(self):
-        base = self.library or self.folder
-        os.makedirs(base, exist_ok=True)
-        with open(self._ros_path() + ".tmp", "w", encoding="utf-8") as f:
-            json.dump(self.ros(), f, indent=1)
-        os.replace(self._ros_path() + ".tmp", self._ros_path())
+        self.shared().write_json("run-of-show.json", self.ros())
 
     def _scores(self):
         g = self.project.get("global") or {}
