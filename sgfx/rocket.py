@@ -275,13 +275,8 @@ class Rocket:
     def add_hud(self):
         """The ready-made graphics, added once each to the workspace (one deleted stays gone)."""
         done = self.engine.project.setdefault("hud_pages", [])
-        new = [x for x in hud_comps() if x[0] not in done]
-        for key, name, kind, layers in new:
-            done.append(key)
-            self.engine.comps().append({"id": "c" + uuid.uuid4().hex[:8], "name": name, "hud_page": key, "group": "Game HUD",
-                                        "kind": kind, "layer": 0, "layers": layers, "slots": {}})
-        if new:
-            self.engine.save_project()
+        from . import huds   # (in the HUD Builder as a HUD of their own, never among the show's graphics)
+        if huds.ready_made(self.engine, "rl", "Rocket League graphics", "rocketleague", hud_comps()):
             self.engine.changed()
 
     def _set(self, status, detail=""):

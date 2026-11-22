@@ -147,7 +147,7 @@ class RocketLeagueHonest(unittest.TestCase):
         try:
             r = self.wait(lambda r: "Connected" in (r.get("detail") or ""))
             self.assertEqual(r["status"], "waiting")
-            names = lambda: [c["name"] for c in self.engine.comps()]
+            names = lambda: [p["name"] for h in self.engine.project.get("huds") or [] if h["id"] == "rl" for p in h["parts"]]   # (the HUD Builder, not the graphics)
             self.assertNotIn("RL Scorebug", names())
             conn.sendall(json.dumps(state([p("Ann", 0, 1)], 1, 0, 30)).encode())
             self.wait(lambda r: r["status"] == "on")
@@ -157,8 +157,10 @@ class RocketLeagueHonest(unittest.TestCase):
                 time.sleep(0.1)
             self.assertEqual(names().count("RL Scorebug"), 1)
             self.assertEqual(names().count("RL Final score"), 1)
+            self.assertNotIn("RL Scorebug", [c["name"] for c in self.engine.comps()])
             # a deleted one stays gone
-            self.engine.comps()[:] = [c for c in self.engine.comps() if c["name"] != "RL Scorebug"]
+            hud = next(h for h in self.engine.project["huds"] if h["id"] == "rl")
+            hud["parts"] = [x for x in hud["parts"] if x["name"] != "RL Scorebug"]
             self.engine.rl.add_hud()
             self.assertNotIn("RL Scorebug", names())
         finally:

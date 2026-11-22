@@ -124,3 +124,32 @@ def ensure(engine, key, name, game, parts):
         huds(engine).append(hud)
     engine.save_project()
     return hud
+
+
+def ready_made(engine, key, name, game, parts):
+    """A game's ready-made graphics (scorebug, round win, timeout...) kept as a HUD of their own, never in the show's
+    graphics: each part starts off (switch it on in the HUD Builder). Ones made as graphics before are moved in with
+    their changes; one deleted stays deleted. Returns the HUD when something was added."""
+    done = engine.project.setdefault("hud_pages", [])
+    comps = engine.comps()
+    moved = {c["hud_page"]: c for c in comps if str(c.get("hud_page", "")).startswith(key + ":")}
+    hud = find(engine, key)
+    added = False
+    for pk, pn, _kind, layers in parts:
+        pid = pk.split(":", 1)[1]
+        if hud and any(p["id"] == pid for p in hud["parts"]):
+            continue
+        if pk in done and pk not in moved:
+            continue   # (deleted once: stays gone)
+        if not hud:
+            hud = {"id": key, "name": name, "game": game, "parts": []}
+            huds(engine).append(hud)
+        hud["parts"].append({"id": pid, "name": pn, "on": False, "layers": clean_layers((moved.get(pk) or {}).get("layers") or layers)})
+        if pk not in done:
+            done.append(pk)
+        added = True
+    for c in moved.values():
+        comps.remove(c)
+    if added or moved:
+        engine.save_project()
+    return hud if added else None

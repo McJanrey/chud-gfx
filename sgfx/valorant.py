@@ -416,13 +416,9 @@ class Val:
         from . import huds, valhud
         if huds.ensure(self.engine, "val27", "VAL HUD (SCC 2027)", "valorant", huds.builtin("val27")):
             self.engine.changed()
-        new = [x for x in hud_comps() if x[0] not in done]
-        for key, name, kind, layers in new:
-            done.append(key)
-            self.engine.comps().append({"id": "c" + uuid.uuid4().hex[:8], "name": name, "hud_page": key, "group": "Game HUD",
-                                        "kind": kind, "layer": 0, "layers": layers, "slots": {}})
-        if new:
-            self.engine.save_project()
+        from . import huds   # (in the HUD Builder as a HUD of their own, never among the show's graphics)
+        if huds.ready_made(self.engine, "val", "VALORANT graphics", "valorant", hud_comps()):
+            self.engine.changed()
 
 
 TEAL, CORAL, INK, PAPER = "#14b8a6", "#f2715a", "#0e1117", "#f5f5f0"

@@ -11,7 +11,7 @@ export function valCard() {
     el("div", { class: "row" }, el("h3", {}, "VALORANT"),
       el("label", { class: "switch" }, el("input", { type: "checkbox", checked: v.on !== false, onchange: e => api("/api/val", { on: e.target.checked }) }), v.on !== false ? "On" : "Off"),
       el("span", { class: "pill" + (v.status === "on" ? " ok" : "") }, STATE[v.status] || v.status)),
-    el("p", { class: "muted small" }, `A reader sends the match here as it changes (score, round, sides, spike, players). Chud Hud or a screen reader on the observer PC posts to http://${host}:${app.port || 7820}/api/val/ingest. The ready-made graphics (scorebug, round win, spike, timeout, tech pause, buy-phase scoreboard) appear under Game HUD with the first data.`),
+    el("p", { class: "muted small" }, `A reader sends the match here as it changes (score, round, sides, spike, players). Chud Hud or a screen reader on the observer PC posts to http://${host}:${app.port || 7820}/api/val/ingest. The ready-made graphics (scorebug, round win, spike, timeout, tech pause, buy-phase scoreboard) appear in the HUD Builder as "VALORANT graphics" with the first data, each switched off until you turn it on.`),
     el("div", { class: "row" },
       el("label", { class: "switch" }, el("input", { type: "checkbox", checked: !!(v.reader || {}).on, onchange: e => api("/api/val/reader", { on: e.target.checked }) }), "Read this PC's screen"),
       el("label", { class: "f" }, el("span", {}, "Screen"), el("input", { type: "number", min: 1, value: (v.reader || {}).screen || 1, "aria-label": "Screen number", onchange: e => api("/api/val/reader", { screen: +e.target.value || 1 }) })),

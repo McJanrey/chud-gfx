@@ -60,8 +60,12 @@ class Valorant(unittest.TestCase):
         self.send({"teams": [{"name": "A"}, {"name": "B"}]})
         self.send({"round": 2})
         names = [c["name"] for c in self.engine.comps()]
+        hud = next(h for h in self.engine.project["huds"] if h["id"] == "val")   # (a HUD of their own, never among the graphics)
+        parts = [p["name"] for p in hud["parts"]]
         for n in ("VAL Scorebug", "VAL Round win", "VAL Spike planted", "VAL Timeout", "VAL Tech pause", "VAL Buy-phase scoreboard"):
-            self.assertEqual(names.count(n), 1, n)
+            self.assertNotIn(n, names)
+            self.assertEqual(parts.count(n), 1, n)
+        self.assertFalse(any(p["on"] for p in hud["parts"]))
         self.send({"event": "map_end", "winner": 0})
         self.assertFalse((self.engine.project.get("global") or {}).get("left", {}).get("score"))
 
