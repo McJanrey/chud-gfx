@@ -76,7 +76,7 @@ def fields(m, g):
                       f"{k} side gun": f"/val-img/weapon/{gid}/killstreamicon.png" if UUID.match(gid) and p.get("weapon") in SIDEARMS else "",
                       f"{k} main gun": f"/val-img/weapon/{gid}/killstreamicon.png" if UUID.match(gid) and p.get("weapon") not in SIDEARMS else "",
                       f"{k} gun": f"/val-img/weapon/{gid}/killstreamicon.png" if UUID.match(gid) else "",
-                      f"{k} carrying": "yes" if p.get("spike") is True and not dead else "",
+                      f"{k} carrying": "yes" if p.get("spike") is True and show and not dead else "",   # (not while the cards are away: it would float),
                       f"{k} kda": f"{int(p.get('kills') or 0)}/{int(p.get('deaths') or 0)}/{int(p.get('assists') or 0)}" if have else ""})
             for key, part in (("c", "grenade"), ("q", "ability1"), ("e", "ability2")):
                 c = ab.get(key.upper()) or [0, 1]

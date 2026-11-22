@@ -49,3 +49,15 @@ class ValHud(unittest.TestCase):
         self.assertEqual(names, ["VAL HUD · Top bar", "VAL HUD · Players", "VAL HUD · Buy phase", "VAL HUD · Round win", "VAL HUD · Agent select"])
         for _, _, _, layers in valhud.comps():
             self.assertTrue(all(l["type"] in ("rect", "text", "image") for l in layers))
+
+
+class CarrierHides(unittest.TestCase):
+    def test_spike_carrier_off_while_the_cards_are_away(self):
+        from sgfx import valhud
+        from sgfx.valorant import Match
+        m = Match()
+        m.players[(0, 1)] = {"name": "Kai", "alive": True, "spike": True}
+        m.phase = "combat"
+        self.assertEqual(valhud.fields(m, {})["Left 1 carrying"], "yes")
+        m.phase = "buy"
+        self.assertEqual(valhud.fields(m, {})["Left 1 carrying"], "")
