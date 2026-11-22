@@ -77,6 +77,54 @@ async function mediaTab() {
       el("span", { class: "small" }, a.path.split("/").pop()))))];
 }
 
+// Bracket text: every match of a round (or a group) as live text, team names and scores, laid out in columns to
+// move onto your own bracket design. The words follow the Tournament page as results come in.
+function tournamentKeys() {
+  const rows = (((App.state.data || {}).tables || {}).Tournament || []).slice(1);
+  return rows.map(r => r[0]);
+}
+function matchText(key, x, y, short) {   // (one match: two rows of team + score, named after the match)
+  const f = (n, k) => `{{Tournament!${key} team ${n}${k}}}`, out = [], group = "g" + Math.random().toString(36).slice(2, 9);   // (a match moves as one: click it, drag)
+  for (const n of [1, 2]) {
+    const yy = y + (n - 1) * 44;
+    out.push(T(f(n, short ? " short" : ""), 28, { name: `${key} team ${n}`, x, y: yy, w: 250, h: 40, weight: 700, group }),
+      T(f(n, " score"), 28, { name: `${key} team ${n} score`, x: x + 256, y: yy, w: 54, h: 40, weight: 800, align: "right", group }));
+  }
+  return out;
+}
+function bracketLayers(keys, title) {   // keys: [[column label, [match keys]]...]
+  const cols = keys.length, colW = Math.min(360, Math.floor(1720 / Math.max(1, cols))), out = [];
+  keys.forEach(([label, ms], c) => {
+    const x = 100 + c * colW, gap = (900 - 60) / Math.max(1, ms.length);
+    out.push(T(label, 22, { name: `${title}: ${label}`, x, y: 80, w: 300, h: 32, weight: 600, caps: true, tracking: 80, color: "#9a9aa3" }));
+    ms.forEach((k, i) => out.push(...matchText(k, x, Math.round(130 + i * gap + (gap - 88) / 2), false)));
+  });
+  return out;
+}
+function bracketTiles() {
+  const keys = tournamentKeys();
+  if (!keys.length) return [el("p", { class: "muted small" }, "Set up the bracket on the Tournament page first.")];
+  const matches = re => [...new Set(keys.map(k => (k.match(re) || [])[0]).filter(Boolean))];
+  const round = n => matches(new RegExp(`^Top R${n} M[0-9]+`));
+  const rounds = []; for (let n = 1; round(n).length; n++) rounds.push(n);
+  const names = { [rounds.length]: "Final", [rounds.length - 1]: "Semi-finals", [rounds.length - 2]: "Quarter-finals" };
+  const label = n => names[n] || `Round ${n}`;
+  const lower = []; for (let n = 1; matches(new RegExp(`^Top L${n} M[0-9]+`)).length; n++) lower.push(n);
+  const tiles = [tile("Whole knockout", `${rounds.length} rounds`, () => addLayers(bracketLayers(rounds.map(n => [label(n), round(n)]), "Bracket"), { keepPlace: true }))];
+  for (const n of rounds) tiles.push(tile(label(n), `${round(n).length} matches`, () => addLayers(bracketLayers([[label(n), round(n)]], "Bracket"), { keepPlace: true })));
+  if (lower.length) tiles.push(tile("Lower bracket", `${lower.length} rounds`, () => addLayers(bracketLayers(lower.map(n => [`Lower round ${n}`, matches(new RegExp(`^Top L${n} M[0-9]+`))]), "Lower bracket"), { keepPlace: true })));
+  if (keys.some(k => k.startsWith("Top GF "))) tiles.push(tile("Grand final", "", () => addLayers(matchText("Top GF", 805, 480, false), { keepPlace: true })));
+  tiles.push(tile("Champion", "name and logo", () => addLayers([T("{{Tournament!Top champion}}", 64, { name: "Champion", x: 660, y: 470, w: 600, h: 90, align: "center" }),
+    { type: "image", name: "Champion logo", src: "{{Tournament!Top champion logo}}", fit: "contain", x: 860, y: 260, w: 200, h: 200 }], { keepPlace: true })));
+  for (const g of [...new Set(keys.map(k => (k.match(/^Group [A-Z]/) || [])[0]).filter(Boolean))]) {
+    const stages = ["Opening 1", "Opening 2", "Winners", "Elimination", "Decider"].filter(st => keys.some(k => k.startsWith(`${g} ${st} team`)));
+    tiles.push(tile(g, "group stage", () => addLayers([...bracketLayers([["Opening", stages.filter(x => x.startsWith("Opening")).map(x => `${g} ${x}`)],
+      ["Winners / Elimination", stages.filter(x => x === "Winners" || x === "Elimination").map(x => `${g} ${x}`)], ["Decider", stages.filter(x => x === "Decider").map(x => `${g} ${x}`)]].filter(c => c[1].length), g),
+      T(`{{Tournament!${g} 1st}}`, 28, { name: `${g} 1st`, x: 1300, y: 300, w: 300, h: 40 }), T(`{{Tournament!${g} 2nd}}`, 28, { name: `${g} 2nd`, x: 1300, y: 350, w: 300, h: 40 })], { keepPlace: true })));
+  }
+  return tiles;
+}
+
 function liveTab() {
   const I = (name, src, w, h, extra = {}) => () => addLayers([{ type: "image", name, src, fit: "contain", w, h, ...extra }]);
   const huds = ((App.state.data || {}).tables || {}).HUDs || [];
@@ -97,6 +145,7 @@ function liveTab() {
       tile("Caster cameras", "on the caster boxes (moving with them), or two to place", () => casterCams())),
     group("Tournament", tile("Knockout bracket", "8 or 16", () => addLayers([{ type: "bracket", name: "Bracket", font: "Bebas Neue", color: "#ffffff", gold: "#b28a1d", dark: "#000b05", line: "#b28a1d", w: 1566, h: 748 }])),
       tile("Champion", "", () => addLayers([T("{{Tournament!Top champion}}", 64, { name: "Champion" })]))),
+    group("Bracket text (from the Tournament page)", ...bracketTiles()),
     ...rlGroups(),
     ...valGroups(),
     ...(hudGroups.length ? hudGroups : [el("p", { class: "muted small" }, "Game HUDs show up here once one sends its data (Outputs › HUD link).")])];
