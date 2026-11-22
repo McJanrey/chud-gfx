@@ -87,12 +87,17 @@ function sponsors() {
     el("button", { class: "small", onclick: () => { list.push({ logo: "", secs: 10, white: false }); put(); } }, "+ Sponsor"));
 }
 
+let previewVid = null;
 function loop() {
   const b = G().bgloop || {};
   const set = (k, v) => save({ bgloop: { [k]: v } });
   const src = b.src || "loops/standby-bg-loop.webm";
   // (the preview plays as the outputs do: the video in grey at its brightness, the colour multiplied over it, at its speed)
-  const vid = el("video", { src: src.split("/").map(encodeURIComponent).join("/"), muted: true, loop: true, autoplay: true, playsInline: true });
+  // (the same video element each time the page is drawn again: a team or any other change doesn't restart it)
+  const want = src.split("/").map(encodeURIComponent).join("/");
+  if (!previewVid || previewVid.getAttribute("src") !== want) previewVid = el("video", { src: want, muted: true, loop: true, autoplay: true, playsInline: true });
+  const vid = previewVid;
+  if (vid.paused) vid.play().catch(() => {});
   const wash = el("div", { class: "loop-wash" });
   const look = (color, bright, speed) => {
     vid.style.filter = `grayscale(1) brightness(${bright})`; wash.style.background = color;

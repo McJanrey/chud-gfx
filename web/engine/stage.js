@@ -375,6 +375,12 @@ export class Stage {
         old.style.cssText = n.style.cssText;
         old._layer = n._layer;
         [...n.children].forEach((c, i) => { const o = old.children[i]; if (o && o.tagName === c.tagName) o.style.cssText = c.style.cssText; });
+        // (a kept video: the new speed, and the colour wash added, changed or taken off, while it keeps playing)
+        const q = (e, sel) => (e.querySelector ? e.querySelector(sel) : null);
+        const ov = q(old, "video"), nv = q(n, "video");
+        if (ov && nv && ov.playbackRate !== nv.playbackRate) ov.defaultPlaybackRate = ov.playbackRate = nv.playbackRate;
+        const ow = q(old, ".sg-fill:not(video)"), nw = q(n, ".sg-fill:not(video)");
+        if (nw && !ow) old.appendChild(nw.cloneNode(true)); else if (ow && !nw) ow.remove();
         keep.delete(n._keep);
         // (the new copy is dropped, never on the page: it was playing off-page, a second sound and decoder each redraw)
         for (const m of n.querySelectorAll("video")) { m.pause(); m.removeAttribute("src"); m.load(); }
