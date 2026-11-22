@@ -25,7 +25,16 @@ const uid = p => p + Math.random().toString(36).slice(2, 10);
 const lab = (t, input) => el("label", { class: "f" }, el("span", {}, t), input);
 
 // --- keeping and saving ---------------------------------------------------------
-function snapshot() { undo.push(JSON.stringify(comp)); if (undo.length > 100) undo.shift(); redo = []; }
+function snapshot() { undo.push(JSON.stringify(comp)); if (undo.length > 100) undo.shift(); redo = []; undoButtons(); }
+// Each graphic (and HUD part) keeps its own undo / redo while the app is open: switch away and back, it's still there.
+const histories = new Map();
+function keepHistory() { if (compId) histories.set(compId, { undo, redo }); }
+function takeHistory(id) { const h = histories.get(id) || { undo: [], redo: [] }; undo = h.undo; redo = h.redo; undoButtons(); }
+function undoButtons() {
+  const u = document.getElementById("cmp-undo"), r = document.getElementById("cmp-redo");
+  if (u) { u.disabled = !undo.length; u.title = `Undo (Ctrl+Z)${undo.length ? ` · ${undo.length} step${undo.length === 1 ? "" : "s"}` : ""}`; }
+  if (r) { r.disabled = !redo.length; r.title = `Redo (Ctrl+Y or Ctrl+Shift+Z)${redo.length ? ` · ${redo.length} step${redo.length === 1 ? "" : "s"}` : ""}`; }
+}
 function changed(opts = {}) {
   dirty = true;
   clearTimeout(saveTimer);
@@ -49,14 +58,15 @@ function back(from, to) {
   to.push(JSON.stringify(comp));
   comp = JSON.parse(from.pop());
   sel = new Set([...sel].filter(id => layerById(id)));
-  changed();
+  changed(); undoButtons();
 }
 
 // --- graphics list --------------------------------------------------------------
 function openComp(id) {
   if (dirty) save();
   const c = App.state.project.compositions.find(x => x.id === id);
-  compId = id; comp = c ? JSON.parse(JSON.stringify(c)) : null; sel = new Set(); undo = []; redo = [];
+  keepHistory();
+  compId = id; comp = c ? JSON.parse(JSON.stringify(c)) : null; sel = new Set(); takeHistory(id);
   renderGraphics(); renderLayers(); drawCanvas(); renderProps();
 }
 function renderGraphics() {
@@ -75,6 +85,13 @@ $("#cmp-new").addEventListener("click", async () => {
   setTimeout(() => openComp(r.comp.id), 300);
 });
 
+// a small padlock (line icon, closed when locked)
+function lockIcon(locked) {
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", "0 0 16 16"); svg.setAttribute("width", "14"); svg.setAttribute("height", "14");
+  svg.innerHTML = `<rect x="3.5" y="7" width="9" height="6.5" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="${locked ? "M5.5 7V5a2.5 2.5 0 0 1 5 0v2" : "M5.5 7V5a2.5 2.5 0 0 1 4.9-.7"}" fill="none" stroke="currentColor" stroke-width="1.5"/>`;
+  return svg;
+}
 // --- layers list ----------------------------------------------------------------
 const ICON = { text: "T", rect: "▭", shape: "◆", image: "▣", video: "▶", rotator: "↻", ticker: "⇆", bracket: "⊢", web: "◎", lottie: "✧", camera: "◉", shader: "◍" };
 function renderLayers() {
@@ -88,6 +105,8 @@ function renderLayers() {
     ondrop: e => { e.preventDefault(); const from = e.dataTransfer.getData("text/layer"); if (from && from !== l.id) moveLayer(from, l.id); } },
     el("span", { class: "ly-ic" }, ICON[l.type] || "?"),
     el("span", { class: "ly-name" }, l.name || l.type), l.field ? el("span", { class: "tag" }, "field") : "",
+    el("button", { class: "small ghost" + (l.locked ? " on-lock" : ""), "aria-label": l.locked ? "Unlock" : "Lock", title: l.locked ? "Locked: can't be picked on the canvas (click to unlock)" : "Lock (can't be picked on the canvas)",
+      onclick: e => { e.stopPropagation(); snapshot(); l.locked = !l.locked; if (l.locked) sel.delete(l.id); changed(); } }, lockIcon(l.locked)),
     el("button", { class: "small ghost", "aria-label": l.visible === false ? "Show" : "Hide", onclick: e => { e.stopPropagation(); snapshot(); l.visible = l.visible === false; changed(); } }, l.visible === false ? "◌" : "●"))));
 }
 function moveLayer(fromId, toId) {
@@ -233,16 +252,22 @@ function drawSelection() {
   Object.assign(box.style, { left: r.left - v.left + x0 * scale + "px", top: r.top - v.top + y0 * scale + "px", width: (x1 - x0) * scale + "px", height: (y1 - y0) * scale + "px" });
 }
 // The layer under the pointer: the smallest one there (a full-screen background never hides the text on it).
-function layerAt(x, y) {
-  let best = null;
-  for (const l of comp.layers) {
+// Picking on the canvas works as in Canva / Figma: the layer in front under the pointer; a layer filling (almost) the
+// whole page is the background, never picked by a click or a drag box (pick it in Layers); Alt+click goes one
+// layer further back each time; locked and hidden layers are skipped.
+const isBackground = b => b.w * b.h >= W * H * 0.9;
+function layersAt(x, y) {   // (front first)
+  const out = [];
+  for (const l of [...comp.layers].reverse()) {
     if (l.visible === false || l.locked) continue;
     const b = shown(l);
-    if (!(x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h)) continue;
-    if (!best || b.w * b.h <= best.b.w * best.b.h) best = { l, b };
+    if (x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h) out.push({ l, bg: isBackground(b) });
   }
-  best = best && best.l;
-  return best;
+  return out;
+}
+function layerAt(x, y) {
+  const hit = layersAt(x, y).find(h => !h.bg);
+  return hit ? hit.l : null;
 }
 const toStage = e => { const r = sheet.getBoundingClientRect(); return [(e.clientX - r.left) / scale, (e.clientY - r.top) / scale]; };
 // Snapping: edges and centres of the canvas and the other layers (a square's or circle's middle too) and the
@@ -292,8 +317,8 @@ function marquee(e, sx, sy, under) {
     sel = keep;
     for (const l of comp.layers) {
       if (l.visible === false || l.locked) continue;
-      const b = shown(l);
-      if (b.x < rect.x1 && b.x + b.w > rect.x0 && b.y < rect.y1 && b.y + b.h > rect.y0) sel.add(l.id);
+      const b = shown(l);   // (fully inside the box, as Canva: a box can't grab the background by touching it)
+      if (!isBackground(b) && b.x >= rect.x0 && b.x + b.w <= rect.x1 && b.y >= rect.y0 && b.y + b.h <= rect.y1) sel.add(l.id);
     }
     renderLayers(); drawSelection(); renderProps();
   };
@@ -332,9 +357,15 @@ view.addEventListener("mousedown", e => {
   const handle = e.target.closest("[data-h]");
   const [sx, sy] = toStage(e);
   if (!handle) {
-    const hit = layerAt(sx, sy);
-    const b = hit && shown(hit);   // (a background filling the whole page counts as empty: on a board everything sits on one)
-    if (!hit || (!sel.has(hit.id) && b.x <= 0 && b.y <= 0 && b.x + b.w >= W && b.y + b.h >= H)) return marquee(e, sx, sy, hit);
+    const under = layersAt(sx, sy);
+    if (e.altKey && under.length) {   // (one layer further back each Alt+click, round to the front again)
+      const i = under.findIndex(h => sel.has(h.l.id));
+      pick(under[(i + 1) % under.length].l.id, false);
+      return;
+    }
+    const picked1 = under.find(h => sel.has(h.l.id));   // (already picked, even the background: drag it)
+    const hit = picked1 ? picked1.l : layerAt(sx, sy);
+    if (!hit) return marquee(e, sx, sy, null);
     if (!sel.has(hit.id)) pick(hit.id, e.shiftKey || e.ctrlKey);
   }
   const ls = picked(), start = ls.map(l => ({ l, x: l.x, y: l.y, w: l.w, h: l.h }));
@@ -345,19 +376,28 @@ view.addEventListener("mousedown", e => {
     if (!moved && Math.abs(dx) + Math.abs(dy) < 2) return;
     if (!moved) { snapshot(); moved = dragging = true; }   // (dragging: a server push mid-drag must not swap the layers out)
     if (handle) {
-      const h = handle.dataset.h, s0 = start[0];   // (resizing: the picked layers' first one)
-      if (h.includes("e")) s0.l.w = Math.max(4, s0.w + dx);
-      if (h.includes("s")) s0.l.h = Math.max(4, s0.h + dy);
-      if (h.includes("w")) { s0.l.x = s0.x + Math.min(dx, s0.w - 4); s0.l.w = s0.w - Math.min(dx, s0.w - 4); }
-      if (h.includes("n")) { s0.l.y = s0.y + Math.min(dy, s0.h - 4); s0.l.h = s0.h - Math.min(dy, s0.h - 4); }
-      if (ev.shiftKey && s0.w && s0.h) s0.l.h = Math.round(s0.l.w * s0.h / s0.w);   // (Shift keeps the shape)
+      // (resizing: every picked layer, as one box: each keeps its place and share inside the box)
+      const h = handle.dataset.h;
+      const G = { x: Math.min(...start.map(s => s.x)), y: Math.min(...start.map(s => s.y)) };
+      G.w = Math.max(...start.map(s => s.x + s.w)) - G.x; G.h = Math.max(...start.map(s => s.y + s.h)) - G.y;
+      const N = { ...G };
+      if (h.includes("e")) N.w = Math.max(4, G.w + dx);
+      if (h.includes("s")) N.h = Math.max(4, G.h + dy);
+      if (h.includes("w")) { const d = Math.min(dx, G.w - 4); N.x = G.x + d; N.w = G.w - d; }
+      if (h.includes("n")) { const d = Math.min(dy, G.h - 4); N.y = G.y + d; N.h = G.h - d; }
+      if (ev.shiftKey && G.w && G.h) { N.h = Math.round(N.w * G.h / G.w); if (h.includes("n")) N.y = G.y + G.h - N.h; }   // (Shift keeps the shape)
       if (!ev.altKey) {   // (the edge being pulled snaps too, with its line)
-        const { xs, ys } = snapTargets(), L = s0.l;
-        const [ex, lx] = h.includes("e") ? nearest([L.x + L.w], xs) : h.includes("w") ? nearest([L.x], xs) : [0, null];
-        const [ey, ly] = h.includes("s") ? nearest([L.y + L.h], ys) : h.includes("n") ? nearest([L.y], ys) : [0, null];
-        if (h.includes("e")) L.w += ex; else if (h.includes("w")) { L.x += ex; L.w -= ex; }
-        if (h.includes("s")) L.h += ey; else if (h.includes("n")) { L.y += ey; L.h -= ey; }
+        const { xs, ys } = snapTargets();
+        const [ex, lx] = h.includes("e") ? nearest([N.x + N.w], xs) : h.includes("w") ? nearest([N.x], xs) : [0, null];
+        const [ey, ly] = h.includes("s") ? nearest([N.y + N.h], ys) : h.includes("n") ? nearest([N.y], ys) : [0, null];
+        if (h.includes("e")) N.w += ex; else if (h.includes("w")) { N.x += ex; N.w -= ex; }
+        if (h.includes("s")) N.h += ey; else if (h.includes("n")) { N.y += ey; N.h -= ey; }
         showSnap(lx, ly);
+      }
+      const kx = G.w ? N.w / G.w : 1, ky = G.h ? N.h / G.h : 1;
+      for (const s of start) {
+        s.l.x = Math.round(N.x + (s.x - G.x) * kx); s.l.w = Math.max(1, Math.round(s.w * kx));
+        s.l.y = Math.round(N.y + (s.y - G.y) * ky); s.l.h = Math.max(1, Math.round(s.h * ky));
       }
     } else {
       if (!ev.altKey) [dx, dy] = snap(start.map(s => ({ ...s.l, x: s.x, y: s.y })), dx, dy);
@@ -390,12 +430,16 @@ function paste() {
   toast(`Pasted ${copies.length} layer${copies.length === 1 ? "" : "s"}`);
 }
 addEventListener("keydown", e => {
-  if (!editing() || !comp || /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) || document.activeElement.isContentEditable) return;   // (a chip box is typed in too)
-  const k = e.key.toLowerCase();
+  if (!editing() || !comp) return;
+  const k = e.key.toLowerCase(), a = document.activeElement, mod = e.ctrlKey || e.metaKey;
+  // (undo / redo: also with the cursor in a setting, unless its text is being typed and not saved yet)
+  const typing = a.isContentEditable || (/^(TEXTAREA|INPUT)$/.test(a.tagName) && !/^(checkbox|radio|color|range|button)$/.test(a.type) && a.value !== a.defaultValue);
+  if (mod && (k === "z" || k === "y") && !typing) {
+    e.preventDefault(); if (/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) a.blur();
+    (k === "y" || e.shiftKey) ? back(redo, undo) : back(undo, redo); return;
+  }
+  if (/INPUT|TEXTAREA|SELECT/.test(a.tagName) || a.isContentEditable) return;   // (a chip box is typed in too)
   if (pen && (k === "enter" || k === "escape")) { e.preventDefault(); if (k === "escape") pen = []; finishPen(); return; }
-  if ((e.ctrlKey || e.metaKey) && k === "z") { e.preventDefault(); e.shiftKey ? back(redo, undo) : back(undo, redo); return; }
-  if ((e.ctrlKey || e.metaKey) && k === "y") { e.preventDefault(); back(redo, undo); return; }
-  const mod = e.ctrlKey || e.metaKey;
   if (mod && k === "a") { e.preventDefault(); sel = new Set(comp.layers.filter(l => l.visible !== false).map(l => l.id)); renderLayers(); drawSelection(); renderProps(); return; }
   if (mod && k === "v") { e.preventDefault(); paste(); return; }
   const ls = picked();
@@ -453,6 +497,8 @@ function canvasTools() {
   const paint = () => { view.dataset.bg = bg === "checker" ? "checker" : ""; view.style.setProperty("--cmp-bg", bg === "checker" ? "" : bg); };
   paint();
   t.replaceChildren(
+    el("div", { class: "seg" }, el("button", { class: "small", id: "cmp-undo", "aria-label": "Undo", title: "Undo (Ctrl+Z)", disabled: true, onclick: () => back(undo, redo) }, "↶ Undo"),
+      el("button", { class: "small", id: "cmp-redo", "aria-label": "Redo", title: "Redo (Ctrl+Y)", disabled: true, onclick: () => back(redo, undo) }, "Redo ↷")),
     el("button", { class: "small" + (rulers ? " on" : ""), onclick: e => { rulers = !rulers; try { localStorage.setItem("sg-rulers", rulers ? "on" : "off"); } catch (x) { /* */ } e.target.classList.toggle("on", rulers); drawRulers(); } }, "Rulers"),
     el("div", { class: "seg zoom" },
       el("button", { class: "small", "aria-label": "Zoom out", onclick: () => stepZoom(-1) }, "−"),
@@ -491,9 +537,10 @@ export const composer = {
     if (into && cmp.parentNode !== into) into.appendChild(cmp);
     cmp.classList.add("hud-mode");
     hudCtx = { hudId, partId };
+    keepHistory();
     compId = "hud:" + hudId + ":" + partId;
     comp = { id: compId, name: p.name, width: W, height: H, layers: JSON.parse(JSON.stringify(p.layers)) };
-    sel = new Set(); undo = []; redo = [];
+    sel = new Set(); takeHistory(compId);
     renderLayers(); drawCanvas(); renderProps(); setTimeout(fit, 0);
   },
   setShow(all, force) { stage.opts.all = !!all; stage.opts.force = force || null; if (hudCtx) drawCanvas(); },
