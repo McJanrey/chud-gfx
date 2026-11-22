@@ -422,8 +422,7 @@ button.danger { background: var(--red); color: #fff; box-shadow: none; font-weig
 .hb-stage { position: absolute; left: 0; top: 0; transform-origin: 0 0 }
 .hb-stage iframe { position: absolute; inset: 0; width: 1920px; height: 1080px; border: 0; pointer-events: none }
 .hb-boxes { position: absolute; inset: 0 }
-.hb-box { position: absolute; outline: 1px dashed rgba(255, 255, 255, .18); cursor: move }
-.hb-box.live { outline-color: rgba(102, 181, 244, .22) }
+.hb-box { position: absolute; cursor: move }   /* (no outline until hovered: the HUD itself is the picture) */
 .hb-box:hover { outline: 2px solid rgba(255, 255, 255, .5) }
 .hb-box.sel { outline: 3px solid #66b5f4; z-index: 2 }
 .hb-box .hd { position: absolute; width: 14px; height: 14px; background: #fff; border: 2px solid #66b5f4; margin: -7px }
@@ -492,3 +491,4 @@ body.at-home .page { border-top: 1px solid var(--line); border-radius: 12px; }
 .hb-show { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .hb-add { display: flex; gap: 4px; } .hb-add button { width: 28px; padding: 3px 0; }
 .hb-right { padding: 16px; } .hb-right h3, .hb-right h4, .hb-right p { margin: 0; } .hb-right h4 { margin-top: 8px; }
+.hb-off { position: absolute; left: 50%; top: 16px; transform: translateX(-50%); padding: 6px 12px; border-radius: 8px; background: rgb(0 0 0 / .7); color: var(--text); font-size: 12.5px; z-index: 3; }

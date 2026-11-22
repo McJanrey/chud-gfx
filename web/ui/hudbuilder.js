@@ -151,6 +151,7 @@ function drawTools() {
 function drawBoxes() {
   const p = part(), box = $("#hb-boxes");
   if (!p) return box.replaceChildren();
+  if (p.on === false) return box.replaceChildren(el("div", { class: "hb-off" }, `“${p.name}” is switched off in Parts, so it isn't in the HUD. Switch it on to see and edit it.`));
   box.replaceChildren(...p.layers.map(l => el("div", { class: "hb-box" + (l.id === sel ? " sel" : "") + (l.show ? " live" : ""), "data-id": l.id,
     style: `left:${l.x}px;top:${l.y}px;width:${Math.max(1, l.w)}px;height:${Math.max(1, l.h)}px` },
     ...(l.id === sel ? ["nw", "n", "ne", "e", "se", "s", "sw", "w"].map(h => el("i", { class: "hd " + h, "data-h": h })) : []))));
