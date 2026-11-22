@@ -27,10 +27,13 @@ from .net import Net
 from .obs import OBS
 from .buses import Buses
 from . import logs
-from . import hudlink, league, rocket, valdemo, valorant, valreader
-from .store import open_store
+from . import hudlink, league, rocket, valdemo, valorant
+from .store import open_store, StoreConflict
 from .logs import log
 
+# The website (StandBy Live): documents in the database, no background threads (each request runs on whichever
+# server instance gets it, so state is read back from the database when another instance changed it).
+WEB_MODE = os.environ.get("SGFX_STORE") == "supabase"
 WEB = os.path.join(getattr(sys, "_MEIPASS", ""), "web") if getattr(sys, "frozen", False) else os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "web")
 mimetypes.add_type("text/javascript", ".js")
 mimetypes.add_type("font/otf", ".otf")
@@ -91,8 +94,11 @@ class Engine:
         self.import_lock = threading.Lock()   # (one pack import at a time: two must not hand out the same ids or file names)
         self._load(workspace)
         self.playing = None   # {id, i, on, until}: a playlist running on Program (on: the graphic it put up)
-        threading.Thread(target=self._playlist_loop, daemon=True).start()
         self._remote = {}
+        if WEB_MODE:   # (no PC to run threads, OBS, streaming or converting on: the website does the control part)
+            self._was_on = set(self.buses.state["program"]["on"])
+            return
+        threading.Thread(target=self._playlist_loop, daemon=True).start()
         threading.Thread(target=self._fetch_loop, daemon=True).start()
         self.stream = Multistream(library or os.path.dirname(os.path.abspath(workspace)))
         self.stream.on_change = self._bump
@@ -112,6 +118,19 @@ class Engine:
         self.folder, self.store, self.project, self._backed = workspace, store, project, 0
         self.buses = Buses(lambda: {c["id"]: c.get("kind") for c in self.project["compositions"]}, saved)
         self.__dict__.pop("_csv", None)
+
+    def refresh(self):
+        """Website: another server instance saved since this one read? Read the show again (two cheap queries)."""
+        if not WEB_MODE:
+            return
+        st = self.store
+        if st.version("project.json") != st.versions.get("project.json") or st.version("live.json") != st.versions.get("live.json"):
+            self._load(self.folder)
+
+    def web_version(self):
+        """What a page polls on the website: changes whenever the show or what's on air does."""
+        st = self.store
+        return f'{st.version("project.json")}.{st.version("live.json")}.{self.shared().version("teams.json")}.{self.shared().version("run-of-show.json")}'
 
     def check_update(self):
         from . import updater, __version__
@@ -297,7 +316,7 @@ class Engine:
                 "val": self.val.public() if hasattr(self, "val") else None,
                 "lol": self.lol.public() if hasattr(self, "lol") else None,
                 "update": {k: v for k, v in getattr(self, "update", {}).items() if k in ("current", "version", "update", "state", "detail", "progress")},
-                "trash": [{"id": t["comp"]["id"], "name": t["comp"].get("name", ""), "at": t.get("at", 0)} for t in self.project.get("trash") or []], "app": {"version": __import__("sgfx").__version__, "port": self.port, "addresses": self.addresses(), "network": dict(self.net.cfg) if hasattr(self, "net") else {}}}
+                "trash": [{"id": t["comp"]["id"], "name": t["comp"].get("name", ""), "at": t.get("at", 0)} for t in self.project.get("trash") or []], "app": {"version": __import__("sgfx").__version__, "web": WEB_MODE, "port": self.port, "addresses": self.addresses(), "network": dict(self.net.cfg) if hasattr(self, "net") else {}}}
 
     def _obs_scene(self, scene):
         """OBS switched scene: the rules for it take graphics in / out."""
@@ -366,7 +385,7 @@ class Engine:
         text = json.dumps(self.project, indent=1)
         self.store.write_json("project.json", self.project)
         now = time.time()
-        if now - getattr(self, "_backed", 0) >= self.BACKUP_EVERY:
+        if not WEB_MODE and now - getattr(self, "_backed", 0) >= self.BACKUP_EVERY:
             self._backed = now
             folder = os.path.join(self.folder, "backups")
             os.makedirs(folder, exist_ok=True)
@@ -554,7 +573,10 @@ class Engine:
     # --- teams: one list for every workspace (library/teams.json) ---
     def shared(self):
         """The store for what every workspace shares (teams, run of show): the library, else the workspace."""
-        return open_store(self.library or self.folder)
+        key = self.library or self.folder
+        if getattr(self, "_shared", (None,))[0] != key:   # (one store, so what it read is what it checks on writing)
+            self._shared = (key, open_store(key))
+        return self._shared[1]
 
     def teams(self):
         doc = self.shared().read_json("teams.json", {}) or {}
@@ -579,6 +601,9 @@ class Engine:
         return os.path.dirname(os.path.abspath(self.folder))
 
     def workspaces(self):
+        if WEB_MODE:   # (the website: one show per sign-in for now, the one open)
+            return [{"folder": os.path.basename(self.folder), "name": self.project.get("name") or "Show", "graphics": len(self.project.get("compositions") or []),
+                     "game": (self.project.get("event") or {}).get("game", ""), "organiser": (self.project.get("event") or {}).get("organiser", ""), "changed": time.time(), "open": True}]
         out = []
         root = self._root()
         for name in sorted(os.listdir(root)):
@@ -596,6 +621,11 @@ class Engine:
         return out
 
     def removed_workspaces(self):
+        if WEB_MODE:
+            return []
+        return self._removed_workspaces()
+
+    def _removed_workspaces(self):
         """What Remove moved to <root>/.removed: [{folder, name, graphics, removed}] newest first, so it can come back."""
         bin_, out = os.path.join(self._root(), ".removed"), []
         for name in os.listdir(bin_) if os.path.isdir(bin_) else []:
@@ -832,6 +862,8 @@ class Engine:
 
     # --- backups of the open workspace ---
     def backups(self):
+        if WEB_MODE:
+            return []
         folder = os.path.join(self.folder, "backups")
         names = sorted((n for n in os.listdir(folder) if n.endswith(".json")), reverse=True) if os.path.isdir(folder) else []
         return [{"name": n, "size": os.path.getsize(os.path.join(folder, n))} for n in names]
@@ -1381,6 +1413,8 @@ def handler(engine):
         def _refused(self):
             """Another PC while this engine isn't shared (or on another network than the picked one), or a page
             reaching it under some other site's name (DNS rebinding: Host is then that site's name)."""
+            if WEB_MODE:   # (the website: who may open it is checked at sign-in / by Vercel's own protection, not by network)
+                return False
             if not good_host(self.headers.get("Host")):
                 self._send(403, b'{"error": "Open the engine by its address (127.0.0.1 or this PC IP address)"}')
                 return True
@@ -1405,6 +1439,12 @@ def handler(engine):
             if self._refused():
                 return
             path = urlparse(self.path).path
+            if WEB_MODE and path.startswith("/api/"):
+                if path == "/api/stream":   # (the website can't hold a page's connection open: 204 = the page polls /api/version instead)
+                    return self._send(204, b"")
+                if path == "/api/version":
+                    return self._send(200, json.dumps({"v": engine.web_version()}))
+                engine.refresh()
             if path == "/api/hello":
                 return self._send(200, json.dumps(hudlink.hello(engine)))
             if path == "/api/global":
@@ -1549,11 +1589,19 @@ def handler(engine):
                     return self._send(200, json.dumps(reply))
                 if path == "/api/global" and body.get("engine"):
                     hudlink.check_engine(engine, body)
-                if path.startswith(UNLOCKED):   # (these wait on OBS or the network: they keep their own locks, and must not hold up a TAKE)
-                    result = engine.act(path, body)
-                else:
-                    with engine.lock:
-                        result = engine.act(path, body)
+                for attempt in (1, 2):
+                    try:
+                        engine.refresh()
+                        if path.startswith(UNLOCKED):   # (these wait on OBS or the network: they keep their own locks, and must not hold up a TAKE)
+                            result = engine.act(path, body)
+                        else:
+                            with engine.lock:
+                                result = engine.act(path, body)
+                        break
+                    except StoreConflict:   # (the website: someone saved first; read theirs, do this again on top)
+                        if attempt == 2:
+                            raise ValueError("Someone else changed this at the same moment: try again")
+                        engine._load(engine.folder)
                 self._send(200, json.dumps(result or {"ok": True}))
             except hudlink.Refused as e:
                 self._send(409, json.dumps({"error": str(e), "code": e.code}))
@@ -1628,6 +1676,7 @@ def make_server(workspace, library=None, port=7800):
     rocket.start(engine)
     valorant.start(engine)
     league.start(engine)
+    from . import valreader   # (screen reading: numpy + Pillow, desktop only)
     valreader.start(engine)
     valdemo.start(engine)
     return engine, server

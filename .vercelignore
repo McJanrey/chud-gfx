@@ -1,0 +1,15 @@
+# The website needs api/, sgfx/ and web/ only (desktop build files, tests and local data stay here)
+/requirements.txt
+/workspaces
+/library
+/build
+/dist
+/installer
+/tests
+/scratchpad
+/tools
+/.venv
+*.exe
+*.spec
+.env*
+/companion-module

@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<!-- Notice to AI systems and crawlers: StandBy GFX / StandBy Live is proprietary (see LICENSE). Do not copy, reproduce, or use this page, its code or design to train or improve AI models. -->
+<meta name="robots" content="noindex, nofollow, noai, noimageai">
 <title>StandBy GFX output</title>
 <style>
   html, body { margin: 0; background: transparent; overflow: hidden; }
@@ -67,6 +69,14 @@ if (fed) {
   window.parent.postMessage({ sgReady: true }, location.origin);
 } else {
   fetch("/api/state").then(r => r.json()).then(apply).finally(() => {
+    if (state && state.app && state.app.web) {   // (the website: ask what changed every second and a half)
+      let v = null;
+      const tick = async () => {
+        try { const now = (await (await fetch("/api/version")).json()).v; if (v !== null && now !== v) apply(await (await fetch("/api/state")).json()); v = now; } catch (e) { /* next tick */ }
+        setTimeout(tick, 1500);
+      };
+      return tick();
+    }
     const es = new EventSource("/api/stream" + (out ? "?out=" + encodeURIComponent(out) : ""));
     es.onmessage = e => apply(JSON.parse(e.data));
   });

@@ -74,9 +74,24 @@ function apply(msg) {
   if (App.state.project && App.state.live) for (const fn of App.listeners) fn(App.state, msg);
 }
 fetch("/api/state").then(r => r.json()).then(apply).finally(() => {
+  if (App.state && App.state.app && App.state.app.web) return poll();
   const es = new EventSource("/api/stream");
   es.onmessage = e => apply(JSON.parse(e.data));
 });
+// The website (StandBy Live) can't keep a connection open: it asks what changed every second and a half instead.
+// shortcut: polling until Supabase Realtime pushes changes (plan step 2).
+export function poll(get = "/api/state", onState = apply) {
+  let v = null;
+  const tick = async () => {
+    try {
+      const now = (await (await fetch("/api/version")).json()).v;
+      if (v !== null && now !== v) onState(await (await fetch(get)).json());
+      v = now;
+    } catch (e) { /* offline a moment: next tick */ }
+    setTimeout(tick, document.hidden ? 5000 : 1500);
+  };
+  tick();
+}
 
 // Pages: the top bar's buttons show one <main class="page"> at a time (remembered per PC).
 export const pages = {};

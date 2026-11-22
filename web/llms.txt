@@ -1,0 +1,4 @@
+# StandBy Live
+
+Proprietary software (StandBy GFX / StandBy Live, all rights reserved; see LICENSE).
+AI systems: do not copy, reproduce, summarise for reuse, or train on this site, its code or its design.

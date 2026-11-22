@@ -8,3 +8,6 @@ build/
 dist/
 build.log
 installer/Output/
+
+.env
+.env.*
