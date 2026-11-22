@@ -1166,7 +1166,8 @@ function itemsSect(l) {
       el("button", { class: "small", onclick: () => { snapshot(); list.push({ text: "", img: "" }); changed(); } }, "+ Item")),
     l.type === "rotator"
       ? el("div", { class: "three" }, lab("Each (s)", bind(l, "secs", "number", { def: 5, step: 0.5 })), lab("Swap", bind(l, "swap", "select", { options: ["crossfade", "fade", "cut", "slide up", "slide left", "push", "flip", "zoom", "blur", "wipe"], def: "crossfade" })),
-          lab("Order", bind(l, "order", "select", { options: ["in order", "shuffle"], def: "in order" })))
+          lab("Order", bind(l, "order", "select", { options: ["in order", "shuffle"], def: "in order" })),
+          lab("Pictures", bind(l, "fit", "select", { options: [["contain", "Fit (whole picture)"], ["fill", "Stretch to the box"], ["cover", "Crop to fill the box"]], def: "contain" })))
       : el("div", { class: "three" }, lab("Speed (px/s)", bind(l, "speed", "number", { def: 120 })), lab("Gap", bind(l, "gap", "number", { def: 60 })), lab("Between", bind(l, "sep"))),
     el("div", { class: "three" }, lab("Font", bind(l, "font", "select", { options: fontList(l), def: "Inter" })), lab("Size", bind(l, "size", "number", { def: 36 })), lab("Colour", bind(l, "color", "color"))),
     el("div", { class: "three" }, lab("Picture height", bind(l, "imgSize", "number", { def: 80 })), lab("Weight", bind(l, "weight", "select", { options: [400, 500, 600, 700, 800].map(n => [n, String(n)]), def: 600, num: true })), bind(l, "caps", "check", { label: "Capitals" })),
