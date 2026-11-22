@@ -103,7 +103,7 @@ function drawHead() {
   const item = (txt, fn) => el("button", { onclick: e => { e.target.closest("details").open = false; fn(); } }, txt);
   $("#hb-head").replaceChildren(
     el("button", { class: "small ghost", onclick: () => show("list") }, "← All HUDs"),
-    el("h3", {}, h.name), el("span", { class: "muted small" }, gameName(h.game)),
+    el("h3", { title: h.name }, h.name), el("span", { class: "muted small" }, gameName(h.game)),
     el("span", { class: "spacer" }),
     el("span", { class: "muted small" }, "Saves by itself · on air at once"),
     el("button", { class: "small", onclick: () => navigator.clipboard.writeText(url).then(() => toast("Browser source link copied")) }, "Copy OBS link"),
