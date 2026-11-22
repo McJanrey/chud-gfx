@@ -588,7 +588,9 @@ class Engine:
                     p = json.load(f)
             except (OSError, ValueError):
                 continue
+            ev = p.get("event") or {}
             out.append({"folder": name, "name": p.get("name") or name, "graphics": len(p.get("compositions") or []),
+                        "game": ev.get("game", ""), "organiser": ev.get("organiser", ""),
                         "changed": os.path.getmtime(os.path.join(path, "project.json")),
                         "open": os.path.abspath(path) == os.path.abspath(self.folder)})
         return out
@@ -635,22 +637,46 @@ class Engine:
         self.playlist_stop(quiet=True)
         self._load(self._ws_path(folder))
 
-    def ws_new(self, name):
-        name = (str(name or "").strip() or "New workspace")[:80]
+    GAMES = ("lol", "val", "rl", "other")
+
+    def _event(self, body):
+        """An event's details from the New event form: who runs it and which game (the card and the kit list use it)."""
+        game = str(body.get("game") or "")
+        return {"organiser": str(body.get("organiser") or "").strip()[:80], "game": game if game in self.GAMES else "other"}
+
+    def ws_new(self, name, body=None):
+        """A new event: blank, or started from another event's graphics (start = that event's folder)."""
+        body = body or {}
+        name = (str(name or "").strip() or "New event")[:80]
+        if body.get("start"):
+            folder = self.ws_copy(body["start"], name)
+            self.ws_details(folder, body)
+            return folder
         path = self._free(name)
         os.makedirs(os.path.join(path, "assets"))
         blank = {"name": name, "compositions": [], "transitions": [{"id": "cut", "name": "Cut", "type": "cut", "enabled": True},
                  {"id": "fade", "name": "Fade", "type": "fade", "dur": 500, "enabled": True}], "default_transition": "fade",
-                 "sources": [], "global": {}, "playlists": []}
+                 "sources": [], "global": {}, "playlists": [], "event": self._event(body)}
         with open(os.path.join(path, "project.json"), "w", encoding="utf-8") as f:
             json.dump(blank, f, indent=1)
         return os.path.basename(path)
 
-    def ws_copy(self, folder):
+    def ws_details(self, folder, body):
+        path = self._ws_path(folder)
+        if os.path.abspath(path) == os.path.abspath(self.folder):
+            self.project["event"] = self._event(body)
+            return self.save_project()
+        with open(os.path.join(path, "project.json"), encoding="utf-8") as f:
+            p = json.load(f)
+        p["event"] = self._event(body)
+        with open(os.path.join(path, "project.json"), "w", encoding="utf-8") as f:
+            json.dump(p, f, indent=1)
+
+    def ws_copy(self, folder, name=None):
         import shutil
         src = self._ws_path(folder)
         with open(os.path.join(src, "project.json"), encoding="utf-8") as f:
-            name = (json.load(f).get("name") or "Workspace") + " copy"
+            name = name or (json.load(f).get("name") or "Workspace") + " copy"
         dst = self._free(name)
         shutil.copytree(src, dst, ignore=shutil.ignore_patterns("backups", "live.json"))
         with open(os.path.join(dst, "project.json"), encoding="utf-8") as f:
@@ -1112,7 +1138,9 @@ class Engine:
         elif path == "/api/workspace/open":
             self.ws_open(body.get("folder"))
         elif path == "/api/workspace/new":
-            result = {"folder": self.ws_new(body.get("name"))}
+            result = {"folder": self.ws_new(body.get("name"), body)}
+        elif path == "/api/workspace/details":
+            self.ws_details(body.get("folder"), body)
         elif path == "/api/workspace/copy":
             result = {"folder": self.ws_copy(body.get("folder"))}
         elif path == "/api/workspace/rename":

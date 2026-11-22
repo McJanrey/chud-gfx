@@ -5,29 +5,85 @@ let tab = "ws";
 const ago = t => { const s = Date.now() / 1000 - t; return s < 60 ? "just now" : s < 3600 ? `${Math.round(s / 60)} min ago` : s < 86400 ? `${Math.round(s / 3600)} h ago` : `${Math.round(s / 86400)} days ago`; };
 const when = n => n.replace(".json", "").replace("_", " · ").replace(/-(\d\d)-(\d\d)$/, ":$1:$2");
 
+const GAMES = { lol: "League of Legends", val: "VALORANT", rl: "Rocket League", other: "Other" };
+let find = "";
+
+// New event (or Edit details): name, organiser, game, and what it starts from (blank or another event's graphics).
+function eventForm(w) {
+  const list = App.state.workspaces || [];
+  const name = el("input", { value: w ? w.name : "", placeholder: "SCC Winter Split", "aria-label": "Event name" });
+  const org = el("input", { value: w ? w.organiser : "", placeholder: "St. Clair College", "aria-label": "Organiser" });
+  const game = el("select", { "aria-label": "Game" }, el("option", { value: "" }, "Pick a game"),
+    ...Object.entries(GAMES).map(([k, t]) => el("option", { value: k }, t)));
+  game.value = w ? (w.game || "other") : "";
+  const start = el("select", { "aria-label": "Start from" });
+  const fill = () => {
+    const same = list.filter(x => x.game === game.value), rest = list.filter(x => x.game !== game.value);
+    start.replaceChildren(el("option", { value: "" }, "Blank event"),
+      ...same.map(x => el("option", { value: x.folder }, `Copy of ${x.name}`)),
+      ...rest.map(x => el("option", { value: x.folder }, `Copy of ${x.name} (${GAMES[x.game] || "no game"})`)));
+  };
+  const go = el("button", { class: "primary" }, w ? "Save" : "Create event");
+  const ok = () => { go.disabled = !name.value.trim() || !game.value; };
+  name.addEventListener("input", ok); game.addEventListener("change", () => { fill(); ok(); });
+  fill(); ok();
+  const field = (label, input) => el("label", { class: "ev-field" }, el("span", {}, label), input);
+  const d = el("dialog", { class: "dlg ev-dlg" },
+    el("div", { class: "ev-dlg-head" }, el("div", {}, el("h3", {}, w ? "Event details" : "New event"),
+      el("p", { class: "muted" }, w ? "Shown on the event's card." : "Each event keeps its own graphics, files, data and settings.")),
+      el("button", { class: "ghost small", "aria-label": "Close", onclick: () => close() }, "✕")),
+    el("div", { class: "ev-grid" }, field("Event name", name), field("Organiser", org), field("Game", game), w ? "" : field("Start from", start)),
+    el("div", { class: "row end" }, el("button", { class: "ghost", onclick: () => close() }, "Cancel"), go));
+  const close = () => { d.close(); d.remove(); };
+  d.addEventListener("cancel", close);
+  go.addEventListener("click", async () => {
+    if (go.disabled) return;
+    const body = { name: name.value.trim(), organiser: org.value, game: game.value };
+    if (w) { if (body.name !== w.name) await api("/api/workspace/rename", { folder: w.folder, name: body.name }); await api("/api/workspace/details", { folder: w.folder, ...body }); toast("Saved"); }
+    else { const r = await api("/api/workspace/new", { ...body, start: start.value }); await api("/api/workspace/open", { folder: r.folder }); toast(`Opened ${body.name}`); }
+    close();
+  });
+  document.body.appendChild(d); d.showModal(); name.focus();
+}
+
+function card(w) {
+  const open = () => w.open ? document.querySelector('#nav button[data-page="control"]').click() : api("/api/workspace/open", { folder: w.folder }).then(() => toast(`Opened ${w.name}`));
+  const act = (t, f) => el("button", { onclick: e => { e.stopPropagation(); e.target.closest("details").open = false; f(); } }, t);
+  const menu = el("details", { class: "menu ev-more", onclick: e => e.stopPropagation() }, el("summary", { "aria-label": `More for ${w.name}` }, "•••"),
+    el("div", { class: "menu-list" },
+      act("Edit details", () => eventForm(w)),
+      act("Duplicate", () => api("/api/workspace/copy", { folder: w.folder })),
+      w.open ? el("a", { class: "btn", href: "/api/export", download: "" }, "Export pack") : null,
+      w.open ? null : act("Remove", async () => { if (await ask(`Remove "${w.name}"? It's kept in the .removed folder and can come back from here.`)) api("/api/workspace/remove", { folder: w.folder }); })));
+  return el("div", { class: "ev-card" + (w.open ? " open" : ""), role: "button", tabindex: "0", onclick: open, onkeydown: e => { if (e.key === "Enter" && e.target === e.currentTarget) open(); } },
+    el("div", { class: "ev-cover g-" + (w.game || "other") }, el("span", { class: "ev-game" }, GAMES[w.game] || "No game set"), menu),
+    el("div", { class: "ev-info" }, el("div", { class: "name" }, w.name),
+      el("div", { class: "muted small" }, [w.organiser, `${w.graphics} graphics`, ago(w.changed)].filter(Boolean).join(" · ")),
+      el("div", { class: "ev-state" }, w.open ? "Open now · go to Control" : "Open event")));
+}
+
 function render() {
   if (App.page !== "home") return;
   const st = App.state, list = st.workspaces || [];
-  const tabs = el("div", { class: "seg" }, ...[["ws", "My workspaces"], ["bk", "Backups"]].map(([k, t]) =>
+  const tabs = el("div", { class: "seg" }, ...[["ws", "Events"], ["bk", "Backups"]].map(([k, t]) =>
     el("button", { class: "small" + (tab === k ? " on" : ""), onclick: () => { tab = k; render(); } }, t)));
   let body;
   if (tab === "ws") {
-    body = el("div", { class: "ws-grid" },
-      ...list.map(w => el("div", { class: "ws-card" + (w.open ? " open" : "") },
-        el("div", { class: "ws-head" }, el("div", { class: "name" }, w.name), el("div", { class: "muted small" }, `${w.graphics} graphics · ${ago(w.changed)}`)),
-        el("div", { class: "ws-actions" },
-          w.open ? el("span", { class: "ws-current" }, "● Open now") : el("button", { class: "small primary", onclick: () => api("/api/workspace/open", { folder: w.folder }).then(() => toast(`Opened ${w.name}`)) }, "Open"),
-          el("button", { class: "small ghost", onclick: async () => { const n = await askText("Name", w.name); if (n) api("/api/workspace/rename", { folder: w.folder, name: n }); } }, "Rename"),
-          el("button", { class: "small ghost", onclick: () => api("/api/workspace/copy", { folder: w.folder }) }, "Duplicate"),
-          w.open ? el("a", { class: "small ghost btn", href: "/api/export", download: "" }, "Export pack") : null,
-          w.open ? null : el("button", { class: "small ghost", onclick: async () => { if (await ask(`Remove "${w.name}"? It's moved to the .removed folder, not deleted.`)) api("/api/workspace/remove", { folder: w.folder }); } }, "Remove")))),
-      el("button", { class: "ws-card new", onclick: async () => { const n = await askText("Name of the new workspace", "New workspace"); if (n) api("/api/workspace/new", { name: n }); } }, "+ New workspace"));
+    const q = find.toLowerCase(), shown = list.filter(w => !q || `${w.name} ${w.organiser} ${GAMES[w.game] || ""}`.toLowerCase().includes(q));
+    const search = el("input", { class: "search", type: "search", placeholder: "Search events", value: find, "aria-label": "Search events",
+      oninput: e => { find = e.target.value; render(); const i = $("#home-body .search"); i.focus(); i.setSelectionRange(find.length, find.length); } });
+    body = el("div", { class: "stack" },
+      el("div", { class: "ev-tools" }, tabs, search, el("button", { class: "primary", onclick: () => eventForm() }, "New event")),
+      el("div", { class: "ev-grid-cards" }, ...shown.map(card),
+        q ? "" : el("button", { class: "ev-card ev-new", onclick: () => eventForm() }, el("span", { class: "plus" }, "+"), "New event")),
+      shown.length || !q ? "" : el("p", { class: "muted" }, `No events match "${find}".`));
     const gone = st.removed_ws || [];   // (Remove keeps them: they come back from here)
-    if (gone.length) body = el("div", {}, body, el("h4", { class: "g-head" }, "Removed workspaces"),
+    if (gone.length) body = el("div", { class: "stack" }, body, el("h4", { class: "g-head" }, "Removed events"),
       el("div", { class: "panel" }, el("div", { class: "list" }, ...gone.map(w => el("div", { class: "gfx" }, el("span", { class: "bar-ind" }),
         el("div", {}, el("div", { class: "name" }, w.name), el("div", { class: "muted small" }, `${w.graphics} graphics · removed ${ago(w.removed)}`)),
         el("button", { class: "small", onclick: () => api("/api/workspace/unremove", { folder: w.folder }).then(() => toast(`"${w.name}" is back`)) }, "Bring back"))))));
-
+    $("#home-body").replaceChildren(body);
+    return;
   } else {
     const bk = st.backups || [];
     body = el("div", { class: "panel" }, el("div", { class: "list" },
