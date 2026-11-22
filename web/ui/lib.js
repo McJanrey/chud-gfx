@@ -257,3 +257,17 @@ export function chipBox(value, onSave, { multiline = false, placeholder = "", la
   box.set = v => { last = String(v ?? ""); box.value = last; draw(last); };   // (a value put in from outside, e.g. a live-data pick)
   return box;
 }
+
+// Live typing: on the setup pages a box saves as you type (a short pause counts as done), so the outputs follow
+// in real time, not only when you leave the box. The page's own "change" handler does the saving, as on leaving.
+// Not in the Composer / HUD Builder (they draw as you type already) nor connection settings (a half-typed address).
+const LIVE_SKIP = ["page-composer", "page-hudbuilder", "page-outputs", "page-stream", "page-cams", "page-data"];
+const liveTimers = new WeakMap();
+addEventListener("input", e => {
+  const t = e.target;
+  if (!e.isTrusted || !t.matches || !t.matches('input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=range]), textarea')) return;
+  const page = t.closest("main.page");
+  if (!page || LIVE_SKIP.includes(page.id) || t.dataset.live === "off") return;
+  clearTimeout(liveTimers.get(t));
+  liveTimers.set(t, setTimeout(() => { if (t.isConnected) t.dispatchEvent(new Event("change", { bubbles: true })); }, t.type === "color" ? 120 : 350));
+}, true);
