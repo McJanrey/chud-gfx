@@ -619,6 +619,15 @@ class Engine:
             dest, n = os.path.join(self._root(), f"{base}-{n}"), n + 1
         os.replace(src, dest)
 
+    def ws_purge(self, folder):
+        """Delete a removed workspace for good (only from <root>/.removed, never an open or listed one)."""
+        import shutil
+        name = os.path.basename(str(folder or ""))
+        path = os.path.join(self._root(), ".removed", name)
+        if not name or name.startswith(".") or not os.path.isfile(os.path.join(path, "project.json")):
+            raise ValueError("No such removed workspace")
+        shutil.rmtree(path)
+
     def _ws_path(self, folder):
         name = os.path.basename(str(folder or ""))
         path = os.path.join(self._root(), name)
@@ -1113,6 +1122,10 @@ class Engine:
             b.program(cid, bool(body.get("on")), self.transition(body.get("transition")) if body.get("transition") else None)
         elif path == "/api/clear":
             b.clear(body.get("bus", "program"))
+        elif path == "/api/offair":   # (leaving an event for Home: nothing stays on air or cued)
+            self.playlist_stop(quiet=True)
+            b.clear("program", {"type": "cut"})
+            b.clear("preview")
         elif path == "/api/undo":
             b.undo()
         elif path == "/api/values":
@@ -1139,6 +1152,8 @@ class Engine:
             self.ws_open(body.get("folder"))
         elif path == "/api/workspace/new":
             result = {"folder": self.ws_new(body.get("name"), body)}
+        elif path == "/api/workspace/purge":
+            self.ws_purge(body.get("folder"))
         elif path == "/api/workspace/details":
             self.ws_details(body.get("folder"), body)
         elif path == "/api/workspace/copy":

@@ -82,6 +82,7 @@ fetch("/api/state").then(r => r.json()).then(apply).finally(() => {
 export const pages = {};
 export function show(name) {
   if (!document.getElementById("page-" + name)) name = "control";
+  if (name === "home" && App.page && App.page !== "home") api("/api/offair").catch(() => {});   // (back to Home: everything off air)
   App.page = name;
   for (const p of document.querySelectorAll("main.page")) p.hidden = p.id !== "page-" + name;
   document.body.classList.toggle("at-home", name === "home");   // (the events list: no page tabs until an event is entered)

@@ -82,7 +82,9 @@ function render() {
     if (gone.length) body = el("div", { class: "stack" }, body, el("h4", { class: "g-head" }, "Removed events"),
       el("div", { class: "panel" }, el("div", { class: "list" }, ...gone.map(w => el("div", { class: "gfx" }, el("span", { class: "bar-ind" }),
         el("div", {}, el("div", { class: "name" }, w.name), el("div", { class: "muted small" }, `${w.graphics} graphics · removed ${ago(w.removed)}`)),
-        el("button", { class: "small", onclick: () => api("/api/workspace/unremove", { folder: w.folder }).then(() => toast(`"${w.name}" is back`)) }, "Bring back"))))));
+        el("div", { class: "row" },
+          el("button", { class: "small", onclick: () => api("/api/workspace/unremove", { folder: w.folder }).then(() => toast(`"${w.name}" is back`)) }, "Bring back"),
+          el("button", { class: "small danger", onclick: async () => { if (await ask(`Delete "${w.name}" for good?`, `Its ${w.graphics} graphics, files and data are deleted from this PC. This can't be undone.`, { ok: "Delete" })) api("/api/workspace/purge", { folder: w.folder }).then(() => toast(`"${w.name}" deleted`)); } }, "Delete")))))));
     $("#home-body").replaceChildren(body);
     return;
   } else {
