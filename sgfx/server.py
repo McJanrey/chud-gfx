@@ -400,7 +400,8 @@ class Engine:
         return out
 
     def upload(self, name, data, sub=""):
-        """A file into assets/<sub>/ (a free name: -2, -3 ... when taken)."""
+        """A file into assets/<sub>/ (a free name: -2, -3 ... when taken by a different file; the same file again is
+        not copied twice)."""
         stem, ext = os.path.splitext(os.path.basename(name.replace("\\", "/")))
         if ext.lower() not in self.MEDIA:
             raise ValueError("That kind of file isn't supported")
@@ -411,6 +412,10 @@ class Engine:
         os.makedirs(folder, exist_ok=True)
         n, cand = 1, stem + ext.lower()
         while os.path.exists(os.path.join(folder, cand)):
+            if os.path.getsize(os.path.join(folder, cand)) == len(data):   # (the very same file again: use the one already there)
+                with open(os.path.join(folder, cand), "rb") as f:
+                    if f.read() == data:
+                        return "assets/" + os.path.relpath(os.path.join(folder, cand), os.path.join(self.folder, "assets")).replace(os.sep, "/")
             n += 1
             cand = f"{stem}-{n}{ext.lower()}"
         with open(os.path.join(folder, cand), "wb") as f:

@@ -34,6 +34,26 @@ function shapesTab() {
       tile("Score box", "", S("rect", 160, 120, { name: "Score box", fill: "#111111", radius: 10 })), tile("Arrow", "", S("arrow", 300, 120)), tile("Shield", "", S("shield", 200, 240)))];
 }
 
+// VALORANT: the game's own icons, the pieces our HUDs are drawn from, every agent and map (official pictures,
+// kept on this PC once fetched). The same in every workspace.
+const VAL_ICONS = ["spike", "spike-planted", "spike-carrier", "shield-light", "shield-heavy", "shield-regen", "credits", "target",
+  "win-elimination", "win-detonation", "win-defuse", "win-time"];
+const VAL_PIECES = [["Ult ring (4 of 7)", "/val-svg/ring/4/7.svg"], ["Ability charges (1 of 2)", "/val-svg/marks/1/2.svg"], ["Health bar (70%)", "/val-svg/bar/70/66b5f4.svg"],
+  ["Armor: light", "/val-svg/armor/light.svg"], ["Armor: heavy", "/val-svg/armor/heavy.svg"], ["Armor: regen", "/val-svg/armor/regen.svg"],
+  ["Spike (lit)", "/val-svg/spike/on.svg"], ["Spike (ink)", "/val-svg/spike/ink.svg"], ["Series dot (won)", "/val-svg/dot/66b5f4/1.svg"], ["Series dot (to win)", "/val-svg/dot/66b5f4/0.svg"]];
+let valCatalog = null;
+async function valorantKit(add) {
+  if (!valCatalog) valCatalog = await api("/api/val/catalog").catch(() => ({ agents: [], maps: [] }));
+  const tile = (name, src) => el("button", { class: "lib-file", title: name, onclick: () => add({ kind: "image", path: src }) },
+    el("img", { src, alt: "", loading: "lazy" }), el("span", { class: "small" }, name));
+  const grid = list => el("div", { class: "lib-files" }, ...list.map(([n, src]) => tile(n, src)));
+  return el("details", { class: "lib-kit" }, el("summary", {}, "VALORANT (icons, HUD pieces, agents, maps)"),
+    el("h4", {}, "Game icons"), grid(VAL_ICONS.map(n => [n.replace(/-/g, " "), `/game/valorant/${n}.png`])),
+    el("h4", {}, "HUD pieces"), grid(VAL_PIECES),
+    el("h4", {}, "Agents"), grid((valCatalog.agents || []).map(a => [a.name, `/val-img/agent/${a.id}/displayicon.png`])),
+    el("h4", {}, "Maps"), grid((valCatalog.maps || []).map(m => [m.name, `/val-img/map/${m.id}/listviewicon.png`])));
+}
+
 async function mediaTab() {
   const list = await assets();
   const add = a => {
@@ -48,6 +68,7 @@ async function mediaTab() {
       tile("Shader", "animated GPU background", () => addLayers([{ type: "shader", name: "Shader", look: "aurora", a: "#0b1026", b: "#3b2bd6", c: "#19e3c4", speed: 1, quality: 0.5, x: 0, y: 0, w: 1920, h: 1080 }])),
       tile("Lottie", "After Effects animation (.json)", () => addLayers([{ type: "lottie", name: "Lottie", src: "", loop: true, w: 600, h: 600 }])),
       tile("Web page", "", () => addLayers([{ type: "web", name: "Web page", src: "https://", w: 960, h: 540 }]))),
+    await valorantKit(add),
     el("h4", {}, "This workspace's files (click to add)"),
     el("div", { class: "lib-files" }, ...list.filter(a => a.kind === "image" || a.kind === "video").map(a => el("button", { class: "lib-file", title: a.path, onclick: () => add(a) },
       a.kind === "image" ? el("img", { src: a.path.split("/").map(encodeURIComponent).join("/"), alt: "", loading: "lazy" }) : el("span", { class: "muted small" }, "▶ video"),

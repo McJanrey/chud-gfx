@@ -488,3 +488,6 @@ button.danger { background: var(--red); color: #fff; box-shadow: none; font-weig
 .loop-wash { position: absolute; inset: 0; mix-blend-mode: multiply; }
 .loop-preview.off { opacity: .35; }
 input[type=range] { padding: 0; accent-color: var(--accent); }
+.lib-kit { border: 1px solid var(--line); border-radius: 8px; padding: 8px; } .lib-kit summary { cursor: pointer; font-weight: 500; }
+.lib-kit h4 { margin: 12px 0 6px; font-size: 12px; color: var(--muted); font-weight: 500; }
+.lib-kit .lib-file img { background: repeating-conic-gradient(#2a2a2e 0 25%, #1b1b1e 0 50%) 0 0 / 12px 12px; }
