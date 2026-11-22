@@ -40,14 +40,15 @@ function eventForm(w) {
     if (go.disabled) return;
     const body = { name: name.value.trim(), organiser: org.value, game: game.value };
     if (w) { if (body.name !== w.name) await api("/api/workspace/rename", { folder: w.folder, name: body.name }); await api("/api/workspace/details", { folder: w.folder, ...body }); toast("Saved"); }
-    else { const r = await api("/api/workspace/new", { ...body, start: start.value }); await api("/api/workspace/open", { folder: r.folder }); toast(`Opened ${body.name}`); }
+    else { const r = await api("/api/workspace/new", { ...body, start: start.value }); await api("/api/workspace/open", { folder: r.folder }); toast(`Opened ${body.name}`); document.querySelector('#nav button[data-page="control"]').click(); }
     close();
   });
   document.body.appendChild(d); d.showModal(); name.focus();
 }
 
 function card(w) {
-  const open = () => w.open ? document.querySelector('#nav button[data-page="control"]').click() : api("/api/workspace/open", { folder: w.folder }).then(() => toast(`Opened ${w.name}`));
+  const enter = () => document.querySelector('#nav button[data-page="control"]').click();
+  const open = () => w.open ? enter() : api("/api/workspace/open", { folder: w.folder }).then(() => { toast(`Opened ${w.name}`); enter(); });
   const act = (t, f) => el("button", { onclick: e => { e.stopPropagation(); e.target.closest("details").open = false; f(); } }, t);
   const menu = el("details", { class: "menu ev-more", onclick: e => e.stopPropagation() }, el("summary", { "aria-label": `More for ${w.name}` }, "•••"),
     el("div", { class: "menu-list" },
@@ -59,7 +60,7 @@ function card(w) {
     el("div", { class: "ev-cover g-" + (w.game || "other") }, el("span", { class: "ev-game" }, GAMES[w.game] || "No game set"), menu),
     el("div", { class: "ev-info" }, el("div", { class: "name" }, w.name),
       el("div", { class: "muted small" }, [w.organiser, `${w.graphics} graphics`, ago(w.changed)].filter(Boolean).join(" · ")),
-      el("div", { class: "ev-state" }, w.open ? "Open now · go to Control" : "Open event")));
+      el("div", { class: "ev-state" }, w.open ? "Open now" : "Open event")));
 }
 
 function render() {

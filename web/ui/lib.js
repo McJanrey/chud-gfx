@@ -84,6 +84,7 @@ export function show(name) {
   if (!document.getElementById("page-" + name)) name = "control";
   App.page = name;
   for (const p of document.querySelectorAll("main.page")) p.hidden = p.id !== "page-" + name;
+  document.body.classList.toggle("at-home", name === "home");   // (the events list: no page tabs until an event is entered)
   for (const b of document.querySelectorAll("#nav button")) b.classList.toggle("on", b.dataset.page === name);
   const label = (document.querySelector(`#nav button[data-page="${name}"]`) || {}).textContent || "";
   $("#crumb-page").textContent = $("#ws-page").textContent = label;
@@ -94,6 +95,7 @@ document.addEventListener("click", e => {
   const b = e.target.closest("#nav button[data-page]"); if (b && !b.disabled) show(b.dataset.page);
   for (const d of document.querySelectorAll("#nav details[open]")) if (b || !d.contains(e.target)) d.open = false;   // (one menu at a time, closes on pick or outside click)
 });
+document.getElementById("brand")?.addEventListener("click", () => show("home"));
 document.addEventListener("keydown", e => { if (e.key === "Escape") for (const d of document.querySelectorAll("#nav details[open]")) d.open = false; });
 addEventListener("load", () => { let p = "control"; try { p = localStorage.getItem("sg-page") || p; } catch (e) { /* */ } show(p); });
 
