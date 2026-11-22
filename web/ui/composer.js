@@ -12,6 +12,13 @@ let comp = null, compId = null, sel = new Set(), undo = [], redo = [], saveTimer
 let hudCtx = null, lastData = null, lastHud = null;
 const editing = () => App.page === "composer" || (App.page === "hudbuilder" && !!hudCtx);
 const hudOf = () => hudCtx && (App.state.project.huds || []).find(h => h.id === hudCtx.hudId);
+// Ruler guides as [{axis, at}]; a graphic from GFX Baby keeps them as {x: [...], y: [...]}: read either.
+const guides = () => {
+  const g = comp.guides;
+  if (Array.isArray(g)) return g;
+  comp.guides = g && typeof g === "object" ? ["x", "y"].flatMap(a => (Array.isArray(g[a]) ? g[a] : []).map(at => ({ axis: a, at: +at || 0 }))) : [];
+  return comp.guides;
+};
 const layerById = id => comp && comp.layers.find(l => l.id === id);
 const picked = () => comp ? comp.layers.filter(l => sel.has(l.id)) : [];
 const uid = p => p + Math.random().toString(36).slice(2, 10);
@@ -241,9 +248,9 @@ const toStage = e => { const r = sheet.getBoundingClientRect(); return [(e.clien
 // Snapping: edges and centres of the canvas and the other layers (a square's or circle's middle too) and the
 // ruler guides, within 8 screen px; the lines it snapped to show while dragging (pink), so you see what lines up.
 function snapTargets() {
-  const others = comp.layers.filter(l => !sel.has(l.id) && l.visible !== false), guides = comp.guides || [];
-  return { xs: [0, W / 2, W, ...others.flatMap(o => [o.x, o.x + o.w / 2, o.x + o.w]), ...guides.filter(g => g.axis === "x").map(g => g.at)],
-    ys: [0, H / 2, H, ...others.flatMap(o => [o.y, o.y + o.h / 2, o.y + o.h]), ...guides.filter(g => g.axis === "y").map(g => g.at)] };
+  const others = comp.layers.filter(l => !sel.has(l.id) && l.visible !== false), gs = guides();
+  return { xs: [0, W / 2, W, ...others.flatMap(o => [o.x, o.x + o.w / 2, o.x + o.w]), ...gs.filter(g => g.axis === "x").map(g => g.at)],
+    ys: [0, H / 2, H, ...others.flatMap(o => [o.y, o.y + o.h / 2, o.y + o.h]), ...gs.filter(g => g.axis === "y").map(g => g.at)] };
 }
 function nearest(edges, targets) {   // -> [shift, the line it snapped to] or [0, null]
   let d = null, at = null;
@@ -369,14 +376,38 @@ view.addEventListener("mousedown", e => {
   const up = () => { removeEventListener("mousemove", move); removeEventListener("mouseup", up); dragging = false; showSnap(); if (moved) changed({ keepList: true }); };
   addEventListener("mousemove", move); addEventListener("mouseup", up);
 });
+// Copy / paste: Ctrl+C / Ctrl+X take the picked layers, Ctrl+V puts them in the open graphic or HUD part (new ids;
+// a few px down and right when the copies would sit exactly on their originals), and picks them.
+let clip = null;
+function paste() {
+  let got = clip;
+  try { got = JSON.parse(localStorage.getItem("sg-clip") || "null") || clip; } catch (x) { /* */ }
+  if (!comp || !Array.isArray(got) || !got.length) return toast("Nothing copied yet: pick layers and press Ctrl+C");
+  snapshot();
+  const onTop = got.some(c => comp.layers.some(l => l.x === c.x && l.y === c.y && l.type === c.type));
+  const copies = got.map(l => { const c = { ...JSON.parse(JSON.stringify(l)), id: uid("l") }; if (onTop) { c.x += 20; c.y += 20; } delete c.part; delete c.part_at; return c; });
+  comp.layers.push(...copies); sel = new Set(copies.map(c => c.id)); changed();
+  toast(`Pasted ${copies.length} layer${copies.length === 1 ? "" : "s"}`);
+}
 addEventListener("keydown", e => {
   if (!editing() || !comp || /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) || document.activeElement.isContentEditable) return;   // (a chip box is typed in too)
   const k = e.key.toLowerCase();
   if (pen && (k === "enter" || k === "escape")) { e.preventDefault(); if (k === "escape") pen = []; finishPen(); return; }
   if ((e.ctrlKey || e.metaKey) && k === "z") { e.preventDefault(); e.shiftKey ? back(redo, undo) : back(undo, redo); return; }
   if ((e.ctrlKey || e.metaKey) && k === "y") { e.preventDefault(); back(redo, undo); return; }
+  const mod = e.ctrlKey || e.metaKey;
+  if (mod && k === "a") { e.preventDefault(); sel = new Set(comp.layers.filter(l => l.visible !== false).map(l => l.id)); renderLayers(); drawSelection(); renderProps(); return; }
+  if (mod && k === "v") { e.preventDefault(); paste(); return; }
   const ls = picked();
   if (!ls.length) return;
+  if (mod && (k === "c" || k === "x")) {   // (copy / cut: kept on this PC, so it pastes into another graphic or HUD part too)
+    e.preventDefault();
+    try { localStorage.setItem("sg-clip", JSON.stringify(ls)); } catch (x) { /* private window */ }
+    clip = JSON.parse(JSON.stringify(ls));
+    if (k === "x") { snapshot(); comp.layers = comp.layers.filter(l => !sel.has(l.id)); sel = new Set(); changed(); }
+    toast(`${ls.length} layer${ls.length === 1 ? "" : "s"} ${k === "x" ? "cut" : "copied"}`);
+    return;
+  }
   if (k === "delete" || k === "backspace") { e.preventDefault(); snapshot(); comp.layers = comp.layers.filter(l => !sel.has(l.id)); sel = new Set(); changed(); return; }
   if ((e.ctrlKey || e.metaKey) && k === "d") { e.preventDefault(); snapshot(); const copies = ls.map(l => ({ ...JSON.parse(JSON.stringify(l)), id: uid("l"), name: (l.name || "") + " copy", x: l.x + 20, y: l.y + 20 }));
     const at = {};   // (a copied part copy is its own copy of the part; a copied piece of one is no part)
@@ -400,7 +431,7 @@ function drawRulers() {
   const r = sheet.getBoundingClientRect(), v = view.getBoundingClientRect(), ox = r.left - v.left, oy = r.top - v.top;
   const ticks = (n, horiz) => Array.from({ length: n / 100 + 1 }, (_, i) => el("span", { style: horiz ? `left:${ox + i * 100 * scale}px` : `top:${oy + i * 100 * scale}px` }, i % 2 ? "" : String(i * 100)));
   rulerX.replaceChildren(...ticks(W, true)); rulerY.replaceChildren(...ticks(H, false));
-  guideBox.replaceChildren(...(comp.guides || []).map((g, i) => el("div", { class: "cmp-guide " + g.axis, title: `${g.at} px · double-click to remove`,
+  guideBox.replaceChildren(...guides().map((g, i) => el("div", { class: "cmp-guide " + g.axis, title: `${g.at} px · double-click to remove`,
     style: g.axis === "x" ? `left:${ox + g.at * scale}px` : `top:${oy + g.at * scale}px`,
     ondblclick: () => { snapshot(); comp.guides.splice(i, 1); changed({ keepList: true }); } })));
 }
@@ -408,7 +439,7 @@ const addGuide = axis => e => {   // (clicking a ruler drops a guide there)
   if (!comp) return;
   const [x, y] = toStage(e);
   snapshot();
-  (comp.guides = comp.guides || []).push({ axis, at: Math.round(axis === "x" ? x : y) });
+  guides().push({ axis, at: Math.round(axis === "x" ? x : y) });
   changed({ keepList: true });
 };
 rulerX.addEventListener("mousedown", e => { e.stopPropagation(); addGuide("x")(e); });
