@@ -451,3 +451,15 @@ button.danger { background: var(--red); color: #fff; box-shadow: none; font-weig
 .hb-slot { flex: 1; min-height: 0; } .hb-slot > .cmp { height: 100%; }
 .cmp.hud-mode .cmp-left { grid-template-rows: auto minmax(0, .8fr) minmax(0, 1.4fr); }
 #hb-parts .gfx { display: flex; align-items: center; gap: 10px; } #hb-parts .switch { flex: none; }
+
+/* pop-up menus (the HUD Builder's More): a <details> whose list opens under it */
+.menu { position: relative; }
+.menu summary { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; list-style: none; user-select: none; }
+.menu summary::-webkit-details-marker { display: none; }
+.menu summary::after { content: ""; width: 5px; height: 5px; border: solid currentColor; border-width: 0 1.5px 1.5px 0; transform: translateY(-2px) rotate(45deg); opacity: .6; }
+.menu summary:hover { background: rgb(var(--ink) / .05); }
+.menu-list { position: absolute; top: calc(100% + 8px); inset-inline-start: 0; z-index: 50; min-width: 200px; display: flex; flex-direction: column; gap: 2px; padding: 4px;
+  background: var(--raised); border: 1px solid var(--line-2); border-radius: 10px; box-shadow: 0 12px 32px rgba(0,0,0,.45); }
+.menu-list button { justify-content: flex-start; box-shadow: none; padding: 8px 10px; border-radius: 6px; color: var(--nav); }
+.hb-menu .menu-list { inset-inline-start: auto; inset-inline-end: 0; }
+.hb-gal-head h2 { font-weight: 600; line-height: 1.2; } .hb-show { gap: 8px; }

@@ -164,6 +164,10 @@ async function figma(e) {
   setTimeout(() => open(h.id), 300);
 }
 
+// (a More menu closes on a click anywhere else, or Escape)
+document.addEventListener("click", e => { for (const d of document.querySelectorAll("#hb-head details[open]")) if (!d.contains(e.target)) d.open = false; });
+document.addEventListener("keydown", e => { if (e.key === "Escape") for (const d of document.querySelectorAll("#hb-head details[open]")) d.open = false; });
+
 // --- the page ----------------------------------------------------------------------------------------
 pages.hudbuilder = { shown() { build(); if (view === "edit" && hud()) open(hudId, partId); else show("list"); } };
 let sig = "";
