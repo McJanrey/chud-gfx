@@ -335,7 +335,7 @@ function showSnap(x, y, marks = []) {
   snapLines.replaceChildren(...(x != null ? [el("div", { class: "cmp-snap x", style: `left:${ox + x * scale}px;top:${oy}px;height:${H * scale}px` })] : []),
     ...(y != null ? [el("div", { class: "cmp-snap y", style: `top:${oy + y * scale}px;left:${ox}px;width:${W * scale}px` })] : []), ...marks.map(gap));
 }
-// Drag on empty canvas: a box picks every layer it touches (Shift adds to what's picked).
+// Drag on empty canvas: a box picks every layer it touches, never the background (Shift adds to what's picked).
 const band = el("div", { class: "cmp-band", hidden: true });
 view.appendChild(band);
 function marquee(e, sx, sy, under) {
@@ -355,8 +355,8 @@ function marquee(e, sx, sy, under) {
     sel = keep;
     for (const l of comp.layers) {
       if (l.visible === false || l.locked) continue;
-      const b = shown(l);   // (fully inside the box, as Canva: a box can't grab the background by touching it)
-      if (!isBackground(b) && b.x >= rect.x0 && b.x + b.w <= rect.x1 && b.y >= rect.y0 && b.y + b.h <= rect.y1) sel.add(l.id);
+      const b = shown(l);   // (everything the box touches, as Figma; never the full-page background)
+      if (!isBackground(b) && b.x < rect.x1 && b.x + b.w > rect.x0 && b.y < rect.y1 && b.y + b.h > rect.y0) sel.add(l.id);
     }
     renderLayers(); drawSelection(); renderProps();
   };
