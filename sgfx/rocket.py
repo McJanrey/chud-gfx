@@ -157,19 +157,12 @@ class Rocket:
     def games(self):
         if self._folder != self.engine.folder:   # (another workspace opened: its own games)
             self._folder = self.engine.folder
-            try:
-                with open(self._path(), encoding="utf-8") as f:
-                    g = json.load(f)
-                self._games = g if isinstance(g, list) else []
-            except (OSError, ValueError):
-                self._games = []
+            got = self.engine.store.read_json("rl-games.json", [])
+            self._games = got if isinstance(got, list) else []
         return self._games
 
     def _write(self):
-        tmp = self._path() + ".tmp"
-        with open(tmp, "w", encoding="utf-8") as f:
-            json.dump(self._games, f, indent=1)
-        os.replace(tmp, self._path())
+        self.engine.store.write_json("rl-games.json", self._games)
 
     def snapshot(self, why="end", winner=None):
         """Freeze the game as it stands: the next RL Game N. Returns its number (None if nothing to save)."""
@@ -204,7 +197,7 @@ class Rocket:
         """A new series: the finished games are put aside (rl-games-<time>.json), not deleted."""
         with self.engine.lock:
             if self.games():
-                os.replace(self._path(), self._path()[:-5] + time.strftime("-%Y%m%d-%H%M%S") + ".json")
+                self.engine.store.put_aside("rl-games.json")
             self._games = []
             self.engine.changed()
 

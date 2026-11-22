@@ -207,24 +207,17 @@ class Val:
     def maps(self):
         if self._folder != self.engine.folder:
             self._folder = self.engine.folder
-            try:
-                with open(self._path(), encoding="utf-8") as f:
-                    m = json.load(f)
-                self._maps = m if isinstance(m, list) else []
-            except (OSError, ValueError):
-                self._maps = []
+            got = self.engine.store.read_json("val-maps.json", [])
+            self._maps = got if isinstance(got, list) else []
         return self._maps
 
     def _write(self):
-        tmp = self._path() + ".tmp"
-        with open(tmp, "w", encoding="utf-8") as f:
-            json.dump(self._maps, f, indent=1)
-        os.replace(tmp, self._path())
+        self.engine.store.write_json("val-maps.json", self._maps)
 
     def clear(self):
         """A new series: the finished maps are put aside (val-maps-<time>.json), not deleted."""
         if self.maps():
-            os.replace(self._path(), self._path()[:-5] + time.strftime("-%Y%m%d-%H%M%S") + ".json")
+            self.engine.store.put_aside("val-maps.json")
         self._maps = []
         self.engine.changed()
 

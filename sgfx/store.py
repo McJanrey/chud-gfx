@@ -36,6 +36,13 @@ class FileStore:
             json.dump(data, f, indent=indent)
         os.replace(path + ".tmp", path)
 
+    def put_aside(self, rel):
+        """Keeps a document under a dated name (a new series: the old one is kept, not deleted)."""
+        import time
+        path = self._path(rel)
+        if os.path.isfile(path):
+            os.replace(path, path[:-5] + time.strftime("-%Y%m%d-%H%M%S") + ".json")
+
     def exists(self, rel):
         return os.path.isfile(self._path(rel))
 

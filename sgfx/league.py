@@ -125,19 +125,12 @@ class League:
     def games(self):
         if self._folder != self.engine.folder:
             self._folder = self.engine.folder
-            try:
-                with open(self._path(), encoding="utf-8") as f:
-                    g = json.load(f)
-                self._games = g if isinstance(g, list) else []
-            except (OSError, ValueError):
-                self._games = []
+            got = self.engine.store.read_json("lol-games.json", [])
+            self._games = got if isinstance(got, list) else []
         return self._games
 
     def _write(self):
-        tmp = self._path() + ".tmp"
-        with open(tmp, "w", encoding="utf-8") as f:
-            json.dump(self._games, f, indent=1)
-        os.replace(tmp, self._path())
+        self.engine.store.write_json("lol-games.json", self._games)
 
     def snapshot(self, why="end", won=None):
         with self.engine.lock:
@@ -159,7 +152,7 @@ class League:
 
     def clear(self):
         if self.games():
-            os.replace(self._path(), self._path()[:-5] + time.strftime("-%Y%m%d-%H%M%S") + ".json")
+            self.engine.store.put_aside("lol-games.json")
         self._games = []
         self.engine.changed()
 
