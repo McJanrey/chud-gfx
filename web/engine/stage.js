@@ -65,9 +65,9 @@ export function usedTables(comp, values, tables) {
 }
 
 export class Stage {
-  constructor(root, { bus = "program", comp = null, hud = null, muted = false, base = "", editor = false } = {}) {
+  constructor(root, { bus = "program", comp = null, hud = null, muted = false, base = "", editor = false, all = false, force = null } = {}) {
     this.root = root;
-    this.opts = { bus, comp, hud, muted, base, editor };
+    this.opts = { bus, comp, hud, muted, base, editor, all, force };
     this.on = new Map();          // comp id -> {el, sig}
     this.cutSeq = null;
     root.classList.add("sg-stage");
@@ -112,7 +112,16 @@ export class Stage {
     if (!this.opts.editor && state.project) this.preload(state);
     this.cams = (state.project && state.project.cams) || this.cams || [];
     this.camPassword = (state.project && state.project.cam_password) || "";
-    return (this.latestTables = (state.data && state.data.tables) || {});
+    let t = (state.data && state.data.tables) || {};
+    if (this.opts.force) {   // (the HUD Builder's Show buttons: a phase's fields set, to see that part of the HUD without a game)
+      t = { ...t };
+      for (const [name, f] of Object.entries(this.opts.force)) {
+        const rows = (t[name] || [["Field", "Value"]]).map(r => r[0] in f ? [r[0], String(f[r[0]])] : r);
+        for (const k of Object.keys(f)) if (!rows.some(r => r[0] === k)) rows.push([k, String(f[k])]);
+        t[name] = rows;
+      }
+    }
+    return (this.latestTables = t);
   }
 
   // entering: the graphic is coming in (tickers wait for their layer's In animation, from their start)
@@ -134,7 +143,7 @@ export class Stage {
       const draw = DRAW[layer.type];
       if (!draw || layer.reference) continue;
       // show: the layer is there only while this has a value (e.g. "{{Roster!Player 1 headshot}}")
-      if (layer.show != null && layer.show !== "" && !truthy(resolve(String(layer.show), tables))) continue;
+      if (layer.show != null && layer.show !== "" && !this.opts.all && !truthy(resolve(String(layer.show), tables))) continue;   // (?all=1: every layer, the HUD Builder's Everything)
       const lel = box(layer);
       placeMove(lel, layer, ctx.resolve);
       const t0 = ticking.length;
