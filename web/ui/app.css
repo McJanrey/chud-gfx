@@ -472,8 +472,8 @@ body.at-home #nav, body.at-home .ws, body.at-home > .bar, body.at-home .cam-dock
 body.at-home .page { border-top: 1px solid var(--line); border-radius: 12px; }
 
 /* HUD Builder: gallery by game, editor header + Show buttons */
-#page-hudbuilder { overflow: auto; }
-.hb-gallery { display: flex; flex-direction: column; gap: 24px; padding: 24px 32px; }
+#page-hudbuilder { overflow: hidden; }
+.hb-gallery { display: flex; flex-direction: column; gap: 24px; padding: 24px 32px; height: 100%; overflow: auto; }
 .hb-gallery[hidden] { display: none; }
 .hb-gal-head { display: flex; align-items: flex-start; gap: 16px; } .hb-gal-head h2 { margin: 0 0 4px; font-size: 22px; } .hb-gal-head p { margin: 0; max-width: 640px; }
 .hb-game h3 { display: flex; align-items: center; gap: 10px; margin: 0 0 12px; font-size: 15px; font-weight: 600; }
@@ -493,3 +493,9 @@ body.at-home .page { border-top: 1px solid var(--line); border-radius: 12px; }
 .hb-right { padding: 16px; } .hb-right h3, .hb-right h4, .hb-right p { margin: 0; } .hb-right h4 { margin-top: 8px; }
 .hb-off { position: absolute; left: 50%; top: 16px; transform: translateX(-50%); padding: 6px 12px; border-radius: 8px; background: rgb(0 0 0 / .7); color: var(--text); font-size: 12.5px; z-index: 3; }
 .hb-view.grab, .hb-view.grab .hb-box { cursor: grab }
+.cmp-sheet { isolation: isolate; } .cmp-ctx { z-index: -1; opacity: .35; pointer-events: none; }
+.cmp.hud-mode .panel:has(#cmp-graphics) { display: none; }
+.hb-edit { display: flex; flex-direction: column; gap: 8px; height: 100%; padding: 12px; } .hb-edit[hidden] { display: none; }
+.hb-slot { flex: 1; min-height: 0; } .hb-slot > .cmp { height: 100%; }
+.cmp.hud-mode .cmp-left { grid-template-rows: auto minmax(0, .8fr) minmax(0, 1.4fr); }
+#hb-parts .gfx { display: flex; align-items: center; gap: 10px; } #hb-parts .switch { flex: none; }

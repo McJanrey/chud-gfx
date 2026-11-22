@@ -7,6 +7,11 @@ import { clipShapes } from "../engine/layers/box.js";
 import { LOOKS } from "../engine/layers/shader.js";
 
 let comp = null, compId = null, sel = new Set(), undo = [], redo = [], saveTimer = null, dirty = false, dragging = false;
+// HUD mode: the HUD Builder edits one part of a HUD here (same canvas and tools); the rest of the HUD shows dimmed
+// behind it, and its Show buttons decide which phase the live data is in (all: every layer, force: fields set).
+let hudCtx = null, lastData = null, lastHud = null;
+const editing = () => App.page === "composer" || (App.page === "hudbuilder" && !!hudCtx);
+const hudOf = () => hudCtx && (App.state.project.huds || []).find(h => h.id === hudCtx.hudId);
 const layerById = id => comp && comp.layers.find(l => l.id === id);
 const picked = () => comp ? comp.layers.filter(l => sel.has(l.id)) : [];
 const uid = p => p + Math.random().toString(36).slice(2, 10);
@@ -22,7 +27,16 @@ function changed(opts = {}) {
   if (!opts.keepList) renderLayers();
   if (!opts.keepProps) renderProps();
 }
-async function save() { if (!comp) return; const c = JSON.parse(JSON.stringify(comp)); await api("/api/comp", { comp: c }); dirty = false; }
+async function save() {
+  if (!comp) return;
+  if (hudCtx) {   // (a HUD part: its layers back into the HUD, which saves and goes on air)
+    const h = hudOf(); if (!h) return;
+    const copy = JSON.parse(JSON.stringify(h)), part = copy.parts.find(x => x.id === hudCtx.partId); if (!part) return;
+    part.layers = JSON.parse(JSON.stringify(comp.layers)); part.name = comp.name || part.name;
+    await api("/api/hud", copy); dirty = false; return;
+  }
+  const c = JSON.parse(JSON.stringify(comp)); await api("/api/comp", { comp: c }); dirty = false;
+}
 function back(from, to) {
   if (!from.length) return;
   to.push(JSON.stringify(comp));
@@ -163,7 +177,7 @@ view.addEventListener("wheel", e => {
   fit();
 }, { passive: false });
 let spaceDown = false;
-addEventListener("keydown", e => { if (e.code === "Space" && App.page === "composer" && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) && !document.activeElement.isContentEditable) { spaceDown = true; view.classList.add("grab"); e.preventDefault(); } });
+addEventListener("keydown", e => { if (e.code === "Space" && editing() && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) && !document.activeElement.isContentEditable) { spaceDown = true; view.classList.add("grab"); e.preventDefault(); } });
 addEventListener("keyup", e => { if (e.code === "Space") { spaceDown = false; view.classList.remove("grab"); } });
 view.addEventListener("mousedown", e => {   // (pan: middle button, or Space + drag)
   if (!(e.button === 1 || (e.button === 0 && spaceDown))) return;
@@ -176,12 +190,21 @@ view.addEventListener("mousedown", e => {   // (pan: middle button, or Space + d
 }, true);
 function drawCanvas() {
   if (!comp) return sheet.replaceChildren();
-  const tables = (App.state.data && App.state.data.tables) || {};
+  let tables = (App.state.data && App.state.data.tables) || {};
+  if (hudCtx) tables = stage.tables({ data: App.state.data });   // (with the Show buttons' phase applied)
   stage.cams = App.state.project.cams || [];
   const node = stage.build(comp, (App.state.live.preview.values || {})[comp.id] || {}, tables);
   const old = sheet.firstChild;
   if (old && old._comp === comp.id && [...old.children].some(c => c._keep)) stage.patch(old, node);   // (videos keep playing)
   else { node._comp = comp.id; sheet.replaceChildren(node); node._later.forEach(fn => fn()); }
+  for (const n of sheet.querySelectorAll(":scope > .cmp-ctx")) n.remove();
+  if (hudCtx) {   // (the HUD's other parts that are on, dimmed behind: the part is edited in place)
+    for (const p of (hudOf() || { parts: [] }).parts) {
+      if (p.id === hudCtx.partId || p.on === false) continue;
+      const n = stage.build({ id: "ctx-" + p.id, layers: p.layers }, {}, tables);
+      n.classList.add("cmp-ctx"); sheet.appendChild(n); n._later.forEach(fn => fn());
+    }
+  }
   drawSelection();
   drawRulers();
 }
@@ -347,7 +370,7 @@ view.addEventListener("mousedown", e => {
   addEventListener("mousemove", move); addEventListener("mouseup", up);
 });
 addEventListener("keydown", e => {
-  if (App.page !== "composer" || !comp || /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) || document.activeElement.isContentEditable) return;   // (a chip box is typed in too)
+  if (!editing() || !comp || /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) || document.activeElement.isContentEditable) return;   // (a chip box is typed in too)
   const k = e.key.toLowerCase();
   if (pen && (k === "enter" || k === "escape")) { e.preventDefault(); if (k === "escape") pen = []; finishPen(); return; }
   if ((e.ctrlKey || e.metaKey) && k === "z") { e.preventDefault(); e.shiftKey ? back(redo, undo) : back(undo, redo); return; }
@@ -428,6 +451,30 @@ export function addLayers(list, { keepPlace = false } = {}) {
 }
 export const composer = {
   get comp() { return comp; }, picked, open: openComp, changed, snapshot,
+  // HUD mode: the editor moves into the HUD Builder page and edits one part of a HUD
+  editPart(hudId, partId, into) {
+    if (dirty) save();
+    const h = (App.state.project.huds || []).find(x => x.id === hudId), p = h && h.parts.find(x => x.id === partId);
+    if (!p) return;
+    const cmp = document.querySelector("#page-composer .cmp, #page-hudbuilder .cmp");
+    if (into && cmp.parentNode !== into) into.appendChild(cmp);
+    cmp.classList.add("hud-mode");
+    hudCtx = { hudId, partId };
+    compId = "hud:" + hudId + ":" + partId;
+    comp = { id: compId, name: p.name, width: W, height: H, layers: JSON.parse(JSON.stringify(p.layers)) };
+    sel = new Set(); undo = []; redo = [];
+    renderLayers(); drawCanvas(); renderProps(); setTimeout(fit, 0);
+  },
+  setShow(all, force) { stage.opts.all = !!all; stage.opts.force = force || null; if (hudCtx) drawCanvas(); },
+  leaveHud() {
+    if (!hudCtx) return;
+    if (dirty) save();
+    hudCtx = null; comp = null; compId = null; sel = new Set(); stage.opts.all = false; stage.opts.force = null;
+    const cmp = document.querySelector(".cmp"); cmp.classList.remove("hud-mode");
+    document.getElementById("hb-parts-panel")?.remove();   // (the HUD Builder's Parts panel stays with it)
+    $("#page-composer").appendChild(cmp);
+    renderLayers(); drawCanvas(); renderProps();
+  },
   startPen() { if (!comp) return toast("Pick a graphic first"); pen = []; view.classList.add("pen"); toast("Click points on the canvas; click the first one (or press Enter) to close"); },
 };
 
@@ -524,6 +571,17 @@ function renderProps() {
   const box = $("#cmp-props");
   if (!comp) return box.replaceChildren();
   const ls = picked();
+  if (!ls.length && hudCtx) {
+    return box.replaceChildren(el("section", { class: "sect" }, el("h4", {}, "HUD part"),
+      lab("Name", bind(comp, "name")),
+      el("p", { class: "muted small" }, `${comp.layers.length} layers. Click a layer on the canvas or in Layers to change it; Add (left) puts in text, shapes, pictures and more.`),
+      el("p", { class: "muted small" }, "The rest of the HUD shows dimmed behind this part. Live data keeps working: use Show above to see a phase (buy phase, a round win) without a game."),
+      el("p", { class: "muted small" }, "A layer shows only while its “Show only while” field has a value (Layer settings). Changes save by themselves and are on air at once."),
+      el("h4", {}, "Animation"),
+      el("p", { class: "muted small" }, "Set every layer's In and Out at once:"),
+      el("div", { class: "row" }, el("select", { id: "cmp-all-anim" }, ...ANIMS.map(([v, t]) => el("option", { value: v, selected: v === "fade" }, t))),
+        el("button", { class: "small", onclick: () => setAll(false) }, "All together"), el("button", { class: "small", onclick: () => setAll(true) }, "One after another"))));
+  }
   if (!ls.length) {
     return box.replaceChildren(el("section", { class: "sect" }, el("h4", {}, "Graphic"),
       lab("Name", bind(comp, "name")),
@@ -732,6 +790,13 @@ function fxSect(l) {
 // --- the page ------------------------------------------------------------------------
 let listSig = "";
 App.on(st => {
+  if (App.page === "hudbuilder" && hudCtx) {   // (the HUD changed elsewhere and nothing's unsaved here: take it)
+    const h = hudOf(), p = h && h.parts.find(x => x.id === hudCtx.partId);
+    if (!p) return;
+    if (!dirty && !dragging && JSON.stringify(p.layers) !== JSON.stringify(comp.layers) && !typingIn($("#cmp-props"))) { comp.layers = JSON.parse(JSON.stringify(p.layers)); renderLayers(); renderProps(); }
+    if (st.data !== lastData || h !== lastHud) { lastData = st.data; lastHud = h; drawCanvas(); }   // (live data, and the other parts behind)
+    return;
+  }
   if (App.page !== "composer") return;
   const sig = JSON.stringify([st.project.compositions.map(c => [c.id, c.name, c.kind, c.layers.length]), st.trash]);
   if (sig !== listSig) { listSig = sig; renderGraphics(); }
@@ -739,4 +804,4 @@ App.on(st => {
   const c = compId && st.project.compositions.find(x => x.id === compId);
   if (c && !dirty && !dragging && JSON.stringify(c) !== JSON.stringify(comp) && !typingIn($("#page-composer"))) { comp = JSON.parse(JSON.stringify(c)); renderLayers(); drawCanvas(); renderProps(); }
 });
-pages.composer = { shown() { listSig = ""; renderGraphics(); if (!compId && App.state.project.compositions[0]) openComp(App.state.project.compositions[0].id); setTimeout(fit, 0); } };
+pages.composer = { shown() { composer.leaveHud(); listSig = ""; renderGraphics(); if (!compId && App.state.project.compositions[0]) openComp(App.state.project.compositions[0].id); setTimeout(fit, 0); } };
