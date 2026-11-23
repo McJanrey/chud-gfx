@@ -147,6 +147,9 @@ def smoke_test():
         assert st["project"]["name"] == "My show"
         for page in ("/control", "/output", "/ui/control.js", "/engine/stage.js", "/ui/app.css"):
             assert get(engine.port, page), page
+        from . import huds   # (files the app reads at run time are packed in: the built-in VALORANT HUD, the starter shows)
+        assert len(huds.builtin("val27") or []) >= 6, "val27_owen.json missing"
+        assert STARTER.is_dir() and any(STARTER.iterdir()), "starter missing"
         print(f"smoke test ok: StandBy GFX {__version__} on port {engine.port}")
         return 0
     finally:

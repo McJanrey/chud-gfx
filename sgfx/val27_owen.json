@@ -5,7 +5,7 @@
 "on": true,
 "layers": [
 {
-"id": "ow0001",
+"id": "ow0002",
 "type": "rect",
 "name": "ol",
 "x": 710,
@@ -28,7 +28,7 @@
 }
 },
 {
-"id": "ow0002",
+"id": "ow0003",
 "type": "rect",
 "name": "ol",
 "x": 710,
@@ -51,7 +51,7 @@
 }
 },
 {
-"id": "ow0003",
+"id": "ow0004",
 "type": "rect",
 "name": "half",
 "x": 710,
@@ -75,7 +75,7 @@
 }
 },
 {
-"id": "ow0004",
+"id": "ow0005",
 "type": "rect",
 "name": "fill",
 "x": 711,
@@ -99,7 +99,7 @@
 }
 },
 {
-"id": "ow0005",
+"id": "ow0006",
 "type": "rect",
 "name": "edge",
 "x": 710,
@@ -122,7 +122,7 @@
 }
 },
 {
-"id": "ow0006",
+"id": "ow0007",
 "type": "rect",
 "name": "half",
 "x": 1030,
@@ -146,7 +146,7 @@
 }
 },
 {
-"id": "ow0007",
+"id": "ow0008",
 "type": "rect",
 "name": "fill",
 "x": 1030,
@@ -170,7 +170,7 @@
 }
 },
 {
-"id": "ow0008",
+"id": "ow0009",
 "type": "rect",
 "name": "edge",
 "x": 1202,
@@ -193,7 +193,7 @@
 }
 },
 {
-"id": "ow0009",
+"id": "ow0010",
 "type": "image",
 "name": "logo",
 "x": 750,
@@ -217,7 +217,7 @@
 }
 },
 {
-"id": "ow0010",
+"id": "ow0011",
 "type": "image",
 "name": "logo",
 "x": 1121,
@@ -248,7 +248,7 @@
 "on": true,
 "layers": [
 {
-"id": "ow0011",
+"id": "ow0012",
 "type": "rect",
 "name": "ol",
 "x": 625,
@@ -271,7 +271,7 @@
 }
 },
 {
-"id": "ow0012",
+"id": "ow0013",
 "type": "rect",
 "name": "ol",
 "x": 625,
@@ -294,7 +294,7 @@
 }
 },
 {
-"id": "ow0013",
+"id": "ow0014",
 "type": "rect",
 "name": "half",
 "x": 625,
@@ -318,7 +318,7 @@
 }
 },
 {
-"id": "ow0014",
+"id": "ow0015",
 "type": "rect",
 "name": "fill",
 "x": 626,
@@ -342,7 +342,7 @@
 }
 },
 {
-"id": "ow0015",
+"id": "ow0016",
 "type": "rect",
 "name": "edge",
 "x": 625,
@@ -365,7 +365,7 @@
 }
 },
 {
-"id": "ow0016",
+"id": "ow0017",
 "type": "rect",
 "name": "half",
 "x": 1030,
@@ -389,7 +389,7 @@
 }
 },
 {
-"id": "ow0017",
+"id": "ow0018",
 "type": "rect",
 "name": "fill",
 "x": 1030,
@@ -413,7 +413,7 @@
 }
 },
 {
-"id": "ow0018",
+"id": "ow0019",
 "type": "rect",
 "name": "edge",
 "x": 1285,
@@ -436,7 +436,7 @@
 }
 },
 {
-"id": "ow0019",
+"id": "ow0020",
 "type": "rect",
 "name": "div",
 "x": 829,
@@ -459,7 +459,7 @@
 }
 },
 {
-"id": "ow0020",
+"id": "ow0021",
 "type": "rect",
 "name": "div",
 "x": 1089,
@@ -482,7 +482,7 @@
 }
 },
 {
-"id": "ow0021",
+"id": "ow0022",
 "type": "image",
 "name": "logo",
 "x": 657,
@@ -506,7 +506,7 @@
 }
 },
 {
-"id": "ow0022",
+"id": "ow0023",
 "type": "image",
 "name": "logo",
 "x": 1226,
@@ -530,7 +530,7 @@
 }
 },
 {
-"id": "ow0023",
+"id": "ow0024",
 "type": "text",
 "name": "i text",
 "x": 714,
@@ -561,7 +561,7 @@
 }
 },
 {
-"id": "ow0024",
+"id": "ow0025",
 "type": "text",
 "name": "i text",
 "x": 709,
@@ -592,7 +592,7 @@
 }
 },
 {
-"id": "ow0025",
+"id": "ow0026",
 "type": "text",
 "name": "i text",
 "x": 1100,
@@ -623,7 +623,7 @@
 }
 },
 {
-"id": "ow0026",
+"id": "ow0027",
 "type": "text",
 "name": "i text",
 "x": 1095,
@@ -654,7 +654,7 @@
 }
 },
 {
-"id": "ow0027",
+"id": "ow0028",
 "type": "text",
 "name": "i text",
 "x": 860,
@@ -685,7 +685,7 @@
 }
 },
 {
-"id": "ow0028",
+"id": "ow0029",
 "type": "text",
 "name": "i text",
 "x": 998,
@@ -716,7 +716,7 @@
 }
 },
 {
-"id": "ow0029",
+"id": "ow0030",
 "type": "text",
 "name": "i text",
 "x": 910,
@@ -748,7 +748,7 @@
 }
 },
 {
-"id": "ow0030",
+"id": "ow0031",
 "type": "rect",
 "name": "won",
 "x": 846,
@@ -774,7 +774,7 @@
 }
 },
 {
-"id": "ow0031",
+"id": "ow0032",
 "type": "rect",
 "name": "b",
 "x": 846,
@@ -800,7 +800,7 @@
 }
 },
 {
-"id": "ow0032",
+"id": "ow0033",
 "type": "rect",
 "name": "b",
 "x": 1063,
@@ -826,7 +826,7 @@
 }
 },
 {
-"id": "ow0033",
+"id": "ow0034",
 "type": "rect",
 "name": "b",
 "x": 1063,
@@ -850,6 +850,36 @@
 "delay": 0
 }
 }
+},
+{
+"id": "ow0001",
+"type": "text",
+"name": "Timer",
+"x": 910,
+"y": 30,
+"w": 100,
+"h": 34,
+"text": "{{VALORANT!Timer}}",
+"font": "DIN2014-Narrow-Bold",
+"size": 30,
+"weight": 400,
+"color": "rgb(255, 255, 255)",
+"align": "center",
+"valign": "middle",
+"fit": "shrink",
+"show": "{{VALORANT!Timer}}",
+"anim": {
+"in": {
+"type": "fade",
+"dur": 300,
+"delay": 0
+},
+"out": {
+"type": "fade",
+"dur": 225,
+"delay": 0
+}
+}
 }
 ]
 },
@@ -859,7 +889,7 @@
 "on": true,
 "layers": [
 {
-"id": "ow0034",
+"id": "ow0035",
 "type": "image",
 "name": "bomb picture",
 "x": 914,
@@ -883,7 +913,7 @@
 }
 },
 {
-"id": "ow0035",
+"id": "ow0036",
 "type": "image",
 "name": "icon picture",
 "x": 926,
@@ -907,7 +937,7 @@
 }
 },
 {
-"id": "ow0035r",
+"id": "ow0036r",
 "type": "image",
 "name": "Spike flash",
 "x": 926,
@@ -940,7 +970,7 @@
 "on": true,
 "layers": [
 {
-"id": "ow0036",
+"id": "ow0037",
 "type": "rect",
 "name": "Left 1 tab",
 "x": 17,
@@ -967,7 +997,7 @@
 }
 },
 {
-"id": "ow0037",
+"id": "ow0038",
 "type": "rect",
 "name": "Left 1 agent",
 "x": 17,
@@ -994,7 +1024,7 @@
 }
 },
 {
-"id": "ow0038",
+"id": "ow0039",
 "type": "image",
 "name": "Left 1 agent picture",
 "x": 17,
@@ -1020,7 +1050,7 @@
 }
 },
 {
-"id": "ow0039",
+"id": "ow0040",
 "type": "rect",
 "name": "Left 1 tab",
 "x": 17,
@@ -1047,7 +1077,7 @@
 }
 },
 {
-"id": "ow0040",
+"id": "ow0041",
 "type": "rect",
 "name": "Left 1 agent",
 "x": 17,
@@ -1074,7 +1104,7 @@
 }
 },
 {
-"id": "ow0041",
+"id": "ow0042",
 "type": "image",
 "name": "Left 1 agent picture",
 "x": 17,
@@ -1100,7 +1130,7 @@
 }
 },
 {
-"id": "ow0042",
+"id": "ow0043",
 "type": "text",
 "name": "Left 1 i text",
 "x": 79,
@@ -1132,7 +1162,7 @@
 }
 },
 {
-"id": "ow0043",
+"id": "ow0044",
 "type": "image",
 "name": "Left 1 abil picture",
 "x": 189,
@@ -1157,7 +1187,7 @@
 }
 },
 {
-"id": "ow0044",
+"id": "ow0045",
 "type": "image",
 "name": "Left 1 c charges",
 "x": 189,
@@ -1182,7 +1212,7 @@
 }
 },
 {
-"id": "ow0045",
+"id": "ow0046",
 "type": "image",
 "name": "Left 1 abil picture",
 "x": 220,
@@ -1207,7 +1237,7 @@
 }
 },
 {
-"id": "ow0046",
+"id": "ow0047",
 "type": "image",
 "name": "Left 1 q charges",
 "x": 220,
@@ -1232,7 +1262,7 @@
 }
 },
 {
-"id": "ow0047",
+"id": "ow0048",
 "type": "image",
 "name": "Left 1 abil picture",
 "x": 251,
@@ -1257,7 +1287,7 @@
 }
 },
 {
-"id": "ow0048",
+"id": "ow0049",
 "type": "image",
 "name": "Left 1 e charges",
 "x": 251,
@@ -1282,7 +1312,7 @@
 }
 },
 {
-"id": "ow0049",
+"id": "ow0050",
 "type": "image",
 "name": "Left 1 ult ring",
 "x": 280,
@@ -1307,7 +1337,7 @@
 }
 },
 {
-"id": "ow0050",
+"id": "ow0051",
 "type": "image",
 "name": "Left 1 icon picture",
 "x": 291.5,
@@ -1333,7 +1363,7 @@
 }
 },
 {
-"id": "ow0051",
+"id": "ow0052",
 "type": "text",
 "name": "Left 1 i text",
 "x": 25,
@@ -1365,7 +1395,7 @@
 }
 },
 {
-"id": "ow0052",
+"id": "ow0053",
 "type": "image",
 "name": "Left 1 cred icon icon",
 "x": 253.8,
@@ -1390,7 +1420,7 @@
 }
 },
 {
-"id": "ow0053",
+"id": "ow0054",
 "type": "text",
 "name": "Left 1 i text",
 "x": 251,
@@ -1422,7 +1452,7 @@
 }
 },
 {
-"id": "ow0054",
+"id": "ow0055",
 "type": "image",
 "name": "Left 1 cred icon icon",
 "x": 29,
@@ -1447,7 +1477,7 @@
 }
 },
 {
-"id": "ow0055",
+"id": "ow0056",
 "type": "text",
 "name": "Left 1 i text",
 "x": 50,
@@ -1479,7 +1509,7 @@
 }
 },
 {
-"id": "ow0056",
+"id": "ow0057",
 "type": "image",
 "name": "Left 1 gun picture",
 "x": 158,
@@ -1507,7 +1537,7 @@
 }
 },
 {
-"id": "ow0057",
+"id": "ow0058",
 "type": "image",
 "name": "Left 1 armor",
 "x": 259,
@@ -1532,7 +1562,7 @@
 }
 },
 {
-"id": "ow0058",
+"id": "ow0059",
 "type": "text",
 "name": "Left 1 i text",
 "x": 280,
@@ -1564,7 +1594,7 @@
 }
 },
 {
-"id": "ow0059",
+"id": "ow0060",
 "type": "image",
 "name": "Left 1 hp bar",
 "x": 18,
@@ -1589,7 +1619,7 @@
 }
 },
 {
-"id": "ow0060",
+"id": "ow0061",
 "type": "rect",
 "name": "Left 1 spikebadge",
 "x": 18.8,
@@ -1613,7 +1643,7 @@
 }
 },
 {
-"id": "ow0061",
+"id": "ow0062",
 "type": "rect",
 "name": "Left 1 spikebadge",
 "x": 18.8,
@@ -1637,7 +1667,7 @@
 }
 },
 {
-"id": "ow0062",
+"id": "ow0063",
 "type": "image",
 "name": "Left 1 spikebadge icon",
 "x": 22.8,
@@ -1662,7 +1692,7 @@
 }
 },
 {
-"id": "ow0063",
+"id": "ow0064",
 "type": "rect",
 "name": "Left 2 spikebadge",
 "x": 18.8,
@@ -1686,7 +1716,7 @@
 }
 },
 {
-"id": "ow0064",
+"id": "ow0065",
 "type": "rect",
 "name": "Left 2 spikebadge",
 "x": 18.8,
@@ -1710,7 +1740,7 @@
 }
 },
 {
-"id": "ow0065",
+"id": "ow0066",
 "type": "image",
 "name": "Left 2 spikebadge icon",
 "x": 22.8,
@@ -1735,7 +1765,7 @@
 }
 },
 {
-"id": "ow0066",
+"id": "ow0067",
 "type": "rect",
 "name": "Left 3 spikebadge",
 "x": 18.8,
@@ -1759,7 +1789,7 @@
 }
 },
 {
-"id": "ow0067",
+"id": "ow0068",
 "type": "rect",
 "name": "Left 3 spikebadge",
 "x": 18.8,
@@ -1783,7 +1813,7 @@
 }
 },
 {
-"id": "ow0068",
+"id": "ow0069",
 "type": "image",
 "name": "Left 3 spikebadge icon",
 "x": 22.8,
@@ -1808,7 +1838,7 @@
 }
 },
 {
-"id": "ow0069",
+"id": "ow0070",
 "type": "rect",
 "name": "Left 4 spikebadge",
 "x": 18.8,
@@ -1832,7 +1862,7 @@
 }
 },
 {
-"id": "ow0070",
+"id": "ow0071",
 "type": "rect",
 "name": "Left 4 spikebadge",
 "x": 18.8,
@@ -1856,7 +1886,7 @@
 }
 },
 {
-"id": "ow0071",
+"id": "ow0072",
 "type": "image",
 "name": "Left 4 spikebadge icon",
 "x": 22.8,
@@ -1881,7 +1911,7 @@
 }
 },
 {
-"id": "ow0072",
+"id": "ow0073",
 "type": "rect",
 "name": "Left 5 spikebadge",
 "x": 18.8,
@@ -1905,7 +1935,7 @@
 }
 },
 {
-"id": "ow0073",
+"id": "ow0074",
 "type": "rect",
 "name": "Left 5 spikebadge",
 "x": 18.8,
@@ -1929,7 +1959,7 @@
 }
 },
 {
-"id": "ow0074",
+"id": "ow0075",
 "type": "image",
 "name": "Left 5 spikebadge icon",
 "x": 22.8,
@@ -1954,7 +1984,7 @@
 }
 },
 {
-"id": "ow0075",
+"id": "ow0076",
 "type": "rect",
 "name": "Right 1 spikebadge",
 "x": 1890.8,
@@ -1978,7 +2008,7 @@
 }
 },
 {
-"id": "ow0076",
+"id": "ow0077",
 "type": "rect",
 "name": "Right 1 spikebadge",
 "x": 1890.8,
@@ -2002,7 +2032,7 @@
 }
 },
 {
-"id": "ow0077",
+"id": "ow0078",
 "type": "image",
 "name": "Right 1 spikebadge icon",
 "x": 1894.8,
@@ -2027,7 +2057,7 @@
 }
 },
 {
-"id": "ow0078",
+"id": "ow0079",
 "type": "rect",
 "name": "Right 2 spikebadge",
 "x": 1890.8,
@@ -2051,7 +2081,7 @@
 }
 },
 {
-"id": "ow0079",
+"id": "ow0080",
 "type": "rect",
 "name": "Right 2 spikebadge",
 "x": 1890.8,
@@ -2075,7 +2105,7 @@
 }
 },
 {
-"id": "ow0080",
+"id": "ow0081",
 "type": "image",
 "name": "Right 2 spikebadge icon",
 "x": 1894.8,
@@ -2100,7 +2130,7 @@
 }
 },
 {
-"id": "ow0081",
+"id": "ow0082",
 "type": "rect",
 "name": "Right 3 spikebadge",
 "x": 1890.8,
@@ -2124,7 +2154,7 @@
 }
 },
 {
-"id": "ow0082",
+"id": "ow0083",
 "type": "rect",
 "name": "Right 3 spikebadge",
 "x": 1890.8,
@@ -2148,7 +2178,7 @@
 }
 },
 {
-"id": "ow0083",
+"id": "ow0084",
 "type": "image",
 "name": "Right 3 spikebadge icon",
 "x": 1894.8,
@@ -2173,7 +2203,7 @@
 }
 },
 {
-"id": "ow0084",
+"id": "ow0085",
 "type": "rect",
 "name": "Right 4 spikebadge",
 "x": 1890.8,
@@ -2197,7 +2227,7 @@
 }
 },
 {
-"id": "ow0085",
+"id": "ow0086",
 "type": "rect",
 "name": "Right 4 spikebadge",
 "x": 1890.8,
@@ -2221,7 +2251,7 @@
 }
 },
 {
-"id": "ow0086",
+"id": "ow0087",
 "type": "image",
 "name": "Right 4 spikebadge icon",
 "x": 1894.8,
@@ -2246,7 +2276,7 @@
 }
 },
 {
-"id": "ow0087",
+"id": "ow0088",
 "type": "rect",
 "name": "Right 5 spikebadge",
 "x": 1890.8,
@@ -2270,7 +2300,7 @@
 }
 },
 {
-"id": "ow0088",
+"id": "ow0089",
 "type": "rect",
 "name": "Right 5 spikebadge",
 "x": 1890.8,
@@ -2294,7 +2324,7 @@
 }
 },
 {
-"id": "ow0089",
+"id": "ow0090",
 "type": "image",
 "name": "Right 5 spikebadge icon",
 "x": 1894.8,
@@ -2319,7 +2349,7 @@
 }
 },
 {
-"id": "ow0090",
+"id": "ow0091",
 "type": "rect",
 "name": "Left 2 tab",
 "x": 17,
@@ -2346,7 +2376,7 @@
 }
 },
 {
-"id": "ow0091",
+"id": "ow0092",
 "type": "rect",
 "name": "Left 2 agent",
 "x": 17,
@@ -2373,7 +2403,7 @@
 }
 },
 {
-"id": "ow0092",
+"id": "ow0093",
 "type": "image",
 "name": "Left 2 agent picture",
 "x": 17,
@@ -2399,7 +2429,7 @@
 }
 },
 {
-"id": "ow0093",
+"id": "ow0094",
 "type": "rect",
 "name": "Left 2 tab",
 "x": 17,
@@ -2426,7 +2456,7 @@
 }
 },
 {
-"id": "ow0094",
+"id": "ow0095",
 "type": "rect",
 "name": "Left 2 agent",
 "x": 17,
@@ -2453,7 +2483,7 @@
 }
 },
 {
-"id": "ow0095",
+"id": "ow0096",
 "type": "image",
 "name": "Left 2 agent picture",
 "x": 17,
@@ -2479,7 +2509,7 @@
 }
 },
 {
-"id": "ow0096",
+"id": "ow0097",
 "type": "text",
 "name": "Left 2 i text",
 "x": 79,
@@ -2511,7 +2541,7 @@
 }
 },
 {
-"id": "ow0097",
+"id": "ow0098",
 "type": "image",
 "name": "Left 2 abil picture",
 "x": 189,
@@ -2536,7 +2566,7 @@
 }
 },
 {
-"id": "ow0098",
+"id": "ow0099",
 "type": "image",
 "name": "Left 2 c charges",
 "x": 189,
@@ -2561,7 +2591,7 @@
 }
 },
 {
-"id": "ow0099",
+"id": "ow0100",
 "type": "image",
 "name": "Left 2 abil picture",
 "x": 220,
@@ -2586,7 +2616,7 @@
 }
 },
 {
-"id": "ow0100",
+"id": "ow0101",
 "type": "image",
 "name": "Left 2 q charges",
 "x": 220,
@@ -2611,7 +2641,7 @@
 }
 },
 {
-"id": "ow0101",
+"id": "ow0102",
 "type": "image",
 "name": "Left 2 abil picture",
 "x": 251,
@@ -2636,7 +2666,7 @@
 }
 },
 {
-"id": "ow0102",
+"id": "ow0103",
 "type": "image",
 "name": "Left 2 e charges",
 "x": 251,
@@ -2661,7 +2691,7 @@
 }
 },
 {
-"id": "ow0103",
+"id": "ow0104",
 "type": "image",
 "name": "Left 2 ult ring",
 "x": 280,
@@ -2686,7 +2716,7 @@
 }
 },
 {
-"id": "ow0104",
+"id": "ow0105",
 "type": "image",
 "name": "Left 2 icon picture",
 "x": 291.5,
@@ -2712,7 +2742,7 @@
 }
 },
 {
-"id": "ow0105",
+"id": "ow0106",
 "type": "text",
 "name": "Left 2 i text",
 "x": 25,
@@ -2744,7 +2774,7 @@
 }
 },
 {
-"id": "ow0106",
+"id": "ow0107",
 "type": "image",
 "name": "Left 2 cred icon icon",
 "x": 249.3,
@@ -2769,7 +2799,7 @@
 }
 },
 {
-"id": "ow0107",
+"id": "ow0108",
 "type": "text",
 "name": "Left 2 i text",
 "x": 251,
@@ -2801,7 +2831,7 @@
 }
 },
 {
-"id": "ow0108",
+"id": "ow0109",
 "type": "image",
 "name": "Left 2 cred icon icon",
 "x": 29,
@@ -2826,7 +2856,7 @@
 }
 },
 {
-"id": "ow0109",
+"id": "ow0110",
 "type": "text",
 "name": "Left 2 i text",
 "x": 50,
@@ -2858,7 +2888,7 @@
 }
 },
 {
-"id": "ow0110",
+"id": "ow0111",
 "type": "image",
 "name": "Left 2 gun picture",
 "x": 158,
@@ -2886,7 +2916,7 @@
 }
 },
 {
-"id": "ow0111",
+"id": "ow0112",
 "type": "image",
 "name": "Left 2 armor",
 "x": 259,
@@ -2911,7 +2941,7 @@
 }
 },
 {
-"id": "ow0112",
+"id": "ow0113",
 "type": "text",
 "name": "Left 2 i text",
 "x": 280,
@@ -2943,7 +2973,7 @@
 }
 },
 {
-"id": "ow0113",
+"id": "ow0114",
 "type": "image",
 "name": "Left 2 hp bar",
 "x": 18,
@@ -2968,7 +2998,7 @@
 }
 },
 {
-"id": "ow0114",
+"id": "ow0115",
 "type": "rect",
 "name": "Left 3 tab",
 "x": 17,
@@ -2995,7 +3025,7 @@
 }
 },
 {
-"id": "ow0115",
+"id": "ow0116",
 "type": "rect",
 "name": "Left 3 agent",
 "x": 17,
@@ -3022,7 +3052,7 @@
 }
 },
 {
-"id": "ow0116",
+"id": "ow0117",
 "type": "image",
 "name": "Left 3 agent picture",
 "x": 17,
@@ -3048,7 +3078,7 @@
 }
 },
 {
-"id": "ow0117",
+"id": "ow0118",
 "type": "rect",
 "name": "Left 3 tab",
 "x": 17,
@@ -3075,7 +3105,7 @@
 }
 },
 {
-"id": "ow0118",
+"id": "ow0119",
 "type": "rect",
 "name": "Left 3 agent",
 "x": 17,
@@ -3102,7 +3132,7 @@
 }
 },
 {
-"id": "ow0119",
+"id": "ow0120",
 "type": "image",
 "name": "Left 3 agent picture",
 "x": 17,
@@ -3128,7 +3158,7 @@
 }
 },
 {
-"id": "ow0120",
+"id": "ow0121",
 "type": "text",
 "name": "Left 3 i text",
 "x": 79,
@@ -3160,7 +3190,7 @@
 }
 },
 {
-"id": "ow0121",
+"id": "ow0122",
 "type": "image",
 "name": "Left 3 abil picture",
 "x": 189,
@@ -3185,7 +3215,7 @@
 }
 },
 {
-"id": "ow0122",
+"id": "ow0123",
 "type": "image",
 "name": "Left 3 c charges",
 "x": 189,
@@ -3210,7 +3240,7 @@
 }
 },
 {
-"id": "ow0123",
+"id": "ow0124",
 "type": "image",
 "name": "Left 3 abil picture",
 "x": 220,
@@ -3235,7 +3265,7 @@
 }
 },
 {
-"id": "ow0124",
+"id": "ow0125",
 "type": "image",
 "name": "Left 3 q charges",
 "x": 220,
@@ -3260,7 +3290,7 @@
 }
 },
 {
-"id": "ow0125",
+"id": "ow0126",
 "type": "image",
 "name": "Left 3 abil picture",
 "x": 251,
@@ -3285,7 +3315,7 @@
 }
 },
 {
-"id": "ow0126",
+"id": "ow0127",
 "type": "image",
 "name": "Left 3 e charges",
 "x": 251,
@@ -3310,7 +3340,7 @@
 }
 },
 {
-"id": "ow0127",
+"id": "ow0128",
 "type": "image",
 "name": "Left 3 ult ring",
 "x": 280,
@@ -3335,7 +3365,7 @@
 }
 },
 {
-"id": "ow0128",
+"id": "ow0129",
 "type": "image",
 "name": "Left 3 icon picture",
 "x": 291.5,
@@ -3361,7 +3391,7 @@
 }
 },
 {
-"id": "ow0129",
+"id": "ow0130",
 "type": "text",
 "name": "Left 3 i text",
 "x": 25,
@@ -3393,7 +3423,7 @@
 }
 },
 {
-"id": "ow0130",
+"id": "ow0131",
 "type": "image",
 "name": "Left 3 cred icon icon",
 "x": 249.0,
@@ -3418,7 +3448,7 @@
 }
 },
 {
-"id": "ow0131",
+"id": "ow0132",
 "type": "text",
 "name": "Left 3 i text",
 "x": 251,
@@ -3450,7 +3480,7 @@
 }
 },
 {
-"id": "ow0132",
+"id": "ow0133",
 "type": "image",
 "name": "Left 3 cred icon icon",
 "x": 29,
@@ -3475,7 +3505,7 @@
 }
 },
 {
-"id": "ow0133",
+"id": "ow0134",
 "type": "text",
 "name": "Left 3 i text",
 "x": 50,
@@ -3507,7 +3537,7 @@
 }
 },
 {
-"id": "ow0134",
+"id": "ow0135",
 "type": "image",
 "name": "Left 3 gun picture",
 "x": 158,
@@ -3535,7 +3565,7 @@
 }
 },
 {
-"id": "ow0135",
+"id": "ow0136",
 "type": "image",
 "name": "Left 3 armor",
 "x": 259,
@@ -3560,7 +3590,7 @@
 }
 },
 {
-"id": "ow0136",
+"id": "ow0137",
 "type": "text",
 "name": "Left 3 i text",
 "x": 280,
@@ -3592,7 +3622,7 @@
 }
 },
 {
-"id": "ow0137",
+"id": "ow0138",
 "type": "image",
 "name": "Left 3 hp bar",
 "x": 18,
@@ -3617,7 +3647,7 @@
 }
 },
 {
-"id": "ow0138",
+"id": "ow0139",
 "type": "rect",
 "name": "Left 4 tab",
 "x": 17,
@@ -3644,7 +3674,7 @@
 }
 },
 {
-"id": "ow0139",
+"id": "ow0140",
 "type": "rect",
 "name": "Left 4 agent",
 "x": 17,
@@ -3671,7 +3701,7 @@
 }
 },
 {
-"id": "ow0140",
+"id": "ow0141",
 "type": "image",
 "name": "Left 4 agent picture",
 "x": 17,
@@ -3697,7 +3727,7 @@
 }
 },
 {
-"id": "ow0141",
+"id": "ow0142",
 "type": "rect",
 "name": "Left 4 tab",
 "x": 17,
@@ -3724,7 +3754,7 @@
 }
 },
 {
-"id": "ow0142",
+"id": "ow0143",
 "type": "rect",
 "name": "Left 4 agent",
 "x": 17,
@@ -3751,7 +3781,7 @@
 }
 },
 {
-"id": "ow0143",
+"id": "ow0144",
 "type": "image",
 "name": "Left 4 agent picture",
 "x": 17,
@@ -3777,7 +3807,7 @@
 }
 },
 {
-"id": "ow0144",
+"id": "ow0145",
 "type": "text",
 "name": "Left 4 i text",
 "x": 79,
@@ -3809,7 +3839,7 @@
 }
 },
 {
-"id": "ow0145",
+"id": "ow0146",
 "type": "image",
 "name": "Left 4 abil picture",
 "x": 189,
@@ -3834,7 +3864,7 @@
 }
 },
 {
-"id": "ow0146",
+"id": "ow0147",
 "type": "image",
 "name": "Left 4 c charges",
 "x": 189,
@@ -3859,7 +3889,7 @@
 }
 },
 {
-"id": "ow0147",
+"id": "ow0148",
 "type": "image",
 "name": "Left 4 abil picture",
 "x": 220,
@@ -3884,7 +3914,7 @@
 }
 },
 {
-"id": "ow0148",
+"id": "ow0149",
 "type": "image",
 "name": "Left 4 q charges",
 "x": 220,
@@ -3909,7 +3939,7 @@
 }
 },
 {
-"id": "ow0149",
+"id": "ow0150",
 "type": "image",
 "name": "Left 4 abil picture",
 "x": 251,
@@ -3934,7 +3964,7 @@
 }
 },
 {
-"id": "ow0150",
+"id": "ow0151",
 "type": "image",
 "name": "Left 4 e charges",
 "x": 251,
@@ -3959,7 +3989,7 @@
 }
 },
 {
-"id": "ow0151",
+"id": "ow0152",
 "type": "image",
 "name": "Left 4 ult ring",
 "x": 280,
@@ -3984,7 +4014,7 @@
 }
 },
 {
-"id": "ow0152",
+"id": "ow0153",
 "type": "image",
 "name": "Left 4 icon picture",
 "x": 291.5,
@@ -4010,7 +4040,7 @@
 }
 },
 {
-"id": "ow0153",
+"id": "ow0154",
 "type": "text",
 "name": "Left 4 i text",
 "x": 25,
@@ -4042,7 +4072,7 @@
 }
 },
 {
-"id": "ow0154",
+"id": "ow0155",
 "type": "image",
 "name": "Left 4 cred icon icon",
 "x": 248.9,
@@ -4067,7 +4097,7 @@
 }
 },
 {
-"id": "ow0155",
+"id": "ow0156",
 "type": "text",
 "name": "Left 4 i text",
 "x": 251,
@@ -4099,7 +4129,7 @@
 }
 },
 {
-"id": "ow0156",
+"id": "ow0157",
 "type": "image",
 "name": "Left 4 cred icon icon",
 "x": 29,
@@ -4124,7 +4154,7 @@
 }
 },
 {
-"id": "ow0157",
+"id": "ow0158",
 "type": "text",
 "name": "Left 4 i text",
 "x": 50,
@@ -4156,7 +4186,7 @@
 }
 },
 {
-"id": "ow0158",
+"id": "ow0159",
 "type": "image",
 "name": "Left 4 gun picture",
 "x": 158,
@@ -4184,7 +4214,7 @@
 }
 },
 {
-"id": "ow0159",
+"id": "ow0160",
 "type": "image",
 "name": "Left 4 armor",
 "x": 259,
@@ -4209,7 +4239,7 @@
 }
 },
 {
-"id": "ow0160",
+"id": "ow0161",
 "type": "text",
 "name": "Left 4 i text",
 "x": 280,
@@ -4241,7 +4271,7 @@
 }
 },
 {
-"id": "ow0161",
+"id": "ow0162",
 "type": "image",
 "name": "Left 4 hp bar",
 "x": 18,
@@ -4266,7 +4296,7 @@
 }
 },
 {
-"id": "ow0162",
+"id": "ow0163",
 "type": "rect",
 "name": "Left 5 tab",
 "x": 17,
@@ -4293,7 +4323,7 @@
 }
 },
 {
-"id": "ow0163",
+"id": "ow0164",
 "type": "rect",
 "name": "Left 5 agent",
 "x": 17,
@@ -4320,7 +4350,7 @@
 }
 },
 {
-"id": "ow0164",
+"id": "ow0165",
 "type": "image",
 "name": "Left 5 agent picture",
 "x": 17,
@@ -4346,7 +4376,7 @@
 }
 },
 {
-"id": "ow0165",
+"id": "ow0166",
 "type": "rect",
 "name": "Left 5 tab",
 "x": 17,
@@ -4373,7 +4403,7 @@
 }
 },
 {
-"id": "ow0166",
+"id": "ow0167",
 "type": "rect",
 "name": "Left 5 agent",
 "x": 17,
@@ -4400,7 +4430,7 @@
 }
 },
 {
-"id": "ow0167",
+"id": "ow0168",
 "type": "image",
 "name": "Left 5 agent picture",
 "x": 17,
@@ -4426,7 +4456,7 @@
 }
 },
 {
-"id": "ow0168",
+"id": "ow0169",
 "type": "text",
 "name": "Left 5 i text",
 "x": 79,
@@ -4458,7 +4488,7 @@
 }
 },
 {
-"id": "ow0169",
+"id": "ow0170",
 "type": "image",
 "name": "Left 5 abil picture",
 "x": 189,
@@ -4483,7 +4513,7 @@
 }
 },
 {
-"id": "ow0170",
+"id": "ow0171",
 "type": "image",
 "name": "Left 5 c charges",
 "x": 189,
@@ -4508,7 +4538,7 @@
 }
 },
 {
-"id": "ow0171",
+"id": "ow0172",
 "type": "image",
 "name": "Left 5 abil picture",
 "x": 220,
@@ -4533,7 +4563,7 @@
 }
 },
 {
-"id": "ow0172",
+"id": "ow0173",
 "type": "image",
 "name": "Left 5 q charges",
 "x": 220,
@@ -4558,7 +4588,7 @@
 }
 },
 {
-"id": "ow0173",
+"id": "ow0174",
 "type": "image",
 "name": "Left 5 abil picture",
 "x": 251,
@@ -4583,7 +4613,7 @@
 }
 },
 {
-"id": "ow0174",
+"id": "ow0175",
 "type": "image",
 "name": "Left 5 e charges",
 "x": 251,
@@ -4608,7 +4638,7 @@
 }
 },
 {
-"id": "ow0175",
+"id": "ow0176",
 "type": "image",
 "name": "Left 5 ult ring",
 "x": 280,
@@ -4633,7 +4663,7 @@
 }
 },
 {
-"id": "ow0176",
+"id": "ow0177",
 "type": "image",
 "name": "Left 5 icon picture",
 "x": 291.5,
@@ -4659,7 +4689,7 @@
 }
 },
 {
-"id": "ow0177",
+"id": "ow0178",
 "type": "text",
 "name": "Left 5 i text",
 "x": 25,
@@ -4691,7 +4721,7 @@
 }
 },
 {
-"id": "ow0178",
+"id": "ow0179",
 "type": "image",
 "name": "Left 5 cred icon icon",
 "x": 249.2,
@@ -4716,7 +4746,7 @@
 }
 },
 {
-"id": "ow0179",
+"id": "ow0180",
 "type": "text",
 "name": "Left 5 i text",
 "x": 251,
@@ -4748,7 +4778,7 @@
 }
 },
 {
-"id": "ow0180",
+"id": "ow0181",
 "type": "image",
 "name": "Left 5 cred icon icon",
 "x": 29,
@@ -4773,7 +4803,7 @@
 }
 },
 {
-"id": "ow0181",
+"id": "ow0182",
 "type": "text",
 "name": "Left 5 i text",
 "x": 50,
@@ -4805,7 +4835,7 @@
 }
 },
 {
-"id": "ow0182",
+"id": "ow0183",
 "type": "image",
 "name": "Left 5 gun picture",
 "x": 124,
@@ -4833,7 +4863,7 @@
 }
 },
 {
-"id": "ow0183",
+"id": "ow0184",
 "type": "image",
 "name": "Left 5 armor",
 "x": 259,
@@ -4858,7 +4888,7 @@
 }
 },
 {
-"id": "ow0184",
+"id": "ow0185",
 "type": "text",
 "name": "Left 5 i text",
 "x": 280,
@@ -4890,7 +4920,7 @@
 }
 },
 {
-"id": "ow0185",
+"id": "ow0186",
 "type": "image",
 "name": "Left 5 hp bar",
 "x": 18,
@@ -4915,7 +4945,7 @@
 }
 },
 {
-"id": "ow0186",
+"id": "ow0187",
 "type": "rect",
 "name": "Right 1 tab",
 "x": 1593,
@@ -4942,7 +4972,7 @@
 }
 },
 {
-"id": "ow0187",
+"id": "ow0188",
 "type": "rect",
 "name": "Right 1 agent",
 "x": 1852,
@@ -4969,7 +4999,7 @@
 }
 },
 {
-"id": "ow0188",
+"id": "ow0189",
 "type": "image",
 "name": "Right 1 agent picture",
 "x": 1852,
@@ -4998,7 +5028,7 @@
 }
 },
 {
-"id": "ow0189",
+"id": "ow0190",
 "type": "rect",
 "name": "Right 1 tab",
 "x": 1593,
@@ -5025,7 +5055,7 @@
 }
 },
 {
-"id": "ow0190",
+"id": "ow0191",
 "type": "rect",
 "name": "Right 1 agent",
 "x": 1852,
@@ -5052,7 +5082,7 @@
 }
 },
 {
-"id": "ow0191",
+"id": "ow0192",
 "type": "image",
 "name": "Right 1 agent picture",
 "x": 1852,
@@ -5081,7 +5111,7 @@
 }
 },
 {
-"id": "ow0192",
+"id": "ow0193",
 "type": "text",
 "name": "Right 1 i text",
 "x": 1733,
@@ -5113,7 +5143,7 @@
 }
 },
 {
-"id": "ow0193",
+"id": "ow0194",
 "type": "image",
 "name": "Right 1 abil picture",
 "x": 1710,
@@ -5138,7 +5168,7 @@
 }
 },
 {
-"id": "ow0194",
+"id": "ow0195",
 "type": "image",
 "name": "Right 1 c charges",
 "x": 1710,
@@ -5163,7 +5193,7 @@
 }
 },
 {
-"id": "ow0195",
+"id": "ow0196",
 "type": "image",
 "name": "Right 1 abil picture",
 "x": 1679,
@@ -5188,7 +5218,7 @@
 }
 },
 {
-"id": "ow0196",
+"id": "ow0197",
 "type": "image",
 "name": "Right 1 q charges",
 "x": 1679,
@@ -5213,7 +5243,7 @@
 }
 },
 {
-"id": "ow0197",
+"id": "ow0198",
 "type": "image",
 "name": "Right 1 abil picture",
 "x": 1648,
@@ -5238,7 +5268,7 @@
 }
 },
 {
-"id": "ow0198",
+"id": "ow0199",
 "type": "image",
 "name": "Right 1 e charges",
 "x": 1648,
@@ -5263,7 +5293,7 @@
 }
 },
 {
-"id": "ow0199",
+"id": "ow0200",
 "type": "image",
 "name": "Right 1 ult ring",
 "x": 1599,
@@ -5288,7 +5318,7 @@
 }
 },
 {
-"id": "ow0200",
+"id": "ow0201",
 "type": "image",
 "name": "Right 1 icon picture",
 "x": 1610.5,
@@ -5314,7 +5344,7 @@
 }
 },
 {
-"id": "ow0201",
+"id": "ow0202",
 "type": "text",
 "name": "Right 1 i text",
 "x": 1775,
@@ -5346,7 +5376,7 @@
 }
 },
 {
-"id": "ow0202",
+"id": "ow0203",
 "type": "text",
 "name": "Right 1 i text",
 "x": 1599,
@@ -5378,7 +5408,7 @@
 }
 },
 {
-"id": "ow0203",
+"id": "ow0204",
 "type": "image",
 "name": "Right 1 cred icon icon",
 "x": 1654.3,
@@ -5403,7 +5433,7 @@
 }
 },
 {
-"id": "ow0204",
+"id": "ow0205",
 "type": "text",
 "name": "Right 1 i text",
 "x": 1795,
@@ -5435,7 +5465,7 @@
 }
 },
 {
-"id": "ow0205",
+"id": "ow0206",
 "type": "image",
 "name": "Right 1 cred icon icon",
 "x": 1876,
@@ -5460,7 +5490,7 @@
 }
 },
 {
-"id": "ow0206",
+"id": "ow0207",
 "type": "image",
 "name": "Right 1 gun picture",
 "x": 1700,
@@ -5485,7 +5515,7 @@
 }
 },
 {
-"id": "ow0207",
+"id": "ow0208",
 "type": "image",
 "name": "Right 1 armor",
 "x": 1640,
@@ -5510,7 +5540,7 @@
 }
 },
 {
-"id": "ow0208",
+"id": "ow0209",
 "type": "text",
 "name": "Right 1 i text",
 "x": 1598,
@@ -5542,7 +5572,7 @@
 }
 },
 {
-"id": "ow0209",
+"id": "ow0210",
 "type": "image",
 "name": "Right 1 hp bar",
 "x": 1594,
@@ -5567,7 +5597,7 @@
 }
 },
 {
-"id": "ow0210",
+"id": "ow0211",
 "type": "rect",
 "name": "Right 2 tab",
 "x": 1593,
@@ -5594,7 +5624,7 @@
 }
 },
 {
-"id": "ow0211",
+"id": "ow0212",
 "type": "rect",
 "name": "Right 2 agent",
 "x": 1852,
@@ -5621,7 +5651,7 @@
 }
 },
 {
-"id": "ow0212",
+"id": "ow0213",
 "type": "image",
 "name": "Right 2 agent picture",
 "x": 1852,
@@ -5650,7 +5680,7 @@
 }
 },
 {
-"id": "ow0213",
+"id": "ow0214",
 "type": "rect",
 "name": "Right 2 tab",
 "x": 1593,
@@ -5677,7 +5707,7 @@
 }
 },
 {
-"id": "ow0214",
+"id": "ow0215",
 "type": "rect",
 "name": "Right 2 agent",
 "x": 1852,
@@ -5704,7 +5734,7 @@
 }
 },
 {
-"id": "ow0215",
+"id": "ow0216",
 "type": "image",
 "name": "Right 2 agent picture",
 "x": 1852,
@@ -5733,7 +5763,7 @@
 }
 },
 {
-"id": "ow0216",
+"id": "ow0217",
 "type": "text",
 "name": "Right 2 i text",
 "x": 1733,
@@ -5765,7 +5795,7 @@
 }
 },
 {
-"id": "ow0217",
+"id": "ow0218",
 "type": "image",
 "name": "Right 2 abil picture",
 "x": 1710,
@@ -5790,7 +5820,7 @@
 }
 },
 {
-"id": "ow0218",
+"id": "ow0219",
 "type": "image",
 "name": "Right 2 c charges",
 "x": 1710,
@@ -5815,7 +5845,7 @@
 }
 },
 {
-"id": "ow0219",
+"id": "ow0220",
 "type": "image",
 "name": "Right 2 abil picture",
 "x": 1679,
@@ -5840,7 +5870,7 @@
 }
 },
 {
-"id": "ow0220",
+"id": "ow0221",
 "type": "image",
 "name": "Right 2 q charges",
 "x": 1679,
@@ -5865,7 +5895,7 @@
 }
 },
 {
-"id": "ow0221",
+"id": "ow0222",
 "type": "image",
 "name": "Right 2 abil picture",
 "x": 1648,
@@ -5890,7 +5920,7 @@
 }
 },
 {
-"id": "ow0222",
+"id": "ow0223",
 "type": "image",
 "name": "Right 2 e charges",
 "x": 1648,
@@ -5915,7 +5945,7 @@
 }
 },
 {
-"id": "ow0223",
+"id": "ow0224",
 "type": "image",
 "name": "Right 2 ult ring",
 "x": 1599,
@@ -5940,7 +5970,7 @@
 }
 },
 {
-"id": "ow0224",
+"id": "ow0225",
 "type": "image",
 "name": "Right 2 icon picture",
 "x": 1610.5,
@@ -5966,7 +5996,7 @@
 }
 },
 {
-"id": "ow0225",
+"id": "ow0226",
 "type": "text",
 "name": "Right 2 i text",
 "x": 1775,
@@ -5998,7 +6028,7 @@
 }
 },
 {
-"id": "ow0226",
+"id": "ow0227",
 "type": "text",
 "name": "Right 2 i text",
 "x": 1599,
@@ -6030,7 +6060,7 @@
 }
 },
 {
-"id": "ow0227",
+"id": "ow0228",
 "type": "image",
 "name": "Right 2 cred icon icon",
 "x": 1658.9,
@@ -6055,7 +6085,7 @@
 }
 },
 {
-"id": "ow0228",
+"id": "ow0229",
 "type": "text",
 "name": "Right 2 i text",
 "x": 1795,
@@ -6087,7 +6117,7 @@
 }
 },
 {
-"id": "ow0229",
+"id": "ow0230",
 "type": "image",
 "name": "Right 2 cred icon icon",
 "x": 1876,
@@ -6112,7 +6142,7 @@
 }
 },
 {
-"id": "ow0230",
+"id": "ow0231",
 "type": "image",
 "name": "Right 2 gun picture",
 "x": 1700,
@@ -6137,7 +6167,7 @@
 }
 },
 {
-"id": "ow0231",
+"id": "ow0232",
 "type": "image",
 "name": "Right 2 armor",
 "x": 1640,
@@ -6162,7 +6192,7 @@
 }
 },
 {
-"id": "ow0232",
+"id": "ow0233",
 "type": "text",
 "name": "Right 2 i text",
 "x": 1598,
@@ -6194,7 +6224,7 @@
 }
 },
 {
-"id": "ow0233",
+"id": "ow0234",
 "type": "image",
 "name": "Right 2 hp bar",
 "x": 1594,
@@ -6219,7 +6249,7 @@
 }
 },
 {
-"id": "ow0234",
+"id": "ow0235",
 "type": "rect",
 "name": "Right 3 tab",
 "x": 1593,
@@ -6246,7 +6276,7 @@
 }
 },
 {
-"id": "ow0235",
+"id": "ow0236",
 "type": "rect",
 "name": "Right 3 agent",
 "x": 1852,
@@ -6273,7 +6303,7 @@
 }
 },
 {
-"id": "ow0236",
+"id": "ow0237",
 "type": "image",
 "name": "Right 3 agent picture",
 "x": 1852,
@@ -6302,7 +6332,7 @@
 }
 },
 {
-"id": "ow0237",
+"id": "ow0238",
 "type": "rect",
 "name": "Right 3 tab",
 "x": 1593,
@@ -6329,7 +6359,7 @@
 }
 },
 {
-"id": "ow0238",
+"id": "ow0239",
 "type": "rect",
 "name": "Right 3 agent",
 "x": 1852,
@@ -6356,7 +6386,7 @@
 }
 },
 {
-"id": "ow0239",
+"id": "ow0240",
 "type": "image",
 "name": "Right 3 agent picture",
 "x": 1852,
@@ -6385,7 +6415,7 @@
 }
 },
 {
-"id": "ow0240",
+"id": "ow0241",
 "type": "text",
 "name": "Right 3 i text",
 "x": 1733,
@@ -6417,7 +6447,7 @@
 }
 },
 {
-"id": "ow0241",
+"id": "ow0242",
 "type": "image",
 "name": "Right 3 abil picture",
 "x": 1710,
@@ -6442,7 +6472,7 @@
 }
 },
 {
-"id": "ow0242",
+"id": "ow0243",
 "type": "image",
 "name": "Right 3 c charges",
 "x": 1710,
@@ -6467,7 +6497,7 @@
 }
 },
 {
-"id": "ow0243",
+"id": "ow0244",
 "type": "image",
 "name": "Right 3 abil picture",
 "x": 1679,
@@ -6492,7 +6522,7 @@
 }
 },
 {
-"id": "ow0244",
+"id": "ow0245",
 "type": "image",
 "name": "Right 3 q charges",
 "x": 1679,
@@ -6517,7 +6547,7 @@
 }
 },
 {
-"id": "ow0245",
+"id": "ow0246",
 "type": "image",
 "name": "Right 3 abil picture",
 "x": 1648,
@@ -6542,7 +6572,7 @@
 }
 },
 {
-"id": "ow0246",
+"id": "ow0247",
 "type": "image",
 "name": "Right 3 e charges",
 "x": 1648,
@@ -6567,7 +6597,7 @@
 }
 },
 {
-"id": "ow0247",
+"id": "ow0248",
 "type": "image",
 "name": "Right 3 ult ring",
 "x": 1599,
@@ -6592,7 +6622,7 @@
 }
 },
 {
-"id": "ow0248",
+"id": "ow0249",
 "type": "image",
 "name": "Right 3 icon picture",
 "x": 1610.5,
@@ -6618,7 +6648,7 @@
 }
 },
 {
-"id": "ow0249",
+"id": "ow0250",
 "type": "text",
 "name": "Right 3 i text",
 "x": 1775,
@@ -6650,7 +6680,7 @@
 }
 },
 {
-"id": "ow0250",
+"id": "ow0251",
 "type": "text",
 "name": "Right 3 i text",
 "x": 1599,
@@ -6682,7 +6712,7 @@
 }
 },
 {
-"id": "ow0251",
+"id": "ow0252",
 "type": "image",
 "name": "Right 3 cred icon icon",
 "x": 1659.1,
@@ -6707,7 +6737,7 @@
 }
 },
 {
-"id": "ow0252",
+"id": "ow0253",
 "type": "text",
 "name": "Right 3 i text",
 "x": 1795,
@@ -6739,7 +6769,7 @@
 }
 },
 {
-"id": "ow0253",
+"id": "ow0254",
 "type": "image",
 "name": "Right 3 cred icon icon",
 "x": 1876,
@@ -6764,7 +6794,7 @@
 }
 },
 {
-"id": "ow0254",
+"id": "ow0255",
 "type": "image",
 "name": "Right 3 gun picture",
 "x": 1700,
@@ -6789,7 +6819,7 @@
 }
 },
 {
-"id": "ow0255",
+"id": "ow0256",
 "type": "image",
 "name": "Right 3 armor",
 "x": 1640,
@@ -6814,7 +6844,7 @@
 }
 },
 {
-"id": "ow0256",
+"id": "ow0257",
 "type": "text",
 "name": "Right 3 i text",
 "x": 1598,
@@ -6846,7 +6876,7 @@
 }
 },
 {
-"id": "ow0257",
+"id": "ow0258",
 "type": "image",
 "name": "Right 3 hp bar",
 "x": 1594,
@@ -6871,7 +6901,7 @@
 }
 },
 {
-"id": "ow0258",
+"id": "ow0259",
 "type": "rect",
 "name": "Right 4 tab",
 "x": 1593,
@@ -6898,7 +6928,7 @@
 }
 },
 {
-"id": "ow0259",
+"id": "ow0260",
 "type": "rect",
 "name": "Right 4 agent",
 "x": 1852,
@@ -6925,7 +6955,7 @@
 }
 },
 {
-"id": "ow0260",
+"id": "ow0261",
 "type": "image",
 "name": "Right 4 agent picture",
 "x": 1852,
@@ -6954,7 +6984,7 @@
 }
 },
 {
-"id": "ow0261",
+"id": "ow0262",
 "type": "rect",
 "name": "Right 4 tab",
 "x": 1593,
@@ -6981,7 +7011,7 @@
 }
 },
 {
-"id": "ow0262",
+"id": "ow0263",
 "type": "rect",
 "name": "Right 4 agent",
 "x": 1852,
@@ -7008,7 +7038,7 @@
 }
 },
 {
-"id": "ow0263",
+"id": "ow0264",
 "type": "image",
 "name": "Right 4 agent picture",
 "x": 1852,
@@ -7037,7 +7067,7 @@
 }
 },
 {
-"id": "ow0264",
+"id": "ow0265",
 "type": "text",
 "name": "Right 4 i text",
 "x": 1733,
@@ -7069,7 +7099,7 @@
 }
 },
 {
-"id": "ow0265",
+"id": "ow0266",
 "type": "image",
 "name": "Right 4 abil picture",
 "x": 1710,
@@ -7094,7 +7124,7 @@
 }
 },
 {
-"id": "ow0266",
+"id": "ow0267",
 "type": "image",
 "name": "Right 4 c charges",
 "x": 1710,
@@ -7119,7 +7149,7 @@
 }
 },
 {
-"id": "ow0267",
+"id": "ow0268",
 "type": "image",
 "name": "Right 4 abil picture",
 "x": 1679,
@@ -7144,7 +7174,7 @@
 }
 },
 {
-"id": "ow0268",
+"id": "ow0269",
 "type": "image",
 "name": "Right 4 q charges",
 "x": 1679,
@@ -7169,7 +7199,7 @@
 }
 },
 {
-"id": "ow0269",
+"id": "ow0270",
 "type": "image",
 "name": "Right 4 abil picture",
 "x": 1648,
@@ -7194,7 +7224,7 @@
 }
 },
 {
-"id": "ow0270",
+"id": "ow0271",
 "type": "image",
 "name": "Right 4 e charges",
 "x": 1648,
@@ -7219,7 +7249,7 @@
 }
 },
 {
-"id": "ow0271",
+"id": "ow0272",
 "type": "image",
 "name": "Right 4 ult ring",
 "x": 1599,
@@ -7244,7 +7274,7 @@
 }
 },
 {
-"id": "ow0272",
+"id": "ow0273",
 "type": "image",
 "name": "Right 4 icon picture",
 "x": 1610.5,
@@ -7270,7 +7300,7 @@
 }
 },
 {
-"id": "ow0273",
+"id": "ow0274",
 "type": "text",
 "name": "Right 4 i text",
 "x": 1775,
@@ -7302,7 +7332,7 @@
 }
 },
 {
-"id": "ow0274",
+"id": "ow0275",
 "type": "text",
 "name": "Right 4 i text",
 "x": 1599,
@@ -7334,7 +7364,7 @@
 }
 },
 {
-"id": "ow0275",
+"id": "ow0276",
 "type": "image",
 "name": "Right 4 cred icon icon",
 "x": 1659.2,
@@ -7359,7 +7389,7 @@
 }
 },
 {
-"id": "ow0276",
+"id": "ow0277",
 "type": "text",
 "name": "Right 4 i text",
 "x": 1795,
@@ -7391,7 +7421,7 @@
 }
 },
 {
-"id": "ow0277",
+"id": "ow0278",
 "type": "image",
 "name": "Right 4 cred icon icon",
 "x": 1876,
@@ -7416,7 +7446,7 @@
 }
 },
 {
-"id": "ow0278",
+"id": "ow0279",
 "type": "image",
 "name": "Right 4 gun picture",
 "x": 1700,
@@ -7441,7 +7471,7 @@
 }
 },
 {
-"id": "ow0279",
+"id": "ow0280",
 "type": "image",
 "name": "Right 4 armor",
 "x": 1640,
@@ -7466,7 +7496,7 @@
 }
 },
 {
-"id": "ow0280",
+"id": "ow0281",
 "type": "text",
 "name": "Right 4 i text",
 "x": 1598,
@@ -7498,7 +7528,7 @@
 }
 },
 {
-"id": "ow0281",
+"id": "ow0282",
 "type": "image",
 "name": "Right 4 hp bar",
 "x": 1594,
@@ -7523,7 +7553,7 @@
 }
 },
 {
-"id": "ow0282",
+"id": "ow0283",
 "type": "rect",
 "name": "Right 5 tab",
 "x": 1593,
@@ -7550,7 +7580,7 @@
 }
 },
 {
-"id": "ow0283",
+"id": "ow0284",
 "type": "rect",
 "name": "Right 5 agent",
 "x": 1852,
@@ -7577,7 +7607,7 @@
 }
 },
 {
-"id": "ow0284",
+"id": "ow0285",
 "type": "image",
 "name": "Right 5 agent picture",
 "x": 1852,
@@ -7606,7 +7636,7 @@
 }
 },
 {
-"id": "ow0285",
+"id": "ow0286",
 "type": "rect",
 "name": "Right 5 tab",
 "x": 1593,
@@ -7633,7 +7663,7 @@
 }
 },
 {
-"id": "ow0286",
+"id": "ow0287",
 "type": "rect",
 "name": "Right 5 agent",
 "x": 1852,
@@ -7660,7 +7690,7 @@
 }
 },
 {
-"id": "ow0287",
+"id": "ow0288",
 "type": "image",
 "name": "Right 5 agent picture",
 "x": 1852,
@@ -7689,7 +7719,7 @@
 }
 },
 {
-"id": "ow0288",
+"id": "ow0289",
 "type": "text",
 "name": "Right 5 i text",
 "x": 1733,
@@ -7721,7 +7751,7 @@
 }
 },
 {
-"id": "ow0289",
+"id": "ow0290",
 "type": "image",
 "name": "Right 5 abil picture",
 "x": 1710,
@@ -7746,7 +7776,7 @@
 }
 },
 {
-"id": "ow0290",
+"id": "ow0291",
 "type": "image",
 "name": "Right 5 c charges",
 "x": 1710,
@@ -7771,7 +7801,7 @@
 }
 },
 {
-"id": "ow0291",
+"id": "ow0292",
 "type": "image",
 "name": "Right 5 abil picture",
 "x": 1679,
@@ -7796,7 +7826,7 @@
 }
 },
 {
-"id": "ow0292",
+"id": "ow0293",
 "type": "image",
 "name": "Right 5 q charges",
 "x": 1679,
@@ -7821,7 +7851,7 @@
 }
 },
 {
-"id": "ow0293",
+"id": "ow0294",
 "type": "image",
 "name": "Right 5 abil picture",
 "x": 1648,
@@ -7846,7 +7876,7 @@
 }
 },
 {
-"id": "ow0294",
+"id": "ow0295",
 "type": "image",
 "name": "Right 5 e charges",
 "x": 1648,
@@ -7871,7 +7901,7 @@
 }
 },
 {
-"id": "ow0295",
+"id": "ow0296",
 "type": "image",
 "name": "Right 5 ult ring",
 "x": 1599,
@@ -7896,7 +7926,7 @@
 }
 },
 {
-"id": "ow0296",
+"id": "ow0297",
 "type": "image",
 "name": "Right 5 icon picture",
 "x": 1610.5,
@@ -7922,7 +7952,7 @@
 }
 },
 {
-"id": "ow0297",
+"id": "ow0298",
 "type": "text",
 "name": "Right 5 i text",
 "x": 1775,
@@ -7954,7 +7984,7 @@
 }
 },
 {
-"id": "ow0298",
+"id": "ow0299",
 "type": "text",
 "name": "Right 5 i text",
 "x": 1599,
@@ -7986,7 +8016,7 @@
 }
 },
 {
-"id": "ow0299",
+"id": "ow0300",
 "type": "image",
 "name": "Right 5 cred icon icon",
 "x": 1659,
@@ -8011,7 +8041,7 @@
 }
 },
 {
-"id": "ow0300",
+"id": "ow0301",
 "type": "text",
 "name": "Right 5 i text",
 "x": 1795,
@@ -8043,7 +8073,7 @@
 }
 },
 {
-"id": "ow0301",
+"id": "ow0302",
 "type": "image",
 "name": "Right 5 cred icon icon",
 "x": 1876,
@@ -8068,7 +8098,7 @@
 }
 },
 {
-"id": "ow0302",
+"id": "ow0303",
 "type": "image",
 "name": "Right 5 gun picture",
 "x": 1700,
@@ -8093,7 +8123,7 @@
 }
 },
 {
-"id": "ow0303",
+"id": "ow0304",
 "type": "image",
 "name": "Right 5 armor",
 "x": 1640,
@@ -8118,7 +8148,7 @@
 }
 },
 {
-"id": "ow0304",
+"id": "ow0305",
 "type": "text",
 "name": "Right 5 i text",
 "x": 1598,
@@ -8150,7 +8180,7 @@
 }
 },
 {
-"id": "ow0305",
+"id": "ow0306",
 "type": "image",
 "name": "Right 5 hp bar",
 "x": 1594,
@@ -8182,7 +8212,7 @@
 "on": true,
 "layers": [
 {
-"id": "ow0474",
+"id": "ow0475",
 "type": "rect",
 "name": "bar",
 "x": 0,
@@ -8207,7 +8237,7 @@
 }
 },
 {
-"id": "ow0475",
+"id": "ow0476",
 "type": "image",
 "name": "mark",
 "x": 678,
@@ -8233,7 +8263,7 @@
 }
 },
 {
-"id": "ow0476",
+"id": "ow0477",
 "type": "image",
 "name": "mark",
 "x": 1069,
@@ -8259,7 +8289,7 @@
 }
 },
 {
-"id": "ow0477",
+"id": "ow0478",
 "type": "rect",
 "name": "Left 1 box",
 "x": 16,
@@ -8286,7 +8316,7 @@
 }
 },
 {
-"id": "ow0478",
+"id": "ow0479",
 "type": "image",
 "name": "Left 1 cred icon icon",
 "x": 101.8,
@@ -8311,7 +8341,7 @@
 }
 },
 {
-"id": "ow0479",
+"id": "ow0480",
 "type": "text",
 "name": "Left 1 i text",
 "x": 70,
@@ -8343,7 +8373,7 @@
 }
 },
 {
-"id": "ow0480",
+"id": "ow0481",
 "type": "rect",
 "name": "Left 1 box",
 "x": 189,
@@ -8370,7 +8400,7 @@
 }
 },
 {
-"id": "ow0481",
+"id": "ow0482",
 "type": "image",
 "name": "Left 1 abil picture",
 "x": 203,
@@ -8395,7 +8425,7 @@
 }
 },
 {
-"id": "ow0482",
+"id": "ow0483",
 "type": "image",
 "name": "Left 1 c charges",
 "x": 203,
@@ -8420,7 +8450,7 @@
 }
 },
 {
-"id": "ow0483",
+"id": "ow0484",
 "type": "image",
 "name": "Left 1 abil picture",
 "x": 247,
@@ -8445,7 +8475,7 @@
 }
 },
 {
-"id": "ow0484",
+"id": "ow0485",
 "type": "image",
 "name": "Left 1 q charges",
 "x": 247,
@@ -8470,7 +8500,7 @@
 }
 },
 {
-"id": "ow0485",
+"id": "ow0486",
 "type": "image",
 "name": "Left 1 abil picture",
 "x": 291,
@@ -8495,7 +8525,7 @@
 }
 },
 {
-"id": "ow0486",
+"id": "ow0487",
 "type": "image",
 "name": "Left 1 e charges",
 "x": 291,
@@ -8520,7 +8550,7 @@
 }
 },
 {
-"id": "ow0487",
+"id": "ow0488",
 "type": "rect",
 "name": "Left 1 box",
 "x": 342,
@@ -8547,7 +8577,7 @@
 }
 },
 {
-"id": "ow0488",
+"id": "ow0489",
 "type": "image",
 "name": "Left 1 shieldimg picture",
 "x": 354,
@@ -8572,7 +8602,7 @@
 }
 },
 {
-"id": "ow0489",
+"id": "ow0490",
 "type": "image",
 "name": "Left 1 gun picture",
 "x": 397,
@@ -8600,7 +8630,7 @@
 }
 },
 {
-"id": "ow0490",
+"id": "ow0491",
 "type": "image",
 "name": "Left 1 ult ring",
 "x": 515,
@@ -8625,7 +8655,7 @@
 }
 },
 {
-"id": "ow0491",
+"id": "ow0492",
 "type": "image",
 "name": "Left 1 icon picture",
 "x": 526.5,
@@ -8651,7 +8681,7 @@
 }
 },
 {
-"id": "ow0492",
+"id": "ow0493",
 "type": "rect",
 "name": "Left 1 box",
 "x": 575,
@@ -8678,7 +8708,7 @@
 }
 },
 {
-"id": "ow0493",
+"id": "ow0494",
 "type": "rect",
 "name": "Left 1 wash",
 "x": 575,
@@ -8704,7 +8734,7 @@
 }
 },
 {
-"id": "ow0494",
+"id": "ow0495",
 "type": "image",
 "name": "Left 1 agent picture",
 "x": 576,
@@ -8730,7 +8760,7 @@
 }
 },
 {
-"id": "ow0495",
+"id": "ow0496",
 "type": "text",
 "name": "Left 1 i text",
 "x": 661,
@@ -8762,7 +8792,7 @@
 }
 },
 {
-"id": "ow0496",
+"id": "ow0497",
 "type": "text",
 "name": "Left 1 i text",
 "x": 827,
@@ -8794,7 +8824,7 @@
 }
 },
 {
-"id": "ow0497",
+"id": "ow0498",
 "type": "rect",
 "name": "Left 2 box",
 "x": 16,
@@ -8821,7 +8851,7 @@
 }
 },
 {
-"id": "ow0498",
+"id": "ow0499",
 "type": "image",
 "name": "Left 2 cred icon icon",
 "x": 97.3,
@@ -8846,7 +8876,7 @@
 }
 },
 {
-"id": "ow0499",
+"id": "ow0500",
 "type": "text",
 "name": "Left 2 i text",
 "x": 70,
@@ -8878,7 +8908,7 @@
 }
 },
 {
-"id": "ow0500",
+"id": "ow0501",
 "type": "rect",
 "name": "Left 2 box",
 "x": 189,
@@ -8905,7 +8935,7 @@
 }
 },
 {
-"id": "ow0501",
+"id": "ow0502",
 "type": "image",
 "name": "Left 2 abil picture",
 "x": 203,
@@ -8930,7 +8960,7 @@
 }
 },
 {
-"id": "ow0502",
+"id": "ow0503",
 "type": "image",
 "name": "Left 2 c charges",
 "x": 203,
@@ -8955,7 +8985,7 @@
 }
 },
 {
-"id": "ow0503",
+"id": "ow0504",
 "type": "image",
 "name": "Left 2 abil picture",
 "x": 247,
@@ -8980,7 +9010,7 @@
 }
 },
 {
-"id": "ow0504",
+"id": "ow0505",
 "type": "image",
 "name": "Left 2 q charges",
 "x": 247,
@@ -9005,7 +9035,7 @@
 }
 },
 {
-"id": "ow0505",
+"id": "ow0506",
 "type": "image",
 "name": "Left 2 abil picture",
 "x": 291,
@@ -9030,7 +9060,7 @@
 }
 },
 {
-"id": "ow0506",
+"id": "ow0507",
 "type": "image",
 "name": "Left 2 e charges",
 "x": 291,
@@ -9055,7 +9085,7 @@
 }
 },
 {
-"id": "ow0507",
+"id": "ow0508",
 "type": "rect",
 "name": "Left 2 box",
 "x": 342,
@@ -9082,7 +9112,7 @@
 }
 },
 {
-"id": "ow0508",
+"id": "ow0509",
 "type": "image",
 "name": "Left 2 shieldimg picture",
 "x": 354,
@@ -9107,7 +9137,7 @@
 }
 },
 {
-"id": "ow0509",
+"id": "ow0510",
 "type": "image",
 "name": "Left 2 gun picture",
 "x": 397,
@@ -9135,7 +9165,7 @@
 }
 },
 {
-"id": "ow0510",
+"id": "ow0511",
 "type": "image",
 "name": "Left 2 ult ring",
 "x": 515,
@@ -9160,7 +9190,7 @@
 }
 },
 {
-"id": "ow0511",
+"id": "ow0512",
 "type": "image",
 "name": "Left 2 icon picture",
 "x": 526.5,
@@ -9186,7 +9216,7 @@
 }
 },
 {
-"id": "ow0512",
+"id": "ow0513",
 "type": "rect",
 "name": "Left 2 box",
 "x": 575,
@@ -9213,7 +9243,7 @@
 }
 },
 {
-"id": "ow0513",
+"id": "ow0514",
 "type": "rect",
 "name": "Left 2 wash",
 "x": 575,
@@ -9239,7 +9269,7 @@
 }
 },
 {
-"id": "ow0514",
+"id": "ow0515",
 "type": "image",
 "name": "Left 2 agent picture",
 "x": 576,
@@ -9265,7 +9295,7 @@
 }
 },
 {
-"id": "ow0515",
+"id": "ow0516",
 "type": "text",
 "name": "Left 2 i text",
 "x": 661,
@@ -9297,7 +9327,7 @@
 }
 },
 {
-"id": "ow0516",
+"id": "ow0517",
 "type": "text",
 "name": "Left 2 i text",
 "x": 827,
@@ -9329,7 +9359,7 @@
 }
 },
 {
-"id": "ow0517",
+"id": "ow0518",
 "type": "rect",
 "name": "Left 3 box",
 "x": 16,
@@ -9356,7 +9386,7 @@
 }
 },
 {
-"id": "ow0518",
+"id": "ow0519",
 "type": "image",
 "name": "Left 3 cred icon icon",
 "x": 97.0,
@@ -9381,7 +9411,7 @@
 }
 },
 {
-"id": "ow0519",
+"id": "ow0520",
 "type": "text",
 "name": "Left 3 i text",
 "x": 70,
@@ -9413,7 +9443,7 @@
 }
 },
 {
-"id": "ow0520",
+"id": "ow0521",
 "type": "rect",
 "name": "Left 3 box",
 "x": 189,
@@ -9440,7 +9470,7 @@
 }
 },
 {
-"id": "ow0521",
+"id": "ow0522",
 "type": "image",
 "name": "Left 3 abil picture",
 "x": 203,
@@ -9465,7 +9495,7 @@
 }
 },
 {
-"id": "ow0522",
+"id": "ow0523",
 "type": "image",
 "name": "Left 3 c charges",
 "x": 203,
@@ -9490,7 +9520,7 @@
 }
 },
 {
-"id": "ow0523",
+"id": "ow0524",
 "type": "image",
 "name": "Left 3 abil picture",
 "x": 247,
@@ -9515,7 +9545,7 @@
 }
 },
 {
-"id": "ow0524",
+"id": "ow0525",
 "type": "image",
 "name": "Left 3 q charges",
 "x": 247,
@@ -9540,7 +9570,7 @@
 }
 },
 {
-"id": "ow0525",
+"id": "ow0526",
 "type": "image",
 "name": "Left 3 abil picture",
 "x": 291,
@@ -9565,7 +9595,7 @@
 }
 },
 {
-"id": "ow0526",
+"id": "ow0527",
 "type": "image",
 "name": "Left 3 e charges",
 "x": 291,
@@ -9590,7 +9620,7 @@
 }
 },
 {
-"id": "ow0527",
+"id": "ow0528",
 "type": "rect",
 "name": "Left 3 box",
 "x": 342,
@@ -9617,7 +9647,7 @@
 }
 },
 {
-"id": "ow0528",
+"id": "ow0529",
 "type": "image",
 "name": "Left 3 shieldimg picture",
 "x": 354,
@@ -9642,7 +9672,7 @@
 }
 },
 {
-"id": "ow0529",
+"id": "ow0530",
 "type": "image",
 "name": "Left 3 gun picture",
 "x": 397,
@@ -9670,7 +9700,7 @@
 }
 },
 {
-"id": "ow0530",
+"id": "ow0531",
 "type": "image",
 "name": "Left 3 ult ring",
 "x": 515,
@@ -9695,7 +9725,7 @@
 }
 },
 {
-"id": "ow0531",
+"id": "ow0532",
 "type": "image",
 "name": "Left 3 icon picture",
 "x": 526.5,
@@ -9721,7 +9751,7 @@
 }
 },
 {
-"id": "ow0532",
+"id": "ow0533",
 "type": "rect",
 "name": "Left 3 box",
 "x": 575,
@@ -9748,7 +9778,7 @@
 }
 },
 {
-"id": "ow0533",
+"id": "ow0534",
 "type": "rect",
 "name": "Left 3 wash",
 "x": 575,
@@ -9774,7 +9804,7 @@
 }
 },
 {
-"id": "ow0534",
+"id": "ow0535",
 "type": "image",
 "name": "Left 3 agent picture",
 "x": 576,
@@ -9800,7 +9830,7 @@
 }
 },
 {
-"id": "ow0535",
+"id": "ow0536",
 "type": "text",
 "name": "Left 3 i text",
 "x": 661,
@@ -9832,7 +9862,7 @@
 }
 },
 {
-"id": "ow0536",
+"id": "ow0537",
 "type": "text",
 "name": "Left 3 i text",
 "x": 827,
@@ -9864,7 +9894,7 @@
 }
 },
 {
-"id": "ow0537",
+"id": "ow0538",
 "type": "rect",
 "name": "Left 4 box",
 "x": 16,
@@ -9891,7 +9921,7 @@
 }
 },
 {
-"id": "ow0538",
+"id": "ow0539",
 "type": "image",
 "name": "Left 4 cred icon icon",
 "x": 96.9,
@@ -9916,7 +9946,7 @@
 }
 },
 {
-"id": "ow0539",
+"id": "ow0540",
 "type": "text",
 "name": "Left 4 i text",
 "x": 70,
@@ -9948,7 +9978,7 @@
 }
 },
 {
-"id": "ow0540",
+"id": "ow0541",
 "type": "rect",
 "name": "Left 4 box",
 "x": 189,
@@ -9975,7 +10005,7 @@
 }
 },
 {
-"id": "ow0541",
+"id": "ow0542",
 "type": "image",
 "name": "Left 4 abil picture",
 "x": 203,
@@ -10000,7 +10030,7 @@
 }
 },
 {
-"id": "ow0542",
+"id": "ow0543",
 "type": "image",
 "name": "Left 4 c charges",
 "x": 203,
@@ -10025,7 +10055,7 @@
 }
 },
 {
-"id": "ow0543",
+"id": "ow0544",
 "type": "image",
 "name": "Left 4 abil picture",
 "x": 247,
@@ -10050,7 +10080,7 @@
 }
 },
 {
-"id": "ow0544",
+"id": "ow0545",
 "type": "image",
 "name": "Left 4 q charges",
 "x": 247,
@@ -10075,7 +10105,7 @@
 }
 },
 {
-"id": "ow0545",
+"id": "ow0546",
 "type": "image",
 "name": "Left 4 abil picture",
 "x": 291,
@@ -10100,7 +10130,7 @@
 }
 },
 {
-"id": "ow0546",
+"id": "ow0547",
 "type": "image",
 "name": "Left 4 e charges",
 "x": 291,
@@ -10125,7 +10155,7 @@
 }
 },
 {
-"id": "ow0547",
+"id": "ow0548",
 "type": "rect",
 "name": "Left 4 box",
 "x": 342,
@@ -10152,7 +10182,7 @@
 }
 },
 {
-"id": "ow0548",
+"id": "ow0549",
 "type": "image",
 "name": "Left 4 shieldimg picture",
 "x": 354,
@@ -10177,7 +10207,7 @@
 }
 },
 {
-"id": "ow0549",
+"id": "ow0550",
 "type": "image",
 "name": "Left 4 gun picture",
 "x": 397,
@@ -10205,7 +10235,7 @@
 }
 },
 {
-"id": "ow0550",
+"id": "ow0551",
 "type": "image",
 "name": "Left 4 ult ring",
 "x": 515,
@@ -10230,7 +10260,7 @@
 }
 },
 {
-"id": "ow0551",
+"id": "ow0552",
 "type": "image",
 "name": "Left 4 icon picture",
 "x": 526.5,
@@ -10256,7 +10286,7 @@
 }
 },
 {
-"id": "ow0552",
+"id": "ow0553",
 "type": "rect",
 "name": "Left 4 box",
 "x": 575,
@@ -10283,7 +10313,7 @@
 }
 },
 {
-"id": "ow0553",
+"id": "ow0554",
 "type": "rect",
 "name": "Left 4 wash",
 "x": 575,
@@ -10309,7 +10339,7 @@
 }
 },
 {
-"id": "ow0554",
+"id": "ow0555",
 "type": "image",
 "name": "Left 4 agent picture",
 "x": 576,
@@ -10335,7 +10365,7 @@
 }
 },
 {
-"id": "ow0555",
+"id": "ow0556",
 "type": "text",
 "name": "Left 4 i text",
 "x": 661,
@@ -10367,7 +10397,7 @@
 }
 },
 {
-"id": "ow0556",
+"id": "ow0557",
 "type": "text",
 "name": "Left 4 i text",
 "x": 827,
@@ -10399,7 +10429,7 @@
 }
 },
 {
-"id": "ow0557",
+"id": "ow0558",
 "type": "rect",
 "name": "Left 5 box",
 "x": 16,
@@ -10426,7 +10456,7 @@
 }
 },
 {
-"id": "ow0558",
+"id": "ow0559",
 "type": "image",
 "name": "Left 5 cred icon icon",
 "x": 97.2,
@@ -10451,7 +10481,7 @@
 }
 },
 {
-"id": "ow0559",
+"id": "ow0560",
 "type": "text",
 "name": "Left 5 i text",
 "x": 70,
@@ -10483,7 +10513,7 @@
 }
 },
 {
-"id": "ow0560",
+"id": "ow0561",
 "type": "rect",
 "name": "Left 5 box",
 "x": 189,
@@ -10510,7 +10540,7 @@
 }
 },
 {
-"id": "ow0561",
+"id": "ow0562",
 "type": "image",
 "name": "Left 5 abil picture",
 "x": 203,
@@ -10535,7 +10565,7 @@
 }
 },
 {
-"id": "ow0562",
+"id": "ow0563",
 "type": "image",
 "name": "Left 5 c charges",
 "x": 203,
@@ -10560,7 +10590,7 @@
 }
 },
 {
-"id": "ow0563",
+"id": "ow0564",
 "type": "image",
 "name": "Left 5 abil picture",
 "x": 247,
@@ -10585,7 +10615,7 @@
 }
 },
 {
-"id": "ow0564",
+"id": "ow0565",
 "type": "image",
 "name": "Left 5 q charges",
 "x": 247,
@@ -10610,7 +10640,7 @@
 }
 },
 {
-"id": "ow0565",
+"id": "ow0566",
 "type": "image",
 "name": "Left 5 abil picture",
 "x": 291,
@@ -10635,7 +10665,7 @@
 }
 },
 {
-"id": "ow0566",
+"id": "ow0567",
 "type": "image",
 "name": "Left 5 e charges",
 "x": 291,
@@ -10660,7 +10690,7 @@
 }
 },
 {
-"id": "ow0567",
+"id": "ow0568",
 "type": "rect",
 "name": "Left 5 box",
 "x": 342,
@@ -10687,7 +10717,7 @@
 }
 },
 {
-"id": "ow0568",
+"id": "ow0569",
 "type": "image",
 "name": "Left 5 shieldimg picture",
 "x": 354,
@@ -10712,7 +10742,7 @@
 }
 },
 {
-"id": "ow0569",
+"id": "ow0570",
 "type": "image",
 "name": "Left 5 gun picture",
 "x": 397,
@@ -10740,7 +10770,7 @@
 }
 },
 {
-"id": "ow0570",
+"id": "ow0571",
 "type": "image",
 "name": "Left 5 ult ring",
 "x": 515,
@@ -10765,7 +10795,7 @@
 }
 },
 {
-"id": "ow0571",
+"id": "ow0572",
 "type": "image",
 "name": "Left 5 icon picture",
 "x": 526.5,
@@ -10791,7 +10821,7 @@
 }
 },
 {
-"id": "ow0572",
+"id": "ow0573",
 "type": "rect",
 "name": "Left 5 box",
 "x": 575,
@@ -10818,7 +10848,7 @@
 }
 },
 {
-"id": "ow0573",
+"id": "ow0574",
 "type": "rect",
 "name": "Left 5 wash",
 "x": 575,
@@ -10844,7 +10874,7 @@
 }
 },
 {
-"id": "ow0574",
+"id": "ow0575",
 "type": "image",
 "name": "Left 5 agent picture",
 "x": 576,
@@ -10870,7 +10900,7 @@
 }
 },
 {
-"id": "ow0575",
+"id": "ow0576",
 "type": "text",
 "name": "Left 5 i text",
 "x": 661,
@@ -10902,7 +10932,7 @@
 }
 },
 {
-"id": "ow0576",
+"id": "ow0577",
 "type": "text",
 "name": "Left 5 i text",
 "x": 827,
@@ -10934,7 +10964,7 @@
 }
 },
 {
-"id": "ow0577",
+"id": "ow0578",
 "type": "rect",
 "name": "Right 1 box",
 "x": 1741,
@@ -10961,7 +10991,7 @@
 }
 },
 {
-"id": "ow0578",
+"id": "ow0579",
 "type": "image",
 "name": "Right 1 cred icon icon",
 "x": 1751,
@@ -10986,7 +11016,7 @@
 }
 },
 {
-"id": "ow0579",
+"id": "ow0580",
 "type": "text",
 "name": "Right 1 i text",
 "x": 1773,
@@ -11018,7 +11048,7 @@
 }
 },
 {
-"id": "ow0580",
+"id": "ow0581",
 "type": "rect",
 "name": "Right 1 box",
 "x": 1588,
@@ -11045,7 +11075,7 @@
 }
 },
 {
-"id": "ow0581",
+"id": "ow0582",
 "type": "image",
 "name": "Right 1 abil picture",
 "x": 1688,
@@ -11070,7 +11100,7 @@
 }
 },
 {
-"id": "ow0582",
+"id": "ow0583",
 "type": "image",
 "name": "Right 1 c charges",
 "x": 1688,
@@ -11095,7 +11125,7 @@
 }
 },
 {
-"id": "ow0583",
+"id": "ow0584",
 "type": "image",
 "name": "Right 1 abil picture",
 "x": 1644,
@@ -11120,7 +11150,7 @@
 }
 },
 {
-"id": "ow0584",
+"id": "ow0585",
 "type": "image",
 "name": "Right 1 q charges",
 "x": 1644,
@@ -11145,7 +11175,7 @@
 }
 },
 {
-"id": "ow0585",
+"id": "ow0586",
 "type": "image",
 "name": "Right 1 abil picture",
 "x": 1600,
@@ -11170,7 +11200,7 @@
 }
 },
 {
-"id": "ow0586",
+"id": "ow0587",
 "type": "image",
 "name": "Right 1 e charges",
 "x": 1600,
@@ -11195,7 +11225,7 @@
 }
 },
 {
-"id": "ow0587",
+"id": "ow0588",
 "type": "rect",
 "name": "Right 1 box",
 "x": 1355,
@@ -11222,7 +11252,7 @@
 }
 },
 {
-"id": "ow0588",
+"id": "ow0589",
 "type": "image",
 "name": "Right 1 shieldimg picture",
 "x": 1542,
@@ -11247,7 +11277,7 @@
 }
 },
 {
-"id": "ow0589",
+"id": "ow0590",
 "type": "image",
 "name": "Right 1 gun picture",
 "x": 1414,
@@ -11272,7 +11302,7 @@
 }
 },
 {
-"id": "ow0590",
+"id": "ow0591",
 "type": "image",
 "name": "Right 1 ult ring",
 "x": 1365,
@@ -11297,7 +11327,7 @@
 }
 },
 {
-"id": "ow0591",
+"id": "ow0592",
 "type": "image",
 "name": "Right 1 icon picture",
 "x": 1376.5,
@@ -11323,7 +11353,7 @@
 }
 },
 {
-"id": "ow0592",
+"id": "ow0593",
 "type": "rect",
 "name": "Right 1 box",
 "x": 965,
@@ -11350,7 +11380,7 @@
 }
 },
 {
-"id": "ow0593",
+"id": "ow0594",
 "type": "rect",
 "name": "Right 1 wash",
 "x": 965,
@@ -11376,7 +11406,7 @@
 }
 },
 {
-"id": "ow0594",
+"id": "ow0595",
 "type": "image",
 "name": "Right 1 agent picture",
 "x": 1271,
@@ -11405,7 +11435,7 @@
 }
 },
 {
-"id": "ow0595",
+"id": "ow0596",
 "type": "text",
 "name": "Right 1 i text",
 "x": 1090,
@@ -11437,7 +11467,7 @@
 }
 },
 {
-"id": "ow0596",
+"id": "ow0597",
 "type": "text",
 "name": "Right 1 i text",
 "x": 984,
@@ -11469,7 +11499,7 @@
 }
 },
 {
-"id": "ow0597",
+"id": "ow0598",
 "type": "rect",
 "name": "Right 2 box",
 "x": 1741,
@@ -11496,7 +11526,7 @@
 }
 },
 {
-"id": "ow0598",
+"id": "ow0599",
 "type": "image",
 "name": "Right 2 cred icon icon",
 "x": 1751,
@@ -11521,7 +11551,7 @@
 }
 },
 {
-"id": "ow0599",
+"id": "ow0600",
 "type": "text",
 "name": "Right 2 i text",
 "x": 1773,
@@ -11553,7 +11583,7 @@
 }
 },
 {
-"id": "ow0600",
+"id": "ow0601",
 "type": "rect",
 "name": "Right 2 box",
 "x": 1588,
@@ -11580,7 +11610,7 @@
 }
 },
 {
-"id": "ow0601",
+"id": "ow0602",
 "type": "image",
 "name": "Right 2 abil picture",
 "x": 1688,
@@ -11605,7 +11635,7 @@
 }
 },
 {
-"id": "ow0602",
+"id": "ow0603",
 "type": "image",
 "name": "Right 2 c charges",
 "x": 1688,
@@ -11630,7 +11660,7 @@
 }
 },
 {
-"id": "ow0603",
+"id": "ow0604",
 "type": "image",
 "name": "Right 2 abil picture",
 "x": 1644,
@@ -11655,7 +11685,7 @@
 }
 },
 {
-"id": "ow0604",
+"id": "ow0605",
 "type": "image",
 "name": "Right 2 q charges",
 "x": 1644,
@@ -11680,7 +11710,7 @@
 }
 },
 {
-"id": "ow0605",
+"id": "ow0606",
 "type": "image",
 "name": "Right 2 abil picture",
 "x": 1600,
@@ -11705,7 +11735,7 @@
 }
 },
 {
-"id": "ow0606",
+"id": "ow0607",
 "type": "image",
 "name": "Right 2 e charges",
 "x": 1600,
@@ -11730,7 +11760,7 @@
 }
 },
 {
-"id": "ow0607",
+"id": "ow0608",
 "type": "rect",
 "name": "Right 2 box",
 "x": 1355,
@@ -11757,7 +11787,7 @@
 }
 },
 {
-"id": "ow0608",
+"id": "ow0609",
 "type": "image",
 "name": "Right 2 shieldimg picture",
 "x": 1542,
@@ -11782,7 +11812,7 @@
 }
 },
 {
-"id": "ow0609",
+"id": "ow0610",
 "type": "image",
 "name": "Right 2 gun picture",
 "x": 1414,
@@ -11807,7 +11837,7 @@
 }
 },
 {
-"id": "ow0610",
+"id": "ow0611",
 "type": "image",
 "name": "Right 2 ult ring",
 "x": 1365,
@@ -11832,7 +11862,7 @@
 }
 },
 {
-"id": "ow0611",
+"id": "ow0612",
 "type": "image",
 "name": "Right 2 icon picture",
 "x": 1376.5,
@@ -11858,7 +11888,7 @@
 }
 },
 {
-"id": "ow0612",
+"id": "ow0613",
 "type": "rect",
 "name": "Right 2 box",
 "x": 965,
@@ -11885,7 +11915,7 @@
 }
 },
 {
-"id": "ow0613",
+"id": "ow0614",
 "type": "rect",
 "name": "Right 2 wash",
 "x": 965,
@@ -11911,7 +11941,7 @@
 }
 },
 {
-"id": "ow0614",
+"id": "ow0615",
 "type": "image",
 "name": "Right 2 agent picture",
 "x": 1271,
@@ -11940,7 +11970,7 @@
 }
 },
 {
-"id": "ow0615",
+"id": "ow0616",
 "type": "text",
 "name": "Right 2 i text",
 "x": 1090,
@@ -11972,7 +12002,7 @@
 }
 },
 {
-"id": "ow0616",
+"id": "ow0617",
 "type": "text",
 "name": "Right 2 i text",
 "x": 984,
@@ -12004,7 +12034,7 @@
 }
 },
 {
-"id": "ow0617",
+"id": "ow0618",
 "type": "rect",
 "name": "Right 3 box",
 "x": 1741,
@@ -12031,7 +12061,7 @@
 }
 },
 {
-"id": "ow0618",
+"id": "ow0619",
 "type": "image",
 "name": "Right 3 cred icon icon",
 "x": 1751,
@@ -12056,7 +12086,7 @@
 }
 },
 {
-"id": "ow0619",
+"id": "ow0620",
 "type": "text",
 "name": "Right 3 i text",
 "x": 1773,
@@ -12088,7 +12118,7 @@
 }
 },
 {
-"id": "ow0620",
+"id": "ow0621",
 "type": "rect",
 "name": "Right 3 box",
 "x": 1588,
@@ -12115,7 +12145,7 @@
 }
 },
 {
-"id": "ow0621",
+"id": "ow0622",
 "type": "image",
 "name": "Right 3 abil picture",
 "x": 1688,
@@ -12140,7 +12170,7 @@
 }
 },
 {
-"id": "ow0622",
+"id": "ow0623",
 "type": "image",
 "name": "Right 3 c charges",
 "x": 1688,
@@ -12165,7 +12195,7 @@
 }
 },
 {
-"id": "ow0623",
+"id": "ow0624",
 "type": "image",
 "name": "Right 3 abil picture",
 "x": 1644,
@@ -12190,7 +12220,7 @@
 }
 },
 {
-"id": "ow0624",
+"id": "ow0625",
 "type": "image",
 "name": "Right 3 q charges",
 "x": 1644,
@@ -12215,7 +12245,7 @@
 }
 },
 {
-"id": "ow0625",
+"id": "ow0626",
 "type": "image",
 "name": "Right 3 abil picture",
 "x": 1600,
@@ -12240,7 +12270,7 @@
 }
 },
 {
-"id": "ow0626",
+"id": "ow0627",
 "type": "image",
 "name": "Right 3 e charges",
 "x": 1600,
@@ -12265,7 +12295,7 @@
 }
 },
 {
-"id": "ow0627",
+"id": "ow0628",
 "type": "rect",
 "name": "Right 3 box",
 "x": 1355,
@@ -12292,7 +12322,7 @@
 }
 },
 {
-"id": "ow0628",
+"id": "ow0629",
 "type": "image",
 "name": "Right 3 shieldimg picture",
 "x": 1542,
@@ -12317,7 +12347,7 @@
 }
 },
 {
-"id": "ow0629",
+"id": "ow0630",
 "type": "image",
 "name": "Right 3 gun picture",
 "x": 1414,
@@ -12342,7 +12372,7 @@
 }
 },
 {
-"id": "ow0630",
+"id": "ow0631",
 "type": "image",
 "name": "Right 3 ult ring",
 "x": 1365,
@@ -12367,7 +12397,7 @@
 }
 },
 {
-"id": "ow0631",
+"id": "ow0632",
 "type": "image",
 "name": "Right 3 icon picture",
 "x": 1376.5,
@@ -12393,7 +12423,7 @@
 }
 },
 {
-"id": "ow0632",
+"id": "ow0633",
 "type": "rect",
 "name": "Right 3 box",
 "x": 965,
@@ -12420,7 +12450,7 @@
 }
 },
 {
-"id": "ow0633",
+"id": "ow0634",
 "type": "rect",
 "name": "Right 3 wash",
 "x": 965,
@@ -12446,7 +12476,7 @@
 }
 },
 {
-"id": "ow0634",
+"id": "ow0635",
 "type": "image",
 "name": "Right 3 agent picture",
 "x": 1271,
@@ -12475,7 +12505,7 @@
 }
 },
 {
-"id": "ow0635",
+"id": "ow0636",
 "type": "text",
 "name": "Right 3 i text",
 "x": 1090,
@@ -12507,7 +12537,7 @@
 }
 },
 {
-"id": "ow0636",
+"id": "ow0637",
 "type": "text",
 "name": "Right 3 i text",
 "x": 984,
@@ -12539,7 +12569,7 @@
 }
 },
 {
-"id": "ow0637",
+"id": "ow0638",
 "type": "rect",
 "name": "Right 4 box",
 "x": 1741,
@@ -12566,7 +12596,7 @@
 }
 },
 {
-"id": "ow0638",
+"id": "ow0639",
 "type": "image",
 "name": "Right 4 cred icon icon",
 "x": 1751,
@@ -12591,7 +12621,7 @@
 }
 },
 {
-"id": "ow0639",
+"id": "ow0640",
 "type": "text",
 "name": "Right 4 i text",
 "x": 1773,
@@ -12623,7 +12653,7 @@
 }
 },
 {
-"id": "ow0640",
+"id": "ow0641",
 "type": "rect",
 "name": "Right 4 box",
 "x": 1588,
@@ -12650,7 +12680,7 @@
 }
 },
 {
-"id": "ow0641",
+"id": "ow0642",
 "type": "image",
 "name": "Right 4 abil picture",
 "x": 1688,
@@ -12675,7 +12705,7 @@
 }
 },
 {
-"id": "ow0642",
+"id": "ow0643",
 "type": "image",
 "name": "Right 4 c charges",
 "x": 1688,
@@ -12700,7 +12730,7 @@
 }
 },
 {
-"id": "ow0643",
+"id": "ow0644",
 "type": "image",
 "name": "Right 4 abil picture",
 "x": 1644,
@@ -12725,7 +12755,7 @@
 }
 },
 {
-"id": "ow0644",
+"id": "ow0645",
 "type": "image",
 "name": "Right 4 q charges",
 "x": 1644,
@@ -12750,7 +12780,7 @@
 }
 },
 {
-"id": "ow0645",
+"id": "ow0646",
 "type": "image",
 "name": "Right 4 abil picture",
 "x": 1600,
@@ -12775,7 +12805,7 @@
 }
 },
 {
-"id": "ow0646",
+"id": "ow0647",
 "type": "image",
 "name": "Right 4 e charges",
 "x": 1600,
@@ -12800,7 +12830,7 @@
 }
 },
 {
-"id": "ow0647",
+"id": "ow0648",
 "type": "rect",
 "name": "Right 4 box",
 "x": 1355,
@@ -12827,7 +12857,7 @@
 }
 },
 {
-"id": "ow0648",
+"id": "ow0649",
 "type": "image",
 "name": "Right 4 shieldimg picture",
 "x": 1542,
@@ -12852,7 +12882,7 @@
 }
 },
 {
-"id": "ow0649",
+"id": "ow0650",
 "type": "image",
 "name": "Right 4 gun picture",
 "x": 1414,
@@ -12877,7 +12907,7 @@
 }
 },
 {
-"id": "ow0650",
+"id": "ow0651",
 "type": "image",
 "name": "Right 4 ult ring",
 "x": 1365,
@@ -12902,7 +12932,7 @@
 }
 },
 {
-"id": "ow0651",
+"id": "ow0652",
 "type": "image",
 "name": "Right 4 icon picture",
 "x": 1376.5,
@@ -12928,7 +12958,7 @@
 }
 },
 {
-"id": "ow0652",
+"id": "ow0653",
 "type": "rect",
 "name": "Right 4 box",
 "x": 965,
@@ -12955,7 +12985,7 @@
 }
 },
 {
-"id": "ow0653",
+"id": "ow0654",
 "type": "rect",
 "name": "Right 4 wash",
 "x": 965,
@@ -12981,7 +13011,7 @@
 }
 },
 {
-"id": "ow0654",
+"id": "ow0655",
 "type": "image",
 "name": "Right 4 agent picture",
 "x": 1271,
@@ -13010,7 +13040,7 @@
 }
 },
 {
-"id": "ow0655",
+"id": "ow0656",
 "type": "text",
 "name": "Right 4 i text",
 "x": 1090,
@@ -13042,7 +13072,7 @@
 }
 },
 {
-"id": "ow0656",
+"id": "ow0657",
 "type": "text",
 "name": "Right 4 i text",
 "x": 984,
@@ -13074,7 +13104,7 @@
 }
 },
 {
-"id": "ow0657",
+"id": "ow0658",
 "type": "rect",
 "name": "Right 5 box",
 "x": 1741,
@@ -13101,7 +13131,7 @@
 }
 },
 {
-"id": "ow0658",
+"id": "ow0659",
 "type": "image",
 "name": "Right 5 cred icon icon",
 "x": 1751,
@@ -13126,7 +13156,7 @@
 }
 },
 {
-"id": "ow0659",
+"id": "ow0660",
 "type": "text",
 "name": "Right 5 i text",
 "x": 1773,
@@ -13158,7 +13188,7 @@
 }
 },
 {
-"id": "ow0660",
+"id": "ow0661",
 "type": "rect",
 "name": "Right 5 box",
 "x": 1588,
@@ -13185,7 +13215,7 @@
 }
 },
 {
-"id": "ow0661",
+"id": "ow0662",
 "type": "image",
 "name": "Right 5 abil picture",
 "x": 1688,
@@ -13210,7 +13240,7 @@
 }
 },
 {
-"id": "ow0662",
+"id": "ow0663",
 "type": "image",
 "name": "Right 5 c charges",
 "x": 1688,
@@ -13235,7 +13265,7 @@
 }
 },
 {
-"id": "ow0663",
+"id": "ow0664",
 "type": "image",
 "name": "Right 5 abil picture",
 "x": 1644,
@@ -13260,7 +13290,7 @@
 }
 },
 {
-"id": "ow0664",
+"id": "ow0665",
 "type": "image",
 "name": "Right 5 q charges",
 "x": 1644,
@@ -13285,7 +13315,7 @@
 }
 },
 {
-"id": "ow0665",
+"id": "ow0666",
 "type": "image",
 "name": "Right 5 abil picture",
 "x": 1600,
@@ -13310,7 +13340,7 @@
 }
 },
 {
-"id": "ow0666",
+"id": "ow0667",
 "type": "image",
 "name": "Right 5 e charges",
 "x": 1600,
@@ -13335,7 +13365,7 @@
 }
 },
 {
-"id": "ow0667",
+"id": "ow0668",
 "type": "rect",
 "name": "Right 5 box",
 "x": 1355,
@@ -13362,7 +13392,7 @@
 }
 },
 {
-"id": "ow0668",
+"id": "ow0669",
 "type": "image",
 "name": "Right 5 shieldimg picture",
 "x": 1542,
@@ -13387,7 +13417,7 @@
 }
 },
 {
-"id": "ow0669",
+"id": "ow0670",
 "type": "image",
 "name": "Right 5 gun picture",
 "x": 1414,
@@ -13412,7 +13442,7 @@
 }
 },
 {
-"id": "ow0670",
+"id": "ow0671",
 "type": "image",
 "name": "Right 5 ult ring",
 "x": 1365,
@@ -13437,7 +13467,7 @@
 }
 },
 {
-"id": "ow0671",
+"id": "ow0672",
 "type": "image",
 "name": "Right 5 icon picture",
 "x": 1376.5,
@@ -13463,7 +13493,7 @@
 }
 },
 {
-"id": "ow0672",
+"id": "ow0673",
 "type": "rect",
 "name": "Right 5 box",
 "x": 965,
@@ -13490,7 +13520,7 @@
 }
 },
 {
-"id": "ow0673",
+"id": "ow0674",
 "type": "rect",
 "name": "Right 5 wash",
 "x": 965,
@@ -13516,7 +13546,7 @@
 }
 },
 {
-"id": "ow0674",
+"id": "ow0675",
 "type": "image",
 "name": "Right 5 agent picture",
 "x": 1271,
@@ -13545,7 +13575,7 @@
 }
 },
 {
-"id": "ow0675",
+"id": "ow0676",
 "type": "text",
 "name": "Right 5 i text",
 "x": 1090,
@@ -13577,7 +13607,7 @@
 }
 },
 {
-"id": "ow0676",
+"id": "ow0677",
 "type": "text",
 "name": "Right 5 i text",
 "x": 984,
@@ -13609,7 +13639,7 @@
 }
 },
 {
-"id": "ow0677",
+"id": "ow0678",
 "type": "rect",
 "name": "tracker",
 "x": 420,
@@ -13634,7 +13664,7 @@
 }
 },
 {
-"id": "ow0678",
+"id": "ow0679",
 "type": "rect",
 "name": "team",
 "x": 435,
@@ -13659,7 +13689,7 @@
 }
 },
 {
-"id": "ow0679",
+"id": "ow0680",
 "type": "rect",
 "name": "edge",
 "x": 435,
@@ -13683,7 +13713,7 @@
 }
 },
 {
-"id": "ow0680",
+"id": "ow0681",
 "type": "image",
 "name": "img",
 "x": 450,
@@ -13708,7 +13738,7 @@
 }
 },
 {
-"id": "ow0681",
+"id": "ow0682",
 "type": "text",
 "name": "i text",
 "x": 488,
@@ -13740,7 +13770,7 @@
 }
 },
 {
-"id": "ow0682",
+"id": "ow0683",
 "type": "rect",
 "name": "dot",
 "x": 552,
@@ -13767,7 +13797,7 @@
 }
 },
 {
-"id": "ow0683",
+"id": "ow0684",
 "type": "rect",
 "name": "dot",
 "x": 552,
@@ -13794,7 +13824,7 @@
 }
 },
 {
-"id": "ow0684",
+"id": "ow0685",
 "type": "rect",
 "name": "team",
 "x": 435,
@@ -13819,7 +13849,7 @@
 }
 },
 {
-"id": "ow0685",
+"id": "ow0686",
 "type": "rect",
 "name": "edge",
 "x": 435,
@@ -13843,7 +13873,7 @@
 }
 },
 {
-"id": "ow0686",
+"id": "ow0687",
 "type": "image",
 "name": "img",
 "x": 450,
@@ -13868,7 +13898,7 @@
 }
 },
 {
-"id": "ow0687",
+"id": "ow0688",
 "type": "text",
 "name": "i text",
 "x": 488,
@@ -13900,7 +13930,7 @@
 }
 },
 {
-"id": "ow0688",
+"id": "ow0689",
 "type": "rect",
 "name": "dot",
 "x": 552,
@@ -13927,7 +13957,7 @@
 }
 },
 {
-"id": "ow0689",
+"id": "ow0690",
 "type": "rect",
 "name": "dot",
 "x": 552,
@@ -13954,7 +13984,7 @@
 }
 },
 {
-"id": "ow0690",
+"id": "ow0691",
 "type": "rect",
 "name": "grid",
 "x": 574,
@@ -13980,7 +14010,7 @@
 }
 },
 {
-"id": "ow0691",
+"id": "ow0692",
 "type": "text",
 "name": "i text",
 "x": 583,
@@ -14012,7 +14042,7 @@
 }
 },
 {
-"id": "ow0692",
+"id": "ow0693",
 "type": "text",
 "name": "i text",
 "x": 620,
@@ -14044,7 +14074,7 @@
 }
 },
 {
-"id": "ow0693",
+"id": "ow0694",
 "type": "text",
 "name": "i text",
 "x": 657,
@@ -14076,7 +14106,7 @@
 }
 },
 {
-"id": "ow0694",
+"id": "ow0695",
 "type": "text",
 "name": "i text",
 "x": 694,
@@ -14108,7 +14138,7 @@
 }
 },
 {
-"id": "ow0695",
+"id": "ow0696",
 "type": "text",
 "name": "i text",
 "x": 731,
@@ -14140,7 +14170,7 @@
 }
 },
 {
-"id": "ow0696",
+"id": "ow0697",
 "type": "text",
 "name": "i text",
 "x": 768,
@@ -14172,7 +14202,7 @@
 }
 },
 {
-"id": "ow0697",
+"id": "ow0698",
 "type": "text",
 "name": "i text",
 "x": 805,
@@ -14204,7 +14234,7 @@
 }
 },
 {
-"id": "ow0698",
+"id": "ow0699",
 "type": "text",
 "name": "i text",
 "x": 842,
@@ -14236,7 +14266,7 @@
 }
 },
 {
-"id": "ow0699",
+"id": "ow0700",
 "type": "text",
 "name": "i text",
 "x": 879,
@@ -14268,7 +14298,7 @@
 }
 },
 {
-"id": "ow0700",
+"id": "ow0701",
 "type": "text",
 "name": "i text",
 "x": 916,
@@ -14300,7 +14330,7 @@
 }
 },
 {
-"id": "ow0701",
+"id": "ow0702",
 "type": "text",
 "name": "i text",
 "x": 953,
@@ -14332,7 +14362,7 @@
 }
 },
 {
-"id": "ow0702",
+"id": "ow0703",
 "type": "text",
 "name": "i text",
 "x": 990,
@@ -14364,7 +14394,7 @@
 }
 },
 {
-"id": "ow0703",
+"id": "ow0704",
 "type": "text",
 "name": "i text",
 "x": 1039,
@@ -14396,7 +14426,7 @@
 }
 },
 {
-"id": "ow0704",
+"id": "ow0705",
 "type": "text",
 "name": "i text",
 "x": 1076,
@@ -14428,7 +14458,7 @@
 }
 },
 {
-"id": "ow0705",
+"id": "ow0706",
 "type": "text",
 "name": "i text",
 "x": 1113,
@@ -14460,7 +14490,7 @@
 }
 },
 {
-"id": "ow0706",
+"id": "ow0707",
 "type": "text",
 "name": "i text",
 "x": 1150,
@@ -14492,7 +14522,7 @@
 }
 },
 {
-"id": "ow0707",
+"id": "ow0708",
 "type": "text",
 "name": "i text",
 "x": 1187,
@@ -14524,7 +14554,7 @@
 }
 },
 {
-"id": "ow0708",
+"id": "ow0709",
 "type": "text",
 "name": "i text",
 "x": 1224,
@@ -14556,7 +14586,7 @@
 }
 },
 {
-"id": "ow0709",
+"id": "ow0710",
 "type": "text",
 "name": "i text",
 "x": 1261,
@@ -14588,7 +14618,7 @@
 }
 },
 {
-"id": "ow0710",
+"id": "ow0711",
 "type": "text",
 "name": "i text",
 "x": 1298,
@@ -14620,7 +14650,7 @@
 }
 },
 {
-"id": "ow0711",
+"id": "ow0712",
 "type": "text",
 "name": "i text",
 "x": 1335,
@@ -14652,7 +14682,7 @@
 }
 },
 {
-"id": "ow0712",
+"id": "ow0713",
 "type": "text",
 "name": "i text",
 "x": 1372,
@@ -14684,7 +14714,7 @@
 }
 },
 {
-"id": "ow0713",
+"id": "ow0714",
 "type": "text",
 "name": "i text",
 "x": 1409,
@@ -14716,7 +14746,7 @@
 }
 },
 {
-"id": "ow0714",
+"id": "ow0715",
 "type": "text",
 "name": "i text",
 "x": 1446,
@@ -14748,7 +14778,7 @@
 }
 },
 {
-"id": "ow0715",
+"id": "ow0716",
 "type": "rect",
 "name": "half",
 "x": 1030.5,
@@ -14772,7 +14802,7 @@
 }
 },
 {
-"id": "ow0306",
+"id": "ow0307",
 "type": "rect",
 "name": "Round 1 left cell",
 "x": 583,
@@ -14798,7 +14828,7 @@
 }
 },
 {
-"id": "ow0307",
+"id": "ow0308",
 "type": "rect",
 "name": "Round 1 left won",
 "x": 583,
@@ -14824,7 +14854,7 @@
 }
 },
 {
-"id": "ow0308",
+"id": "ow0309",
 "type": "image",
 "name": "Round 1 left icon",
 "x": 588,
@@ -14850,7 +14880,7 @@
 }
 },
 {
-"id": "ow0309",
+"id": "ow0310",
 "type": "rect",
 "name": "Round 1 right cell",
 "x": 583,
@@ -14876,7 +14906,7 @@
 }
 },
 {
-"id": "ow0310",
+"id": "ow0311",
 "type": "rect",
 "name": "Round 1 right won",
 "x": 583,
@@ -14902,7 +14932,7 @@
 }
 },
 {
-"id": "ow0311",
+"id": "ow0312",
 "type": "image",
 "name": "Round 1 right icon",
 "x": 588,
@@ -14928,7 +14958,7 @@
 }
 },
 {
-"id": "ow0312",
+"id": "ow0313",
 "type": "rect",
 "name": "Round 1 now",
 "x": 580,
@@ -14954,7 +14984,7 @@
 }
 },
 {
-"id": "ow0313",
+"id": "ow0314",
 "type": "rect",
 "name": "Round 2 left cell",
 "x": 620,
@@ -14980,7 +15010,7 @@
 }
 },
 {
-"id": "ow0314",
+"id": "ow0315",
 "type": "rect",
 "name": "Round 2 left won",
 "x": 620,
@@ -15006,7 +15036,7 @@
 }
 },
 {
-"id": "ow0315",
+"id": "ow0316",
 "type": "image",
 "name": "Round 2 left icon",
 "x": 625,
@@ -15032,7 +15062,7 @@
 }
 },
 {
-"id": "ow0316",
+"id": "ow0317",
 "type": "rect",
 "name": "Round 2 right cell",
 "x": 620,
@@ -15058,7 +15088,7 @@
 }
 },
 {
-"id": "ow0317",
+"id": "ow0318",
 "type": "rect",
 "name": "Round 2 right won",
 "x": 620,
@@ -15084,7 +15114,7 @@
 }
 },
 {
-"id": "ow0318",
+"id": "ow0319",
 "type": "image",
 "name": "Round 2 right icon",
 "x": 625,
@@ -15110,7 +15140,7 @@
 }
 },
 {
-"id": "ow0319",
+"id": "ow0320",
 "type": "rect",
 "name": "Round 2 now",
 "x": 617,
@@ -15136,7 +15166,7 @@
 }
 },
 {
-"id": "ow0320",
+"id": "ow0321",
 "type": "rect",
 "name": "Round 3 left cell",
 "x": 657,
@@ -15162,7 +15192,7 @@
 }
 },
 {
-"id": "ow0321",
+"id": "ow0322",
 "type": "rect",
 "name": "Round 3 left won",
 "x": 657,
@@ -15188,7 +15218,7 @@
 }
 },
 {
-"id": "ow0322",
+"id": "ow0323",
 "type": "image",
 "name": "Round 3 left icon",
 "x": 662,
@@ -15214,7 +15244,7 @@
 }
 },
 {
-"id": "ow0323",
+"id": "ow0324",
 "type": "rect",
 "name": "Round 3 right cell",
 "x": 657,
@@ -15240,7 +15270,7 @@
 }
 },
 {
-"id": "ow0324",
+"id": "ow0325",
 "type": "rect",
 "name": "Round 3 right won",
 "x": 657,
@@ -15266,7 +15296,7 @@
 }
 },
 {
-"id": "ow0325",
+"id": "ow0326",
 "type": "image",
 "name": "Round 3 right icon",
 "x": 662,
@@ -15292,7 +15322,7 @@
 }
 },
 {
-"id": "ow0326",
+"id": "ow0327",
 "type": "rect",
 "name": "Round 3 now",
 "x": 654,
@@ -15318,7 +15348,7 @@
 }
 },
 {
-"id": "ow0327",
+"id": "ow0328",
 "type": "rect",
 "name": "Round 4 left cell",
 "x": 694,
@@ -15344,7 +15374,7 @@
 }
 },
 {
-"id": "ow0328",
+"id": "ow0329",
 "type": "rect",
 "name": "Round 4 left won",
 "x": 694,
@@ -15370,7 +15400,7 @@
 }
 },
 {
-"id": "ow0329",
+"id": "ow0330",
 "type": "image",
 "name": "Round 4 left icon",
 "x": 699,
@@ -15396,7 +15426,7 @@
 }
 },
 {
-"id": "ow0330",
+"id": "ow0331",
 "type": "rect",
 "name": "Round 4 right cell",
 "x": 694,
@@ -15422,7 +15452,7 @@
 }
 },
 {
-"id": "ow0331",
+"id": "ow0332",
 "type": "rect",
 "name": "Round 4 right won",
 "x": 694,
@@ -15448,7 +15478,7 @@
 }
 },
 {
-"id": "ow0332",
+"id": "ow0333",
 "type": "image",
 "name": "Round 4 right icon",
 "x": 699,
@@ -15474,7 +15504,7 @@
 }
 },
 {
-"id": "ow0333",
+"id": "ow0334",
 "type": "rect",
 "name": "Round 4 now",
 "x": 691,
@@ -15500,7 +15530,7 @@
 }
 },
 {
-"id": "ow0334",
+"id": "ow0335",
 "type": "rect",
 "name": "Round 5 left cell",
 "x": 731,
@@ -15526,7 +15556,7 @@
 }
 },
 {
-"id": "ow0335",
+"id": "ow0336",
 "type": "rect",
 "name": "Round 5 left won",
 "x": 731,
@@ -15552,7 +15582,7 @@
 }
 },
 {
-"id": "ow0336",
+"id": "ow0337",
 "type": "image",
 "name": "Round 5 left icon",
 "x": 736,
@@ -15578,7 +15608,7 @@
 }
 },
 {
-"id": "ow0337",
+"id": "ow0338",
 "type": "rect",
 "name": "Round 5 right cell",
 "x": 731,
@@ -15604,7 +15634,7 @@
 }
 },
 {
-"id": "ow0338",
+"id": "ow0339",
 "type": "rect",
 "name": "Round 5 right won",
 "x": 731,
@@ -15630,7 +15660,7 @@
 }
 },
 {
-"id": "ow0339",
+"id": "ow0340",
 "type": "image",
 "name": "Round 5 right icon",
 "x": 736,
@@ -15656,7 +15686,7 @@
 }
 },
 {
-"id": "ow0340",
+"id": "ow0341",
 "type": "rect",
 "name": "Round 5 now",
 "x": 728,
@@ -15682,7 +15712,7 @@
 }
 },
 {
-"id": "ow0341",
+"id": "ow0342",
 "type": "rect",
 "name": "Round 6 left cell",
 "x": 768,
@@ -15708,7 +15738,7 @@
 }
 },
 {
-"id": "ow0342",
+"id": "ow0343",
 "type": "rect",
 "name": "Round 6 left won",
 "x": 768,
@@ -15734,7 +15764,7 @@
 }
 },
 {
-"id": "ow0343",
+"id": "ow0344",
 "type": "image",
 "name": "Round 6 left icon",
 "x": 773,
@@ -15760,7 +15790,7 @@
 }
 },
 {
-"id": "ow0344",
+"id": "ow0345",
 "type": "rect",
 "name": "Round 6 right cell",
 "x": 768,
@@ -15786,7 +15816,7 @@
 }
 },
 {
-"id": "ow0345",
+"id": "ow0346",
 "type": "rect",
 "name": "Round 6 right won",
 "x": 768,
@@ -15812,7 +15842,7 @@
 }
 },
 {
-"id": "ow0346",
+"id": "ow0347",
 "type": "image",
 "name": "Round 6 right icon",
 "x": 773,
@@ -15838,7 +15868,7 @@
 }
 },
 {
-"id": "ow0347",
+"id": "ow0348",
 "type": "rect",
 "name": "Round 6 now",
 "x": 765,
@@ -15864,7 +15894,7 @@
 }
 },
 {
-"id": "ow0348",
+"id": "ow0349",
 "type": "rect",
 "name": "Round 7 left cell",
 "x": 805,
@@ -15890,7 +15920,7 @@
 }
 },
 {
-"id": "ow0349",
+"id": "ow0350",
 "type": "rect",
 "name": "Round 7 left won",
 "x": 805,
@@ -15916,7 +15946,7 @@
 }
 },
 {
-"id": "ow0350",
+"id": "ow0351",
 "type": "image",
 "name": "Round 7 left icon",
 "x": 810,
@@ -15942,7 +15972,7 @@
 }
 },
 {
-"id": "ow0351",
+"id": "ow0352",
 "type": "rect",
 "name": "Round 7 right cell",
 "x": 805,
@@ -15968,7 +15998,7 @@
 }
 },
 {
-"id": "ow0352",
+"id": "ow0353",
 "type": "rect",
 "name": "Round 7 right won",
 "x": 805,
@@ -15994,7 +16024,7 @@
 }
 },
 {
-"id": "ow0353",
+"id": "ow0354",
 "type": "image",
 "name": "Round 7 right icon",
 "x": 810,
@@ -16020,7 +16050,7 @@
 }
 },
 {
-"id": "ow0354",
+"id": "ow0355",
 "type": "rect",
 "name": "Round 7 now",
 "x": 802,
@@ -16046,7 +16076,7 @@
 }
 },
 {
-"id": "ow0355",
+"id": "ow0356",
 "type": "rect",
 "name": "Round 8 left cell",
 "x": 842,
@@ -16072,7 +16102,7 @@
 }
 },
 {
-"id": "ow0356",
+"id": "ow0357",
 "type": "rect",
 "name": "Round 8 left won",
 "x": 842,
@@ -16098,7 +16128,7 @@
 }
 },
 {
-"id": "ow0357",
+"id": "ow0358",
 "type": "image",
 "name": "Round 8 left icon",
 "x": 847,
@@ -16124,7 +16154,7 @@
 }
 },
 {
-"id": "ow0358",
+"id": "ow0359",
 "type": "rect",
 "name": "Round 8 right cell",
 "x": 842,
@@ -16150,7 +16180,7 @@
 }
 },
 {
-"id": "ow0359",
+"id": "ow0360",
 "type": "rect",
 "name": "Round 8 right won",
 "x": 842,
@@ -16176,7 +16206,7 @@
 }
 },
 {
-"id": "ow0360",
+"id": "ow0361",
 "type": "image",
 "name": "Round 8 right icon",
 "x": 847,
@@ -16202,7 +16232,7 @@
 }
 },
 {
-"id": "ow0361",
+"id": "ow0362",
 "type": "rect",
 "name": "Round 8 now",
 "x": 839,
@@ -16228,7 +16258,7 @@
 }
 },
 {
-"id": "ow0362",
+"id": "ow0363",
 "type": "rect",
 "name": "Round 9 left cell",
 "x": 879,
@@ -16254,7 +16284,7 @@
 }
 },
 {
-"id": "ow0363",
+"id": "ow0364",
 "type": "rect",
 "name": "Round 9 left won",
 "x": 879,
@@ -16280,7 +16310,7 @@
 }
 },
 {
-"id": "ow0364",
+"id": "ow0365",
 "type": "image",
 "name": "Round 9 left icon",
 "x": 884,
@@ -16306,7 +16336,7 @@
 }
 },
 {
-"id": "ow0365",
+"id": "ow0366",
 "type": "rect",
 "name": "Round 9 right cell",
 "x": 879,
@@ -16332,7 +16362,7 @@
 }
 },
 {
-"id": "ow0366",
+"id": "ow0367",
 "type": "rect",
 "name": "Round 9 right won",
 "x": 879,
@@ -16358,7 +16388,7 @@
 }
 },
 {
-"id": "ow0367",
+"id": "ow0368",
 "type": "image",
 "name": "Round 9 right icon",
 "x": 884,
@@ -16384,7 +16414,7 @@
 }
 },
 {
-"id": "ow0368",
+"id": "ow0369",
 "type": "rect",
 "name": "Round 9 now",
 "x": 876,
@@ -16410,7 +16440,7 @@
 }
 },
 {
-"id": "ow0369",
+"id": "ow0370",
 "type": "rect",
 "name": "Round 10 left cell",
 "x": 916,
@@ -16436,7 +16466,7 @@
 }
 },
 {
-"id": "ow0370",
+"id": "ow0371",
 "type": "rect",
 "name": "Round 10 left won",
 "x": 916,
@@ -16462,7 +16492,7 @@
 }
 },
 {
-"id": "ow0371",
+"id": "ow0372",
 "type": "image",
 "name": "Round 10 left icon",
 "x": 921,
@@ -16488,7 +16518,7 @@
 }
 },
 {
-"id": "ow0372",
+"id": "ow0373",
 "type": "rect",
 "name": "Round 10 right cell",
 "x": 916,
@@ -16514,7 +16544,7 @@
 }
 },
 {
-"id": "ow0373",
+"id": "ow0374",
 "type": "rect",
 "name": "Round 10 right won",
 "x": 916,
@@ -16540,7 +16570,7 @@
 }
 },
 {
-"id": "ow0374",
+"id": "ow0375",
 "type": "image",
 "name": "Round 10 right icon",
 "x": 921,
@@ -16566,7 +16596,7 @@
 }
 },
 {
-"id": "ow0375",
+"id": "ow0376",
 "type": "rect",
 "name": "Round 10 now",
 "x": 913,
@@ -16592,7 +16622,7 @@
 }
 },
 {
-"id": "ow0376",
+"id": "ow0377",
 "type": "rect",
 "name": "Round 11 left cell",
 "x": 953,
@@ -16618,7 +16648,7 @@
 }
 },
 {
-"id": "ow0377",
+"id": "ow0378",
 "type": "rect",
 "name": "Round 11 left won",
 "x": 953,
@@ -16644,7 +16674,7 @@
 }
 },
 {
-"id": "ow0378",
+"id": "ow0379",
 "type": "image",
 "name": "Round 11 left icon",
 "x": 958,
@@ -16670,7 +16700,7 @@
 }
 },
 {
-"id": "ow0379",
+"id": "ow0380",
 "type": "rect",
 "name": "Round 11 right cell",
 "x": 953,
@@ -16696,7 +16726,7 @@
 }
 },
 {
-"id": "ow0380",
+"id": "ow0381",
 "type": "rect",
 "name": "Round 11 right won",
 "x": 953,
@@ -16722,7 +16752,7 @@
 }
 },
 {
-"id": "ow0381",
+"id": "ow0382",
 "type": "image",
 "name": "Round 11 right icon",
 "x": 958,
@@ -16748,7 +16778,7 @@
 }
 },
 {
-"id": "ow0382",
+"id": "ow0383",
 "type": "rect",
 "name": "Round 11 now",
 "x": 950,
@@ -16774,7 +16804,7 @@
 }
 },
 {
-"id": "ow0383",
+"id": "ow0384",
 "type": "rect",
 "name": "Round 12 left cell",
 "x": 990,
@@ -16800,7 +16830,7 @@
 }
 },
 {
-"id": "ow0384",
+"id": "ow0385",
 "type": "rect",
 "name": "Round 12 left won",
 "x": 990,
@@ -16826,7 +16856,7 @@
 }
 },
 {
-"id": "ow0385",
+"id": "ow0386",
 "type": "image",
 "name": "Round 12 left icon",
 "x": 995,
@@ -16852,7 +16882,7 @@
 }
 },
 {
-"id": "ow0386",
+"id": "ow0387",
 "type": "rect",
 "name": "Round 12 right cell",
 "x": 990,
@@ -16878,7 +16908,7 @@
 }
 },
 {
-"id": "ow0387",
+"id": "ow0388",
 "type": "rect",
 "name": "Round 12 right won",
 "x": 990,
@@ -16904,7 +16934,7 @@
 }
 },
 {
-"id": "ow0388",
+"id": "ow0389",
 "type": "image",
 "name": "Round 12 right icon",
 "x": 995,
@@ -16930,7 +16960,7 @@
 }
 },
 {
-"id": "ow0389",
+"id": "ow0390",
 "type": "rect",
 "name": "Round 12 now",
 "x": 987,
@@ -16956,7 +16986,7 @@
 }
 },
 {
-"id": "ow0390",
+"id": "ow0391",
 "type": "rect",
 "name": "Round 13 left cell",
 "x": 1039,
@@ -16982,7 +17012,7 @@
 }
 },
 {
-"id": "ow0391",
+"id": "ow0392",
 "type": "rect",
 "name": "Round 13 left won",
 "x": 1039,
@@ -17008,7 +17038,7 @@
 }
 },
 {
-"id": "ow0392",
+"id": "ow0393",
 "type": "image",
 "name": "Round 13 left icon",
 "x": 1044,
@@ -17034,7 +17064,7 @@
 }
 },
 {
-"id": "ow0393",
+"id": "ow0394",
 "type": "rect",
 "name": "Round 13 right cell",
 "x": 1039,
@@ -17060,7 +17090,7 @@
 }
 },
 {
-"id": "ow0394",
+"id": "ow0395",
 "type": "rect",
 "name": "Round 13 right won",
 "x": 1039,
@@ -17086,7 +17116,7 @@
 }
 },
 {
-"id": "ow0395",
+"id": "ow0396",
 "type": "image",
 "name": "Round 13 right icon",
 "x": 1044,
@@ -17112,7 +17142,7 @@
 }
 },
 {
-"id": "ow0396",
+"id": "ow0397",
 "type": "rect",
 "name": "Round 13 now",
 "x": 1036,
@@ -17138,7 +17168,7 @@
 }
 },
 {
-"id": "ow0397",
+"id": "ow0398",
 "type": "rect",
 "name": "Round 14 left cell",
 "x": 1076,
@@ -17164,7 +17194,7 @@
 }
 },
 {
-"id": "ow0398",
+"id": "ow0399",
 "type": "rect",
 "name": "Round 14 left won",
 "x": 1076,
@@ -17190,7 +17220,7 @@
 }
 },
 {
-"id": "ow0399",
+"id": "ow0400",
 "type": "image",
 "name": "Round 14 left icon",
 "x": 1081,
@@ -17216,7 +17246,7 @@
 }
 },
 {
-"id": "ow0400",
+"id": "ow0401",
 "type": "rect",
 "name": "Round 14 right cell",
 "x": 1076,
@@ -17242,7 +17272,7 @@
 }
 },
 {
-"id": "ow0401",
+"id": "ow0402",
 "type": "rect",
 "name": "Round 14 right won",
 "x": 1076,
@@ -17268,7 +17298,7 @@
 }
 },
 {
-"id": "ow0402",
+"id": "ow0403",
 "type": "image",
 "name": "Round 14 right icon",
 "x": 1081,
@@ -17294,7 +17324,7 @@
 }
 },
 {
-"id": "ow0403",
+"id": "ow0404",
 "type": "rect",
 "name": "Round 14 now",
 "x": 1073,
@@ -17320,7 +17350,7 @@
 }
 },
 {
-"id": "ow0404",
+"id": "ow0405",
 "type": "rect",
 "name": "Round 15 left cell",
 "x": 1113,
@@ -17346,7 +17376,7 @@
 }
 },
 {
-"id": "ow0405",
+"id": "ow0406",
 "type": "rect",
 "name": "Round 15 left won",
 "x": 1113,
@@ -17372,7 +17402,7 @@
 }
 },
 {
-"id": "ow0406",
+"id": "ow0407",
 "type": "image",
 "name": "Round 15 left icon",
 "x": 1118,
@@ -17398,7 +17428,7 @@
 }
 },
 {
-"id": "ow0407",
+"id": "ow0408",
 "type": "rect",
 "name": "Round 15 right cell",
 "x": 1113,
@@ -17424,7 +17454,7 @@
 }
 },
 {
-"id": "ow0408",
+"id": "ow0409",
 "type": "rect",
 "name": "Round 15 right won",
 "x": 1113,
@@ -17450,7 +17480,7 @@
 }
 },
 {
-"id": "ow0409",
+"id": "ow0410",
 "type": "image",
 "name": "Round 15 right icon",
 "x": 1118,
@@ -17476,7 +17506,7 @@
 }
 },
 {
-"id": "ow0410",
+"id": "ow0411",
 "type": "rect",
 "name": "Round 15 now",
 "x": 1110,
@@ -17502,7 +17532,7 @@
 }
 },
 {
-"id": "ow0411",
+"id": "ow0412",
 "type": "rect",
 "name": "Round 16 left cell",
 "x": 1150,
@@ -17528,7 +17558,7 @@
 }
 },
 {
-"id": "ow0412",
+"id": "ow0413",
 "type": "rect",
 "name": "Round 16 left won",
 "x": 1150,
@@ -17554,7 +17584,7 @@
 }
 },
 {
-"id": "ow0413",
+"id": "ow0414",
 "type": "image",
 "name": "Round 16 left icon",
 "x": 1155,
@@ -17580,7 +17610,7 @@
 }
 },
 {
-"id": "ow0414",
+"id": "ow0415",
 "type": "rect",
 "name": "Round 16 right cell",
 "x": 1150,
@@ -17606,7 +17636,7 @@
 }
 },
 {
-"id": "ow0415",
+"id": "ow0416",
 "type": "rect",
 "name": "Round 16 right won",
 "x": 1150,
@@ -17632,7 +17662,7 @@
 }
 },
 {
-"id": "ow0416",
+"id": "ow0417",
 "type": "image",
 "name": "Round 16 right icon",
 "x": 1155,
@@ -17658,7 +17688,7 @@
 }
 },
 {
-"id": "ow0417",
+"id": "ow0418",
 "type": "rect",
 "name": "Round 16 now",
 "x": 1147,
@@ -17684,7 +17714,7 @@
 }
 },
 {
-"id": "ow0418",
+"id": "ow0419",
 "type": "rect",
 "name": "Round 17 left cell",
 "x": 1187,
@@ -17710,7 +17740,7 @@
 }
 },
 {
-"id": "ow0419",
+"id": "ow0420",
 "type": "rect",
 "name": "Round 17 left won",
 "x": 1187,
@@ -17736,7 +17766,7 @@
 }
 },
 {
-"id": "ow0420",
+"id": "ow0421",
 "type": "image",
 "name": "Round 17 left icon",
 "x": 1192,
@@ -17762,7 +17792,7 @@
 }
 },
 {
-"id": "ow0421",
+"id": "ow0422",
 "type": "rect",
 "name": "Round 17 right cell",
 "x": 1187,
@@ -17788,7 +17818,7 @@
 }
 },
 {
-"id": "ow0422",
+"id": "ow0423",
 "type": "rect",
 "name": "Round 17 right won",
 "x": 1187,
@@ -17814,7 +17844,7 @@
 }
 },
 {
-"id": "ow0423",
+"id": "ow0424",
 "type": "image",
 "name": "Round 17 right icon",
 "x": 1192,
@@ -17840,7 +17870,7 @@
 }
 },
 {
-"id": "ow0424",
+"id": "ow0425",
 "type": "rect",
 "name": "Round 17 now",
 "x": 1184,
@@ -17866,7 +17896,7 @@
 }
 },
 {
-"id": "ow0425",
+"id": "ow0426",
 "type": "rect",
 "name": "Round 18 left cell",
 "x": 1224,
@@ -17892,7 +17922,7 @@
 }
 },
 {
-"id": "ow0426",
+"id": "ow0427",
 "type": "rect",
 "name": "Round 18 left won",
 "x": 1224,
@@ -17918,7 +17948,7 @@
 }
 },
 {
-"id": "ow0427",
+"id": "ow0428",
 "type": "image",
 "name": "Round 18 left icon",
 "x": 1229,
@@ -17944,7 +17974,7 @@
 }
 },
 {
-"id": "ow0428",
+"id": "ow0429",
 "type": "rect",
 "name": "Round 18 right cell",
 "x": 1224,
@@ -17970,7 +18000,7 @@
 }
 },
 {
-"id": "ow0429",
+"id": "ow0430",
 "type": "rect",
 "name": "Round 18 right won",
 "x": 1224,
@@ -17996,7 +18026,7 @@
 }
 },
 {
-"id": "ow0430",
+"id": "ow0431",
 "type": "image",
 "name": "Round 18 right icon",
 "x": 1229,
@@ -18022,7 +18052,7 @@
 }
 },
 {
-"id": "ow0431",
+"id": "ow0432",
 "type": "rect",
 "name": "Round 18 now",
 "x": 1221,
@@ -18048,7 +18078,7 @@
 }
 },
 {
-"id": "ow0432",
+"id": "ow0433",
 "type": "rect",
 "name": "Round 19 left cell",
 "x": 1261,
@@ -18074,7 +18104,7 @@
 }
 },
 {
-"id": "ow0433",
+"id": "ow0434",
 "type": "rect",
 "name": "Round 19 left won",
 "x": 1261,
@@ -18100,7 +18130,7 @@
 }
 },
 {
-"id": "ow0434",
+"id": "ow0435",
 "type": "image",
 "name": "Round 19 left icon",
 "x": 1266,
@@ -18126,7 +18156,7 @@
 }
 },
 {
-"id": "ow0435",
+"id": "ow0436",
 "type": "rect",
 "name": "Round 19 right cell",
 "x": 1261,
@@ -18152,7 +18182,7 @@
 }
 },
 {
-"id": "ow0436",
+"id": "ow0437",
 "type": "rect",
 "name": "Round 19 right won",
 "x": 1261,
@@ -18178,7 +18208,7 @@
 }
 },
 {
-"id": "ow0437",
+"id": "ow0438",
 "type": "image",
 "name": "Round 19 right icon",
 "x": 1266,
@@ -18204,7 +18234,7 @@
 }
 },
 {
-"id": "ow0438",
+"id": "ow0439",
 "type": "rect",
 "name": "Round 19 now",
 "x": 1258,
@@ -18230,7 +18260,7 @@
 }
 },
 {
-"id": "ow0439",
+"id": "ow0440",
 "type": "rect",
 "name": "Round 20 left cell",
 "x": 1298,
@@ -18256,7 +18286,7 @@
 }
 },
 {
-"id": "ow0440",
+"id": "ow0441",
 "type": "rect",
 "name": "Round 20 left won",
 "x": 1298,
@@ -18282,7 +18312,7 @@
 }
 },
 {
-"id": "ow0441",
+"id": "ow0442",
 "type": "image",
 "name": "Round 20 left icon",
 "x": 1303,
@@ -18308,7 +18338,7 @@
 }
 },
 {
-"id": "ow0442",
+"id": "ow0443",
 "type": "rect",
 "name": "Round 20 right cell",
 "x": 1298,
@@ -18334,7 +18364,7 @@
 }
 },
 {
-"id": "ow0443",
+"id": "ow0444",
 "type": "rect",
 "name": "Round 20 right won",
 "x": 1298,
@@ -18360,7 +18390,7 @@
 }
 },
 {
-"id": "ow0444",
+"id": "ow0445",
 "type": "image",
 "name": "Round 20 right icon",
 "x": 1303,
@@ -18386,7 +18416,7 @@
 }
 },
 {
-"id": "ow0445",
+"id": "ow0446",
 "type": "rect",
 "name": "Round 20 now",
 "x": 1295,
@@ -18412,7 +18442,7 @@
 }
 },
 {
-"id": "ow0446",
+"id": "ow0447",
 "type": "rect",
 "name": "Round 21 left cell",
 "x": 1335,
@@ -18438,7 +18468,7 @@
 }
 },
 {
-"id": "ow0447",
+"id": "ow0448",
 "type": "rect",
 "name": "Round 21 left won",
 "x": 1335,
@@ -18464,7 +18494,7 @@
 }
 },
 {
-"id": "ow0448",
+"id": "ow0449",
 "type": "image",
 "name": "Round 21 left icon",
 "x": 1340,
@@ -18490,7 +18520,7 @@
 }
 },
 {
-"id": "ow0449",
+"id": "ow0450",
 "type": "rect",
 "name": "Round 21 right cell",
 "x": 1335,
@@ -18516,7 +18546,7 @@
 }
 },
 {
-"id": "ow0450",
+"id": "ow0451",
 "type": "rect",
 "name": "Round 21 right won",
 "x": 1335,
@@ -18542,7 +18572,7 @@
 }
 },
 {
-"id": "ow0451",
+"id": "ow0452",
 "type": "image",
 "name": "Round 21 right icon",
 "x": 1340,
@@ -18568,7 +18598,7 @@
 }
 },
 {
-"id": "ow0452",
+"id": "ow0453",
 "type": "rect",
 "name": "Round 21 now",
 "x": 1332,
@@ -18594,7 +18624,7 @@
 }
 },
 {
-"id": "ow0453",
+"id": "ow0454",
 "type": "rect",
 "name": "Round 22 left cell",
 "x": 1372,
@@ -18620,7 +18650,7 @@
 }
 },
 {
-"id": "ow0454",
+"id": "ow0455",
 "type": "rect",
 "name": "Round 22 left won",
 "x": 1372,
@@ -18646,7 +18676,7 @@
 }
 },
 {
-"id": "ow0455",
+"id": "ow0456",
 "type": "image",
 "name": "Round 22 left icon",
 "x": 1377,
@@ -18672,7 +18702,7 @@
 }
 },
 {
-"id": "ow0456",
+"id": "ow0457",
 "type": "rect",
 "name": "Round 22 right cell",
 "x": 1372,
@@ -18698,7 +18728,7 @@
 }
 },
 {
-"id": "ow0457",
+"id": "ow0458",
 "type": "rect",
 "name": "Round 22 right won",
 "x": 1372,
@@ -18724,7 +18754,7 @@
 }
 },
 {
-"id": "ow0458",
+"id": "ow0459",
 "type": "image",
 "name": "Round 22 right icon",
 "x": 1377,
@@ -18750,7 +18780,7 @@
 }
 },
 {
-"id": "ow0459",
+"id": "ow0460",
 "type": "rect",
 "name": "Round 22 now",
 "x": 1369,
@@ -18776,7 +18806,7 @@
 }
 },
 {
-"id": "ow0460",
+"id": "ow0461",
 "type": "rect",
 "name": "Round 23 left cell",
 "x": 1409,
@@ -18802,7 +18832,7 @@
 }
 },
 {
-"id": "ow0461",
+"id": "ow0462",
 "type": "rect",
 "name": "Round 23 left won",
 "x": 1409,
@@ -18828,7 +18858,7 @@
 }
 },
 {
-"id": "ow0462",
+"id": "ow0463",
 "type": "image",
 "name": "Round 23 left icon",
 "x": 1414,
@@ -18854,7 +18884,7 @@
 }
 },
 {
-"id": "ow0463",
+"id": "ow0464",
 "type": "rect",
 "name": "Round 23 right cell",
 "x": 1409,
@@ -18880,7 +18910,7 @@
 }
 },
 {
-"id": "ow0464",
+"id": "ow0465",
 "type": "rect",
 "name": "Round 23 right won",
 "x": 1409,
@@ -18906,7 +18936,7 @@
 }
 },
 {
-"id": "ow0465",
+"id": "ow0466",
 "type": "image",
 "name": "Round 23 right icon",
 "x": 1414,
@@ -18932,7 +18962,7 @@
 }
 },
 {
-"id": "ow0466",
+"id": "ow0467",
 "type": "rect",
 "name": "Round 23 now",
 "x": 1406,
@@ -18958,7 +18988,7 @@
 }
 },
 {
-"id": "ow0467",
+"id": "ow0468",
 "type": "rect",
 "name": "Round 24 left cell",
 "x": 1446,
@@ -18984,7 +19014,7 @@
 }
 },
 {
-"id": "ow0468",
+"id": "ow0469",
 "type": "rect",
 "name": "Round 24 left won",
 "x": 1446,
@@ -19010,7 +19040,7 @@
 }
 },
 {
-"id": "ow0469",
+"id": "ow0470",
 "type": "image",
 "name": "Round 24 left icon",
 "x": 1451,
@@ -19036,7 +19066,7 @@
 }
 },
 {
-"id": "ow0470",
+"id": "ow0471",
 "type": "rect",
 "name": "Round 24 right cell",
 "x": 1446,
@@ -19062,7 +19092,7 @@
 }
 },
 {
-"id": "ow0471",
+"id": "ow0472",
 "type": "rect",
 "name": "Round 24 right won",
 "x": 1446,
@@ -19088,7 +19118,7 @@
 }
 },
 {
-"id": "ow0472",
+"id": "ow0473",
 "type": "image",
 "name": "Round 24 right icon",
 "x": 1451,
@@ -19114,7 +19144,7 @@
 }
 },
 {
-"id": "ow0473",
+"id": "ow0474",
 "type": "rect",
 "name": "Round 24 now",
 "x": 1443,
@@ -19147,7 +19177,7 @@
 "on": true,
 "layers": [
 {
-"id": "ow0716",
+"id": "ow0717",
 "type": "image",
 "name": "bg picture",
 "x": 570,
@@ -19171,7 +19201,7 @@
 }
 },
 {
-"id": "ow0717",
+"id": "ow0718",
 "type": "image",
 "name": "crest picture",
 "x": 919.1,
@@ -19195,7 +19225,7 @@
 }
 },
 {
-"id": "ow0718",
+"id": "ow0719",
 "type": "text",
 "name": "i text",
 "x": 733.2,
@@ -19226,7 +19256,7 @@
 }
 },
 {
-"id": "ow0719",
+"id": "ow0720",
 "type": "rect",
 "name": "bar",
 "x": 627.5,
@@ -19249,7 +19279,7 @@
 }
 },
 {
-"id": "ow0720",
+"id": "ow0721",
 "type": "text",
 "name": "Round win line",
 "x": 627.5,
