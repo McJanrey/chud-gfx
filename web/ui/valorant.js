@@ -30,7 +30,8 @@ export function sourcePicker(cur, onPick) {
     onPick(JSON.parse(o.dataset.src));
     setTimeout(look, 600);
   } });
-  const pic = el("img", { class: "screen-pic", alt: "What the reader sees now" });
+  // (nothing to show, e.g. the game isn't open: an empty box, not a broken picture)
+  const pic = el("img", { class: "screen-pic", alt: "", onerror: e => { e.target.style.visibility = "hidden"; }, onload: e => { e.target.style.visibility = ""; } });
   const look = () => { pic.src = `/api/val/reader/frame.jpg?t=${Date.now()}`; };
   const fill = () => {
     const opts = [["Find VALORANT by itself (any screen)", { kind: "auto" }]];
