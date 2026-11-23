@@ -12,7 +12,7 @@
 "y": 0,
 "w": 501,
 "h": 1,
-"fill": "linear-gradient(90deg, {{VALORANT!Left color}}, rgb(255, 255, 255) 50%, {{VALORANT!Right color}})",
+"fill": "linear-gradient(90deg, {{Global!Left color}}, rgb(255, 255, 255) 50%, {{Global!Right color}})",
 "show": "{{VALORANT!Condensed}}",
 "anim": {
 "in": {
@@ -35,7 +35,7 @@
 "y": 71,
 "w": 501,
 "h": 1,
-"fill": "linear-gradient(90deg, {{VALORANT!Left color}}, rgb(255, 255, 255) 50%, {{VALORANT!Right color}})",
+"fill": "linear-gradient(90deg, {{Global!Left color}}, rgb(255, 255, 255) 50%, {{Global!Right color}})",
 "show": "{{VALORANT!Condensed}}",
 "anim": {
 "in": {
@@ -58,7 +58,7 @@
 "y": 0,
 "w": 180,
 "h": 72,
-"fill": "linear-gradient(90deg, {{VALORANT!Left color}}, rgb(255, 255, 255))",
+"fill": "linear-gradient(90deg, {{Global!Left color}}, rgb(255, 255, 255))",
 "radius": "10 0 0 10",
 "show": "{{VALORANT!Condensed}}",
 "anim": {
@@ -106,7 +106,7 @@
 "y": 0,
 "w": 9,
 "h": 72,
-"fill": "{{VALORANT!Left color}}",
+"fill": "{{Global!Left color}}",
 "show": "{{VALORANT!Condensed}}",
 "anim": {
 "in": {
@@ -129,7 +129,7 @@
 "y": 0,
 "w": 181,
 "h": 72,
-"fill": "linear-gradient(270deg, {{VALORANT!Right color}}, rgb(255, 255, 255))",
+"fill": "linear-gradient(270deg, {{Global!Right color}}, rgb(255, 255, 255))",
 "radius": "0 10 10 0",
 "show": "{{VALORANT!Condensed}}",
 "anim": {
@@ -177,7 +177,7 @@
 "y": 0,
 "w": 9,
 "h": 72,
-"fill": "{{VALORANT!Right color}}",
+"fill": "{{Global!Right color}}",
 "show": "{{VALORANT!Condensed}}",
 "anim": {
 "in": {
@@ -200,7 +200,7 @@
 "y": 11,
 "w": 50,
 "h": 50,
-"src": "{{VALORANT!Left logo}}",
+"src": "{{Global!Left logo}}",
 "fit": "contain",
 "show": "{{VALORANT!Condensed}}",
 "anim": {
@@ -224,7 +224,7 @@
 "y": 11,
 "w": 50,
 "h": 50,
-"src": "{{VALORANT!Right logo}}",
+"src": "{{Global!Right logo}}",
 "fit": "contain",
 "show": "{{VALORANT!Condensed}}",
 "anim": {
@@ -255,7 +255,7 @@
 "y": 0,
 "w": 670,
 "h": 1,
-"fill": "linear-gradient(90deg, {{VALORANT!Left color}}, rgb(255, 255, 255) 50%, {{VALORANT!Right color}})",
+"fill": "linear-gradient(90deg, {{Global!Left color}}, rgb(255, 255, 255) 50%, {{Global!Right color}})",
 "show": "{{VALORANT!Names}}",
 "anim": {
 "in": {
@@ -278,7 +278,7 @@
 "y": 71,
 "w": 670,
 "h": 1,
-"fill": "linear-gradient(90deg, {{VALORANT!Left color}}, rgb(255, 255, 255) 50%, {{VALORANT!Right color}})",
+"fill": "linear-gradient(90deg, {{Global!Left color}}, rgb(255, 255, 255) 50%, {{Global!Right color}})",
 "show": "{{VALORANT!Names}}",
 "anim": {
 "in": {
@@ -301,7 +301,7 @@
 "y": 0,
 "w": 265,
 "h": 72,
-"fill": "linear-gradient(90deg, {{VALORANT!Left color}}, rgb(255, 255, 255))",
+"fill": "linear-gradient(90deg, {{Global!Left color}}, rgb(255, 255, 255))",
 "radius": "10 0 0 10",
 "show": "{{VALORANT!Names}}",
 "anim": {
@@ -349,7 +349,7 @@
 "y": 0,
 "w": 10,
 "h": 72,
-"fill": "{{VALORANT!Left color}}",
+"fill": "{{Global!Left color}}",
 "show": "{{VALORANT!Names}}",
 "anim": {
 "in": {
@@ -372,7 +372,7 @@
 "y": 0,
 "w": 265,
 "h": 72,
-"fill": "linear-gradient(270deg, {{VALORANT!Right color}}, rgb(255, 255, 255))",
+"fill": "linear-gradient(270deg, {{Global!Right color}}, rgb(255, 255, 255))",
 "radius": "0 10 10 0",
 "show": "{{VALORANT!Names}}",
 "anim": {
@@ -420,7 +420,7 @@
 "y": 0,
 "w": 10,
 "h": 72,
-"fill": "{{VALORANT!Right color}}",
+"fill": "{{Global!Right color}}",
 "show": "{{VALORANT!Names}}",
 "anim": {
 "in": {
@@ -489,7 +489,7 @@
 "y": 18,
 "w": 37,
 "h": 37,
-"src": "{{VALORANT!Left logo}}",
+"src": "{{Global!Left logo}}",
 "fit": "contain",
 "show": "{{VALORANT!Names}}",
 "anim": {
@@ -513,7 +513,7 @@
 "y": 18,
 "w": 37,
 "h": 37,
-"src": "{{VALORANT!Right logo}}",
+"src": "{{Global!Right logo}}",
 "fit": "contain",
 "show": "{{VALORANT!Names}}",
 "anim": {
@@ -537,14 +537,14 @@
 "y": 15.6,
 "w": 100,
 "h": 32,
-"text": "{{VALORANT!Left tricode}}",
+"text": "{{Global!Left short}}",
 "font": "Tungsten-Bold",
 "size": 32.0,
 "weight": 400,
 "color": "rgb(255, 255, 255)",
 "align": "center",
 "valign": "middle",
-"caps": false,
+"caps": true,
 "fit": "shrink",
 "show": "{{VALORANT!Names}}",
 "anim": {
@@ -568,14 +568,14 @@
 "y": 44.3,
 "w": 110,
 "h": 15,
-"text": "{{VALORANT!Left full name}}",
+"text": "{{Global!Left name}}",
 "font": "DIN2014-Narrow-Bold",
 "size": 15.0,
 "weight": 400,
 "color": "rgb(255, 255, 255)",
 "align": "center",
 "valign": "middle",
-"caps": false,
+"caps": true,
 "fit": "shrink",
 "show": "{{VALORANT!Names}}",
 "anim": {
@@ -599,14 +599,14 @@
 "y": 15.6,
 "w": 100,
 "h": 32,
-"text": "{{VALORANT!Right tricode}}",
+"text": "{{Global!Right short}}",
 "font": "Tungsten-Bold",
 "size": 32.0,
 "weight": 400,
 "color": "rgb(255, 255, 255)",
 "align": "center",
 "valign": "middle",
-"caps": false,
+"caps": true,
 "fit": "shrink",
 "show": "{{VALORANT!Names}}",
 "anim": {
@@ -630,14 +630,14 @@
 "y": 44.3,
 "w": 110,
 "h": 15,
-"text": "{{VALORANT!Right full name}}",
+"text": "{{Global!Right name}}",
 "font": "DIN2014-Narrow-Bold",
 "size": 15.0,
 "weight": 400,
 "color": "rgb(255, 255, 255)",
 "align": "center",
 "valign": "middle",
-"caps": false,
+"caps": true,
 "fit": "shrink",
 "show": "{{VALORANT!Names}}",
 "anim": {
@@ -755,7 +755,7 @@
 "y": 22,
 "w": 10,
 "h": 10,
-"fill": "{{VALORANT!Left color}}",
+"fill": "{{Global!Left color}}",
 "radius": 5.0,
 "stroke": "rgb(255, 255, 255)",
 "strokeWidth": 1.0,
@@ -897,7 +897,7 @@
 "y": 6,
 "w": 95,
 "h": 65,
-"src": "/library/owen-hud/assets/spike-default-bg.png",
+"src": "assets/hud/ui/spike-default-bg.png",
 "fit": "fill",
 "show": "{{VALORANT!Planted}}",
 "anim": {
@@ -921,7 +921,7 @@
 "y": 5,
 "w": 70,
 "h": 70,
-"src": "/library/owen-hud/assets/spike-default.png",
+"src": "assets/hud/ui/spike-default.png",
 "fit": "fill",
 "show": "{{VALORANT!Planted}}",
 "anim": {
@@ -945,7 +945,7 @@
 "y": 5,
 "w": 70,
 "h": 70,
-"src": "/library/owen-hud/assets/spike-default.png",
+"src": "assets/hud/ui/spike-default.png",
 "fit": "fill",
 "show": "{{VALORANT!Planted}}",
 "anim": {
@@ -1032,7 +1032,7 @@
 "y": 551,
 "w": 51,
 "h": 51,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 1 agent file}}/{{VALORANT!Left 1 agent file}}.png",
+"src": "assets/hud/agents/{{VALORANT!Left 1 agent file}}/{{VALORANT!Left 1 agent file}}.png",
 "fit": "cover",
 "radius": "25 0 25 0",
 "show": "{{VALORANT!Left 1 down}}",
@@ -1085,7 +1085,7 @@
 "y": 551,
 "w": 51,
 "h": 51,
-"fill": "{{VALORANT!Left color}}",
+"fill": "{{Global!Left color}}",
 "radius": "25 0 25 0",
 "stroke": "rgb(255, 255, 255)",
 "strokeWidth": 1.0,
@@ -1112,7 +1112,7 @@
 "y": 551,
 "w": 51,
 "h": 51,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 1 agent file}}/{{VALORANT!Left 1 agent file}}.png",
+"src": "assets/hud/agents/{{VALORANT!Left 1 agent file}}/{{VALORANT!Left 1 agent file}}.png",
 "fit": "cover",
 "radius": "25 0 25 0",
 "show": "{{VALORANT!Left 1 up}}",
@@ -1170,7 +1170,7 @@
 "y": 566,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 1 agent file}}/C.png",
+"src": "assets/hud/agents/{{VALORANT!Left 1 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 1 up}}",
 "anim": {
@@ -1220,7 +1220,7 @@
 "y": 566,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 1 agent file}}/Q.png",
+"src": "assets/hud/agents/{{VALORANT!Left 1 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 1 up}}",
 "anim": {
@@ -1270,7 +1270,7 @@
 "y": 566,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 1 agent file}}/E.png",
+"src": "assets/hud/agents/{{VALORANT!Left 1 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 1 up}}",
 "anim": {
@@ -1345,7 +1345,7 @@
 "y": 567.5,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 1 agent file}}/X.png",
+"src": "assets/hud/agents/{{VALORANT!Left 1 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Left 1 here}}",
@@ -1403,7 +1403,7 @@
 "y": 608.5,
 "w": 15,
 "h": 15,
-"src": "/library/owen-hud/layers/140ee53748ae.svg",
+"src": "assets/hud/layers/140ee53748ae.svg",
 "fit": "fill",
 "show": "{{VALORANT!Left 1 down}}",
 "anim": {
@@ -1460,7 +1460,7 @@
 "y": 608.5,
 "w": 15,
 "h": 15,
-"src": "/library/owen-hud/layers/140ee53748ae.svg",
+"src": "assets/hud/layers/140ee53748ae.svg",
 "fit": "fill",
 "show": "{{VALORANT!Left 1 up}}",
 "anim": {
@@ -1517,7 +1517,7 @@
 "y": 607,
 "w": 62,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Left 1 weapon file}}.png",
+"src": "assets/hud/guns/{{VALORANT!Left 1 weapon file}}.png",
 "fit": "contain",
 "pic": {
 "flipX": true
@@ -1675,7 +1675,7 @@
 "y": 557.8,
 "w": 18,
 "h": 16,
-"src": "/library/owen-hud/assets/spike.png",
+"src": "assets/hud/ui/spike.png",
 "fit": "contain",
 "recolor": "#000000",
 "show": "{{VALORANT!Left 1 carrying}}",
@@ -1748,7 +1748,7 @@
 "y": 663.8,
 "w": 18,
 "h": 16,
-"src": "/library/owen-hud/assets/spike.png",
+"src": "assets/hud/ui/spike.png",
 "fit": "contain",
 "recolor": "#000000",
 "show": "{{VALORANT!Left 2 carrying}}",
@@ -1821,7 +1821,7 @@
 "y": 769.8,
 "w": 18,
 "h": 16,
-"src": "/library/owen-hud/assets/spike.png",
+"src": "assets/hud/ui/spike.png",
 "fit": "contain",
 "recolor": "#000000",
 "show": "{{VALORANT!Left 3 carrying}}",
@@ -1894,7 +1894,7 @@
 "y": 875.8,
 "w": 18,
 "h": 16,
-"src": "/library/owen-hud/assets/spike.png",
+"src": "assets/hud/ui/spike.png",
 "fit": "contain",
 "recolor": "#000000",
 "show": "{{VALORANT!Left 4 carrying}}",
@@ -1967,7 +1967,7 @@
 "y": 981.8,
 "w": 18,
 "h": 16,
-"src": "/library/owen-hud/assets/spike.png",
+"src": "assets/hud/ui/spike.png",
 "fit": "contain",
 "recolor": "#000000",
 "show": "{{VALORANT!Left 5 carrying}}",
@@ -2040,7 +2040,7 @@
 "y": 557.8,
 "w": 18,
 "h": 16,
-"src": "/library/owen-hud/assets/spike.png",
+"src": "assets/hud/ui/spike.png",
 "fit": "contain",
 "recolor": "#000000",
 "show": "{{VALORANT!Right 1 carrying}}",
@@ -2113,7 +2113,7 @@
 "y": 663.8,
 "w": 18,
 "h": 16,
-"src": "/library/owen-hud/assets/spike.png",
+"src": "assets/hud/ui/spike.png",
 "fit": "contain",
 "recolor": "#000000",
 "show": "{{VALORANT!Right 2 carrying}}",
@@ -2186,7 +2186,7 @@
 "y": 769.8,
 "w": 18,
 "h": 16,
-"src": "/library/owen-hud/assets/spike.png",
+"src": "assets/hud/ui/spike.png",
 "fit": "contain",
 "recolor": "#000000",
 "show": "{{VALORANT!Right 3 carrying}}",
@@ -2259,7 +2259,7 @@
 "y": 875.8,
 "w": 18,
 "h": 16,
-"src": "/library/owen-hud/assets/spike.png",
+"src": "assets/hud/ui/spike.png",
 "fit": "contain",
 "recolor": "#000000",
 "show": "{{VALORANT!Right 4 carrying}}",
@@ -2332,7 +2332,7 @@
 "y": 981.8,
 "w": 18,
 "h": 16,
-"src": "/library/owen-hud/assets/spike.png",
+"src": "assets/hud/ui/spike.png",
 "fit": "contain",
 "recolor": "#000000",
 "show": "{{VALORANT!Right 5 carrying}}",
@@ -2411,7 +2411,7 @@
 "y": 657,
 "w": 51,
 "h": 51,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 2 agent file}}/{{VALORANT!Left 2 agent file}}.png",
+"src": "assets/hud/agents/{{VALORANT!Left 2 agent file}}/{{VALORANT!Left 2 agent file}}.png",
 "fit": "cover",
 "radius": "25 0 25 0",
 "show": "{{VALORANT!Left 2 down}}",
@@ -2464,7 +2464,7 @@
 "y": 657,
 "w": 51,
 "h": 51,
-"fill": "{{VALORANT!Left color}}",
+"fill": "{{Global!Left color}}",
 "radius": "25 0 25 0",
 "stroke": "rgb(255, 255, 255)",
 "strokeWidth": 1.0,
@@ -2491,7 +2491,7 @@
 "y": 657,
 "w": 51,
 "h": 51,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 2 agent file}}/{{VALORANT!Left 2 agent file}}.png",
+"src": "assets/hud/agents/{{VALORANT!Left 2 agent file}}/{{VALORANT!Left 2 agent file}}.png",
 "fit": "cover",
 "radius": "25 0 25 0",
 "show": "{{VALORANT!Left 2 up}}",
@@ -2549,7 +2549,7 @@
 "y": 672,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 2 agent file}}/C.png",
+"src": "assets/hud/agents/{{VALORANT!Left 2 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 2 up}}",
 "anim": {
@@ -2599,7 +2599,7 @@
 "y": 672,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 2 agent file}}/Q.png",
+"src": "assets/hud/agents/{{VALORANT!Left 2 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 2 up}}",
 "anim": {
@@ -2649,7 +2649,7 @@
 "y": 672,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 2 agent file}}/E.png",
+"src": "assets/hud/agents/{{VALORANT!Left 2 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 2 up}}",
 "anim": {
@@ -2724,7 +2724,7 @@
 "y": 673.5,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 2 agent file}}/X.png",
+"src": "assets/hud/agents/{{VALORANT!Left 2 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Left 2 here}}",
@@ -2782,7 +2782,7 @@
 "y": 714.5,
 "w": 15,
 "h": 15,
-"src": "/library/owen-hud/layers/140ee53748ae.svg",
+"src": "assets/hud/layers/140ee53748ae.svg",
 "fit": "fill",
 "show": "{{VALORANT!Left 2 down}}",
 "anim": {
@@ -2839,7 +2839,7 @@
 "y": 714.5,
 "w": 15,
 "h": 15,
-"src": "/library/owen-hud/layers/140ee53748ae.svg",
+"src": "assets/hud/layers/140ee53748ae.svg",
 "fit": "fill",
 "show": "{{VALORANT!Left 2 up}}",
 "anim": {
@@ -2896,7 +2896,7 @@
 "y": 713,
 "w": 62,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Left 2 weapon file}}.png",
+"src": "assets/hud/guns/{{VALORANT!Left 2 weapon file}}.png",
 "fit": "contain",
 "pic": {
 "flipX": true
@@ -3060,7 +3060,7 @@
 "y": 763,
 "w": 51,
 "h": 51,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 3 agent file}}/{{VALORANT!Left 3 agent file}}.png",
+"src": "assets/hud/agents/{{VALORANT!Left 3 agent file}}/{{VALORANT!Left 3 agent file}}.png",
 "fit": "cover",
 "radius": "25 0 25 0",
 "show": "{{VALORANT!Left 3 down}}",
@@ -3113,7 +3113,7 @@
 "y": 763,
 "w": 51,
 "h": 51,
-"fill": "{{VALORANT!Left color}}",
+"fill": "{{Global!Left color}}",
 "radius": "25 0 25 0",
 "stroke": "rgb(255, 255, 255)",
 "strokeWidth": 1.0,
@@ -3140,7 +3140,7 @@
 "y": 763,
 "w": 51,
 "h": 51,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 3 agent file}}/{{VALORANT!Left 3 agent file}}.png",
+"src": "assets/hud/agents/{{VALORANT!Left 3 agent file}}/{{VALORANT!Left 3 agent file}}.png",
 "fit": "cover",
 "radius": "25 0 25 0",
 "show": "{{VALORANT!Left 3 up}}",
@@ -3198,7 +3198,7 @@
 "y": 778,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 3 agent file}}/C.png",
+"src": "assets/hud/agents/{{VALORANT!Left 3 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 3 up}}",
 "anim": {
@@ -3248,7 +3248,7 @@
 "y": 778,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 3 agent file}}/Q.png",
+"src": "assets/hud/agents/{{VALORANT!Left 3 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 3 up}}",
 "anim": {
@@ -3298,7 +3298,7 @@
 "y": 778,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 3 agent file}}/E.png",
+"src": "assets/hud/agents/{{VALORANT!Left 3 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 3 up}}",
 "anim": {
@@ -3373,7 +3373,7 @@
 "y": 779.5,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 3 agent file}}/X.png",
+"src": "assets/hud/agents/{{VALORANT!Left 3 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Left 3 here}}",
@@ -3431,7 +3431,7 @@
 "y": 820.5,
 "w": 15,
 "h": 15,
-"src": "/library/owen-hud/layers/140ee53748ae.svg",
+"src": "assets/hud/layers/140ee53748ae.svg",
 "fit": "fill",
 "show": "{{VALORANT!Left 3 down}}",
 "anim": {
@@ -3488,7 +3488,7 @@
 "y": 820.5,
 "w": 15,
 "h": 15,
-"src": "/library/owen-hud/layers/140ee53748ae.svg",
+"src": "assets/hud/layers/140ee53748ae.svg",
 "fit": "fill",
 "show": "{{VALORANT!Left 3 up}}",
 "anim": {
@@ -3545,7 +3545,7 @@
 "y": 819,
 "w": 62,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Left 3 weapon file}}.png",
+"src": "assets/hud/guns/{{VALORANT!Left 3 weapon file}}.png",
 "fit": "contain",
 "pic": {
 "flipX": true
@@ -3709,7 +3709,7 @@
 "y": 869,
 "w": 51,
 "h": 51,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 4 agent file}}/{{VALORANT!Left 4 agent file}}.png",
+"src": "assets/hud/agents/{{VALORANT!Left 4 agent file}}/{{VALORANT!Left 4 agent file}}.png",
 "fit": "cover",
 "radius": "25 0 25 0",
 "show": "{{VALORANT!Left 4 down}}",
@@ -3762,7 +3762,7 @@
 "y": 869,
 "w": 51,
 "h": 51,
-"fill": "{{VALORANT!Left color}}",
+"fill": "{{Global!Left color}}",
 "radius": "25 0 25 0",
 "stroke": "rgb(255, 255, 255)",
 "strokeWidth": 1.0,
@@ -3789,7 +3789,7 @@
 "y": 869,
 "w": 51,
 "h": 51,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 4 agent file}}/{{VALORANT!Left 4 agent file}}.png",
+"src": "assets/hud/agents/{{VALORANT!Left 4 agent file}}/{{VALORANT!Left 4 agent file}}.png",
 "fit": "cover",
 "radius": "25 0 25 0",
 "show": "{{VALORANT!Left 4 up}}",
@@ -3847,7 +3847,7 @@
 "y": 884,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 4 agent file}}/C.png",
+"src": "assets/hud/agents/{{VALORANT!Left 4 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 4 up}}",
 "anim": {
@@ -3897,7 +3897,7 @@
 "y": 884,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 4 agent file}}/Q.png",
+"src": "assets/hud/agents/{{VALORANT!Left 4 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 4 up}}",
 "anim": {
@@ -3947,7 +3947,7 @@
 "y": 884,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 4 agent file}}/E.png",
+"src": "assets/hud/agents/{{VALORANT!Left 4 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 4 up}}",
 "anim": {
@@ -4022,7 +4022,7 @@
 "y": 885.5,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 4 agent file}}/X.png",
+"src": "assets/hud/agents/{{VALORANT!Left 4 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Left 4 here}}",
@@ -4080,7 +4080,7 @@
 "y": 926.5,
 "w": 15,
 "h": 15,
-"src": "/library/owen-hud/layers/140ee53748ae.svg",
+"src": "assets/hud/layers/140ee53748ae.svg",
 "fit": "fill",
 "show": "{{VALORANT!Left 4 down}}",
 "anim": {
@@ -4137,7 +4137,7 @@
 "y": 926.5,
 "w": 15,
 "h": 15,
-"src": "/library/owen-hud/layers/140ee53748ae.svg",
+"src": "assets/hud/layers/140ee53748ae.svg",
 "fit": "fill",
 "show": "{{VALORANT!Left 4 up}}",
 "anim": {
@@ -4194,7 +4194,7 @@
 "y": 925,
 "w": 62,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Left 4 weapon file}}.png",
+"src": "assets/hud/guns/{{VALORANT!Left 4 weapon file}}.png",
 "fit": "contain",
 "pic": {
 "flipX": true
@@ -4358,7 +4358,7 @@
 "y": 975,
 "w": 51,
 "h": 51,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 5 agent file}}/{{VALORANT!Left 5 agent file}}.png",
+"src": "assets/hud/agents/{{VALORANT!Left 5 agent file}}/{{VALORANT!Left 5 agent file}}.png",
 "fit": "cover",
 "radius": "25 0 25 0",
 "show": "{{VALORANT!Left 5 down}}",
@@ -4411,7 +4411,7 @@
 "y": 975,
 "w": 51,
 "h": 51,
-"fill": "{{VALORANT!Left color}}",
+"fill": "{{Global!Left color}}",
 "radius": "25 0 25 0",
 "stroke": "rgb(255, 255, 255)",
 "strokeWidth": 1.0,
@@ -4438,7 +4438,7 @@
 "y": 975,
 "w": 51,
 "h": 51,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 5 agent file}}/{{VALORANT!Left 5 agent file}}.png",
+"src": "assets/hud/agents/{{VALORANT!Left 5 agent file}}/{{VALORANT!Left 5 agent file}}.png",
 "fit": "cover",
 "radius": "25 0 25 0",
 "show": "{{VALORANT!Left 5 up}}",
@@ -4496,7 +4496,7 @@
 "y": 990,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 5 agent file}}/C.png",
+"src": "assets/hud/agents/{{VALORANT!Left 5 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 5 up}}",
 "anim": {
@@ -4546,7 +4546,7 @@
 "y": 990,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 5 agent file}}/Q.png",
+"src": "assets/hud/agents/{{VALORANT!Left 5 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 5 up}}",
 "anim": {
@@ -4596,7 +4596,7 @@
 "y": 990,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 5 agent file}}/E.png",
+"src": "assets/hud/agents/{{VALORANT!Left 5 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 5 up}}",
 "anim": {
@@ -4671,7 +4671,7 @@
 "y": 991.5,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 5 agent file}}/X.png",
+"src": "assets/hud/agents/{{VALORANT!Left 5 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Left 5 here}}",
@@ -4729,7 +4729,7 @@
 "y": 1032.5,
 "w": 15,
 "h": 15,
-"src": "/library/owen-hud/layers/140ee53748ae.svg",
+"src": "assets/hud/layers/140ee53748ae.svg",
 "fit": "fill",
 "show": "{{VALORANT!Left 5 down}}",
 "anim": {
@@ -4786,7 +4786,7 @@
 "y": 1032.5,
 "w": 15,
 "h": 15,
-"src": "/library/owen-hud/layers/140ee53748ae.svg",
+"src": "assets/hud/layers/140ee53748ae.svg",
 "fit": "fill",
 "show": "{{VALORANT!Left 5 up}}",
 "anim": {
@@ -4843,7 +4843,7 @@
 "y": 1031,
 "w": 30,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Left 5 weapon file}}.png",
+"src": "assets/hud/guns/{{VALORANT!Left 5 weapon file}}.png",
 "fit": "contain",
 "pic": {
 "flipX": true
@@ -5007,7 +5007,7 @@
 "y": 551,
 "w": 51,
 "h": 51,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 1 agent file}}/{{VALORANT!Right 1 agent file}}.png",
+"src": "assets/hud/agents/{{VALORANT!Right 1 agent file}}/{{VALORANT!Right 1 agent file}}.png",
 "fit": "cover",
 "radius": "25 0 25 0",
 "pic": {
@@ -5063,7 +5063,7 @@
 "y": 551,
 "w": 51,
 "h": 51,
-"fill": "{{VALORANT!Right color}}",
+"fill": "{{Global!Right color}}",
 "radius": "25 0 25 0",
 "stroke": "rgb(255, 255, 255)",
 "strokeWidth": 1.0,
@@ -5090,7 +5090,7 @@
 "y": 551,
 "w": 51,
 "h": 51,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 1 agent file}}/{{VALORANT!Right 1 agent file}}.png",
+"src": "assets/hud/agents/{{VALORANT!Right 1 agent file}}/{{VALORANT!Right 1 agent file}}.png",
 "fit": "cover",
 "radius": "25 0 25 0",
 "pic": {
@@ -5151,7 +5151,7 @@
 "y": 566,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 1 agent file}}/C.png",
+"src": "assets/hud/agents/{{VALORANT!Right 1 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 1 up}}",
 "anim": {
@@ -5201,7 +5201,7 @@
 "y": 566,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 1 agent file}}/Q.png",
+"src": "assets/hud/agents/{{VALORANT!Right 1 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 1 up}}",
 "anim": {
@@ -5251,7 +5251,7 @@
 "y": 566,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 1 agent file}}/E.png",
+"src": "assets/hud/agents/{{VALORANT!Right 1 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 1 up}}",
 "anim": {
@@ -5326,7 +5326,7 @@
 "y": 567.5,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 1 agent file}}/X.png",
+"src": "assets/hud/agents/{{VALORANT!Right 1 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Right 1 here}}",
@@ -5416,7 +5416,7 @@
 "y": 608.5,
 "w": 15,
 "h": 15,
-"src": "/library/owen-hud/layers/140ee53748ae.svg",
+"src": "assets/hud/layers/140ee53748ae.svg",
 "fit": "fill",
 "show": "{{VALORANT!Right 1 down}}",
 "anim": {
@@ -5473,7 +5473,7 @@
 "y": 608.5,
 "w": 15,
 "h": 15,
-"src": "/library/owen-hud/layers/140ee53748ae.svg",
+"src": "assets/hud/layers/140ee53748ae.svg",
 "fit": "fill",
 "show": "{{VALORANT!Right 1 up}}",
 "anim": {
@@ -5498,7 +5498,7 @@
 "y": 607,
 "w": 62,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Right 1 weapon file}}.png",
+"src": "assets/hud/guns/{{VALORANT!Right 1 weapon file}}.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 1 up}}",
 "anim": {
@@ -5659,7 +5659,7 @@
 "y": 657,
 "w": 51,
 "h": 51,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 2 agent file}}/{{VALORANT!Right 2 agent file}}.png",
+"src": "assets/hud/agents/{{VALORANT!Right 2 agent file}}/{{VALORANT!Right 2 agent file}}.png",
 "fit": "cover",
 "radius": "25 0 25 0",
 "pic": {
@@ -5715,7 +5715,7 @@
 "y": 657,
 "w": 51,
 "h": 51,
-"fill": "{{VALORANT!Right color}}",
+"fill": "{{Global!Right color}}",
 "radius": "25 0 25 0",
 "stroke": "rgb(255, 255, 255)",
 "strokeWidth": 1.0,
@@ -5742,7 +5742,7 @@
 "y": 657,
 "w": 51,
 "h": 51,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 2 agent file}}/{{VALORANT!Right 2 agent file}}.png",
+"src": "assets/hud/agents/{{VALORANT!Right 2 agent file}}/{{VALORANT!Right 2 agent file}}.png",
 "fit": "cover",
 "radius": "25 0 25 0",
 "pic": {
@@ -5803,7 +5803,7 @@
 "y": 672,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 2 agent file}}/C.png",
+"src": "assets/hud/agents/{{VALORANT!Right 2 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 2 up}}",
 "anim": {
@@ -5853,7 +5853,7 @@
 "y": 672,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 2 agent file}}/Q.png",
+"src": "assets/hud/agents/{{VALORANT!Right 2 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 2 up}}",
 "anim": {
@@ -5903,7 +5903,7 @@
 "y": 672,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 2 agent file}}/E.png",
+"src": "assets/hud/agents/{{VALORANT!Right 2 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 2 up}}",
 "anim": {
@@ -5978,7 +5978,7 @@
 "y": 673.5,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 2 agent file}}/X.png",
+"src": "assets/hud/agents/{{VALORANT!Right 2 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Right 2 here}}",
@@ -6068,7 +6068,7 @@
 "y": 714.5,
 "w": 15,
 "h": 15,
-"src": "/library/owen-hud/layers/140ee53748ae.svg",
+"src": "assets/hud/layers/140ee53748ae.svg",
 "fit": "fill",
 "show": "{{VALORANT!Right 2 down}}",
 "anim": {
@@ -6125,7 +6125,7 @@
 "y": 714.5,
 "w": 15,
 "h": 15,
-"src": "/library/owen-hud/layers/140ee53748ae.svg",
+"src": "assets/hud/layers/140ee53748ae.svg",
 "fit": "fill",
 "show": "{{VALORANT!Right 2 up}}",
 "anim": {
@@ -6150,7 +6150,7 @@
 "y": 713,
 "w": 62,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Right 2 weapon file}}.png",
+"src": "assets/hud/guns/{{VALORANT!Right 2 weapon file}}.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 2 up}}",
 "anim": {
@@ -6311,7 +6311,7 @@
 "y": 763,
 "w": 51,
 "h": 51,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 3 agent file}}/{{VALORANT!Right 3 agent file}}.png",
+"src": "assets/hud/agents/{{VALORANT!Right 3 agent file}}/{{VALORANT!Right 3 agent file}}.png",
 "fit": "cover",
 "radius": "25 0 25 0",
 "pic": {
@@ -6367,7 +6367,7 @@
 "y": 763,
 "w": 51,
 "h": 51,
-"fill": "{{VALORANT!Right color}}",
+"fill": "{{Global!Right color}}",
 "radius": "25 0 25 0",
 "stroke": "rgb(255, 255, 255)",
 "strokeWidth": 1.0,
@@ -6394,7 +6394,7 @@
 "y": 763,
 "w": 51,
 "h": 51,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 3 agent file}}/{{VALORANT!Right 3 agent file}}.png",
+"src": "assets/hud/agents/{{VALORANT!Right 3 agent file}}/{{VALORANT!Right 3 agent file}}.png",
 "fit": "cover",
 "radius": "25 0 25 0",
 "pic": {
@@ -6455,7 +6455,7 @@
 "y": 778,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 3 agent file}}/C.png",
+"src": "assets/hud/agents/{{VALORANT!Right 3 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 3 up}}",
 "anim": {
@@ -6505,7 +6505,7 @@
 "y": 778,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 3 agent file}}/Q.png",
+"src": "assets/hud/agents/{{VALORANT!Right 3 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 3 up}}",
 "anim": {
@@ -6555,7 +6555,7 @@
 "y": 778,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 3 agent file}}/E.png",
+"src": "assets/hud/agents/{{VALORANT!Right 3 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 3 up}}",
 "anim": {
@@ -6630,7 +6630,7 @@
 "y": 779.5,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 3 agent file}}/X.png",
+"src": "assets/hud/agents/{{VALORANT!Right 3 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Right 3 here}}",
@@ -6720,7 +6720,7 @@
 "y": 820.5,
 "w": 15,
 "h": 15,
-"src": "/library/owen-hud/layers/140ee53748ae.svg",
+"src": "assets/hud/layers/140ee53748ae.svg",
 "fit": "fill",
 "show": "{{VALORANT!Right 3 down}}",
 "anim": {
@@ -6777,7 +6777,7 @@
 "y": 820.5,
 "w": 15,
 "h": 15,
-"src": "/library/owen-hud/layers/140ee53748ae.svg",
+"src": "assets/hud/layers/140ee53748ae.svg",
 "fit": "fill",
 "show": "{{VALORANT!Right 3 up}}",
 "anim": {
@@ -6802,7 +6802,7 @@
 "y": 819,
 "w": 62,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Right 3 weapon file}}.png",
+"src": "assets/hud/guns/{{VALORANT!Right 3 weapon file}}.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 3 up}}",
 "anim": {
@@ -6963,7 +6963,7 @@
 "y": 869,
 "w": 51,
 "h": 51,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 4 agent file}}/{{VALORANT!Right 4 agent file}}.png",
+"src": "assets/hud/agents/{{VALORANT!Right 4 agent file}}/{{VALORANT!Right 4 agent file}}.png",
 "fit": "cover",
 "radius": "25 0 25 0",
 "pic": {
@@ -7019,7 +7019,7 @@
 "y": 869,
 "w": 51,
 "h": 51,
-"fill": "{{VALORANT!Right color}}",
+"fill": "{{Global!Right color}}",
 "radius": "25 0 25 0",
 "stroke": "rgb(255, 255, 255)",
 "strokeWidth": 1.0,
@@ -7046,7 +7046,7 @@
 "y": 869,
 "w": 51,
 "h": 51,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 4 agent file}}/{{VALORANT!Right 4 agent file}}.png",
+"src": "assets/hud/agents/{{VALORANT!Right 4 agent file}}/{{VALORANT!Right 4 agent file}}.png",
 "fit": "cover",
 "radius": "25 0 25 0",
 "pic": {
@@ -7107,7 +7107,7 @@
 "y": 884,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 4 agent file}}/C.png",
+"src": "assets/hud/agents/{{VALORANT!Right 4 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 4 up}}",
 "anim": {
@@ -7157,7 +7157,7 @@
 "y": 884,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 4 agent file}}/Q.png",
+"src": "assets/hud/agents/{{VALORANT!Right 4 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 4 up}}",
 "anim": {
@@ -7207,7 +7207,7 @@
 "y": 884,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 4 agent file}}/E.png",
+"src": "assets/hud/agents/{{VALORANT!Right 4 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 4 up}}",
 "anim": {
@@ -7282,7 +7282,7 @@
 "y": 885.5,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 4 agent file}}/X.png",
+"src": "assets/hud/agents/{{VALORANT!Right 4 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Right 4 here}}",
@@ -7372,7 +7372,7 @@
 "y": 926.5,
 "w": 15,
 "h": 15,
-"src": "/library/owen-hud/layers/140ee53748ae.svg",
+"src": "assets/hud/layers/140ee53748ae.svg",
 "fit": "fill",
 "show": "{{VALORANT!Right 4 down}}",
 "anim": {
@@ -7429,7 +7429,7 @@
 "y": 926.5,
 "w": 15,
 "h": 15,
-"src": "/library/owen-hud/layers/140ee53748ae.svg",
+"src": "assets/hud/layers/140ee53748ae.svg",
 "fit": "fill",
 "show": "{{VALORANT!Right 4 up}}",
 "anim": {
@@ -7454,7 +7454,7 @@
 "y": 925,
 "w": 62,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Right 4 weapon file}}.png",
+"src": "assets/hud/guns/{{VALORANT!Right 4 weapon file}}.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 4 up}}",
 "anim": {
@@ -7615,7 +7615,7 @@
 "y": 975,
 "w": 51,
 "h": 51,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 5 agent file}}/{{VALORANT!Right 5 agent file}}.png",
+"src": "assets/hud/agents/{{VALORANT!Right 5 agent file}}/{{VALORANT!Right 5 agent file}}.png",
 "fit": "cover",
 "radius": "25 0 25 0",
 "pic": {
@@ -7671,7 +7671,7 @@
 "y": 975,
 "w": 51,
 "h": 51,
-"fill": "{{VALORANT!Right color}}",
+"fill": "{{Global!Right color}}",
 "radius": "25 0 25 0",
 "stroke": "rgb(255, 255, 255)",
 "strokeWidth": 1.0,
@@ -7698,7 +7698,7 @@
 "y": 975,
 "w": 51,
 "h": 51,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 5 agent file}}/{{VALORANT!Right 5 agent file}}.png",
+"src": "assets/hud/agents/{{VALORANT!Right 5 agent file}}/{{VALORANT!Right 5 agent file}}.png",
 "fit": "cover",
 "radius": "25 0 25 0",
 "pic": {
@@ -7759,7 +7759,7 @@
 "y": 990,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 5 agent file}}/C.png",
+"src": "assets/hud/agents/{{VALORANT!Right 5 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 5 up}}",
 "anim": {
@@ -7809,7 +7809,7 @@
 "y": 990,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 5 agent file}}/Q.png",
+"src": "assets/hud/agents/{{VALORANT!Right 5 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 5 up}}",
 "anim": {
@@ -7859,7 +7859,7 @@
 "y": 990,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 5 agent file}}/E.png",
+"src": "assets/hud/agents/{{VALORANT!Right 5 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 5 up}}",
 "anim": {
@@ -7934,7 +7934,7 @@
 "y": 991.5,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 5 agent file}}/X.png",
+"src": "assets/hud/agents/{{VALORANT!Right 5 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Right 5 here}}",
@@ -8024,7 +8024,7 @@
 "y": 1032.5,
 "w": 15,
 "h": 15,
-"src": "/library/owen-hud/layers/140ee53748ae.svg",
+"src": "assets/hud/layers/140ee53748ae.svg",
 "fit": "fill",
 "show": "{{VALORANT!Right 5 down}}",
 "anim": {
@@ -8081,7 +8081,7 @@
 "y": 1032.5,
 "w": 15,
 "h": 15,
-"src": "/library/owen-hud/layers/140ee53748ae.svg",
+"src": "assets/hud/layers/140ee53748ae.svg",
 "fit": "fill",
 "show": "{{VALORANT!Right 5 up}}",
 "anim": {
@@ -8106,7 +8106,7 @@
 "y": 1031,
 "w": 62,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Right 5 weapon file}}.png",
+"src": "assets/hud/guns/{{VALORANT!Right 5 weapon file}}.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 5 up}}",
 "anim": {
@@ -8245,7 +8245,7 @@
 "y": 838,
 "w": 175,
 "h": 175,
-"src": "{{VALORANT!Left logo}}",
+"src": "{{Global!Left logo}}",
 "fit": "contain",
 "opacity": 0.2,
 "show": "{{VALORANT!Buy phase}}",
@@ -8271,7 +8271,7 @@
 "y": 838,
 "w": 175,
 "h": 175,
-"src": "{{VALORANT!Right logo}}",
+"src": "{{Global!Right logo}}",
 "fit": "contain",
 "opacity": 0.2,
 "show": "{{VALORANT!Buy phase}}",
@@ -8324,7 +8324,7 @@
 "y": 804,
 "w": 16,
 "h": 16,
-"src": "/library/owen-hud/layers/38f853d73da8.svg",
+"src": "assets/hud/layers/38f853d73da8.svg",
 "fit": "fill",
 "show": "{{VALORANT!Left 1 board}}",
 "anim": {
@@ -8408,7 +8408,7 @@
 "y": 793,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 1 agent file}}/C.png",
+"src": "assets/hud/agents/{{VALORANT!Left 1 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 1 board}}",
 "anim": {
@@ -8458,7 +8458,7 @@
 "y": 793,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 1 agent file}}/Q.png",
+"src": "assets/hud/agents/{{VALORANT!Left 1 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 1 board}}",
 "anim": {
@@ -8508,7 +8508,7 @@
 "y": 793,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 1 agent file}}/E.png",
+"src": "assets/hud/agents/{{VALORANT!Left 1 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 1 board}}",
 "anim": {
@@ -8585,7 +8585,7 @@
 "y": 799,
 "w": 25,
 "h": 25,
-"src": "/library/owen-hud/assets/heavy-shield.png",
+"src": "assets/hud/ui/heavy-shield.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 1 board}}",
 "anim": {
@@ -8610,7 +8610,7 @@
 "y": 797,
 "w": 110,
 "h": 28,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Left 1 weapon file}}.png",
+"src": "assets/hud/guns/{{VALORANT!Left 1 weapon file}}.png",
 "fit": "contain",
 "pic": {
 "flipX": true
@@ -8663,7 +8663,7 @@
 "y": 802,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 1 agent file}}/X.png",
+"src": "assets/hud/agents/{{VALORANT!Left 1 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Left 1 board}}",
@@ -8716,7 +8716,7 @@
 "y": 785,
 "w": 381,
 "h": 52,
-"fill": "linear-gradient(90deg, {{VALORANT!Left color}}, transparent 50%)",
+"fill": "linear-gradient(90deg, {{Global!Left color}}, transparent 50%)",
 "radius": 4,
 "opacity": 0.2,
 "show": "{{VALORANT!Left 1 board}}",
@@ -8742,7 +8742,7 @@
 "y": 786,
 "w": 74,
 "h": 50,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 1 agent file}}/{{VALORANT!Left 1 agent file}}.png",
+"src": "assets/hud/agents/{{VALORANT!Left 1 agent file}}/{{VALORANT!Left 1 agent file}}.png",
 "fit": "cover",
 "radius": "4 0 0 4",
 "show": "{{VALORANT!Left 1 board}}",
@@ -8859,7 +8859,7 @@
 "y": 860,
 "w": 16,
 "h": 16,
-"src": "/library/owen-hud/layers/38f853d73da8.svg",
+"src": "assets/hud/layers/38f853d73da8.svg",
 "fit": "fill",
 "show": "{{VALORANT!Left 2 board}}",
 "anim": {
@@ -8943,7 +8943,7 @@
 "y": 849,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 2 agent file}}/C.png",
+"src": "assets/hud/agents/{{VALORANT!Left 2 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 2 board}}",
 "anim": {
@@ -8993,7 +8993,7 @@
 "y": 849,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 2 agent file}}/Q.png",
+"src": "assets/hud/agents/{{VALORANT!Left 2 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 2 board}}",
 "anim": {
@@ -9043,7 +9043,7 @@
 "y": 849,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 2 agent file}}/E.png",
+"src": "assets/hud/agents/{{VALORANT!Left 2 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 2 board}}",
 "anim": {
@@ -9120,7 +9120,7 @@
 "y": 855,
 "w": 25,
 "h": 25,
-"src": "/library/owen-hud/assets/heavy-shield.png",
+"src": "assets/hud/ui/heavy-shield.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 2 board}}",
 "anim": {
@@ -9145,7 +9145,7 @@
 "y": 853,
 "w": 110,
 "h": 28,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Left 2 weapon file}}.png",
+"src": "assets/hud/guns/{{VALORANT!Left 2 weapon file}}.png",
 "fit": "contain",
 "pic": {
 "flipX": true
@@ -9198,7 +9198,7 @@
 "y": 858,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 2 agent file}}/X.png",
+"src": "assets/hud/agents/{{VALORANT!Left 2 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Left 2 board}}",
@@ -9251,7 +9251,7 @@
 "y": 841,
 "w": 381,
 "h": 52,
-"fill": "linear-gradient(90deg, {{VALORANT!Left color}}, transparent 50%)",
+"fill": "linear-gradient(90deg, {{Global!Left color}}, transparent 50%)",
 "radius": 4,
 "opacity": 0.2,
 "show": "{{VALORANT!Left 2 board}}",
@@ -9277,7 +9277,7 @@
 "y": 842,
 "w": 74,
 "h": 50,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 2 agent file}}/{{VALORANT!Left 2 agent file}}.png",
+"src": "assets/hud/agents/{{VALORANT!Left 2 agent file}}/{{VALORANT!Left 2 agent file}}.png",
 "fit": "cover",
 "radius": "4 0 0 4",
 "show": "{{VALORANT!Left 2 board}}",
@@ -9394,7 +9394,7 @@
 "y": 916,
 "w": 16,
 "h": 16,
-"src": "/library/owen-hud/layers/38f853d73da8.svg",
+"src": "assets/hud/layers/38f853d73da8.svg",
 "fit": "fill",
 "show": "{{VALORANT!Left 3 board}}",
 "anim": {
@@ -9478,7 +9478,7 @@
 "y": 905,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 3 agent file}}/C.png",
+"src": "assets/hud/agents/{{VALORANT!Left 3 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 3 board}}",
 "anim": {
@@ -9528,7 +9528,7 @@
 "y": 905,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 3 agent file}}/Q.png",
+"src": "assets/hud/agents/{{VALORANT!Left 3 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 3 board}}",
 "anim": {
@@ -9578,7 +9578,7 @@
 "y": 905,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 3 agent file}}/E.png",
+"src": "assets/hud/agents/{{VALORANT!Left 3 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 3 board}}",
 "anim": {
@@ -9655,7 +9655,7 @@
 "y": 911,
 "w": 25,
 "h": 25,
-"src": "/library/owen-hud/assets/heavy-shield.png",
+"src": "assets/hud/ui/heavy-shield.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 3 board}}",
 "anim": {
@@ -9680,7 +9680,7 @@
 "y": 909,
 "w": 110,
 "h": 28,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Left 3 weapon file}}.png",
+"src": "assets/hud/guns/{{VALORANT!Left 3 weapon file}}.png",
 "fit": "contain",
 "pic": {
 "flipX": true
@@ -9733,7 +9733,7 @@
 "y": 914,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 3 agent file}}/X.png",
+"src": "assets/hud/agents/{{VALORANT!Left 3 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Left 3 board}}",
@@ -9786,7 +9786,7 @@
 "y": 897,
 "w": 381,
 "h": 52,
-"fill": "linear-gradient(90deg, {{VALORANT!Left color}}, transparent 50%)",
+"fill": "linear-gradient(90deg, {{Global!Left color}}, transparent 50%)",
 "radius": 4,
 "opacity": 0.2,
 "show": "{{VALORANT!Left 3 board}}",
@@ -9812,7 +9812,7 @@
 "y": 898,
 "w": 74,
 "h": 50,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 3 agent file}}/{{VALORANT!Left 3 agent file}}.png",
+"src": "assets/hud/agents/{{VALORANT!Left 3 agent file}}/{{VALORANT!Left 3 agent file}}.png",
 "fit": "cover",
 "radius": "4 0 0 4",
 "show": "{{VALORANT!Left 3 board}}",
@@ -9929,7 +9929,7 @@
 "y": 972,
 "w": 16,
 "h": 16,
-"src": "/library/owen-hud/layers/38f853d73da8.svg",
+"src": "assets/hud/layers/38f853d73da8.svg",
 "fit": "fill",
 "show": "{{VALORANT!Left 4 board}}",
 "anim": {
@@ -10013,7 +10013,7 @@
 "y": 961,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 4 agent file}}/C.png",
+"src": "assets/hud/agents/{{VALORANT!Left 4 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 4 board}}",
 "anim": {
@@ -10063,7 +10063,7 @@
 "y": 961,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 4 agent file}}/Q.png",
+"src": "assets/hud/agents/{{VALORANT!Left 4 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 4 board}}",
 "anim": {
@@ -10113,7 +10113,7 @@
 "y": 961,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 4 agent file}}/E.png",
+"src": "assets/hud/agents/{{VALORANT!Left 4 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 4 board}}",
 "anim": {
@@ -10190,7 +10190,7 @@
 "y": 967,
 "w": 25,
 "h": 25,
-"src": "/library/owen-hud/assets/heavy-shield.png",
+"src": "assets/hud/ui/heavy-shield.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 4 board}}",
 "anim": {
@@ -10215,7 +10215,7 @@
 "y": 965,
 "w": 110,
 "h": 28,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Left 4 weapon file}}.png",
+"src": "assets/hud/guns/{{VALORANT!Left 4 weapon file}}.png",
 "fit": "contain",
 "pic": {
 "flipX": true
@@ -10268,7 +10268,7 @@
 "y": 970,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 4 agent file}}/X.png",
+"src": "assets/hud/agents/{{VALORANT!Left 4 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Left 4 board}}",
@@ -10321,7 +10321,7 @@
 "y": 953,
 "w": 381,
 "h": 52,
-"fill": "linear-gradient(90deg, {{VALORANT!Left color}}, transparent 50%)",
+"fill": "linear-gradient(90deg, {{Global!Left color}}, transparent 50%)",
 "radius": 4,
 "opacity": 0.2,
 "show": "{{VALORANT!Left 4 board}}",
@@ -10347,7 +10347,7 @@
 "y": 954,
 "w": 74,
 "h": 50,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 4 agent file}}/{{VALORANT!Left 4 agent file}}.png",
+"src": "assets/hud/agents/{{VALORANT!Left 4 agent file}}/{{VALORANT!Left 4 agent file}}.png",
 "fit": "cover",
 "radius": "4 0 0 4",
 "show": "{{VALORANT!Left 4 board}}",
@@ -10464,7 +10464,7 @@
 "y": 1028,
 "w": 16,
 "h": 16,
-"src": "/library/owen-hud/layers/38f853d73da8.svg",
+"src": "assets/hud/layers/38f853d73da8.svg",
 "fit": "fill",
 "show": "{{VALORANT!Left 5 board}}",
 "anim": {
@@ -10548,7 +10548,7 @@
 "y": 1017,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 5 agent file}}/C.png",
+"src": "assets/hud/agents/{{VALORANT!Left 5 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 5 board}}",
 "anim": {
@@ -10598,7 +10598,7 @@
 "y": 1017,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 5 agent file}}/Q.png",
+"src": "assets/hud/agents/{{VALORANT!Left 5 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 5 board}}",
 "anim": {
@@ -10648,7 +10648,7 @@
 "y": 1017,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 5 agent file}}/E.png",
+"src": "assets/hud/agents/{{VALORANT!Left 5 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 5 board}}",
 "anim": {
@@ -10725,7 +10725,7 @@
 "y": 1023,
 "w": 25,
 "h": 25,
-"src": "/library/owen-hud/assets/heavy-shield.png",
+"src": "assets/hud/ui/heavy-shield.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 5 board}}",
 "anim": {
@@ -10750,7 +10750,7 @@
 "y": 1021,
 "w": 110,
 "h": 28,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Left 5 weapon file}}.png",
+"src": "assets/hud/guns/{{VALORANT!Left 5 weapon file}}.png",
 "fit": "contain",
 "pic": {
 "flipX": true
@@ -10803,7 +10803,7 @@
 "y": 1026,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 5 agent file}}/X.png",
+"src": "assets/hud/agents/{{VALORANT!Left 5 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Left 5 board}}",
@@ -10856,7 +10856,7 @@
 "y": 1009,
 "w": 381,
 "h": 52,
-"fill": "linear-gradient(90deg, {{VALORANT!Left color}}, transparent 50%)",
+"fill": "linear-gradient(90deg, {{Global!Left color}}, transparent 50%)",
 "radius": 4,
 "opacity": 0.2,
 "show": "{{VALORANT!Left 5 board}}",
@@ -10882,7 +10882,7 @@
 "y": 1010,
 "w": 74,
 "h": 50,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 5 agent file}}/{{VALORANT!Left 5 agent file}}.png",
+"src": "assets/hud/agents/{{VALORANT!Left 5 agent file}}/{{VALORANT!Left 5 agent file}}.png",
 "fit": "cover",
 "radius": "4 0 0 4",
 "show": "{{VALORANT!Left 5 board}}",
@@ -10999,7 +10999,7 @@
 "y": 804,
 "w": 16,
 "h": 16,
-"src": "/library/owen-hud/layers/38f853d73da8.svg",
+"src": "assets/hud/layers/38f853d73da8.svg",
 "fit": "fill",
 "show": "{{VALORANT!Right 1 board}}",
 "anim": {
@@ -11083,7 +11083,7 @@
 "y": 793,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 1 agent file}}/C.png",
+"src": "assets/hud/agents/{{VALORANT!Right 1 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 1 board}}",
 "anim": {
@@ -11133,7 +11133,7 @@
 "y": 793,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 1 agent file}}/Q.png",
+"src": "assets/hud/agents/{{VALORANT!Right 1 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 1 board}}",
 "anim": {
@@ -11183,7 +11183,7 @@
 "y": 793,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 1 agent file}}/E.png",
+"src": "assets/hud/agents/{{VALORANT!Right 1 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 1 board}}",
 "anim": {
@@ -11260,7 +11260,7 @@
 "y": 799,
 "w": 25,
 "h": 25,
-"src": "/library/owen-hud/assets/heavy-shield.png",
+"src": "assets/hud/ui/heavy-shield.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 1 board}}",
 "anim": {
@@ -11285,7 +11285,7 @@
 "y": 797,
 "w": 110,
 "h": 28,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Right 1 weapon file}}.png",
+"src": "assets/hud/guns/{{VALORANT!Right 1 weapon file}}.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 1 board}}",
 "anim": {
@@ -11335,7 +11335,7 @@
 "y": 802,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 1 agent file}}/X.png",
+"src": "assets/hud/agents/{{VALORANT!Right 1 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Right 1 board}}",
@@ -11388,7 +11388,7 @@
 "y": 785,
 "w": 381,
 "h": 52,
-"fill": "linear-gradient(270deg, {{VALORANT!Right color}}, transparent 50%)",
+"fill": "linear-gradient(270deg, {{Global!Right color}}, transparent 50%)",
 "radius": 4,
 "opacity": 0.2,
 "show": "{{VALORANT!Right 1 board}}",
@@ -11414,7 +11414,7 @@
 "y": 786,
 "w": 74,
 "h": 50,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 1 agent file}}/{{VALORANT!Right 1 agent file}}.png",
+"src": "assets/hud/agents/{{VALORANT!Right 1 agent file}}/{{VALORANT!Right 1 agent file}}.png",
 "fit": "cover",
 "radius": "4 0 0 4",
 "pic": {
@@ -11534,7 +11534,7 @@
 "y": 860,
 "w": 16,
 "h": 16,
-"src": "/library/owen-hud/layers/38f853d73da8.svg",
+"src": "assets/hud/layers/38f853d73da8.svg",
 "fit": "fill",
 "show": "{{VALORANT!Right 2 board}}",
 "anim": {
@@ -11618,7 +11618,7 @@
 "y": 849,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 2 agent file}}/C.png",
+"src": "assets/hud/agents/{{VALORANT!Right 2 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 2 board}}",
 "anim": {
@@ -11668,7 +11668,7 @@
 "y": 849,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 2 agent file}}/Q.png",
+"src": "assets/hud/agents/{{VALORANT!Right 2 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 2 board}}",
 "anim": {
@@ -11718,7 +11718,7 @@
 "y": 849,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 2 agent file}}/E.png",
+"src": "assets/hud/agents/{{VALORANT!Right 2 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 2 board}}",
 "anim": {
@@ -11795,7 +11795,7 @@
 "y": 855,
 "w": 25,
 "h": 25,
-"src": "/library/owen-hud/assets/heavy-shield.png",
+"src": "assets/hud/ui/heavy-shield.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 2 board}}",
 "anim": {
@@ -11820,7 +11820,7 @@
 "y": 853,
 "w": 110,
 "h": 28,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Right 2 weapon file}}.png",
+"src": "assets/hud/guns/{{VALORANT!Right 2 weapon file}}.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 2 board}}",
 "anim": {
@@ -11870,7 +11870,7 @@
 "y": 858,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 2 agent file}}/X.png",
+"src": "assets/hud/agents/{{VALORANT!Right 2 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Right 2 board}}",
@@ -11923,7 +11923,7 @@
 "y": 841,
 "w": 381,
 "h": 52,
-"fill": "linear-gradient(270deg, {{VALORANT!Right color}}, transparent 50%)",
+"fill": "linear-gradient(270deg, {{Global!Right color}}, transparent 50%)",
 "radius": 4,
 "opacity": 0.2,
 "show": "{{VALORANT!Right 2 board}}",
@@ -11949,7 +11949,7 @@
 "y": 842,
 "w": 74,
 "h": 50,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 2 agent file}}/{{VALORANT!Right 2 agent file}}.png",
+"src": "assets/hud/agents/{{VALORANT!Right 2 agent file}}/{{VALORANT!Right 2 agent file}}.png",
 "fit": "cover",
 "radius": "4 0 0 4",
 "pic": {
@@ -12069,7 +12069,7 @@
 "y": 916,
 "w": 16,
 "h": 16,
-"src": "/library/owen-hud/layers/38f853d73da8.svg",
+"src": "assets/hud/layers/38f853d73da8.svg",
 "fit": "fill",
 "show": "{{VALORANT!Right 3 board}}",
 "anim": {
@@ -12153,7 +12153,7 @@
 "y": 905,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 3 agent file}}/C.png",
+"src": "assets/hud/agents/{{VALORANT!Right 3 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 3 board}}",
 "anim": {
@@ -12203,7 +12203,7 @@
 "y": 905,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 3 agent file}}/Q.png",
+"src": "assets/hud/agents/{{VALORANT!Right 3 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 3 board}}",
 "anim": {
@@ -12253,7 +12253,7 @@
 "y": 905,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 3 agent file}}/E.png",
+"src": "assets/hud/agents/{{VALORANT!Right 3 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 3 board}}",
 "anim": {
@@ -12330,7 +12330,7 @@
 "y": 911,
 "w": 25,
 "h": 25,
-"src": "/library/owen-hud/assets/heavy-shield.png",
+"src": "assets/hud/ui/heavy-shield.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 3 board}}",
 "anim": {
@@ -12355,7 +12355,7 @@
 "y": 909,
 "w": 110,
 "h": 28,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Right 3 weapon file}}.png",
+"src": "assets/hud/guns/{{VALORANT!Right 3 weapon file}}.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 3 board}}",
 "anim": {
@@ -12405,7 +12405,7 @@
 "y": 914,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 3 agent file}}/X.png",
+"src": "assets/hud/agents/{{VALORANT!Right 3 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Right 3 board}}",
@@ -12458,7 +12458,7 @@
 "y": 897,
 "w": 381,
 "h": 52,
-"fill": "linear-gradient(270deg, {{VALORANT!Right color}}, transparent 50%)",
+"fill": "linear-gradient(270deg, {{Global!Right color}}, transparent 50%)",
 "radius": 4,
 "opacity": 0.2,
 "show": "{{VALORANT!Right 3 board}}",
@@ -12484,7 +12484,7 @@
 "y": 898,
 "w": 74,
 "h": 50,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 3 agent file}}/{{VALORANT!Right 3 agent file}}.png",
+"src": "assets/hud/agents/{{VALORANT!Right 3 agent file}}/{{VALORANT!Right 3 agent file}}.png",
 "fit": "cover",
 "radius": "4 0 0 4",
 "pic": {
@@ -12604,7 +12604,7 @@
 "y": 972,
 "w": 16,
 "h": 16,
-"src": "/library/owen-hud/layers/38f853d73da8.svg",
+"src": "assets/hud/layers/38f853d73da8.svg",
 "fit": "fill",
 "show": "{{VALORANT!Right 4 board}}",
 "anim": {
@@ -12688,7 +12688,7 @@
 "y": 961,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 4 agent file}}/C.png",
+"src": "assets/hud/agents/{{VALORANT!Right 4 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 4 board}}",
 "anim": {
@@ -12738,7 +12738,7 @@
 "y": 961,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 4 agent file}}/Q.png",
+"src": "assets/hud/agents/{{VALORANT!Right 4 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 4 board}}",
 "anim": {
@@ -12788,7 +12788,7 @@
 "y": 961,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 4 agent file}}/E.png",
+"src": "assets/hud/agents/{{VALORANT!Right 4 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 4 board}}",
 "anim": {
@@ -12865,7 +12865,7 @@
 "y": 967,
 "w": 25,
 "h": 25,
-"src": "/library/owen-hud/assets/heavy-shield.png",
+"src": "assets/hud/ui/heavy-shield.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 4 board}}",
 "anim": {
@@ -12890,7 +12890,7 @@
 "y": 965,
 "w": 110,
 "h": 28,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Right 4 weapon file}}.png",
+"src": "assets/hud/guns/{{VALORANT!Right 4 weapon file}}.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 4 board}}",
 "anim": {
@@ -12940,7 +12940,7 @@
 "y": 970,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 4 agent file}}/X.png",
+"src": "assets/hud/agents/{{VALORANT!Right 4 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Right 4 board}}",
@@ -12993,7 +12993,7 @@
 "y": 953,
 "w": 381,
 "h": 52,
-"fill": "linear-gradient(270deg, {{VALORANT!Right color}}, transparent 50%)",
+"fill": "linear-gradient(270deg, {{Global!Right color}}, transparent 50%)",
 "radius": 4,
 "opacity": 0.2,
 "show": "{{VALORANT!Right 4 board}}",
@@ -13019,7 +13019,7 @@
 "y": 954,
 "w": 74,
 "h": 50,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 4 agent file}}/{{VALORANT!Right 4 agent file}}.png",
+"src": "assets/hud/agents/{{VALORANT!Right 4 agent file}}/{{VALORANT!Right 4 agent file}}.png",
 "fit": "cover",
 "radius": "4 0 0 4",
 "pic": {
@@ -13139,7 +13139,7 @@
 "y": 1028,
 "w": 16,
 "h": 16,
-"src": "/library/owen-hud/layers/38f853d73da8.svg",
+"src": "assets/hud/layers/38f853d73da8.svg",
 "fit": "fill",
 "show": "{{VALORANT!Right 5 board}}",
 "anim": {
@@ -13223,7 +13223,7 @@
 "y": 1017,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 5 agent file}}/C.png",
+"src": "assets/hud/agents/{{VALORANT!Right 5 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 5 board}}",
 "anim": {
@@ -13273,7 +13273,7 @@
 "y": 1017,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 5 agent file}}/Q.png",
+"src": "assets/hud/agents/{{VALORANT!Right 5 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 5 board}}",
 "anim": {
@@ -13323,7 +13323,7 @@
 "y": 1017,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 5 agent file}}/E.png",
+"src": "assets/hud/agents/{{VALORANT!Right 5 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 5 board}}",
 "anim": {
@@ -13400,7 +13400,7 @@
 "y": 1023,
 "w": 25,
 "h": 25,
-"src": "/library/owen-hud/assets/heavy-shield.png",
+"src": "assets/hud/ui/heavy-shield.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 5 board}}",
 "anim": {
@@ -13425,7 +13425,7 @@
 "y": 1021,
 "w": 110,
 "h": 28,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Right 5 weapon file}}.png",
+"src": "assets/hud/guns/{{VALORANT!Right 5 weapon file}}.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 5 board}}",
 "anim": {
@@ -13475,7 +13475,7 @@
 "y": 1026,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 5 agent file}}/X.png",
+"src": "assets/hud/agents/{{VALORANT!Right 5 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Right 5 board}}",
@@ -13528,7 +13528,7 @@
 "y": 1009,
 "w": 381,
 "h": 52,
-"fill": "linear-gradient(270deg, {{VALORANT!Right color}}, transparent 50%)",
+"fill": "linear-gradient(270deg, {{Global!Right color}}, transparent 50%)",
 "radius": 4,
 "opacity": 0.2,
 "show": "{{VALORANT!Right 5 board}}",
@@ -13554,7 +13554,7 @@
 "y": 1010,
 "w": 74,
 "h": 50,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 5 agent file}}/{{VALORANT!Right 5 agent file}}.png",
+"src": "assets/hud/agents/{{VALORANT!Right 5 agent file}}/{{VALORANT!Right 5 agent file}}.png",
 "fit": "cover",
 "radius": "4 0 0 4",
 "pic": {
@@ -13697,7 +13697,7 @@
 "y": 640,
 "w": 6,
 "h": 46,
-"fill": "{{VALORANT!Left color}}",
+"fill": "{{Global!Left color}}",
 "show": "{{VALORANT!Buy phase}}",
 "anim": {
 "in": {
@@ -13721,7 +13721,7 @@
 "y": 651,
 "w": 24,
 "h": 24,
-"src": "{{VALORANT!Left logo}}",
+"src": "{{Global!Left logo}}",
 "fit": "contain",
 "show": "{{VALORANT!Buy phase}}",
 "anim": {
@@ -13746,14 +13746,14 @@
 "y": 655.4,
 "w": 60,
 "h": 20,
-"text": "{{VALORANT!Left tricode}}",
+"text": "{{Global!Left short}}",
 "font": "DIN2014-Narrow-Bold",
 "size": 20.0,
 "weight": 400,
 "color": "rgb(255, 255, 255)",
 "align": "left",
 "valign": "middle",
-"caps": false,
+"caps": true,
 "fit": "shrink",
 "show": "{{VALORANT!Buy phase}}",
 "anim": {
@@ -13778,7 +13778,7 @@
 "y": 649,
 "w": 12,
 "h": 12,
-"fill": "{{VALORANT!Left color}}",
+"fill": "{{Global!Left color}}",
 "radius": 6.0,
 "stroke": "rgb(255, 255, 255)",
 "strokeWidth": 1.0,
@@ -13805,7 +13805,7 @@
 "y": 665,
 "w": 12,
 "h": 12,
-"fill": "{{VALORANT!Left color}}",
+"fill": "{{Global!Left color}}",
 "radius": 6.0,
 "stroke": "rgb(255, 255, 255)",
 "strokeWidth": 1.0,
@@ -13857,7 +13857,7 @@
 "y": 690,
 "w": 6,
 "h": 46,
-"fill": "{{VALORANT!Right color}}",
+"fill": "{{Global!Right color}}",
 "show": "{{VALORANT!Buy phase}}",
 "anim": {
 "in": {
@@ -13881,7 +13881,7 @@
 "y": 701,
 "w": 24,
 "h": 24,
-"src": "{{VALORANT!Right logo}}",
+"src": "{{Global!Right logo}}",
 "fit": "contain",
 "show": "{{VALORANT!Buy phase}}",
 "anim": {
@@ -13906,14 +13906,14 @@
 "y": 705.4,
 "w": 60,
 "h": 20,
-"text": "{{VALORANT!Right tricode}}",
+"text": "{{Global!Right short}}",
 "font": "DIN2014-Narrow-Bold",
 "size": 20.0,
 "weight": 400,
 "color": "rgb(255, 255, 255)",
 "align": "left",
 "valign": "middle",
-"caps": false,
+"caps": true,
 "fit": "shrink",
 "show": "{{VALORANT!Buy phase}}",
 "anim": {
@@ -13938,7 +13938,7 @@
 "y": 699,
 "w": 12,
 "h": 12,
-"fill": "{{VALORANT!Right color}}",
+"fill": "{{Global!Right color}}",
 "radius": 6.0,
 "stroke": "rgb(255, 255, 255)",
 "strokeWidth": 1.0,
@@ -13965,7 +13965,7 @@
 "y": 715,
 "w": 12,
 "h": 12,
-"fill": "{{VALORANT!Right color}}",
+"fill": "{{Global!Right color}}",
 "radius": 6.0,
 "stroke": "rgb(255, 255, 255)",
 "strokeWidth": 1.0,
@@ -14786,7 +14786,7 @@
 "y": 662,
 "w": 1,
 "h": 68,
-"fill": "linear-gradient({{VALORANT!Right color}}, {{VALORANT!Left color}})",
+"fill": "linear-gradient({{Global!Right color}}, {{Global!Left color}})",
 "show": "{{VALORANT!Buy phase}}",
 "anim": {
 "in": {
@@ -14837,7 +14837,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Left color}}",
+"stroke": "{{Global!Left color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 1 left won}}",
 "anim": {
@@ -14864,7 +14864,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 1 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Left color}}",
+"recolor": "{{Global!Left color}}",
 "show": "{{VALORANT!Round 1 left won}}",
 "anim": {
 "in": {
@@ -14915,7 +14915,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Right color}}",
+"stroke": "{{Global!Right color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 1 right won}}",
 "anim": {
@@ -14942,7 +14942,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 1 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Right color}}",
+"recolor": "{{Global!Right color}}",
 "show": "{{VALORANT!Round 1 right won}}",
 "anim": {
 "in": {
@@ -15019,7 +15019,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Left color}}",
+"stroke": "{{Global!Left color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 2 left won}}",
 "anim": {
@@ -15046,7 +15046,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 2 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Left color}}",
+"recolor": "{{Global!Left color}}",
 "show": "{{VALORANT!Round 2 left won}}",
 "anim": {
 "in": {
@@ -15097,7 +15097,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Right color}}",
+"stroke": "{{Global!Right color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 2 right won}}",
 "anim": {
@@ -15124,7 +15124,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 2 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Right color}}",
+"recolor": "{{Global!Right color}}",
 "show": "{{VALORANT!Round 2 right won}}",
 "anim": {
 "in": {
@@ -15201,7 +15201,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Left color}}",
+"stroke": "{{Global!Left color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 3 left won}}",
 "anim": {
@@ -15228,7 +15228,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 3 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Left color}}",
+"recolor": "{{Global!Left color}}",
 "show": "{{VALORANT!Round 3 left won}}",
 "anim": {
 "in": {
@@ -15279,7 +15279,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Right color}}",
+"stroke": "{{Global!Right color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 3 right won}}",
 "anim": {
@@ -15306,7 +15306,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 3 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Right color}}",
+"recolor": "{{Global!Right color}}",
 "show": "{{VALORANT!Round 3 right won}}",
 "anim": {
 "in": {
@@ -15383,7 +15383,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Left color}}",
+"stroke": "{{Global!Left color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 4 left won}}",
 "anim": {
@@ -15410,7 +15410,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 4 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Left color}}",
+"recolor": "{{Global!Left color}}",
 "show": "{{VALORANT!Round 4 left won}}",
 "anim": {
 "in": {
@@ -15461,7 +15461,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Right color}}",
+"stroke": "{{Global!Right color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 4 right won}}",
 "anim": {
@@ -15488,7 +15488,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 4 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Right color}}",
+"recolor": "{{Global!Right color}}",
 "show": "{{VALORANT!Round 4 right won}}",
 "anim": {
 "in": {
@@ -15565,7 +15565,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Left color}}",
+"stroke": "{{Global!Left color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 5 left won}}",
 "anim": {
@@ -15592,7 +15592,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 5 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Left color}}",
+"recolor": "{{Global!Left color}}",
 "show": "{{VALORANT!Round 5 left won}}",
 "anim": {
 "in": {
@@ -15643,7 +15643,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Right color}}",
+"stroke": "{{Global!Right color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 5 right won}}",
 "anim": {
@@ -15670,7 +15670,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 5 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Right color}}",
+"recolor": "{{Global!Right color}}",
 "show": "{{VALORANT!Round 5 right won}}",
 "anim": {
 "in": {
@@ -15747,7 +15747,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Left color}}",
+"stroke": "{{Global!Left color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 6 left won}}",
 "anim": {
@@ -15774,7 +15774,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 6 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Left color}}",
+"recolor": "{{Global!Left color}}",
 "show": "{{VALORANT!Round 6 left won}}",
 "anim": {
 "in": {
@@ -15825,7 +15825,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Right color}}",
+"stroke": "{{Global!Right color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 6 right won}}",
 "anim": {
@@ -15852,7 +15852,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 6 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Right color}}",
+"recolor": "{{Global!Right color}}",
 "show": "{{VALORANT!Round 6 right won}}",
 "anim": {
 "in": {
@@ -15929,7 +15929,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Left color}}",
+"stroke": "{{Global!Left color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 7 left won}}",
 "anim": {
@@ -15956,7 +15956,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 7 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Left color}}",
+"recolor": "{{Global!Left color}}",
 "show": "{{VALORANT!Round 7 left won}}",
 "anim": {
 "in": {
@@ -16007,7 +16007,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Right color}}",
+"stroke": "{{Global!Right color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 7 right won}}",
 "anim": {
@@ -16034,7 +16034,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 7 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Right color}}",
+"recolor": "{{Global!Right color}}",
 "show": "{{VALORANT!Round 7 right won}}",
 "anim": {
 "in": {
@@ -16111,7 +16111,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Left color}}",
+"stroke": "{{Global!Left color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 8 left won}}",
 "anim": {
@@ -16138,7 +16138,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 8 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Left color}}",
+"recolor": "{{Global!Left color}}",
 "show": "{{VALORANT!Round 8 left won}}",
 "anim": {
 "in": {
@@ -16189,7 +16189,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Right color}}",
+"stroke": "{{Global!Right color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 8 right won}}",
 "anim": {
@@ -16216,7 +16216,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 8 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Right color}}",
+"recolor": "{{Global!Right color}}",
 "show": "{{VALORANT!Round 8 right won}}",
 "anim": {
 "in": {
@@ -16293,7 +16293,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Left color}}",
+"stroke": "{{Global!Left color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 9 left won}}",
 "anim": {
@@ -16320,7 +16320,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 9 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Left color}}",
+"recolor": "{{Global!Left color}}",
 "show": "{{VALORANT!Round 9 left won}}",
 "anim": {
 "in": {
@@ -16371,7 +16371,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Right color}}",
+"stroke": "{{Global!Right color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 9 right won}}",
 "anim": {
@@ -16398,7 +16398,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 9 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Right color}}",
+"recolor": "{{Global!Right color}}",
 "show": "{{VALORANT!Round 9 right won}}",
 "anim": {
 "in": {
@@ -16475,7 +16475,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Left color}}",
+"stroke": "{{Global!Left color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 10 left won}}",
 "anim": {
@@ -16502,7 +16502,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 10 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Left color}}",
+"recolor": "{{Global!Left color}}",
 "show": "{{VALORANT!Round 10 left won}}",
 "anim": {
 "in": {
@@ -16553,7 +16553,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Right color}}",
+"stroke": "{{Global!Right color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 10 right won}}",
 "anim": {
@@ -16580,7 +16580,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 10 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Right color}}",
+"recolor": "{{Global!Right color}}",
 "show": "{{VALORANT!Round 10 right won}}",
 "anim": {
 "in": {
@@ -16657,7 +16657,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Left color}}",
+"stroke": "{{Global!Left color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 11 left won}}",
 "anim": {
@@ -16684,7 +16684,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 11 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Left color}}",
+"recolor": "{{Global!Left color}}",
 "show": "{{VALORANT!Round 11 left won}}",
 "anim": {
 "in": {
@@ -16735,7 +16735,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Right color}}",
+"stroke": "{{Global!Right color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 11 right won}}",
 "anim": {
@@ -16762,7 +16762,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 11 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Right color}}",
+"recolor": "{{Global!Right color}}",
 "show": "{{VALORANT!Round 11 right won}}",
 "anim": {
 "in": {
@@ -16839,7 +16839,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Left color}}",
+"stroke": "{{Global!Left color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 12 left won}}",
 "anim": {
@@ -16866,7 +16866,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 12 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Left color}}",
+"recolor": "{{Global!Left color}}",
 "show": "{{VALORANT!Round 12 left won}}",
 "anim": {
 "in": {
@@ -16917,7 +16917,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Right color}}",
+"stroke": "{{Global!Right color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 12 right won}}",
 "anim": {
@@ -16944,7 +16944,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 12 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Right color}}",
+"recolor": "{{Global!Right color}}",
 "show": "{{VALORANT!Round 12 right won}}",
 "anim": {
 "in": {
@@ -17021,7 +17021,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Left color}}",
+"stroke": "{{Global!Left color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 13 left won}}",
 "anim": {
@@ -17048,7 +17048,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 13 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Left color}}",
+"recolor": "{{Global!Left color}}",
 "show": "{{VALORANT!Round 13 left won}}",
 "anim": {
 "in": {
@@ -17099,7 +17099,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Right color}}",
+"stroke": "{{Global!Right color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 13 right won}}",
 "anim": {
@@ -17126,7 +17126,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 13 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Right color}}",
+"recolor": "{{Global!Right color}}",
 "show": "{{VALORANT!Round 13 right won}}",
 "anim": {
 "in": {
@@ -17203,7 +17203,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Left color}}",
+"stroke": "{{Global!Left color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 14 left won}}",
 "anim": {
@@ -17230,7 +17230,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 14 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Left color}}",
+"recolor": "{{Global!Left color}}",
 "show": "{{VALORANT!Round 14 left won}}",
 "anim": {
 "in": {
@@ -17281,7 +17281,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Right color}}",
+"stroke": "{{Global!Right color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 14 right won}}",
 "anim": {
@@ -17308,7 +17308,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 14 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Right color}}",
+"recolor": "{{Global!Right color}}",
 "show": "{{VALORANT!Round 14 right won}}",
 "anim": {
 "in": {
@@ -17385,7 +17385,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Left color}}",
+"stroke": "{{Global!Left color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 15 left won}}",
 "anim": {
@@ -17412,7 +17412,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 15 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Left color}}",
+"recolor": "{{Global!Left color}}",
 "show": "{{VALORANT!Round 15 left won}}",
 "anim": {
 "in": {
@@ -17463,7 +17463,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Right color}}",
+"stroke": "{{Global!Right color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 15 right won}}",
 "anim": {
@@ -17490,7 +17490,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 15 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Right color}}",
+"recolor": "{{Global!Right color}}",
 "show": "{{VALORANT!Round 15 right won}}",
 "anim": {
 "in": {
@@ -17567,7 +17567,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Left color}}",
+"stroke": "{{Global!Left color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 16 left won}}",
 "anim": {
@@ -17594,7 +17594,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 16 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Left color}}",
+"recolor": "{{Global!Left color}}",
 "show": "{{VALORANT!Round 16 left won}}",
 "anim": {
 "in": {
@@ -17645,7 +17645,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Right color}}",
+"stroke": "{{Global!Right color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 16 right won}}",
 "anim": {
@@ -17672,7 +17672,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 16 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Right color}}",
+"recolor": "{{Global!Right color}}",
 "show": "{{VALORANT!Round 16 right won}}",
 "anim": {
 "in": {
@@ -17749,7 +17749,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Left color}}",
+"stroke": "{{Global!Left color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 17 left won}}",
 "anim": {
@@ -17776,7 +17776,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 17 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Left color}}",
+"recolor": "{{Global!Left color}}",
 "show": "{{VALORANT!Round 17 left won}}",
 "anim": {
 "in": {
@@ -17827,7 +17827,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Right color}}",
+"stroke": "{{Global!Right color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 17 right won}}",
 "anim": {
@@ -17854,7 +17854,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 17 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Right color}}",
+"recolor": "{{Global!Right color}}",
 "show": "{{VALORANT!Round 17 right won}}",
 "anim": {
 "in": {
@@ -17931,7 +17931,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Left color}}",
+"stroke": "{{Global!Left color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 18 left won}}",
 "anim": {
@@ -17958,7 +17958,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 18 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Left color}}",
+"recolor": "{{Global!Left color}}",
 "show": "{{VALORANT!Round 18 left won}}",
 "anim": {
 "in": {
@@ -18009,7 +18009,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Right color}}",
+"stroke": "{{Global!Right color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 18 right won}}",
 "anim": {
@@ -18036,7 +18036,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 18 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Right color}}",
+"recolor": "{{Global!Right color}}",
 "show": "{{VALORANT!Round 18 right won}}",
 "anim": {
 "in": {
@@ -18113,7 +18113,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Left color}}",
+"stroke": "{{Global!Left color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 19 left won}}",
 "anim": {
@@ -18140,7 +18140,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 19 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Left color}}",
+"recolor": "{{Global!Left color}}",
 "show": "{{VALORANT!Round 19 left won}}",
 "anim": {
 "in": {
@@ -18191,7 +18191,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Right color}}",
+"stroke": "{{Global!Right color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 19 right won}}",
 "anim": {
@@ -18218,7 +18218,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 19 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Right color}}",
+"recolor": "{{Global!Right color}}",
 "show": "{{VALORANT!Round 19 right won}}",
 "anim": {
 "in": {
@@ -18295,7 +18295,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Left color}}",
+"stroke": "{{Global!Left color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 20 left won}}",
 "anim": {
@@ -18322,7 +18322,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 20 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Left color}}",
+"recolor": "{{Global!Left color}}",
 "show": "{{VALORANT!Round 20 left won}}",
 "anim": {
 "in": {
@@ -18373,7 +18373,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Right color}}",
+"stroke": "{{Global!Right color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 20 right won}}",
 "anim": {
@@ -18400,7 +18400,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 20 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Right color}}",
+"recolor": "{{Global!Right color}}",
 "show": "{{VALORANT!Round 20 right won}}",
 "anim": {
 "in": {
@@ -18477,7 +18477,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Left color}}",
+"stroke": "{{Global!Left color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 21 left won}}",
 "anim": {
@@ -18504,7 +18504,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 21 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Left color}}",
+"recolor": "{{Global!Left color}}",
 "show": "{{VALORANT!Round 21 left won}}",
 "anim": {
 "in": {
@@ -18555,7 +18555,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Right color}}",
+"stroke": "{{Global!Right color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 21 right won}}",
 "anim": {
@@ -18582,7 +18582,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 21 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Right color}}",
+"recolor": "{{Global!Right color}}",
 "show": "{{VALORANT!Round 21 right won}}",
 "anim": {
 "in": {
@@ -18659,7 +18659,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Left color}}",
+"stroke": "{{Global!Left color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 22 left won}}",
 "anim": {
@@ -18686,7 +18686,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 22 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Left color}}",
+"recolor": "{{Global!Left color}}",
 "show": "{{VALORANT!Round 22 left won}}",
 "anim": {
 "in": {
@@ -18737,7 +18737,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Right color}}",
+"stroke": "{{Global!Right color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 22 right won}}",
 "anim": {
@@ -18764,7 +18764,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 22 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Right color}}",
+"recolor": "{{Global!Right color}}",
 "show": "{{VALORANT!Round 22 right won}}",
 "anim": {
 "in": {
@@ -18841,7 +18841,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Left color}}",
+"stroke": "{{Global!Left color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 23 left won}}",
 "anim": {
@@ -18868,7 +18868,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 23 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Left color}}",
+"recolor": "{{Global!Left color}}",
 "show": "{{VALORANT!Round 23 left won}}",
 "anim": {
 "in": {
@@ -18919,7 +18919,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Right color}}",
+"stroke": "{{Global!Right color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 23 right won}}",
 "anim": {
@@ -18946,7 +18946,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 23 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Right color}}",
+"recolor": "{{Global!Right color}}",
 "show": "{{VALORANT!Round 23 right won}}",
 "anim": {
 "in": {
@@ -19023,7 +19023,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Left color}}",
+"stroke": "{{Global!Left color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 24 left won}}",
 "anim": {
@@ -19050,7 +19050,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 24 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Left color}}",
+"recolor": "{{Global!Left color}}",
 "show": "{{VALORANT!Round 24 left won}}",
 "anim": {
 "in": {
@@ -19101,7 +19101,7 @@
 "w": 32,
 "h": 32,
 "fill": "transparent",
-"stroke": "{{VALORANT!Right color}}",
+"stroke": "{{Global!Right color}}",
 "strokeWidth": 1,
 "show": "{{VALORANT!Round 24 right won}}",
 "anim": {
@@ -19128,7 +19128,7 @@
 "h": 22,
 "src": "{{VALORANT!Round 24 icon}}",
 "fit": "contain",
-"recolor": "{{VALORANT!Right color}}",
+"recolor": "{{Global!Right color}}",
 "show": "{{VALORANT!Round 24 right won}}",
 "anim": {
 "in": {
@@ -19185,7 +19185,7 @@
 "y": 179.8,
 "w": 780.1,
 "h": 188.9,
-"src": "/library/owen-hud/assets/roundwin-bg.png",
+"src": "assets/hud/ui/roundwin-bg.png",
 "fit": "fill",
 "show": "{{VALORANT!Round won}}",
 "anim": {
@@ -19209,7 +19209,7 @@
 "y": 159,
 "w": 81.8,
 "h": 81.8,
-"src": "{{VALORANT!Left logo}}",
+"src": "{{Global!Left logo}}",
 "fit": "contain",
 "show": "{{VALORANT!Round won}}",
 "anim": {

@@ -5,6 +5,7 @@ as graphics, but a HUD is never TAKEn: its browser source (/hud/<id>) shows ever
 and each layer shows itself from the game's live data ("Show only while"). Edited on the HUD Builder page.
 """
 import os
+import logging
 import json
 import re
 import uuid
@@ -101,20 +102,58 @@ def rebuild(engine, hid):
     return h
 
 
-OWEN_REV = "owen5"   # (raise when val27_owen.json changes: copies made from an older one are rebuilt once)
+OWEN_REV = "owen6"   # (raise when val27_owen.json changes: copies made from an older one are rebuilt once)
 
 
 def upgrade_val27(engine):
     """VAL HUD (SCC 2027) made before it was rebuilt from Owen's page: its parts become his (Agent select kept). Once."""
     h = find(engine, "val27")
     if not h or OWEN_REV in (h.get("built") or []):
+        hud_assets(engine)   # (every start: a file deleted from assets/hud comes back; one MJ replaced never does)
         return False
     new = builtin("val27")
     keep = [p for p in h.get("parts") or [] if "agent select" in str(p.get("name", "")).lower()]
     h["parts"] = [{"id": k.split(":")[-1], "name": n, "on": True, "layers": l} for k, n, _, l in new if "agent select" not in n.lower()] + keep
     h["built"] = sorted(set((h.get("built") or []) + [k.split(":")[-1] for k, _, _, _ in new] + [p["id"] for p in keep] + [OWEN_REV]))
     engine.save_project()
+    hud_assets(engine)
     return True
+
+
+# the VAL HUD's pictures and fonts, copied into the show's assets (so the Assets page lists them and MJ can swap them)
+HUD_FILES = [("hud/Resources/Agentes", "agents"), ("hud/Resources/Armas", "guns"), ("layers", "layers"), ("assets", "ui")]
+HUD_UI = ["spike.png", "heavy-shield.png", "roundwin-bg.png", "spike-default.png", "spike-default-bg.png"] + [f"win-{w}.png" for w in ("Elimination", "Detonation", "Deactivation", "Time")]
+HUD_FONTS = [("fonts/DIN2014-Bold.woff2",), ("fonts/DIN2014-Regular.woff2",), ("fonts/DIN2014-Narrow-Bold.woff2",), ("fonts/Rubik.woff2",),
+             ("hud/Resources/Tungsten-Bold.ttf",), ("hud/Resources/FoundryGridnik-ExtraBold.otf",)]
+
+
+def hud_assets(engine):
+    """Copy the VAL HUD's files from the library's owen-hud folder into <show>/assets/hud. Never overwrites."""
+    import shutil
+    if not getattr(engine, "folder", None):
+        return
+    srcs = [os.path.join(engine.library, "owen-hud")] if getattr(engine, "library", None) else []
+    from .app import STARTER   # (the installer's own copy, when the library has none)
+    srcs.append(str(STARTER / "library" / "owen-hud"))
+    src = next((s for s in srcs if os.path.isdir(s)), None)
+    if not src:
+        logging.getLogger("sgfx").warning("VAL HUD files not found: %s", srcs)
+        return
+    dst = os.path.join(engine.folder, "assets", "hud")
+    pairs = []
+    for rel, to in HUD_FILES:
+        for root, _, names in os.walk(os.path.join(src, rel)):
+            for n in names:
+                if rel == "assets" and n not in HUD_UI or rel == "layers" and not n.endswith(".svg"):
+                    continue
+                if rel == "assets" and root != os.path.join(src, rel):
+                    continue
+                pairs.append((os.path.join(root, n), os.path.join(dst, to, os.path.relpath(os.path.join(root, n), os.path.join(src, rel)))))
+    pairs += [(os.path.join(src, f[0]), os.path.join(dst, "fonts", os.path.basename(f[0]))) for f in HUD_FONTS]
+    for a, b in pairs:
+        if os.path.isfile(a) and not os.path.exists(b):
+            os.makedirs(os.path.dirname(b), exist_ok=True)
+            shutil.copyfile(a, b)
 
 
 def ensure(engine, key, name, game, parts):

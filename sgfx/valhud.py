@@ -133,7 +133,7 @@ def fields(m, g):
         board = f.get("Buy phase") == "yes"   # (the tracker is on the buy-phase board only)
         f[f"Round {r} left won"] = "yes" if w == 0 and board else ""
         f[f"Round {r} right won"] = "yes" if w == 1 and board else ""
-        f[f"Round {r} icon"] = f"/library/owen-hud/assets/win-{OWEN_WIN.get(h.get('how'), 'Elimination')}.png" if h else ""
+        f[f"Round {r} icon"] = f"assets/hud/ui/win-{OWEN_WIN.get(h.get('how'), 'Elimination')}.png" if h else ""
         f[f"Round {r} now"] = "yes" if r == m.round and board else ""
     if won:
         w = won["winner"]
