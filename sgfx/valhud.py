@@ -7,6 +7,7 @@ engine draws (/val-svg/...: the ult ring, ability charges, the health bar, armor
 (dead players, the buy phase, a planted spike, names tucked away 20 s into a round).
 """
 import re
+import time
 from urllib.parse import quote
 
 from .rocket import _layer
@@ -37,12 +38,13 @@ def _file(name):
 
 def fields(m, g):
     """The fields the SCC-layout graphics read (added to the VALORANT table)."""
-    from .valorant import attackers
+    from .valorant import attackers, ROUND_WIN_SECONDS
     f, atk = {}, attackers(m.round, m.first)
     picking = bool((getattr(m, "select", {}) or {}).get("on"))   # (agent select: the in-round HUD steps aside)
     secs, planted, buy = _secs(m.timer), m.spike == "planted" and not picking, m.phase == "buy" and not picking
     cond = planted or (m.phase == "combat" and secs is not None and secs <= 79)   # (names tuck away 20 s into the round, or at the plant)
-    won = m.history[-1] if m.history and m.phase == "end" else None
+    fresh = time.time() - m.ended_at < ROUND_WIN_SECONDS   # (the reader never sends phase "end": a round just ended counts)
+    won = m.history[-1] if m.history and (m.phase == "end" or fresh) else None
     need = max(1, (int((g.get("best_of") or 3)) + 1) // 2)
     f.update({"Buy phase": "yes" if buy else "", "In round": "" if buy or picking else "yes", "Planted": "yes" if planted else "",
               "Names": "" if cond or picking else "yes", "Condensed": "yes" if cond and not picking else "", "Top on": "" if picking else "yes",

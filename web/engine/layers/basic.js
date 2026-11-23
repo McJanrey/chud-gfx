@@ -26,6 +26,9 @@ function media(tag, el, layer, ctx) {
 }
 
 export function image(el, layer, ctx) {
+  // (a {{token}} with no value yet, like an agent not read: draw nothing, not a broken picture at ".../Agentes//X.png")
+  const toks = String(content(layer, "src", ctx.values, v => v)).match(/\{\{[^}]*\}\}/g) || [];
+  if (toks.some(t => !String(ctx.resolve(t)).trim())) return;
   // recolor: the picture's shape in one colour (a caster box in the Global caster colours)
   const tint = layer.recolor ? ctx.resolve(String(layer.recolor)) : "";
   if (tint) {

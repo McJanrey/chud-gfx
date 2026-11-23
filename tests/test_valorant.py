@@ -1,7 +1,9 @@
 import os
 import tempfile
 import threading
+import time
 import unittest
+from unittest import mock
 from pathlib import Path
 
 from sgfx.app import pick_workspace_in
@@ -103,6 +105,20 @@ class Valorant(unittest.TestCase):
             self.send({"teams": [{"score": n}, {"score": 1}]})
         self.assertEqual(str(self.table("VAL Last map")["Left score"]), "13")
         self.assertEqual(self.engine.val.match.history, [])   # (a fresh map)
+
+    def test_round_comes_from_the_score_and_the_win_banner_times_out(self):
+        t0 = time.time()
+        self.send({"teams": [{"score": 8}, {"score": 9}]})
+        with mock.patch("time.time", return_value=t0):
+            self.send({"teams": [{"score": 8}, {"score": 10}]})   # (no banner read: round 18 ended, 19 is on)
+            v = self.table("VALORANT")
+            self.assertEqual([(h["round"], h["winner"]) for h in self.engine.val.match.history], [(18, 1)])
+            self.assertEqual((v["Round label"], v["Round won"]), ("ROUND 19", "yes"))
+        with mock.patch("time.time", return_value=t0 + 6):
+            self.assertEqual(self.table("VALORANT")["Round won"], "")
+        self.engine.val.match.history[-1]["round"] = 1   # (a banner later: an entry stored as round 1 is put right)
+        self.send({"round": 20})
+        self.assertEqual(self.engine.val.match.history[-1]["round"], 19)
 
     def test_off_refuses(self):
         call(self.engine.port, "/api/val", {"on": False})

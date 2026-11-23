@@ -48,7 +48,7 @@ assert.deepEqual(kf, [{ opacity: 0 }, { opacity: 0.6 }]);
   globalThis.window = globalThis.window || {};
   globalThis.requestAnimationFrame = fn => fn();
   const { text } = await import("../web/engine/layers/text.js");
-  const { web } = await import("../web/engine/layers/basic.js");
+  const { web, image } = await import("../web/engine/layers/basic.js");
   const { lottie } = await import("../web/engine/layers/lottie.js");
   const t = { Global: [["Field", "Value"], ["Timer secs", "5"]] }, ticking = [];
   const ctx = { values: {}, resolve: v => resolve(v, t), url: s => s, later: () => {}, tick: fn => ticking.push(fn) };
@@ -103,6 +103,14 @@ assert.deepEqual(kf, [{ opacity: 0 }, { opacity: 0.6 }]);
   const page = new El();
   web(page, { type: "web", url: "http://127.0.0.1:7897/hud" }, ctx);
   assert.equal(page.kids[0].src, "http://127.0.0.1:7897/hud");
+
+  // (an image whose {{token}} is still empty draws nothing; a plain or fully resolved src is drawn)
+  t.Val = [["Field", "Value"], ["Agent", ""]];
+  const pic = src => { const e = new El(); image(e, { type: "image", src }, { ...ctx, table: () => [] }); return e.kids.length; };
+  assert.equal(pic("/Agentes/{{Val!Agent}}/X.png"), 0);
+  t.Val[1][1] = "Jett";
+  assert.equal(pic("/Agentes/{{Val!Agent}}/X.png"), 1);
+  assert.equal(pic("/Agentes/plain.png"), 1);
 
   let made = 0;
   window.lottie = { loadAnimation: () => { made++; return { setSpeed() {}, destroy() {} }; } };

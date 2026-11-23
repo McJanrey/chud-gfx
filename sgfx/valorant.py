@@ -95,6 +95,9 @@ def attackers(rnd, first=0):
     return first if (rnd - 25) % 2 == 0 else 1 - first
 
 
+ROUND_WIN_SECONDS = 5   # (how long "Round won" stays on after a round ends: the reader never sends phase "end")
+
+
 def yes(v):
     return "yes" if v is True else "no" if v is False else ("" if v is None else str(v))
 
@@ -105,6 +108,7 @@ class Match:
         self.round, self.phase, self.spike, self.map, self.first, self.timer = 1, "", "", "", 0, ""
         self.players = {}   # (team, slot) -> fields
         self.history = []   # [{"round", "winner", "how"}]
+        self.ended_at = 0   # (when the last round ended: the round win banner shows for ROUND_WIN_SECONDS after)
         self.feed = []      # the latest kills, newest last: [{"killer", "victim", ..., "t"}]
         self.banner, self.banner_side = "", None   # the line under the top bar (a timeout, a tech pause): set from the control page
         self.select = {"on": False, "timer": "", "map_id": ""}   # agent select (players' "pick" / "locked" hold their choices)
@@ -266,6 +270,12 @@ class Val:
         spike, atk = self.match.spike, attackers(self.match.round, self.match.first)
         self.match.merge(body)
         self.apply_names()
+        m = self.match
+        if "round" in body and m.history and m.history[-1]["round"] == 1 and m.round > 2:   # (it ended before a banner was read: stored as round 1)
+            m.history[-1]["round"] = m.round - 1
+            if self.last_round:
+                self.last_round["Round"] = m.round - 1
+        ended = m.round
         ev, w = body.get("event"), body.get("winner")
         if not ev and "teams" in body:   # (scores only: a round won is a score one up on one side alone)
             after = [int(t["score"] or 0) for t in self.match.teams]
@@ -275,15 +285,21 @@ class Val:
             if up:
                 self.match.base, ev, w = after, "round_end", up[0]
                 body = dict(body, how=("spike" if w == atk else "defuse") if spike == "planted" else "elimination", auto=True)
+                if "round" not in body:
+                    ended = sum(base) + 1
+            if "round" not in body:   # (no banner read: the round is the trusted score's total + 1, also right in overtime)
+                self.match.round = sum(self.match.base) + 1
         if ev == "round_end" and w in (0, 1):
             m = self.match
-            m.history.append({"round": m.round, "winner": w, "how": str(body.get("how") or "")})
+            m.ended_at = time.time()
+            threading.Timer(ROUND_WIN_SECONDS + .1, self.engine.changed).start()   # (the banner goes away on time even if nothing else arrives)
+            m.history.append({"round": ended, "winner": w, "how": str(body.get("how") or "")})
             gt = ((self.engine.project.get("global") or {}).get(("left", "right")[w]) or {})
-            self.last_round = {"Round": m.round, "Winner": gt.get("name") or m.teams[w]["name"], "Winner side": SIDES[w],
+            self.last_round = {"Round": ended, "Winner": gt.get("name") or m.teams[w]["name"], "Winner side": SIDES[w],
                                "Winner tricode": str(gt.get("short") or gt.get("name") or m.teams[w]["name"] or "").upper(),
-                               "Winner role": "ATTACK" if attackers(m.round, m.first) == w else "DEFENSE",
+                               "Winner role": "ATTACK" if attackers(ended, m.first) == w else "DEFENSE",
                                "Winner line": " • ".join(x for x in (str(gt.get("short") or gt.get("name") or m.teams[w]["name"] or "").upper(),
-                                                                       "ATTACK" if attackers(m.round, m.first) == w else "DEFENSE",
+                                                                       "ATTACK" if attackers(ended, m.first) == w else "DEFENSE",
                                                                        OWEN_WORDS.get(body.get("how"), "")) if x),
                                "How": HOW.get(body.get("how"), str(body.get("how") or "")),
                                "Left score": m.teams[0]["score"], "Right score": m.teams[1]["score"]}
