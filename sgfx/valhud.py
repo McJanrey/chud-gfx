@@ -78,6 +78,7 @@ def fields(m, g):
                       f"{k} ult pic": f"/val-img/agent/{aid}/ultimate.png" if UUID.match(aid) else "",
                       f"{k} ult ring": f"/val-svg/ring/{min(ult, most)}/{most}.svg",
                       f"{k} hp bar": f"/val-svg/bar/{0 if dead else max(0, min(100, int(p.get('health') or 0)))}/{'3a3a3a' if dead else col[1:]}.svg",
+                      f"{k} tab bar": f"/val-svg/obar/{100 if dead else max(0, min(100, int(p.get('health') or 0)))}/{'3a3a3a' if dead else col[1:]}/{'r' if i else 'l'}.svg",
                       f"{k} hp": "" if dead else str(int(p.get("health") or 0)) if have else "",
                       f"{k} cash": f"{int(p.get('credits')):,}" if str(p.get("credits", "")).isdigit() else "",
                       f"{k} armor pic": f"/val-svg/armor/{p['armor']}.svg" if p.get("armor") in ("heavy", "light", "regen") else "",
@@ -157,6 +158,8 @@ def svg(path):
             return _marks(int(args[0]), int(args[1]))
         if kind == "bar":
             return _bar(int(args[0]), _hex(args[1]))
+        if kind == "obar":
+            return _obar(int(args[0]), _hex(args[1]), args[2] == "r" if len(args) > 2 else False)
         if kind == "dot":
             return _dot(_hex(args[0]), args[1] == "1")
         if kind == "armor":
@@ -212,6 +215,15 @@ def _bar(pct, col):
     pct = max(0, min(100, pct))
     return (f'<svg xmlns="http://www.w3.org/2000/svg" width="308" height="8" viewBox="0 0 308 8" preserveAspectRatio="none">'
             f'<rect width="308" height="8" fill="rgba(0,0,0,.35)"/><rect width="{3.08 * pct:.1f}" height="8" fill="{col}"/></svg>')
+
+
+def _obar(pct, col, right):
+    """Owen's tab health bar (308 x 8): the dark track, the fill from the team's side, cut by the tab's 25 px rounded corners."""
+    pct, w = max(0, min(100, pct)), 3.08 * max(0, min(100, pct))
+    x = 308 - w if right else 0
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" width="308" height="8" viewBox="0 0 308 8" preserveAspectRatio="none">'
+            f'<defs><clipPath id="t"><rect x="0" y="-26" width="308" height="34" rx="25" ry="25"/></clipPath></defs>'
+            f'<g clip-path="url(#t)"><rect width="308" height="8" fill="rgba(0,0,0,.35)"/><rect x="{x:.1f}" width="{w:.1f}" height="8" fill="{col}"/></g></svg>')
 
 
 def _dot(col, on):

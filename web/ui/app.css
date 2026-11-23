@@ -512,3 +512,7 @@ input[type=range] { padding: 0; accent-color: var(--accent); }
 /* screen picker (which screen a game is on) */
 .screen-picker { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
 .screen-picker .screen-pic { width: 192px; aspect-ratio: 16 / 9; object-fit: contain; background: #000; border-radius: 6px; border: 1px solid var(--line, rgba(255,255,255,.12)); }
+.big-toggle { width: 100%; padding: 16px; font-size: 1.05rem; font-weight: 600; }
+.big-toggle.on { background: var(--accent, #c8f031); color: #0b0b0d; }
+.screen-picker .grow { flex: 1 1 320px; }
+input.mono { font-family: ui-monospace, Consolas, monospace; font-size: .85rem; flex: 1 1 auto; min-width: 0; }

@@ -1174,11 +1174,14 @@ class Engine:
         elif path == "/api/val/reader":   # (read this PC's screen: the observer's VALORANT)
             r = self.valreader
             r.on = bool(body.get("on", r.on))
-            if body.get("screen"):
-                r.screen = max(1, int(body["screen"]))
-                self.project.setdefault("val", {})["screen"] = r.screen   # (remembered: the same screen after a restart)
+            src = body.get("source")
+            if body.get("screen") and not src:
+                src = {"kind": "screen", "n": int(body["screen"])}
+            if isinstance(src, dict) and src.get("kind") in ("auto", "window", "screen"):
+                r.source = {k: src[k] for k in ("kind", "exe", "title", "n") if k in src}
+                self.project.setdefault("val", {})["source"] = r.source   # (remembered: the same game window after a restart)
                 self.save_project()
-            result = {"on": r.on, "screen": r.screen, "status": r.status}
+            result = {"on": r.on, "source": r.source, "status": r.status}
         elif path == "/api/lol":
             self.lol.set(body)
         elif path == "/api/lol/feed":   # (the League observer client: the game's live data from another PC)
@@ -1419,6 +1422,37 @@ def handler(engine):
                 return self.wfile.write(data)
             if path == "/api/assets":
                 return self._send(200, json.dumps({"assets": engine.assets()}))
+            m = re.fullmatch(r"/data/(.+)\.(csv|json)", path)
+            if m:   # (a data table for vMix / OBS / anything: /data/VALORANT.csv, one row, a column per field; .json {field: value})
+                rows = engine.state()["data"]["tables"].get(unquote(m.group(1)))
+                if rows is None:
+                    return self._send(404, b'{"error": "no such table"}')
+                pairs = [(str(r[0]), "" if len(r) < 2 or r[1] is None else str(r[1])) for r in rows[1:] if r]
+                if m.group(2) == "json":
+                    return self._send(200, json.dumps(dict(pairs)))
+                import csv, io
+                b = io.StringIO()
+                w = csv.writer(b)
+                w.writerow([k for k, _ in pairs])
+                w.writerow([v for _, v in pairs])
+                return self._send(200, b.getvalue().encode("utf-8-sig"), "text/csv; charset=utf-8")
+            if path == "/api/windows":   # (this PC's open windows, as OBS's Window Capture lists them)
+                from . import windows
+                return self._send(200, json.dumps(windows.listing()))
+            if path == "/api/val/reader/frame.jpg":   # (what the VALORANT reader is looking at now)
+                r = getattr(engine, "valreader", None)
+                try:
+                    img = r.frame() if r else None
+                except Exception:
+                    img = None
+                if img is None:
+                    return self._send(404, b'{"error": "nothing to show"}')
+                import io
+                im = img.copy()
+                im.thumbnail((480, 480))
+                b = io.BytesIO()
+                im.save(b, "JPEG", quality=72)
+                return self._send(200, b.getvalue(), "image/jpeg")
             if path == "/api/screens":   # (this PC's screens: which one a game is on, for the screen readers)
                 from . import screens
                 return self._send(200, json.dumps(screens.listing()))

@@ -456,7 +456,8 @@ def parse(img):
             slot_of = match_slots(img, team, rows)
             for ri, y in enumerate(rows):
                 cell = lambda k: img.crop((COLS[k][0], y - 14, COLS[k][1], y + 14))
-                name = _text(img, (COLS["name"][0], y - 14, COLS["name"][1], y + 14), 3).strip()
+                # (taller than the row: a y or g's tail cut off reads as v / missed names; 18 above, 22 below reads all ten)
+                name = _text(img, (COLS["name"][0], y - 18, COLS["name"][1], y + 22), 3).strip()
                 if not name:
                     continue
                 ult = digits(cell("ult"))
@@ -494,13 +495,29 @@ class Reader:
         self.seen = {}   # kill-feed bar -> when first read (a bar stays up a few seconds: one kill, sent once)
         self.votes = {}                          # (team, slot) -> {agent: times seen}: an agent is locked in once seen 3 times
 
+    # where the game is: {"kind": "auto"} (find VALORANT's window by itself, any screen), {"kind": "window", "exe", "title"}
+    # (one window, captured like OBS's Window Capture: covered or not), or {"kind": "screen", "n"} (a whole screen)
+    GAME_EXE = "VALORANT-Win64-Shipping.exe"
+    source = {"kind": "auto"}
+
     def frame(self):
+        src = self.source or {"kind": "auto"}
+        if src.get("kind") in ("auto", "window"):
+            from . import windows
+            exe = self.GAME_EXE if src.get("kind") == "auto" else src.get("exe", "")
+            h = windows.find(exe, "" if src.get("kind") == "auto" else src.get("title", ""))
+            img = windows.capture(h) if h else None
+            if img is None:
+                raise LookupError("VALORANT isn't open (or it's minimised)" if src.get("kind") == "auto" else "that window isn't open (or it's minimised)")
+            self.last_frame = img
+            return img
         import mss
         with mss.MSS() as s:
             mons = s.monitors[1:] or s.monitors
-            m = mons[min(max(self.screen, 1), len(mons)) - 1]
+            m = mons[min(max(int(src.get("n") or self.screen or 1), 1), len(mons)) - 1]
             g = s.grab(m)
-            return Image.frombytes("RGB", g.size, g.rgb)
+            self.last_frame = Image.frombytes("RGB", g.size, g.rgb)
+            return self.last_frame
 
     def update(self, d):
         """Turn a parse() result into an ingest body, placing scoreboard rows into slots by name."""
@@ -555,15 +572,19 @@ class Reader:
                     self.status = "reading"
                 else:
                     self.status = "no VALORANT HUD on that screen"
+            except LookupError as e:
+                self.status = str(e)
             except Exception as e:
                 self.status = f"error: {e}"
-            time.sleep(0.5)
+            time.sleep(0.2)   # (a frame takes ~0.5 s to read: about 1.5 reads a second)
 
 
 def start(engine):
     engine.valreader = Reader(engine)
-    try:
-        engine.valreader.screen = max(1, int(((engine.project.get("val") or {}).get("screen")) or 1))   # (the screen picked last time)
-    except (TypeError, ValueError):
-        pass
+    c = engine.project.get("val") or {}
+    src = c.get("source")
+    if isinstance(src, dict) and src.get("kind") in ("auto", "window", "screen"):   # (the game window picked last time)
+        engine.valreader.source = src
+    elif c.get("screen"):   # (from before windows could be picked)
+        engine.valreader.source = {"kind": "screen", "n": int(c["screen"])}
     threading.Thread(target=engine.valreader.run, daemon=True, name="val-reader").start()

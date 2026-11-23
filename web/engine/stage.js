@@ -65,9 +65,9 @@ export function usedTables(comp, values, tables) {
 }
 
 export class Stage {
-  constructor(root, { bus = "program", comp = null, hud = null, muted = false, base = "", editor = false, all = false, force = null } = {}) {
+  constructor(root, { bus = "program", comp = null, hud = null, part = null, muted = false, base = "", editor = false, all = false, force = null } = {}) {
     this.root = root;
-    this.opts = { bus, comp, hud, muted, base, editor, all, force };
+    this.opts = { bus, comp, hud, part, muted, base, editor, all, force };   // (part: one part of a HUD only, e.g. its scoreboard)
     this.on = new Map();          // comp id -> {el, sig}
     this.cutSeq = null;
     root.classList.add("sg-stage");
@@ -80,7 +80,7 @@ export class Stage {
   wanted(state) {
     if (this.opts.hud) {   // (a HUD's browser source: every part that's on, always; layers show themselves from live data)
       const h = (state.project.huds || []).find(x => x.id === this.opts.hud);
-      const parts = ((h && h.parts) || []).filter(p => p.on !== false).map((p, i) => ({ ...p, id: `hud-${h.id}-${p.id}`, kind: "overlay", layer: i }));
+      const parts = ((h && h.parts) || []).filter(p => p.on !== false && (!this.opts.part || p.id === this.opts.part)).map((p, i) => ({ ...p, id: `hud-${h.id}-${p.id}`, kind: "overlay", layer: i }));
       return { ids: parts.map(p => p.id), comps: new Map(parts.map(p => [p.id, p])), values: {} };
     }
     const comps = new Map(state.project.compositions.map(c => [c.id, c]));
@@ -342,16 +342,23 @@ export class Stage {
   // is, a layer that appears plays its In, one that goes plays its Out before it leaves, and a changed one (a number, a
   // picture, a health bar) fades in over the old for a moment instead of popping.
   live(oldEl, newEl) {
-    const key = l => `${(l._layer.name || "").trim().toLowerCase()}|${l._layer.type}`;
+    // (a layer is matched by its id, else its name: a HUD with many alike names, e.g. "Left 1 abil" x3, stays paired)
+    const key = l => l._layer.id ? `id:${l._layer.id}` : `${(l._layer.name || "").trim().toLowerCase()}|${l._layer.type}`;
+    // (unchanged = as first drawn: an element that has played its In carries animation styles a fresh one doesn't)
+    const drawn = l => (l._sig != null ? l._sig : (l._sig = l.outerHTML));
     const olds = new Map();
     for (const l of [...oldEl.children]) { if (!l._layer || l._going) continue; const k = key(l); if (!olds.has(k)) olds.set(k, []); olds.get(k).push(l); }
     let cursor = null;
-    const place = x => { if (cursor) cursor.after(x); else oldEl.prepend(x); cursor = x; };
+    const place = x => {   // (already right there: left alone; moving a node makes the browser redo it, a thousand times a tick)
+      if ((cursor ? cursor.nextSibling : oldEl.firstChild) !== x) { if (cursor) cursor.after(x); else oldEl.prepend(x); }
+      cursor = x;
+    };
     const gone = l => { l._going = true; setTimeout(() => l.remove(), 260); };
     for (const n of [...newEl.children]) {
       if (!n._layer) continue;
       const old = (olds.get(key(n)) || []).shift();
-      if (old && (old.outerHTML === n.outerHTML || (old._drawn != null && old._drawn === n._drawn))) { place(old); continue; }
+      drawn(n);
+      if (old && (drawn(old) === n._sig || (old._drawn != null && old._drawn === n._drawn))) { place(old); continue; }
       if (old) { place(old); place(n); n.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 240, easing: "ease-out" }); gone(old); continue; }
       place(n);
       if (n._layer.show) play(n, n._layer, "in");

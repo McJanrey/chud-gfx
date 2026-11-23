@@ -38,7 +38,8 @@ if (q.get("bg")) document.body.classList.add(q.get("bg"));
 const root = document.getElementById("stage");
 let force = null;   // (?force={"VALORANT":{"Buy phase":"yes"}}: the HUD Builder's preview of one phase)
 try { force = q.get("force") ? JSON.parse(q.get("force")) : null; } catch (e) { /* a bad link shows the live HUD */ }
-const stage = new Stage(root, { bus: q.get("hud") ? "hud" : q.get("bus") || "program", comp: q.get("comp"), hud: q.get("hud"), muted: q.get("monitor") === "1", all: q.get("all") === "1", force });
+const stage = new Stage(root, { bus: q.get("hud") ? "hud" : q.get("bus") || "program", comp: q.get("comp"), hud: q.get("hud"), part: q.get("part"), muted: q.get("monitor") === "1", all: q.get("all") === "1", force });
+window.sgStage = stage;   // (for the Show check / debugging)
 // fit the 1920x1080 stage to the window
 const fit = () => { const k = Math.min(innerWidth / W, innerHeight / H); root.style.transform = `scale(${k})`; };
 addEventListener("resize", fit); fit();

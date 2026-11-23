@@ -101,7 +101,7 @@ def rebuild(engine, hid):
     return h
 
 
-OWEN_REV = "owen2"   # (raise when val27_owen.json changes: copies made from an older one are rebuilt once)
+OWEN_REV = "owen3"   # (raise when val27_owen.json changes: copies made from an older one are rebuilt once)
 
 
 def upgrade_val27(engine):

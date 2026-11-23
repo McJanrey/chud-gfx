@@ -409,7 +409,7 @@ class Val:
         c = self.cfg()
         r = getattr(self.engine, "valreader", None)
         return {"on": c.get("on", True), "series": c.get("series", True), "status": "on" if self.live() else "waiting" if self.at else "off",
-                "reader": {"on": r.on, "screen": r.screen, "status": r.status} if r else None,
+                "reader": {"on": r.on, "source": getattr(r, "source", None), "status": r.status} if r else None,
                 "demo": bool(getattr(getattr(self.engine, "valdemo", None), "on", False)),
                 "chud": {"target": c.get("target", "owen" if c.get("chud_on", True) else "off"), "url": c.get("chud") or (self.CHUD if c.get("target") == "chud" else self.OWEN),
                          "ok": time.time() - getattr(self, "chud_ok", 0) < 5},

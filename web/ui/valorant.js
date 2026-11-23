@@ -4,23 +4,50 @@ import { $, el, api, App, ask, toast, morph } from "./lib.js";
 
 const STATE = { off: "Waiting for a reader", waiting: "Reader went quiet", on: "Reading" };
 
-// Which of this PC's screens a game is on (for a screen reader): each screen by its size and place, and a live
-// picture of the one picked so you can see the game is there. Any game's screen reader can use it.
-let screens = null, screensAt = 0;
+// Outputs: the browser-source links (copy into OBS / vMix as 1920x1080 browser sources) and the data source.
+function outputs(app) {
+  const base = `http://127.0.0.1:${app.port || location.port}`;
+  const row = (label, url) => el("label", { class: "f" }, el("span", {}, label),
+    el("div", { class: "row" }, el("input", { readonly: true, value: url, class: "mono", onclick: e => e.target.select() }),
+      el("button", { class: "small", onclick: () => navigator.clipboard.writeText(url).then(() => toast("Link copied")) }, "Copy")));
+  return [row("HUD overlay (OBS / vMix browser source, 1920x1080)", `${base}/hud/val27`),
+    row("Scoreboard overlay (shows itself in the buy phase)", `${base}/output?hud=val27&part=owboard`),
+    row("vMix data source (CSV; also .json)", `${base}/data/VALORANT.csv`)];
+}
+
+// Which window or screen the game is on, for the screen reader (Owen's "Game window"): find VALORANT by itself, one
+// window captured like OBS's Window Capture (covered or not), or a whole screen; with a picture of what it reads.
+let wins = null, screens = null;
 const where = (m, all) => {
   const main = all.find(x => x.main) || all[0];
   if (m.main) return "main screen";
   return m.x >= main.x + main.w ? "right of main" : m.x + m.w <= main.x ? "left of main" : m.y + m.h <= main.y ? "above main" : m.y >= main.y + main.h ? "below main" : "";
 };
-export function screenPicker(current, onPick) {
-  const sel = el("select", { "aria-label": "Game screen", onchange: e => { onPick(+e.target.value); pic.src = `/api/screens/${e.target.value}.jpg?t=${Date.now()}`; } });
-  const pic = el("img", { class: "screen-pic", alt: "What's on that screen now", src: `/api/screens/${current}.jpg?t=${Math.floor(Date.now() / 5000)}` });
-  const fill = list => sel.replaceChildren(...list.map(m => el("option", { value: m.n, selected: m.n === current },
-    `Screen ${m.n} · ${m.w}×${m.h}${where(m, list) ? " · " + where(m, list) : ""}`)));
-  if (screens) fill(screens); else sel.appendChild(el("option", { value: current, selected: true }, `Screen ${current}`));
-  if (!screens || Date.now() - screensAt > 30000) fetch("/api/screens").then(r => r.json()).then(list => { screens = list; screensAt = Date.now(); if (sel.isConnected || true) fill(list); }).catch(() => {});
-  const again = el("button", { class: "small ghost", title: "Look at the screen again", onclick: () => { pic.src = `/api/screens/${sel.value}.jpg?t=${Date.now()}`; } }, "Refresh");
-  return el("div", { class: "screen-picker" }, el("label", { class: "f" }, el("span", {}, "Game screen"), sel), pic, again);
+export function sourcePicker(cur, onPick) {
+  const key = s => s.kind === "auto" ? "auto" : s.kind === "screen" ? `screen:${s.n}` : `window:${s.exe}|${s.title}`;
+  const sel = el("select", { "aria-label": "Game window", onchange: e => {
+    const o = e.target.selectedOptions[0];
+    onPick(JSON.parse(o.dataset.src));
+    setTimeout(look, 600);
+  } });
+  const pic = el("img", { class: "screen-pic", alt: "What the reader sees now" });
+  const look = () => { pic.src = `/api/val/reader/frame.jpg?t=${Date.now()}`; };
+  const fill = () => {
+    const opts = [["Find VALORANT by itself (any screen)", { kind: "auto" }]];
+    for (const w of wins || []) opts.push([`${w.title}  ·  ${w.exe}${w.minimised ? "  (minimised)" : ""}`, { kind: "window", exe: w.exe, title: w.title }]);
+    for (const m of screens || []) opts.push([`Whole screen ${m.n} · ${m.w}x${m.h}${where(m, screens) ? " · " + where(m, screens) : ""}`, { kind: "screen", n: m.n }]);
+    if (!opts.some(([, s]) => key(s) === key(cur))) opts.splice(1, 0, [cur.kind === "window" ? `${cur.title} · ${cur.exe} (not open)` : `Whole screen ${cur.n}`, cur]);
+    sel.replaceChildren(...opts.map(([t, s]) => el("option", { value: key(s), "data-src": JSON.stringify(s), selected: key(s) === key(cur) }, t)));
+  };
+  const load = () => Promise.all([fetch("/api/windows").then(r => r.json()).catch(() => []), fetch("/api/screens").then(r => r.json()).catch(() => [])])
+    .then(([w, sc]) => { wins = w; screens = sc; fill(); });
+  fill();
+  if (!wins) load();
+  look();
+  return el("div", { class: "screen-picker" },
+    el("label", { class: "f grow" }, el("span", {}, "Game window"), sel),
+    el("button", { class: "small", onclick: () => { load(); look(); } }, "Refresh list"),
+    pic);
 }
 
 export function valCard() {
@@ -31,10 +58,13 @@ export function valCard() {
       el("label", { class: "switch" }, el("input", { type: "checkbox", checked: v.on !== false, onchange: e => api("/api/val", { on: e.target.checked }) }), v.on !== false ? "On" : "Off"),
       el("span", { class: "pill" + (v.status === "on" ? " ok" : "") }, STATE[v.status] || v.status)),
     el("p", { class: "muted small" }, `A reader sends the match here as it changes (score, round, sides, spike, players). Chud Hud or a screen reader on the observer PC posts to http://${host}:${app.port || 7820}/api/val/ingest. The ready-made graphics (scorebug, round win, spike, timeout, tech pause, buy-phase scoreboard) appear in the HUD Builder as "VALORANT graphics" with the first data, each switched off until you turn it on.`),
-    el("div", { class: "row" },
-      el("label", { class: "switch" }, el("input", { type: "checkbox", checked: !!(v.reader || {}).on, onchange: e => api("/api/val/reader", { on: e.target.checked }) }), "Read this PC's screen"),
-      screenPicker((v.reader || {}).screen || 1, n => api("/api/val/reader", { screen: n })),
-      el("span", { class: "muted small" }, (v.reader || {}).on ? (v.reader.status || "") : "")),
+    el("h4", {}, "Outputs"),
+    ...outputs(app),
+    el("h4", {}, "Live data"),
+    el("button", { class: "big-toggle" + ((v.reader || {}).on ? " on" : ""), onclick: () => api("/api/val/reader", { on: !(v.reader || {}).on }) },
+      (v.reader || {}).on ? "Reading VALORANT on this PC (click to stop)" : "Read VALORANT on this PC"),
+    el("p", { class: "muted small" }, (v.reader || {}).on ? (v.reader.status || "Starting...") : "Off. Turn on when VALORANT (spectating or a replay) runs on this PC."),
+    sourcePicker((v.reader || {}).source || { kind: "auto" }, src => api("/api/val/reader", { source: src })),
     el("label", { class: "f" }, el("span", {}, "Send to a HUD"),
       el("select", { "aria-label": "Send to a HUD", onchange: e => api("/api/val", { target: e.target.value }) },
         ...[["owen", "SCC Broadcast Engine (VAL HUD, port 8778)"], ["chud", "Chud Hud (VALORANT HUD)"], ["off", "Off"]].map(([k, t]) => el("option", { value: k, selected: ((v.chud || {}).target || "owen") === k }, t))),

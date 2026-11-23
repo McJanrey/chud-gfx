@@ -1571,7 +1571,7 @@
 "y": 630,
 "w": 308,
 "h": 8,
-"src": "{{VALORANT!Left 1 hp bar}}",
+"src": "{{VALORANT!Left 1 tab bar}}",
 "fit": "fill",
 "show": "{{VALORANT!Left 1 here}}",
 "anim": {
@@ -2950,7 +2950,7 @@
 "y": 736,
 "w": 308,
 "h": 8,
-"src": "{{VALORANT!Left 2 hp bar}}",
+"src": "{{VALORANT!Left 2 tab bar}}",
 "fit": "fill",
 "show": "{{VALORANT!Left 2 here}}",
 "anim": {
@@ -3599,7 +3599,7 @@
 "y": 842,
 "w": 308,
 "h": 8,
-"src": "{{VALORANT!Left 3 hp bar}}",
+"src": "{{VALORANT!Left 3 tab bar}}",
 "fit": "fill",
 "show": "{{VALORANT!Left 3 here}}",
 "anim": {
@@ -4248,7 +4248,7 @@
 "y": 948,
 "w": 308,
 "h": 8,
-"src": "{{VALORANT!Left 4 hp bar}}",
+"src": "{{VALORANT!Left 4 tab bar}}",
 "fit": "fill",
 "show": "{{VALORANT!Left 4 here}}",
 "anim": {
@@ -4897,7 +4897,7 @@
 "y": 1054,
 "w": 308,
 "h": 8,
-"src": "{{VALORANT!Left 5 hp bar}}",
+"src": "{{VALORANT!Left 5 tab bar}}",
 "fit": "fill",
 "show": "{{VALORANT!Left 5 here}}",
 "anim": {
@@ -5549,7 +5549,7 @@
 "y": 630,
 "w": 308,
 "h": 8,
-"src": "{{VALORANT!Right 1 hp bar}}",
+"src": "{{VALORANT!Right 1 tab bar}}",
 "fit": "fill",
 "show": "{{VALORANT!Right 1 here}}",
 "anim": {
@@ -6201,7 +6201,7 @@
 "y": 736,
 "w": 308,
 "h": 8,
-"src": "{{VALORANT!Right 2 hp bar}}",
+"src": "{{VALORANT!Right 2 tab bar}}",
 "fit": "fill",
 "show": "{{VALORANT!Right 2 here}}",
 "anim": {
@@ -6853,7 +6853,7 @@
 "y": 842,
 "w": 308,
 "h": 8,
-"src": "{{VALORANT!Right 3 hp bar}}",
+"src": "{{VALORANT!Right 3 tab bar}}",
 "fit": "fill",
 "show": "{{VALORANT!Right 3 here}}",
 "anim": {
@@ -7505,7 +7505,7 @@
 "y": 948,
 "w": 308,
 "h": 8,
-"src": "{{VALORANT!Right 4 hp bar}}",
+"src": "{{VALORANT!Right 4 tab bar}}",
 "fit": "fill",
 "show": "{{VALORANT!Right 4 here}}",
 "anim": {
@@ -8157,7 +8157,7 @@
 "y": 1054,
 "w": 308,
 "h": 8,
-"src": "{{VALORANT!Right 5 hp bar}}",
+"src": "{{VALORANT!Right 5 tab bar}}",
 "fit": "fill",
 "show": "{{VALORANT!Right 5 here}}",
 "anim": {
