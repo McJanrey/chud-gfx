@@ -1482,7 +1482,8 @@ def handler(engine):
             m = re.fullmatch(r"/hud/([a-z0-9-]{1,40})(/control)?/?", path)
             if m:   # (a HUD's browser source, or its control page)
                 self.send_response(302)
-                self.send_header("Location", f"/val-control.html?hud={m.group(1)}" if m.group(2) else f"/output?hud={m.group(1)}")
+                q = urlparse(self.path).query   # (kept, so e.g. ?force=... still reaches the page)
+                self.send_header("Location", (f"/val-control.html?hud={m.group(1)}" if m.group(2) else f"/output?hud={m.group(1)}") + (f"&{q}" if q else ""))
                 self.end_headers()
                 return
             if path.startswith("/val-svg/"):   # (the VAL HUD's drawn pieces: ult ring, charges, health bar, armor, round tracker)
@@ -1657,6 +1658,7 @@ def handler(engine):
 
 def make_server(workspace, library=None, port=7800):
     engine = Engine(workspace, library)
+    ThreadingHTTPServer.request_queue_size = 128   # (the default 5 refuses bursts: several OBS browser sources load at once)
     server = ThreadingHTTPServer(("0.0.0.0", port), handler(engine))
     server.daemon_threads = True
     engine.port = server.server_address[1]

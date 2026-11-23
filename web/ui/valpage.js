@@ -53,7 +53,7 @@ function liveCard() {
 // --- overview -----------------------------------------------------------------
 function overview() {
   const app = App.state.app || {};
-  return [previewCard(), card("Outputs", ...outputs(app),
+  return [previewCard("overview"), card("Outputs", ...outputs(app),
       el("p", { class: "muted small" }, `From another PC, use this PC's network address instead of 127.0.0.1${(app.addresses || [])[0] ? ` (for example http://${app.addresses[0]}:${app.port || location.port}/hud/val27)` : ""}.`)),
     liveCard()];
 }
@@ -119,10 +119,15 @@ function tournament() {
 }
 
 // --- live game ----------------------------------------------------------------
-let preview = null, bgImg = null, bgFor = null, pframe = null, phase = "Live", phaseBtns = [];
-// One preview node, moved between the Overview and Live game sections (only the shown tab keeps its iframe running).
-function previewCard() {
+const sectionsEl = el("div", { class: "val-sections" });
+sectionsEl._whole = true;
+let preview = null, previewIn = "", bgImg = null, bgFor = null, pframe = null, phase = "Live", phaseBtns = [];
+// One preview per section that shows it (Overview or Live game): built fresh when the section changes, kept while it stays,
+// so only the shown section has an iframe and it doesn't reload on every update (a reused node got mangled by morph).
+function previewCard(section) {
+  if (preview && previewIn !== section) preview = null;
   if (!preview) {
+    previewIn = section; bgFor = null;
     pframe = el("iframe", { src: "/hud/val27", title: "VALORANT HUD preview", tabindex: "-1" });
     bgImg = el("img", { class: "val-pbg", alt: "" });
     const box = el("div", { class: "val-preview" }, bgImg, pframe);
@@ -134,15 +139,16 @@ function previewCard() {
     };
     const names = ["Live", "Buy phase", "Round in play", "Top bar small", "Spike planted", "Round win"];
     phaseBtns = names.map(n => [n, el("button", { class: n === phase ? "on" : "", onclick: () => pick(n) }, n)]);
-    preview = [box, el("div", { class: "seg val-phases", role: "group", "aria-label": "Preview state" }, ...phaseBtns.map(b => b[1])),
-      el("a", { class: "btn small", href: "/hud/val27", target: "_blank" }, "Open the HUD")];
+    preview = card("Preview", box, el("div", { class: "seg val-phases", role: "group", "aria-label": "Preview state" }, ...phaseBtns.map(b => b[1])),
+      el("a", { class: "btn small", href: "/hud/val27", target: "_blank" }, "Open the HUD"));
+    preview._whole = true;   // (the same card every render: morph leaves it alone, or swaps it in or out whole; re-wrapping its nodes moved the iframe and reloaded it)
   }
   const name = curMap();
   if (name !== bgFor) {   // (art follows the map; no map yet = Ascent, else a dark gradient)
     bgFor = name;
     mapArt(name).then(u => { if (bgFor === name) { bgImg.hidden = !u; if (u) bgImg.src = u; } });
   }
-  return card("Preview", ...preview);   // (a fresh card around the kept nodes, like liveCard keeps its own)
+  return preview;
 }
 function broadcast() {
   const m = M(), to = (m.teams || []).map(t => +t.timeouts || 0), hud = (App.state.project.huds || []).find(h => h.id === "val");
@@ -164,7 +170,7 @@ function broadcast() {
       : el("p", { class: "muted small" }, "These graphics are added with the first VALORANT data (try the demo match)."));
 }
 function live() {
-  return [previewCard(), broadcast(), liveCard()];
+  return [previewCard("live"), broadcast(), liveCard()];
 }
 
 // --- agent select ---------------------------------------------------------------
@@ -193,10 +199,11 @@ function render() {
   if (s === sig || typingIn($("#page-valorant"))) return;
   sig = s;
   const sections = { overview, players, tournament, live, select }[tab]();
+  morphKids(sectionsEl, sections);   // (into the same container every time: a fresh one would adopt the preview's nodes and the iframe would reload)
   morphKids(body, [head(),
     el("div", { class: "seg val-tabs", role: "tablist" }, ...TABS.map(([k, t]) => el("button", { role: "tab", class: k === tab ? "on" : "", "aria-selected": String(k === tab),
       onclick: () => { tab = k; sig = ""; try { localStorage.setItem("sg-val-tab", k); } catch (e) { /* */ } render(); } }, t))),
-    el("div", { class: "val-sections" }, ...sections)]);
+    sectionsEl]);
 }
 App.on(() => { if (App.page === "valorant") render(); });
 pages.valorant = {

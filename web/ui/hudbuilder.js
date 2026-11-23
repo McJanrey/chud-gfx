@@ -7,7 +7,8 @@ import { $, el, api, App, toast, pages, askText, ask } from "./lib.js";
 import { composer } from "./composer.js";
 import { PHASES } from "./valmap.js";
 
-let built = false, view = "list", hudId = null, partId = null, mode = "live", demo = false;
+let built = false, view = "list", hudId = null, partId = null, mode = "live";
+const isDemo = () => !!(App.state.val || {}).demo;   // (the server decides; never a local copy that can disagree)
 const GAMES = { valorant: "VALORANT", val: "VALORANT", lol: "League of Legends", league: "League of Legends", rl: "Rocket League", rocket: "Rocket League", other: "Other" };
 const gameName = g => GAMES[String(g || "other").toLowerCase()] || g;
 const huds = () => (App.state.project.huds || []);
@@ -108,12 +109,12 @@ function drawHead() {
       h.key ? item("Reset to built-in", rebuildHud) : "",
       item("Delete HUD", deleteHud))));
   const chip = (k, n) => el("button", { class: "small" + (mode === k ? " on" : ""), onclick: () => { mode = k; applyShow(); drawHead(); } }, n);
-  const g = gameName(h.game);
+  const g = gameName(h.game), demo = isDemo();
   $("#hb-show").replaceChildren(el("span", { class: "muted small" }, "Show:"), chip("live", "Live"), chip("all", "Everything"), ...(PHASES[g] || []).map(([n]) => chip(n, n)),
     // (where the HUD's data comes from, as one switch: the game (Live feed) or a made-up match (Demo match))
     g === "VALORANT" ? el("span", { class: "seg", role: "group", "aria-label": "Data" },
-      el("button", { class: "small" + (demo ? "" : " on"), title: "The real game (the reader on the VALORANT page)", onclick: () => demo && api("/api/val/demo", { on: false }).then(r => { demo = r.on; drawHead(); }) }, "Live feed"),
-      el("button", { class: "small" + (demo ? " on" : ""), title: "A made-up match, so names, money and guns show without a game", onclick: () => !demo && api("/api/val/demo", { on: true }).then(r => { demo = r.on; drawHead(); }) }, "Demo match")) : "");
+      el("button", { class: "small" + (demo ? "" : " on"), title: "The real game (the reader on the VALORANT page)", onclick: () => demo && api("/api/val/demo", { on: false }).then(drawHead) }, "Live feed"),
+      el("button", { class: "small" + (demo ? " on" : ""), title: "A made-up match, so names, money and guns show without a game", onclick: () => !demo && api("/api/val/demo", { on: true }).then(drawHead) }, "Demo match")) : "");
 }
 
 // --- HUD and part actions ----------------------------------------------------------------------------
@@ -167,7 +168,7 @@ pages.hudbuilder = { shown() { build(); if (view === "edit" && hud()) open(hudId
 let sig = "";
 App.on(st => {
   if (App.page !== "hudbuilder" || !built) return;
-  const s = JSON.stringify((st.project.huds || []).map(h => [h.id, h.name, h.key, h.parts.map(p => [p.id, p.name, p.on, p.layers.length])]));
+  const s = JSON.stringify([(st.project.huds || []).map(h => [h.id, h.name, h.key, h.parts.map(p => [p.id, p.name, p.on, p.layers.length])]), isDemo()]);
   if (s === sig) return; sig = s;
   if (view === "list") return drawGallery();
   if (!hud()) return show("list");

@@ -7,12 +7,13 @@ const each = (here, up, board) => Object.fromEntries(["Left", "Right"].flatMap(s
   [`${sd} ${n} here`, here], [`${sd} ${n} up`, up], [`${sd} ${n} down`, ""], [`${sd} ${n} board`, board]])));
 const TABS = each("yes", "yes", ""), BOARD = each("", "", "yes"), NONE = each("", "", "");
 export const PHASES = {
-  VALORANT: [["Round in play", { "In round": "yes", "Names": "yes", "Condensed": "", "Top on": "yes", "Buy phase": "", "Planted": "", "Round won": "", "Select on": "", ...TABS }],
-    ["Top bar small", { "In round": "yes", "Names": "", "Condensed": "yes", "Top on": "yes", "Buy phase": "", "Planted": "", "Select on": "", ...TABS }],
-    ["Spike planted", { "In round": "yes", "Names": "", "Condensed": "yes", "Top on": "yes", "Planted": "yes", "Buy phase": "", "Select on": "", ...TABS }],
-    ["Buy phase", { "Buy phase": "yes", "In round": "", "Names": "yes", "Condensed": "", "Top on": "yes", "Planted": "", "Round won": "", "Select on": "", ...BOARD }],
-    ["Round win", { "Round won": "yes", "Names": "yes", "Condensed": "", "Top on": "yes", "Planted": "", "Banner": "ROUND WIN", ...TABS }],
-    ["Agent select", { "Select on": "yes", "Top on": "", "In round": "", "Buy phase": "", ...NONE }]],
+  // (every preset sets all of the phase keys, so one phase never mixes with the live data's other states)
+  VALORANT: [["Round in play", { "In round": "yes", "Names": "yes", "Condensed": "", "Top on": "yes", "Buy phase": "", "Planted": "", "Round won": "", "Select on": "", "Banner": "", ...TABS }],
+    ["Top bar small", { "In round": "yes", "Names": "", "Condensed": "yes", "Top on": "yes", "Buy phase": "", "Planted": "", "Round won": "", "Select on": "", "Banner": "", ...TABS }],
+    ["Spike planted", { "In round": "yes", "Names": "", "Condensed": "yes", "Top on": "yes", "Buy phase": "", "Planted": "yes", "Round won": "", "Select on": "", "Banner": "", ...TABS }],
+    ["Buy phase", { "In round": "", "Names": "yes", "Condensed": "", "Top on": "yes", "Buy phase": "yes", "Planted": "", "Round won": "", "Select on": "", "Banner": "", ...BOARD }],
+    ["Round win", { "In round": "", "Names": "yes", "Condensed": "", "Top on": "yes", "Buy phase": "", "Planted": "", "Round won": "yes", "Select on": "", "Banner": "ROUND WIN", ...TABS }],
+    ["Agent select", { "In round": "", "Names": "", "Condensed": "", "Top on": "", "Buy phase": "", "Planted": "", "Round won": "", "Select on": "yes", "Banner": "", ...NONE }]],
 };
 
 
