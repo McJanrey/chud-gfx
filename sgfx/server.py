@@ -163,14 +163,18 @@ class Engine:
             self.cond.notify_all()
 
     def fonts(self):
-        """[{"name", "url"}]: every font file in the library and the workspace, known by its file name."""
-        out = []
-        for base, prefix in ((self.library, "library"), (os.path.join(self.folder, "assets"), "assets")):
+        """[{"name", "url"}]: every font file in the workspace and the library, known by its file name; a name in both
+        is the workspace's (a HUD font replaced in Assets wins over the library's copy, and loads once)."""
+        out, seen = [], set()
+        for base, prefix in ((os.path.join(self.folder, "assets"), "assets"), (self.library, "library")):
             for folder, _, files in os.walk(base) if base and os.path.isdir(base) else []:
                 for f in files:
                     if f.lower().endswith((".otf", ".ttf", ".woff", ".woff2")):
                         rel = os.path.relpath(os.path.join(folder, f), base).replace(os.sep, "/")
-                        out.append({"name": os.path.splitext(f)[0], "url": f"/{prefix}/{rel}"})
+                        name = os.path.splitext(f)[0]
+                        if name not in seen:
+                            seen.add(name)
+                            out.append({"name": name, "url": f"/{prefix}/{rel}"})
         return out
 
     def sources(self):

@@ -297,6 +297,7 @@ class Val:
             gt = ((self.engine.project.get("global") or {}).get(("left", "right")[w]) or {})
             self.last_round = {"Round": ended, "Winner": gt.get("name") or m.teams[w]["name"], "Winner side": SIDES[w],
                                "Winner tricode": str(gt.get("short") or gt.get("name") or m.teams[w]["name"] or "").upper(),
+                               "Winner logo": str(gt.get("logo") or ""),   # (the round win banner's crest)
                                "Winner role": "ATTACK" if attackers(ended, m.first) == w else "DEFENSE",
                                "Winner line": " • ".join(x for x in (str(gt.get("short") or gt.get("name") or m.teams[w]["name"] or "").upper(),
                                                                        "ATTACK" if attackers(ended, m.first) == w else "DEFENSE",

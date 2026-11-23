@@ -19209,7 +19209,7 @@
 "y": 159,
 "w": 81.8,
 "h": 81.8,
-"src": "{{Global!Left logo}}",
+"src": "{{VAL Last round!Winner logo}}",
 "fit": "contain",
 "show": "{{VALORANT!Round won}}",
 "anim": {
@@ -19223,7 +19223,8 @@
 "dur": 337,
 "delay": 0
 }
-}
+},
+"placeholder": "{{Global!Left logo}}"
 },
 {
 "id": "ow0719",
