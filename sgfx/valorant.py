@@ -82,6 +82,7 @@ def catalog():
     return _catalog
 
 
+OWEN_WORDS = {"elimination": "KILLS", "spike": "SPIKE DETONATION", "defuse": "DEFUSAL", "time": "TIME"}   # (Owen's round win line)
 HOW = {"elimination": "Elimination", "spike": "Spike detonated", "defuse": "Spike defused", "time": "Time ran out"}
 
 
@@ -255,6 +256,9 @@ class Val:
             self.last_round = {"Round": m.round, "Winner": m.teams[w]["name"], "Winner side": SIDES[w],
                                "Winner tricode": str(gt.get("short") or gt.get("name") or m.teams[w]["name"] or "").upper(),
                                "Winner role": "ATTACK" if attackers(m.round, m.first) == w else "DEFENSE",
+                               "Winner line": " • ".join(x for x in (str(gt.get("short") or gt.get("name") or m.teams[w]["name"] or "").upper(),
+                                                                       "ATTACK" if attackers(m.round, m.first) == w else "DEFENSE",
+                                                                       OWEN_WORDS.get(body.get("how"), "")) if x),
                                "How": HOW.get(body.get("how"), str(body.get("how") or "")),
                                "Left score": m.teams[0]["score"], "Right score": m.teams[1]["score"]}
         elif ev == "map_end" and w in (0, 1):

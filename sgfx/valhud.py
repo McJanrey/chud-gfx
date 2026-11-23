@@ -30,6 +30,11 @@ def _colour(c, d):
 
 
 # --- the table fields ---------------------------------------------------------------------------------
+def _file(name):
+    n = __import__("re").sub(r"[^A-Za-z0-9]", "", str(name or ""))
+    return n[:1].upper() + n[1:].lower() if n.isupper() and len(n) > 1 else n
+
+
 def fields(m, g):
     """The fields the SCC-layout graphics read (added to the VALORANT table)."""
     from .valorant import attackers
@@ -68,6 +73,8 @@ def fields(m, g):
             f.update({f"{k} here": "yes" if show else "", f"{k} up": "yes" if show and not dead else "", f"{k} down": "yes" if show and dead else "",
                       f"{k} board": "yes" if have and buy else "",
                       f"{k} pic": f"/val-img/agent/{aid}/displayicon.png" if UUID.match(aid) else "",
+                      # (Owen's picture folders: the agent and gun as file names, e.g. "KAY/O" -> "Kayo")
+                      f"{k} agent file": _file(p.get("agent")), f"{k} weapon file": _file(p.get("weapon")),
                       f"{k} ult pic": f"/val-img/agent/{aid}/ultimate.png" if UUID.match(aid) else "",
                       f"{k} ult ring": f"/val-svg/ring/{min(ult, most)}/{most}.svg",
                       f"{k} hp bar": f"/val-svg/bar/{0 if dead else max(0, min(100, int(p.get('health') or 0)))}/{'3a3a3a' if dead else col[1:]}.svg",
@@ -118,10 +125,11 @@ def fields(m, g):
     for r in range(1, 25):
         h = m.history[r - 1] if r <= len(m.history) else None
         w = h.get("winner") if h else None
-        f[f"Round {r} left won"] = "yes" if w == 0 else ""
-        f[f"Round {r} right won"] = "yes" if w == 1 else ""
+        board = f.get("Buy phase") == "yes"   # (the tracker is on the buy-phase board only)
+        f[f"Round {r} left won"] = "yes" if w == 0 and board else ""
+        f[f"Round {r} right won"] = "yes" if w == 1 and board else ""
         f[f"Round {r} icon"] = f"/library/owen-hud/assets/win-{OWEN_WIN.get(h.get('how'), 'Elimination')}.png" if h else ""
-        f[f"Round {r} now"] = "yes" if r == m.round else ""
+        f[f"Round {r} now"] = "yes" if r == m.round and board else ""
     if won:
         w = won["winner"]
         f.update({"Round winner": f["Left full name" if w == 0 else "Right full name"], "Round winner side": "ATTACK" if atk == w else "DEFENCE",

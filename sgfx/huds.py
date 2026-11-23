@@ -101,15 +101,18 @@ def rebuild(engine, hid):
     return h
 
 
+OWEN_REV = "owen2"   # (raise when val27_owen.json changes: copies made from an older one are rebuilt once)
+
+
 def upgrade_val27(engine):
     """VAL HUD (SCC 2027) made before it was rebuilt from Owen's page: its parts become his (Agent select kept). Once."""
     h = find(engine, "val27")
-    if not h or "owtop" in (h.get("built") or []):
+    if not h or OWEN_REV in (h.get("built") or []):
         return False
     new = builtin("val27")
     keep = [p for p in h.get("parts") or [] if "agent select" in str(p.get("name", "")).lower()]
     h["parts"] = [{"id": k.split(":")[-1], "name": n, "on": True, "layers": l} for k, n, _, l in new if "agent select" not in n.lower()] + keep
-    h["built"] = sorted(set((h.get("built") or []) + [k.split(":")[-1] for k, _, _, _ in new] + [p["id"] for p in keep]))
+    h["built"] = sorted(set((h.get("built") or []) + [k.split(":")[-1] for k, _, _, _ in new] + [p["id"] for p in keep] + [OWEN_REV]))
     engine.save_project()
     return True
 

@@ -905,6 +905,32 @@
 "delay": 0
 }
 }
+},
+{
+"id": "ow0035r",
+"type": "image",
+"name": "Spike flash",
+"x": 926,
+"y": 5,
+"w": 70,
+"h": 70,
+"src": "/library/owen-hud/assets/spike-default.png",
+"fit": "fill",
+"show": "{{VALORANT!Planted}}",
+"anim": {
+"in": {
+"type": "fade",
+"dur": 150,
+"delay": 0
+},
+"out": {
+"type": "fade",
+"dur": 112,
+"delay": 0
+}
+},
+"recolor": "#eb3122",
+"blink": 1000
 }
 ]
 },
@@ -921,11 +947,11 @@
 "y": 551,
 "w": 310,
 "h": 88,
-"fill": "linear-gradient(rgba(102, 102, 102, 0.2), rgba(0, 0, 0, 0.2)), none, rgba(17, 24, 35, 0.5)",
+"fill": "linear-gradient(90deg, rgba(58, 58, 58, 0.9), rgba(58, 58, 58, 0)), none, rgba(0, 0, 0, 0.25)",
 "radius": 25.0,
-"stroke": "rgb(255, 255, 255)",
+"stroke": "rgba(0, 0, 0, 0)",
 "strokeWidth": 1.0,
-"show": "{{VALORANT!Left 1 here}}",
+"show": "{{VALORANT!Left 1 down}}",
 "anim": {
 "in": {
 "type": "push-right",
@@ -948,11 +974,11 @@
 "y": 551,
 "w": 51,
 "h": 51,
-"fill": "{{VALORANT!Left color}}",
+"fill": "rgb(57, 57, 57)",
 "radius": "25 0 25 0",
-"stroke": "rgb(255, 255, 255)",
+"stroke": "rgba(0, 0, 0, 0)",
 "strokeWidth": 1.0,
-"show": "{{VALORANT!Left 1 here}}",
+"show": "{{VALORANT!Left 1 down}}",
 "anim": {
 "in": {
 "type": "push-right",
@@ -975,10 +1001,10 @@
 "y": 551,
 "w": 51,
 "h": 51,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 1 agent}}/{{VALORANT!Left 1 agent}}.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 1 agent file}}/{{VALORANT!Left 1 agent file}}.png",
 "fit": "cover",
 "radius": "25 0 25 0",
-"show": "{{VALORANT!Left 1 here}}",
+"show": "{{VALORANT!Left 1 down}}",
 "anim": {
 "in": {
 "type": "push-right",
@@ -995,6 +1021,86 @@
 },
 {
 "id": "ow0039",
+"type": "rect",
+"name": "Left 1 tab",
+"x": 17,
+"y": 551,
+"w": 310,
+"h": 88,
+"fill": "linear-gradient(rgba(102, 102, 102, 0.2), rgba(0, 0, 0, 0.2)), none, rgba(17, 24, 35, 0.5)",
+"radius": 25.0,
+"stroke": "rgb(255, 255, 255)",
+"strokeWidth": 1.0,
+"show": "{{VALORANT!Left 1 up}}",
+"anim": {
+"in": {
+"type": "push-right",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-right",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0040",
+"type": "rect",
+"name": "Left 1 agent",
+"x": 17,
+"y": 551,
+"w": 51,
+"h": 51,
+"fill": "{{VALORANT!Left color}}",
+"radius": "25 0 25 0",
+"stroke": "rgb(255, 255, 255)",
+"strokeWidth": 1.0,
+"show": "{{VALORANT!Left 1 up}}",
+"anim": {
+"in": {
+"type": "push-right",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-right",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0041",
+"type": "image",
+"name": "Left 1 agent picture",
+"x": 17,
+"y": 551,
+"w": 51,
+"h": 51,
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 1 agent file}}/{{VALORANT!Left 1 agent file}}.png",
+"fit": "cover",
+"radius": "25 0 25 0",
+"show": "{{VALORANT!Left 1 up}}",
+"anim": {
+"in": {
+"type": "push-right",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-right",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0042",
 "type": "text",
 "name": "Left 1 i text",
 "x": 79,
@@ -1026,14 +1132,14 @@
 }
 },
 {
-"id": "ow0040",
+"id": "ow0043",
 "type": "image",
 "name": "Left 1 abil picture",
 "x": 189,
 "y": 566,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 1 agent}}/C.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 1 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 1 up}}",
 "anim": {
@@ -1051,7 +1157,7 @@
 }
 },
 {
-"id": "ow0041",
+"id": "ow0044",
 "type": "image",
 "name": "Left 1 c charges",
 "x": 189,
@@ -1076,14 +1182,14 @@
 }
 },
 {
-"id": "ow0042",
+"id": "ow0045",
 "type": "image",
 "name": "Left 1 abil picture",
 "x": 220,
 "y": 566,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 1 agent}}/Q.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 1 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 1 up}}",
 "anim": {
@@ -1101,7 +1207,7 @@
 }
 },
 {
-"id": "ow0043",
+"id": "ow0046",
 "type": "image",
 "name": "Left 1 q charges",
 "x": 220,
@@ -1126,14 +1232,14 @@
 }
 },
 {
-"id": "ow0044",
+"id": "ow0047",
 "type": "image",
 "name": "Left 1 abil picture",
 "x": 251,
 "y": 566,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 1 agent}}/E.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 1 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 1 up}}",
 "anim": {
@@ -1151,7 +1257,7 @@
 }
 },
 {
-"id": "ow0045",
+"id": "ow0048",
 "type": "image",
 "name": "Left 1 e charges",
 "x": 251,
@@ -1176,7 +1282,7 @@
 }
 },
 {
-"id": "ow0046",
+"id": "ow0049",
 "type": "image",
 "name": "Left 1 ult ring",
 "x": 280,
@@ -1201,14 +1307,14 @@
 }
 },
 {
-"id": "ow0047",
+"id": "ow0050",
 "type": "image",
 "name": "Left 1 icon picture",
 "x": 291.5,
 "y": 567.5,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 1 agent}}/X.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 1 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Left 1 here}}",
@@ -1227,7 +1333,96 @@
 }
 },
 {
-"id": "ow0048",
+"id": "ow0051",
+"type": "text",
+"name": "Left 1 i text",
+"x": 25,
+"y": 607.2,
+"w": 120,
+"h": 20,
+"text": "{{VALORANT!Left 1 kda}}",
+"font": "Rubik",
+"size": 20.0,
+"weight": 400,
+"color": "rgb(255, 255, 255)",
+"align": "left",
+"valign": "middle",
+"caps": false,
+"fit": "shrink",
+"show": "{{VALORANT!Left 1 down}}",
+"anim": {
+"in": {
+"type": "push-right",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-right",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0052",
+"type": "image",
+"name": "Left 1 cred icon icon",
+"x": 253.8,
+"y": 608.5,
+"w": 15,
+"h": 15,
+"src": "/library/owen-hud/layers/140ee53748ae.svg",
+"fit": "fill",
+"show": "{{VALORANT!Left 1 down}}",
+"anim": {
+"in": {
+"type": "push-right",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-right",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0053",
+"type": "text",
+"name": "Left 1 i text",
+"x": 251,
+"y": 607.2,
+"w": 70,
+"h": 20,
+"text": "{{VALORANT!Left 1 cash}}",
+"font": "Rubik",
+"size": 20.0,
+"weight": 400,
+"color": "rgb(255, 255, 255)",
+"align": "right",
+"valign": "middle",
+"caps": false,
+"fit": "shrink",
+"show": "{{VALORANT!Left 1 down}}",
+"anim": {
+"in": {
+"type": "push-right",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-right",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0054",
 "type": "image",
 "name": "Left 1 cred icon icon",
 "x": 29,
@@ -1252,7 +1447,7 @@
 }
 },
 {
-"id": "ow0049",
+"id": "ow0055",
 "type": "text",
 "name": "Left 1 i text",
 "x": 50,
@@ -1284,14 +1479,14 @@
 }
 },
 {
-"id": "ow0050",
+"id": "ow0056",
 "type": "image",
 "name": "Left 1 gun picture",
 "x": 158,
 "y": 607,
 "w": 62,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Left 1 weapon}}.png",
+"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Left 1 weapon file}}.png",
 "fit": "contain",
 "pic": {
 "flipX": true
@@ -1312,7 +1507,7 @@
 }
 },
 {
-"id": "ow0051",
+"id": "ow0057",
 "type": "image",
 "name": "Left 1 armor",
 "x": 259,
@@ -1337,7 +1532,7 @@
 }
 },
 {
-"id": "ow0052",
+"id": "ow0058",
 "type": "text",
 "name": "Left 1 i text",
 "x": 280,
@@ -1369,7 +1564,7 @@
 }
 },
 {
-"id": "ow0053",
+"id": "ow0059",
 "type": "image",
 "name": "Left 1 hp bar",
 "x": 18,
@@ -1394,160 +1589,16 @@
 }
 },
 {
-"id": "ow0054",
-"type": "rect",
-"name": "Left 1 spikebadge",
-"x": 11,
-"y": 545,
-"w": 26,
-"h": 26,
-"fill": "rgb(196, 197, 202)",
-"radius": 13.0,
-"show": "{{VALORANT!Left 1 carrying}}",
-"anim": {
-"in": {
-"type": "pop",
-"dur": 300,
-"delay": 0
-},
-"out": {
-"type": "pop",
-"dur": 225,
-"delay": 0
-}
-}
-},
-{
-"id": "ow0055",
-"type": "rect",
-"name": "Left 2 spikebadge",
-"x": 11,
-"y": 651,
-"w": 26,
-"h": 26,
-"fill": "rgb(196, 197, 202)",
-"radius": 13.0,
-"show": "{{VALORANT!Left 2 carrying}}",
-"anim": {
-"in": {
-"type": "pop",
-"dur": 300,
-"delay": 0
-},
-"out": {
-"type": "pop",
-"dur": 225,
-"delay": 0
-}
-}
-},
-{
-"id": "ow0056",
-"type": "rect",
-"name": "Left 3 spikebadge",
-"x": 11,
-"y": 757,
-"w": 26,
-"h": 26,
-"fill": "rgb(196, 197, 202)",
-"radius": 13.0,
-"show": "{{VALORANT!Left 3 carrying}}",
-"anim": {
-"in": {
-"type": "pop",
-"dur": 300,
-"delay": 0
-},
-"out": {
-"type": "pop",
-"dur": 225,
-"delay": 0
-}
-}
-},
-{
-"id": "ow0057",
-"type": "rect",
-"name": "Left 4 spikebadge",
-"x": 11,
-"y": 863,
-"w": 26,
-"h": 26,
-"fill": "rgb(196, 197, 202)",
-"radius": 13.0,
-"show": "{{VALORANT!Left 4 carrying}}",
-"anim": {
-"in": {
-"type": "pop",
-"dur": 300,
-"delay": 0
-},
-"out": {
-"type": "pop",
-"dur": 225,
-"delay": 0
-}
-}
-},
-{
-"id": "ow0058",
-"type": "rect",
-"name": "Left 5 spikebadge",
-"x": 11,
-"y": 969,
-"w": 26,
-"h": 26,
-"fill": "rgb(196, 197, 202)",
-"radius": 13.0,
-"show": "{{VALORANT!Left 5 carrying}}",
-"anim": {
-"in": {
-"type": "pop",
-"dur": 300,
-"delay": 0
-},
-"out": {
-"type": "pop",
-"dur": 225,
-"delay": 0
-}
-}
-},
-{
-"id": "ow0059",
-"type": "rect",
-"name": "Right 1 spikebadge",
-"x": 1883,
-"y": 545,
-"w": 26,
-"h": 26,
-"fill": "rgb(196, 197, 202)",
-"radius": 13.0,
-"show": "{{VALORANT!Right 1 carrying}}",
-"anim": {
-"in": {
-"type": "pop",
-"dur": 300,
-"delay": 0
-},
-"out": {
-"type": "pop",
-"dur": 225,
-"delay": 0
-}
-}
-},
-{
 "id": "ow0060",
 "type": "rect",
-"name": "Right 2 spikebadge",
-"x": 1883,
-"y": 651,
-"w": 26,
-"h": 26,
+"name": "Left 1 spikebadge",
+"x": 18.8,
+"y": 552.8,
+"w": 10.4,
+"h": 10.4,
 "fill": "rgb(196, 197, 202)",
-"radius": 13.0,
-"show": "{{VALORANT!Right 2 carrying}}",
+"radius": 5.2,
+"show": "{{VALORANT!Left 1 carrying}}",
 "anim": {
 "in": {
 "type": "pop",
@@ -1564,14 +1615,14 @@
 {
 "id": "ow0061",
 "type": "rect",
-"name": "Right 3 spikebadge",
-"x": 1883,
-"y": 757,
-"w": 26,
-"h": 26,
-"fill": "rgb(196, 197, 202)",
-"radius": 13.0,
-"show": "{{VALORANT!Right 3 carrying}}",
+"name": "Left 1 spikebadge",
+"x": 18.8,
+"y": 552.8,
+"w": 10.4,
+"h": 10.4,
+"fill": "#c4c5ca",
+"radius": 5.2,
+"show": "{{VALORANT!Left 1 carrying}}",
 "anim": {
 "in": {
 "type": "pop",
@@ -1587,15 +1638,16 @@
 },
 {
 "id": "ow0062",
-"type": "rect",
-"name": "Right 4 spikebadge",
-"x": 1883,
-"y": 863,
-"w": 26,
-"h": 26,
-"fill": "rgb(196, 197, 202)",
-"radius": 13.0,
-"show": "{{VALORANT!Right 4 carrying}}",
+"type": "image",
+"name": "Left 1 spikebadge icon",
+"x": 22.8,
+"y": 557.8,
+"w": 18,
+"h": 16,
+"src": "/library/owen-hud/assets/spike.png",
+"fit": "contain",
+"recolor": "#000000",
+"show": "{{VALORANT!Left 1 carrying}}",
 "anim": {
 "in": {
 "type": "pop",
@@ -1612,14 +1664,14 @@
 {
 "id": "ow0063",
 "type": "rect",
-"name": "Right 5 spikebadge",
-"x": 1883,
-"y": 969,
-"w": 26,
-"h": 26,
+"name": "Left 2 spikebadge",
+"x": 18.8,
+"y": 658.8,
+"w": 10.4,
+"h": 10.4,
 "fill": "rgb(196, 197, 202)",
-"radius": 13.0,
-"show": "{{VALORANT!Right 5 carrying}}",
+"radius": 5.2,
+"show": "{{VALORANT!Left 2 carrying}}",
 "anim": {
 "in": {
 "type": "pop",
@@ -1636,16 +1688,649 @@
 {
 "id": "ow0064",
 "type": "rect",
+"name": "Left 2 spikebadge",
+"x": 18.8,
+"y": 658.8,
+"w": 10.4,
+"h": 10.4,
+"fill": "#c4c5ca",
+"radius": 5.2,
+"show": "{{VALORANT!Left 2 carrying}}",
+"anim": {
+"in": {
+"type": "pop",
+"dur": 300,
+"delay": 0
+},
+"out": {
+"type": "pop",
+"dur": 225,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0065",
+"type": "image",
+"name": "Left 2 spikebadge icon",
+"x": 22.8,
+"y": 663.8,
+"w": 18,
+"h": 16,
+"src": "/library/owen-hud/assets/spike.png",
+"fit": "contain",
+"recolor": "#000000",
+"show": "{{VALORANT!Left 2 carrying}}",
+"anim": {
+"in": {
+"type": "pop",
+"dur": 300,
+"delay": 0
+},
+"out": {
+"type": "pop",
+"dur": 225,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0066",
+"type": "rect",
+"name": "Left 3 spikebadge",
+"x": 18.8,
+"y": 764.8,
+"w": 10.4,
+"h": 10.4,
+"fill": "rgb(196, 197, 202)",
+"radius": 5.2,
+"show": "{{VALORANT!Left 3 carrying}}",
+"anim": {
+"in": {
+"type": "pop",
+"dur": 300,
+"delay": 0
+},
+"out": {
+"type": "pop",
+"dur": 225,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0067",
+"type": "rect",
+"name": "Left 3 spikebadge",
+"x": 18.8,
+"y": 764.8,
+"w": 10.4,
+"h": 10.4,
+"fill": "#c4c5ca",
+"radius": 5.2,
+"show": "{{VALORANT!Left 3 carrying}}",
+"anim": {
+"in": {
+"type": "pop",
+"dur": 300,
+"delay": 0
+},
+"out": {
+"type": "pop",
+"dur": 225,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0068",
+"type": "image",
+"name": "Left 3 spikebadge icon",
+"x": 22.8,
+"y": 769.8,
+"w": 18,
+"h": 16,
+"src": "/library/owen-hud/assets/spike.png",
+"fit": "contain",
+"recolor": "#000000",
+"show": "{{VALORANT!Left 3 carrying}}",
+"anim": {
+"in": {
+"type": "pop",
+"dur": 300,
+"delay": 0
+},
+"out": {
+"type": "pop",
+"dur": 225,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0069",
+"type": "rect",
+"name": "Left 4 spikebadge",
+"x": 18.8,
+"y": 870.8,
+"w": 10.4,
+"h": 10.4,
+"fill": "rgb(196, 197, 202)",
+"radius": 5.2,
+"show": "{{VALORANT!Left 4 carrying}}",
+"anim": {
+"in": {
+"type": "pop",
+"dur": 300,
+"delay": 0
+},
+"out": {
+"type": "pop",
+"dur": 225,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0070",
+"type": "rect",
+"name": "Left 4 spikebadge",
+"x": 18.8,
+"y": 870.8,
+"w": 10.4,
+"h": 10.4,
+"fill": "#c4c5ca",
+"radius": 5.2,
+"show": "{{VALORANT!Left 4 carrying}}",
+"anim": {
+"in": {
+"type": "pop",
+"dur": 300,
+"delay": 0
+},
+"out": {
+"type": "pop",
+"dur": 225,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0071",
+"type": "image",
+"name": "Left 4 spikebadge icon",
+"x": 22.8,
+"y": 875.8,
+"w": 18,
+"h": 16,
+"src": "/library/owen-hud/assets/spike.png",
+"fit": "contain",
+"recolor": "#000000",
+"show": "{{VALORANT!Left 4 carrying}}",
+"anim": {
+"in": {
+"type": "pop",
+"dur": 300,
+"delay": 0
+},
+"out": {
+"type": "pop",
+"dur": 225,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0072",
+"type": "rect",
+"name": "Left 5 spikebadge",
+"x": 18.8,
+"y": 976.8,
+"w": 10.4,
+"h": 10.4,
+"fill": "rgb(196, 197, 202)",
+"radius": 5.2,
+"show": "{{VALORANT!Left 5 carrying}}",
+"anim": {
+"in": {
+"type": "pop",
+"dur": 300,
+"delay": 0
+},
+"out": {
+"type": "pop",
+"dur": 225,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0073",
+"type": "rect",
+"name": "Left 5 spikebadge",
+"x": 18.8,
+"y": 976.8,
+"w": 10.4,
+"h": 10.4,
+"fill": "#c4c5ca",
+"radius": 5.2,
+"show": "{{VALORANT!Left 5 carrying}}",
+"anim": {
+"in": {
+"type": "pop",
+"dur": 300,
+"delay": 0
+},
+"out": {
+"type": "pop",
+"dur": 225,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0074",
+"type": "image",
+"name": "Left 5 spikebadge icon",
+"x": 22.8,
+"y": 981.8,
+"w": 18,
+"h": 16,
+"src": "/library/owen-hud/assets/spike.png",
+"fit": "contain",
+"recolor": "#000000",
+"show": "{{VALORANT!Left 5 carrying}}",
+"anim": {
+"in": {
+"type": "pop",
+"dur": 300,
+"delay": 0
+},
+"out": {
+"type": "pop",
+"dur": 225,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0075",
+"type": "rect",
+"name": "Right 1 spikebadge",
+"x": 1890.8,
+"y": 552.8,
+"w": 10.4,
+"h": 10.4,
+"fill": "rgb(196, 197, 202)",
+"radius": 5.2,
+"show": "{{VALORANT!Right 1 carrying}}",
+"anim": {
+"in": {
+"type": "pop",
+"dur": 300,
+"delay": 0
+},
+"out": {
+"type": "pop",
+"dur": 225,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0076",
+"type": "rect",
+"name": "Right 1 spikebadge",
+"x": 1890.8,
+"y": 552.8,
+"w": 10.4,
+"h": 10.4,
+"fill": "#c4c5ca",
+"radius": 5.2,
+"show": "{{VALORANT!Right 1 carrying}}",
+"anim": {
+"in": {
+"type": "pop",
+"dur": 300,
+"delay": 0
+},
+"out": {
+"type": "pop",
+"dur": 225,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0077",
+"type": "image",
+"name": "Right 1 spikebadge icon",
+"x": 1894.8,
+"y": 557.8,
+"w": 18,
+"h": 16,
+"src": "/library/owen-hud/assets/spike.png",
+"fit": "contain",
+"recolor": "#000000",
+"show": "{{VALORANT!Right 1 carrying}}",
+"anim": {
+"in": {
+"type": "pop",
+"dur": 300,
+"delay": 0
+},
+"out": {
+"type": "pop",
+"dur": 225,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0078",
+"type": "rect",
+"name": "Right 2 spikebadge",
+"x": 1890.8,
+"y": 658.8,
+"w": 10.4,
+"h": 10.4,
+"fill": "rgb(196, 197, 202)",
+"radius": 5.2,
+"show": "{{VALORANT!Right 2 carrying}}",
+"anim": {
+"in": {
+"type": "pop",
+"dur": 300,
+"delay": 0
+},
+"out": {
+"type": "pop",
+"dur": 225,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0079",
+"type": "rect",
+"name": "Right 2 spikebadge",
+"x": 1890.8,
+"y": 658.8,
+"w": 10.4,
+"h": 10.4,
+"fill": "#c4c5ca",
+"radius": 5.2,
+"show": "{{VALORANT!Right 2 carrying}}",
+"anim": {
+"in": {
+"type": "pop",
+"dur": 300,
+"delay": 0
+},
+"out": {
+"type": "pop",
+"dur": 225,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0080",
+"type": "image",
+"name": "Right 2 spikebadge icon",
+"x": 1894.8,
+"y": 663.8,
+"w": 18,
+"h": 16,
+"src": "/library/owen-hud/assets/spike.png",
+"fit": "contain",
+"recolor": "#000000",
+"show": "{{VALORANT!Right 2 carrying}}",
+"anim": {
+"in": {
+"type": "pop",
+"dur": 300,
+"delay": 0
+},
+"out": {
+"type": "pop",
+"dur": 225,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0081",
+"type": "rect",
+"name": "Right 3 spikebadge",
+"x": 1890.8,
+"y": 764.8,
+"w": 10.4,
+"h": 10.4,
+"fill": "rgb(196, 197, 202)",
+"radius": 5.2,
+"show": "{{VALORANT!Right 3 carrying}}",
+"anim": {
+"in": {
+"type": "pop",
+"dur": 300,
+"delay": 0
+},
+"out": {
+"type": "pop",
+"dur": 225,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0082",
+"type": "rect",
+"name": "Right 3 spikebadge",
+"x": 1890.8,
+"y": 764.8,
+"w": 10.4,
+"h": 10.4,
+"fill": "#c4c5ca",
+"radius": 5.2,
+"show": "{{VALORANT!Right 3 carrying}}",
+"anim": {
+"in": {
+"type": "pop",
+"dur": 300,
+"delay": 0
+},
+"out": {
+"type": "pop",
+"dur": 225,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0083",
+"type": "image",
+"name": "Right 3 spikebadge icon",
+"x": 1894.8,
+"y": 769.8,
+"w": 18,
+"h": 16,
+"src": "/library/owen-hud/assets/spike.png",
+"fit": "contain",
+"recolor": "#000000",
+"show": "{{VALORANT!Right 3 carrying}}",
+"anim": {
+"in": {
+"type": "pop",
+"dur": 300,
+"delay": 0
+},
+"out": {
+"type": "pop",
+"dur": 225,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0084",
+"type": "rect",
+"name": "Right 4 spikebadge",
+"x": 1890.8,
+"y": 870.8,
+"w": 10.4,
+"h": 10.4,
+"fill": "rgb(196, 197, 202)",
+"radius": 5.2,
+"show": "{{VALORANT!Right 4 carrying}}",
+"anim": {
+"in": {
+"type": "pop",
+"dur": 300,
+"delay": 0
+},
+"out": {
+"type": "pop",
+"dur": 225,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0085",
+"type": "rect",
+"name": "Right 4 spikebadge",
+"x": 1890.8,
+"y": 870.8,
+"w": 10.4,
+"h": 10.4,
+"fill": "#c4c5ca",
+"radius": 5.2,
+"show": "{{VALORANT!Right 4 carrying}}",
+"anim": {
+"in": {
+"type": "pop",
+"dur": 300,
+"delay": 0
+},
+"out": {
+"type": "pop",
+"dur": 225,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0086",
+"type": "image",
+"name": "Right 4 spikebadge icon",
+"x": 1894.8,
+"y": 875.8,
+"w": 18,
+"h": 16,
+"src": "/library/owen-hud/assets/spike.png",
+"fit": "contain",
+"recolor": "#000000",
+"show": "{{VALORANT!Right 4 carrying}}",
+"anim": {
+"in": {
+"type": "pop",
+"dur": 300,
+"delay": 0
+},
+"out": {
+"type": "pop",
+"dur": 225,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0087",
+"type": "rect",
+"name": "Right 5 spikebadge",
+"x": 1890.8,
+"y": 976.8,
+"w": 10.4,
+"h": 10.4,
+"fill": "rgb(196, 197, 202)",
+"radius": 5.2,
+"show": "{{VALORANT!Right 5 carrying}}",
+"anim": {
+"in": {
+"type": "pop",
+"dur": 300,
+"delay": 0
+},
+"out": {
+"type": "pop",
+"dur": 225,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0088",
+"type": "rect",
+"name": "Right 5 spikebadge",
+"x": 1890.8,
+"y": 976.8,
+"w": 10.4,
+"h": 10.4,
+"fill": "#c4c5ca",
+"radius": 5.2,
+"show": "{{VALORANT!Right 5 carrying}}",
+"anim": {
+"in": {
+"type": "pop",
+"dur": 300,
+"delay": 0
+},
+"out": {
+"type": "pop",
+"dur": 225,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0089",
+"type": "image",
+"name": "Right 5 spikebadge icon",
+"x": 1894.8,
+"y": 981.8,
+"w": 18,
+"h": 16,
+"src": "/library/owen-hud/assets/spike.png",
+"fit": "contain",
+"recolor": "#000000",
+"show": "{{VALORANT!Right 5 carrying}}",
+"anim": {
+"in": {
+"type": "pop",
+"dur": 300,
+"delay": 0
+},
+"out": {
+"type": "pop",
+"dur": 225,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0090",
+"type": "rect",
 "name": "Left 2 tab",
 "x": 17,
 "y": 657,
 "w": 310,
 "h": 88,
-"fill": "linear-gradient(rgba(102, 102, 102, 0.2), rgba(0, 0, 0, 0.2)), none, rgba(17, 24, 35, 0.5)",
+"fill": "linear-gradient(90deg, rgba(58, 58, 58, 0.9), rgba(58, 58, 58, 0)), none, rgba(0, 0, 0, 0.25)",
 "radius": 25.0,
-"stroke": "rgb(255, 255, 255)",
+"stroke": "rgba(0, 0, 0, 0)",
 "strokeWidth": 1.0,
-"show": "{{VALORANT!Left 2 here}}",
+"show": "{{VALORANT!Left 2 down}}",
 "anim": {
 "in": {
 "type": "push-right",
@@ -1661,7 +2346,87 @@
 }
 },
 {
-"id": "ow0065",
+"id": "ow0091",
+"type": "rect",
+"name": "Left 2 agent",
+"x": 17,
+"y": 657,
+"w": 51,
+"h": 51,
+"fill": "rgb(57, 57, 57)",
+"radius": "25 0 25 0",
+"stroke": "rgba(0, 0, 0, 0)",
+"strokeWidth": 1.0,
+"show": "{{VALORANT!Left 2 down}}",
+"anim": {
+"in": {
+"type": "push-right",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-right",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0092",
+"type": "image",
+"name": "Left 2 agent picture",
+"x": 17,
+"y": 657,
+"w": 51,
+"h": 51,
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 2 agent file}}/{{VALORANT!Left 2 agent file}}.png",
+"fit": "cover",
+"radius": "25 0 25 0",
+"show": "{{VALORANT!Left 2 down}}",
+"anim": {
+"in": {
+"type": "push-right",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-right",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0093",
+"type": "rect",
+"name": "Left 2 tab",
+"x": 17,
+"y": 657,
+"w": 310,
+"h": 88,
+"fill": "linear-gradient(rgba(102, 102, 102, 0.2), rgba(0, 0, 0, 0.2)), none, rgba(17, 24, 35, 0.5)",
+"radius": 25.0,
+"stroke": "rgb(255, 255, 255)",
+"strokeWidth": 1.0,
+"show": "{{VALORANT!Left 2 up}}",
+"anim": {
+"in": {
+"type": "push-right",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-right",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0094",
 "type": "rect",
 "name": "Left 2 agent",
 "x": 17,
@@ -1672,7 +2437,7 @@
 "radius": "25 0 25 0",
 "stroke": "rgb(255, 255, 255)",
 "strokeWidth": 1.0,
-"show": "{{VALORANT!Left 2 here}}",
+"show": "{{VALORANT!Left 2 up}}",
 "anim": {
 "in": {
 "type": "push-right",
@@ -1688,17 +2453,17 @@
 }
 },
 {
-"id": "ow0066",
+"id": "ow0095",
 "type": "image",
 "name": "Left 2 agent picture",
 "x": 17,
 "y": 657,
 "w": 51,
 "h": 51,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 2 agent}}/{{VALORANT!Left 2 agent}}.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 2 agent file}}/{{VALORANT!Left 2 agent file}}.png",
 "fit": "cover",
 "radius": "25 0 25 0",
-"show": "{{VALORANT!Left 2 here}}",
+"show": "{{VALORANT!Left 2 up}}",
 "anim": {
 "in": {
 "type": "push-right",
@@ -1714,7 +2479,7 @@
 }
 },
 {
-"id": "ow0067",
+"id": "ow0096",
 "type": "text",
 "name": "Left 2 i text",
 "x": 79,
@@ -1746,14 +2511,14 @@
 }
 },
 {
-"id": "ow0068",
+"id": "ow0097",
 "type": "image",
 "name": "Left 2 abil picture",
 "x": 189,
 "y": 672,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 2 agent}}/C.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 2 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 2 up}}",
 "anim": {
@@ -1771,7 +2536,7 @@
 }
 },
 {
-"id": "ow0069",
+"id": "ow0098",
 "type": "image",
 "name": "Left 2 c charges",
 "x": 189,
@@ -1796,14 +2561,14 @@
 }
 },
 {
-"id": "ow0070",
+"id": "ow0099",
 "type": "image",
 "name": "Left 2 abil picture",
 "x": 220,
 "y": 672,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 2 agent}}/Q.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 2 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 2 up}}",
 "anim": {
@@ -1821,7 +2586,7 @@
 }
 },
 {
-"id": "ow0071",
+"id": "ow0100",
 "type": "image",
 "name": "Left 2 q charges",
 "x": 220,
@@ -1846,14 +2611,14 @@
 }
 },
 {
-"id": "ow0072",
+"id": "ow0101",
 "type": "image",
 "name": "Left 2 abil picture",
 "x": 251,
 "y": 672,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 2 agent}}/E.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 2 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 2 up}}",
 "anim": {
@@ -1871,7 +2636,7 @@
 }
 },
 {
-"id": "ow0073",
+"id": "ow0102",
 "type": "image",
 "name": "Left 2 e charges",
 "x": 251,
@@ -1896,7 +2661,7 @@
 }
 },
 {
-"id": "ow0074",
+"id": "ow0103",
 "type": "image",
 "name": "Left 2 ult ring",
 "x": 280,
@@ -1921,14 +2686,14 @@
 }
 },
 {
-"id": "ow0075",
+"id": "ow0104",
 "type": "image",
 "name": "Left 2 icon picture",
 "x": 291.5,
 "y": 673.5,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 2 agent}}/X.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 2 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Left 2 here}}",
@@ -1947,7 +2712,96 @@
 }
 },
 {
-"id": "ow0076",
+"id": "ow0105",
+"type": "text",
+"name": "Left 2 i text",
+"x": 25,
+"y": 713.2,
+"w": 120,
+"h": 20,
+"text": "{{VALORANT!Left 2 kda}}",
+"font": "Rubik",
+"size": 20.0,
+"weight": 400,
+"color": "rgb(255, 255, 255)",
+"align": "left",
+"valign": "middle",
+"caps": false,
+"fit": "shrink",
+"show": "{{VALORANT!Left 2 down}}",
+"anim": {
+"in": {
+"type": "push-right",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-right",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0106",
+"type": "image",
+"name": "Left 2 cred icon icon",
+"x": 249.3,
+"y": 714.5,
+"w": 15,
+"h": 15,
+"src": "/library/owen-hud/layers/140ee53748ae.svg",
+"fit": "fill",
+"show": "{{VALORANT!Left 2 down}}",
+"anim": {
+"in": {
+"type": "push-right",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-right",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0107",
+"type": "text",
+"name": "Left 2 i text",
+"x": 251,
+"y": 713.2,
+"w": 70,
+"h": 20,
+"text": "{{VALORANT!Left 2 cash}}",
+"font": "Rubik",
+"size": 20.0,
+"weight": 400,
+"color": "rgb(255, 255, 255)",
+"align": "right",
+"valign": "middle",
+"caps": false,
+"fit": "shrink",
+"show": "{{VALORANT!Left 2 down}}",
+"anim": {
+"in": {
+"type": "push-right",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-right",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0108",
 "type": "image",
 "name": "Left 2 cred icon icon",
 "x": 29,
@@ -1972,7 +2826,7 @@
 }
 },
 {
-"id": "ow0077",
+"id": "ow0109",
 "type": "text",
 "name": "Left 2 i text",
 "x": 50,
@@ -2004,14 +2858,14 @@
 }
 },
 {
-"id": "ow0078",
+"id": "ow0110",
 "type": "image",
 "name": "Left 2 gun picture",
 "x": 158,
 "y": 713,
 "w": 62,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Left 2 weapon}}.png",
+"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Left 2 weapon file}}.png",
 "fit": "contain",
 "pic": {
 "flipX": true
@@ -2032,7 +2886,7 @@
 }
 },
 {
-"id": "ow0079",
+"id": "ow0111",
 "type": "image",
 "name": "Left 2 armor",
 "x": 259,
@@ -2057,7 +2911,7 @@
 }
 },
 {
-"id": "ow0080",
+"id": "ow0112",
 "type": "text",
 "name": "Left 2 i text",
 "x": 280,
@@ -2089,7 +2943,7 @@
 }
 },
 {
-"id": "ow0081",
+"id": "ow0113",
 "type": "image",
 "name": "Left 2 hp bar",
 "x": 18,
@@ -2114,7 +2968,87 @@
 }
 },
 {
-"id": "ow0082",
+"id": "ow0114",
+"type": "rect",
+"name": "Left 3 tab",
+"x": 17,
+"y": 763,
+"w": 310,
+"h": 88,
+"fill": "linear-gradient(90deg, rgba(58, 58, 58, 0.9), rgba(58, 58, 58, 0)), none, rgba(0, 0, 0, 0.25)",
+"radius": 25.0,
+"stroke": "rgba(0, 0, 0, 0)",
+"strokeWidth": 1.0,
+"show": "{{VALORANT!Left 3 down}}",
+"anim": {
+"in": {
+"type": "push-right",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-right",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0115",
+"type": "rect",
+"name": "Left 3 agent",
+"x": 17,
+"y": 763,
+"w": 51,
+"h": 51,
+"fill": "rgb(57, 57, 57)",
+"radius": "25 0 25 0",
+"stroke": "rgba(0, 0, 0, 0)",
+"strokeWidth": 1.0,
+"show": "{{VALORANT!Left 3 down}}",
+"anim": {
+"in": {
+"type": "push-right",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-right",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0116",
+"type": "image",
+"name": "Left 3 agent picture",
+"x": 17,
+"y": 763,
+"w": 51,
+"h": 51,
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 3 agent file}}/{{VALORANT!Left 3 agent file}}.png",
+"fit": "cover",
+"radius": "25 0 25 0",
+"show": "{{VALORANT!Left 3 down}}",
+"anim": {
+"in": {
+"type": "push-right",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-right",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0117",
 "type": "rect",
 "name": "Left 3 tab",
 "x": 17,
@@ -2125,7 +3059,7 @@
 "radius": 25.0,
 "stroke": "rgb(255, 255, 255)",
 "strokeWidth": 1.0,
-"show": "{{VALORANT!Left 3 here}}",
+"show": "{{VALORANT!Left 3 up}}",
 "anim": {
 "in": {
 "type": "push-right",
@@ -2141,7 +3075,7 @@
 }
 },
 {
-"id": "ow0083",
+"id": "ow0118",
 "type": "rect",
 "name": "Left 3 agent",
 "x": 17,
@@ -2152,7 +3086,7 @@
 "radius": "25 0 25 0",
 "stroke": "rgb(255, 255, 255)",
 "strokeWidth": 1.0,
-"show": "{{VALORANT!Left 3 here}}",
+"show": "{{VALORANT!Left 3 up}}",
 "anim": {
 "in": {
 "type": "push-right",
@@ -2168,17 +3102,17 @@
 }
 },
 {
-"id": "ow0084",
+"id": "ow0119",
 "type": "image",
 "name": "Left 3 agent picture",
 "x": 17,
 "y": 763,
 "w": 51,
 "h": 51,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 3 agent}}/{{VALORANT!Left 3 agent}}.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 3 agent file}}/{{VALORANT!Left 3 agent file}}.png",
 "fit": "cover",
 "radius": "25 0 25 0",
-"show": "{{VALORANT!Left 3 here}}",
+"show": "{{VALORANT!Left 3 up}}",
 "anim": {
 "in": {
 "type": "push-right",
@@ -2194,7 +3128,7 @@
 }
 },
 {
-"id": "ow0085",
+"id": "ow0120",
 "type": "text",
 "name": "Left 3 i text",
 "x": 79,
@@ -2226,14 +3160,14 @@
 }
 },
 {
-"id": "ow0086",
+"id": "ow0121",
 "type": "image",
 "name": "Left 3 abil picture",
 "x": 189,
 "y": 778,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 3 agent}}/C.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 3 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 3 up}}",
 "anim": {
@@ -2251,7 +3185,7 @@
 }
 },
 {
-"id": "ow0087",
+"id": "ow0122",
 "type": "image",
 "name": "Left 3 c charges",
 "x": 189,
@@ -2276,14 +3210,14 @@
 }
 },
 {
-"id": "ow0088",
+"id": "ow0123",
 "type": "image",
 "name": "Left 3 abil picture",
 "x": 220,
 "y": 778,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 3 agent}}/Q.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 3 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 3 up}}",
 "anim": {
@@ -2301,7 +3235,7 @@
 }
 },
 {
-"id": "ow0089",
+"id": "ow0124",
 "type": "image",
 "name": "Left 3 q charges",
 "x": 220,
@@ -2326,14 +3260,14 @@
 }
 },
 {
-"id": "ow0090",
+"id": "ow0125",
 "type": "image",
 "name": "Left 3 abil picture",
 "x": 251,
 "y": 778,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 3 agent}}/E.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 3 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 3 up}}",
 "anim": {
@@ -2351,7 +3285,7 @@
 }
 },
 {
-"id": "ow0091",
+"id": "ow0126",
 "type": "image",
 "name": "Left 3 e charges",
 "x": 251,
@@ -2376,7 +3310,7 @@
 }
 },
 {
-"id": "ow0092",
+"id": "ow0127",
 "type": "image",
 "name": "Left 3 ult ring",
 "x": 280,
@@ -2401,14 +3335,14 @@
 }
 },
 {
-"id": "ow0093",
+"id": "ow0128",
 "type": "image",
 "name": "Left 3 icon picture",
 "x": 291.5,
 "y": 779.5,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 3 agent}}/X.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 3 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Left 3 here}}",
@@ -2427,7 +3361,96 @@
 }
 },
 {
-"id": "ow0094",
+"id": "ow0129",
+"type": "text",
+"name": "Left 3 i text",
+"x": 25,
+"y": 819.2,
+"w": 120,
+"h": 20,
+"text": "{{VALORANT!Left 3 kda}}",
+"font": "Rubik",
+"size": 20.0,
+"weight": 400,
+"color": "rgb(255, 255, 255)",
+"align": "left",
+"valign": "middle",
+"caps": false,
+"fit": "shrink",
+"show": "{{VALORANT!Left 3 down}}",
+"anim": {
+"in": {
+"type": "push-right",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-right",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0130",
+"type": "image",
+"name": "Left 3 cred icon icon",
+"x": 249.0,
+"y": 820.5,
+"w": 15,
+"h": 15,
+"src": "/library/owen-hud/layers/140ee53748ae.svg",
+"fit": "fill",
+"show": "{{VALORANT!Left 3 down}}",
+"anim": {
+"in": {
+"type": "push-right",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-right",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0131",
+"type": "text",
+"name": "Left 3 i text",
+"x": 251,
+"y": 819.2,
+"w": 70,
+"h": 20,
+"text": "{{VALORANT!Left 3 cash}}",
+"font": "Rubik",
+"size": 20.0,
+"weight": 400,
+"color": "rgb(255, 255, 255)",
+"align": "right",
+"valign": "middle",
+"caps": false,
+"fit": "shrink",
+"show": "{{VALORANT!Left 3 down}}",
+"anim": {
+"in": {
+"type": "push-right",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-right",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0132",
 "type": "image",
 "name": "Left 3 cred icon icon",
 "x": 29,
@@ -2452,7 +3475,7 @@
 }
 },
 {
-"id": "ow0095",
+"id": "ow0133",
 "type": "text",
 "name": "Left 3 i text",
 "x": 50,
@@ -2484,14 +3507,14 @@
 }
 },
 {
-"id": "ow0096",
+"id": "ow0134",
 "type": "image",
 "name": "Left 3 gun picture",
 "x": 158,
 "y": 819,
 "w": 62,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Left 3 weapon}}.png",
+"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Left 3 weapon file}}.png",
 "fit": "contain",
 "pic": {
 "flipX": true
@@ -2512,7 +3535,7 @@
 }
 },
 {
-"id": "ow0097",
+"id": "ow0135",
 "type": "image",
 "name": "Left 3 armor",
 "x": 259,
@@ -2537,7 +3560,7 @@
 }
 },
 {
-"id": "ow0098",
+"id": "ow0136",
 "type": "text",
 "name": "Left 3 i text",
 "x": 280,
@@ -2569,7 +3592,7 @@
 }
 },
 {
-"id": "ow0099",
+"id": "ow0137",
 "type": "image",
 "name": "Left 3 hp bar",
 "x": 18,
@@ -2594,7 +3617,87 @@
 }
 },
 {
-"id": "ow0100",
+"id": "ow0138",
+"type": "rect",
+"name": "Left 4 tab",
+"x": 17,
+"y": 869,
+"w": 310,
+"h": 88,
+"fill": "linear-gradient(90deg, rgba(58, 58, 58, 0.9), rgba(58, 58, 58, 0)), none, rgba(0, 0, 0, 0.25)",
+"radius": 25.0,
+"stroke": "rgba(0, 0, 0, 0)",
+"strokeWidth": 1.0,
+"show": "{{VALORANT!Left 4 down}}",
+"anim": {
+"in": {
+"type": "push-right",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-right",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0139",
+"type": "rect",
+"name": "Left 4 agent",
+"x": 17,
+"y": 869,
+"w": 51,
+"h": 51,
+"fill": "rgb(57, 57, 57)",
+"radius": "25 0 25 0",
+"stroke": "rgba(0, 0, 0, 0)",
+"strokeWidth": 1.0,
+"show": "{{VALORANT!Left 4 down}}",
+"anim": {
+"in": {
+"type": "push-right",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-right",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0140",
+"type": "image",
+"name": "Left 4 agent picture",
+"x": 17,
+"y": 869,
+"w": 51,
+"h": 51,
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 4 agent file}}/{{VALORANT!Left 4 agent file}}.png",
+"fit": "cover",
+"radius": "25 0 25 0",
+"show": "{{VALORANT!Left 4 down}}",
+"anim": {
+"in": {
+"type": "push-right",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-right",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0141",
 "type": "rect",
 "name": "Left 4 tab",
 "x": 17,
@@ -2605,7 +3708,7 @@
 "radius": 25.0,
 "stroke": "rgb(255, 255, 255)",
 "strokeWidth": 1.0,
-"show": "{{VALORANT!Left 4 here}}",
+"show": "{{VALORANT!Left 4 up}}",
 "anim": {
 "in": {
 "type": "push-right",
@@ -2621,7 +3724,7 @@
 }
 },
 {
-"id": "ow0101",
+"id": "ow0142",
 "type": "rect",
 "name": "Left 4 agent",
 "x": 17,
@@ -2632,7 +3735,7 @@
 "radius": "25 0 25 0",
 "stroke": "rgb(255, 255, 255)",
 "strokeWidth": 1.0,
-"show": "{{VALORANT!Left 4 here}}",
+"show": "{{VALORANT!Left 4 up}}",
 "anim": {
 "in": {
 "type": "push-right",
@@ -2648,17 +3751,17 @@
 }
 },
 {
-"id": "ow0102",
+"id": "ow0143",
 "type": "image",
 "name": "Left 4 agent picture",
 "x": 17,
 "y": 869,
 "w": 51,
 "h": 51,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 4 agent}}/{{VALORANT!Left 4 agent}}.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 4 agent file}}/{{VALORANT!Left 4 agent file}}.png",
 "fit": "cover",
 "radius": "25 0 25 0",
-"show": "{{VALORANT!Left 4 here}}",
+"show": "{{VALORANT!Left 4 up}}",
 "anim": {
 "in": {
 "type": "push-right",
@@ -2674,7 +3777,7 @@
 }
 },
 {
-"id": "ow0103",
+"id": "ow0144",
 "type": "text",
 "name": "Left 4 i text",
 "x": 79,
@@ -2706,14 +3809,14 @@
 }
 },
 {
-"id": "ow0104",
+"id": "ow0145",
 "type": "image",
 "name": "Left 4 abil picture",
 "x": 189,
 "y": 884,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 4 agent}}/C.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 4 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 4 up}}",
 "anim": {
@@ -2731,7 +3834,7 @@
 }
 },
 {
-"id": "ow0105",
+"id": "ow0146",
 "type": "image",
 "name": "Left 4 c charges",
 "x": 189,
@@ -2756,14 +3859,14 @@
 }
 },
 {
-"id": "ow0106",
+"id": "ow0147",
 "type": "image",
 "name": "Left 4 abil picture",
 "x": 220,
 "y": 884,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 4 agent}}/Q.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 4 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 4 up}}",
 "anim": {
@@ -2781,7 +3884,7 @@
 }
 },
 {
-"id": "ow0107",
+"id": "ow0148",
 "type": "image",
 "name": "Left 4 q charges",
 "x": 220,
@@ -2806,14 +3909,14 @@
 }
 },
 {
-"id": "ow0108",
+"id": "ow0149",
 "type": "image",
 "name": "Left 4 abil picture",
 "x": 251,
 "y": 884,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 4 agent}}/E.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 4 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 4 up}}",
 "anim": {
@@ -2831,7 +3934,7 @@
 }
 },
 {
-"id": "ow0109",
+"id": "ow0150",
 "type": "image",
 "name": "Left 4 e charges",
 "x": 251,
@@ -2856,7 +3959,7 @@
 }
 },
 {
-"id": "ow0110",
+"id": "ow0151",
 "type": "image",
 "name": "Left 4 ult ring",
 "x": 280,
@@ -2881,14 +3984,14 @@
 }
 },
 {
-"id": "ow0111",
+"id": "ow0152",
 "type": "image",
 "name": "Left 4 icon picture",
 "x": 291.5,
 "y": 885.5,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 4 agent}}/X.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 4 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Left 4 here}}",
@@ -2907,7 +4010,96 @@
 }
 },
 {
-"id": "ow0112",
+"id": "ow0153",
+"type": "text",
+"name": "Left 4 i text",
+"x": 25,
+"y": 925.2,
+"w": 120,
+"h": 20,
+"text": "{{VALORANT!Left 4 kda}}",
+"font": "Rubik",
+"size": 20.0,
+"weight": 400,
+"color": "rgb(255, 255, 255)",
+"align": "left",
+"valign": "middle",
+"caps": false,
+"fit": "shrink",
+"show": "{{VALORANT!Left 4 down}}",
+"anim": {
+"in": {
+"type": "push-right",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-right",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0154",
+"type": "image",
+"name": "Left 4 cred icon icon",
+"x": 248.9,
+"y": 926.5,
+"w": 15,
+"h": 15,
+"src": "/library/owen-hud/layers/140ee53748ae.svg",
+"fit": "fill",
+"show": "{{VALORANT!Left 4 down}}",
+"anim": {
+"in": {
+"type": "push-right",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-right",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0155",
+"type": "text",
+"name": "Left 4 i text",
+"x": 251,
+"y": 925.2,
+"w": 70,
+"h": 20,
+"text": "{{VALORANT!Left 4 cash}}",
+"font": "Rubik",
+"size": 20.0,
+"weight": 400,
+"color": "rgb(255, 255, 255)",
+"align": "right",
+"valign": "middle",
+"caps": false,
+"fit": "shrink",
+"show": "{{VALORANT!Left 4 down}}",
+"anim": {
+"in": {
+"type": "push-right",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-right",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0156",
 "type": "image",
 "name": "Left 4 cred icon icon",
 "x": 29,
@@ -2932,7 +4124,7 @@
 }
 },
 {
-"id": "ow0113",
+"id": "ow0157",
 "type": "text",
 "name": "Left 4 i text",
 "x": 50,
@@ -2964,14 +4156,14 @@
 }
 },
 {
-"id": "ow0114",
+"id": "ow0158",
 "type": "image",
 "name": "Left 4 gun picture",
 "x": 158,
 "y": 925,
 "w": 62,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Left 4 weapon}}.png",
+"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Left 4 weapon file}}.png",
 "fit": "contain",
 "pic": {
 "flipX": true
@@ -2992,7 +4184,7 @@
 }
 },
 {
-"id": "ow0115",
+"id": "ow0159",
 "type": "image",
 "name": "Left 4 armor",
 "x": 259,
@@ -3017,7 +4209,7 @@
 }
 },
 {
-"id": "ow0116",
+"id": "ow0160",
 "type": "text",
 "name": "Left 4 i text",
 "x": 280,
@@ -3049,7 +4241,7 @@
 }
 },
 {
-"id": "ow0117",
+"id": "ow0161",
 "type": "image",
 "name": "Left 4 hp bar",
 "x": 18,
@@ -3074,7 +4266,87 @@
 }
 },
 {
-"id": "ow0118",
+"id": "ow0162",
+"type": "rect",
+"name": "Left 5 tab",
+"x": 17,
+"y": 975,
+"w": 310,
+"h": 88,
+"fill": "linear-gradient(90deg, rgba(58, 58, 58, 0.9), rgba(58, 58, 58, 0)), none, rgba(0, 0, 0, 0.25)",
+"radius": 25.0,
+"stroke": "rgba(0, 0, 0, 0)",
+"strokeWidth": 1.0,
+"show": "{{VALORANT!Left 5 down}}",
+"anim": {
+"in": {
+"type": "push-right",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-right",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0163",
+"type": "rect",
+"name": "Left 5 agent",
+"x": 17,
+"y": 975,
+"w": 51,
+"h": 51,
+"fill": "rgb(57, 57, 57)",
+"radius": "25 0 25 0",
+"stroke": "rgba(0, 0, 0, 0)",
+"strokeWidth": 1.0,
+"show": "{{VALORANT!Left 5 down}}",
+"anim": {
+"in": {
+"type": "push-right",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-right",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0164",
+"type": "image",
+"name": "Left 5 agent picture",
+"x": 17,
+"y": 975,
+"w": 51,
+"h": 51,
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 5 agent file}}/{{VALORANT!Left 5 agent file}}.png",
+"fit": "cover",
+"radius": "25 0 25 0",
+"show": "{{VALORANT!Left 5 down}}",
+"anim": {
+"in": {
+"type": "push-right",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-right",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0165",
 "type": "rect",
 "name": "Left 5 tab",
 "x": 17,
@@ -3085,7 +4357,7 @@
 "radius": 25.0,
 "stroke": "rgb(255, 255, 255)",
 "strokeWidth": 1.0,
-"show": "{{VALORANT!Left 5 here}}",
+"show": "{{VALORANT!Left 5 up}}",
 "anim": {
 "in": {
 "type": "push-right",
@@ -3101,7 +4373,7 @@
 }
 },
 {
-"id": "ow0119",
+"id": "ow0166",
 "type": "rect",
 "name": "Left 5 agent",
 "x": 17,
@@ -3112,7 +4384,7 @@
 "radius": "25 0 25 0",
 "stroke": "rgb(255, 255, 255)",
 "strokeWidth": 1.0,
-"show": "{{VALORANT!Left 5 here}}",
+"show": "{{VALORANT!Left 5 up}}",
 "anim": {
 "in": {
 "type": "push-right",
@@ -3128,17 +4400,17 @@
 }
 },
 {
-"id": "ow0120",
+"id": "ow0167",
 "type": "image",
 "name": "Left 5 agent picture",
 "x": 17,
 "y": 975,
 "w": 51,
 "h": 51,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 5 agent}}/{{VALORANT!Left 5 agent}}.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 5 agent file}}/{{VALORANT!Left 5 agent file}}.png",
 "fit": "cover",
 "radius": "25 0 25 0",
-"show": "{{VALORANT!Left 5 here}}",
+"show": "{{VALORANT!Left 5 up}}",
 "anim": {
 "in": {
 "type": "push-right",
@@ -3154,7 +4426,7 @@
 }
 },
 {
-"id": "ow0121",
+"id": "ow0168",
 "type": "text",
 "name": "Left 5 i text",
 "x": 79,
@@ -3186,14 +4458,14 @@
 }
 },
 {
-"id": "ow0122",
+"id": "ow0169",
 "type": "image",
 "name": "Left 5 abil picture",
 "x": 189,
 "y": 990,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 5 agent}}/C.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 5 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 5 up}}",
 "anim": {
@@ -3211,7 +4483,7 @@
 }
 },
 {
-"id": "ow0123",
+"id": "ow0170",
 "type": "image",
 "name": "Left 5 c charges",
 "x": 189,
@@ -3236,14 +4508,14 @@
 }
 },
 {
-"id": "ow0124",
+"id": "ow0171",
 "type": "image",
 "name": "Left 5 abil picture",
 "x": 220,
 "y": 990,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 5 agent}}/Q.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 5 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 5 up}}",
 "anim": {
@@ -3261,7 +4533,7 @@
 }
 },
 {
-"id": "ow0125",
+"id": "ow0172",
 "type": "image",
 "name": "Left 5 q charges",
 "x": 220,
@@ -3286,14 +4558,14 @@
 }
 },
 {
-"id": "ow0126",
+"id": "ow0173",
 "type": "image",
 "name": "Left 5 abil picture",
 "x": 251,
 "y": 990,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 5 agent}}/E.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 5 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 5 up}}",
 "anim": {
@@ -3311,7 +4583,7 @@
 }
 },
 {
-"id": "ow0127",
+"id": "ow0174",
 "type": "image",
 "name": "Left 5 e charges",
 "x": 251,
@@ -3336,7 +4608,7 @@
 }
 },
 {
-"id": "ow0128",
+"id": "ow0175",
 "type": "image",
 "name": "Left 5 ult ring",
 "x": 280,
@@ -3361,14 +4633,14 @@
 }
 },
 {
-"id": "ow0129",
+"id": "ow0176",
 "type": "image",
 "name": "Left 5 icon picture",
 "x": 291.5,
 "y": 991.5,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 5 agent}}/X.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 5 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Left 5 here}}",
@@ -3387,7 +4659,96 @@
 }
 },
 {
-"id": "ow0130",
+"id": "ow0177",
+"type": "text",
+"name": "Left 5 i text",
+"x": 25,
+"y": 1031.2,
+"w": 120,
+"h": 20,
+"text": "{{VALORANT!Left 5 kda}}",
+"font": "Rubik",
+"size": 20.0,
+"weight": 400,
+"color": "rgb(255, 255, 255)",
+"align": "left",
+"valign": "middle",
+"caps": false,
+"fit": "shrink",
+"show": "{{VALORANT!Left 5 down}}",
+"anim": {
+"in": {
+"type": "push-right",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-right",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0178",
+"type": "image",
+"name": "Left 5 cred icon icon",
+"x": 249.2,
+"y": 1032.5,
+"w": 15,
+"h": 15,
+"src": "/library/owen-hud/layers/140ee53748ae.svg",
+"fit": "fill",
+"show": "{{VALORANT!Left 5 down}}",
+"anim": {
+"in": {
+"type": "push-right",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-right",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0179",
+"type": "text",
+"name": "Left 5 i text",
+"x": 251,
+"y": 1031.2,
+"w": 70,
+"h": 20,
+"text": "{{VALORANT!Left 5 cash}}",
+"font": "Rubik",
+"size": 20.0,
+"weight": 400,
+"color": "rgb(255, 255, 255)",
+"align": "right",
+"valign": "middle",
+"caps": false,
+"fit": "shrink",
+"show": "{{VALORANT!Left 5 down}}",
+"anim": {
+"in": {
+"type": "push-right",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-right",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0180",
 "type": "image",
 "name": "Left 5 cred icon icon",
 "x": 29,
@@ -3412,7 +4773,7 @@
 }
 },
 {
-"id": "ow0131",
+"id": "ow0181",
 "type": "text",
 "name": "Left 5 i text",
 "x": 50,
@@ -3444,14 +4805,14 @@
 }
 },
 {
-"id": "ow0132",
+"id": "ow0182",
 "type": "image",
 "name": "Left 5 gun picture",
 "x": 124,
 "y": 1031,
 "w": 30,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Left 5 weapon}}.png",
+"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Left 5 weapon file}}.png",
 "fit": "contain",
 "pic": {
 "flipX": true
@@ -3472,7 +4833,7 @@
 }
 },
 {
-"id": "ow0133",
+"id": "ow0183",
 "type": "image",
 "name": "Left 5 armor",
 "x": 259,
@@ -3497,7 +4858,7 @@
 }
 },
 {
-"id": "ow0134",
+"id": "ow0184",
 "type": "text",
 "name": "Left 5 i text",
 "x": 280,
@@ -3529,7 +4890,7 @@
 }
 },
 {
-"id": "ow0135",
+"id": "ow0185",
 "type": "image",
 "name": "Left 5 hp bar",
 "x": 18,
@@ -3554,7 +4915,90 @@
 }
 },
 {
-"id": "ow0136",
+"id": "ow0186",
+"type": "rect",
+"name": "Right 1 tab",
+"x": 1593,
+"y": 551,
+"w": 310,
+"h": 88,
+"fill": "linear-gradient(270deg, rgba(58, 58, 58, 0.9), rgba(58, 58, 58, 0)), none, rgba(0, 0, 0, 0.25)",
+"radius": 25.0,
+"stroke": "rgba(0, 0, 0, 0)",
+"strokeWidth": 1.0,
+"show": "{{VALORANT!Right 1 down}}",
+"anim": {
+"in": {
+"type": "push-left",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-left",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0187",
+"type": "rect",
+"name": "Right 1 agent",
+"x": 1852,
+"y": 551,
+"w": 51,
+"h": 51,
+"fill": "rgb(57, 57, 57)",
+"radius": "25 0 25 0",
+"stroke": "rgba(0, 0, 0, 0)",
+"strokeWidth": 1.0,
+"show": "{{VALORANT!Right 1 down}}",
+"anim": {
+"in": {
+"type": "push-left",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-left",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0188",
+"type": "image",
+"name": "Right 1 agent picture",
+"x": 1852,
+"y": 551,
+"w": 51,
+"h": 51,
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 1 agent file}}/{{VALORANT!Right 1 agent file}}.png",
+"fit": "cover",
+"radius": "25 0 25 0",
+"pic": {
+"flipX": true
+},
+"show": "{{VALORANT!Right 1 down}}",
+"anim": {
+"in": {
+"type": "push-left",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-left",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0189",
 "type": "rect",
 "name": "Right 1 tab",
 "x": 1593,
@@ -3565,7 +5009,7 @@
 "radius": 25.0,
 "stroke": "rgb(255, 255, 255)",
 "strokeWidth": 1.0,
-"show": "{{VALORANT!Right 1 here}}",
+"show": "{{VALORANT!Right 1 up}}",
 "anim": {
 "in": {
 "type": "push-left",
@@ -3581,7 +5025,7 @@
 }
 },
 {
-"id": "ow0137",
+"id": "ow0190",
 "type": "rect",
 "name": "Right 1 agent",
 "x": 1852,
@@ -3592,7 +5036,7 @@
 "radius": "25 0 25 0",
 "stroke": "rgb(255, 255, 255)",
 "strokeWidth": 1.0,
-"show": "{{VALORANT!Right 1 here}}",
+"show": "{{VALORANT!Right 1 up}}",
 "anim": {
 "in": {
 "type": "push-left",
@@ -3608,20 +5052,20 @@
 }
 },
 {
-"id": "ow0138",
+"id": "ow0191",
 "type": "image",
 "name": "Right 1 agent picture",
 "x": 1852,
 "y": 551,
 "w": 51,
 "h": 51,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 1 agent}}/{{VALORANT!Right 1 agent}}.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 1 agent file}}/{{VALORANT!Right 1 agent file}}.png",
 "fit": "cover",
 "radius": "25 0 25 0",
 "pic": {
 "flipX": true
 },
-"show": "{{VALORANT!Right 1 here}}",
+"show": "{{VALORANT!Right 1 up}}",
 "anim": {
 "in": {
 "type": "push-left",
@@ -3637,7 +5081,7 @@
 }
 },
 {
-"id": "ow0139",
+"id": "ow0192",
 "type": "text",
 "name": "Right 1 i text",
 "x": 1733,
@@ -3669,14 +5113,14 @@
 }
 },
 {
-"id": "ow0140",
+"id": "ow0193",
 "type": "image",
 "name": "Right 1 abil picture",
 "x": 1710,
 "y": 566,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 1 agent}}/C.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 1 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 1 up}}",
 "anim": {
@@ -3694,7 +5138,7 @@
 }
 },
 {
-"id": "ow0141",
+"id": "ow0194",
 "type": "image",
 "name": "Right 1 c charges",
 "x": 1710,
@@ -3719,14 +5163,14 @@
 }
 },
 {
-"id": "ow0142",
+"id": "ow0195",
 "type": "image",
 "name": "Right 1 abil picture",
 "x": 1679,
 "y": 566,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 1 agent}}/Q.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 1 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 1 up}}",
 "anim": {
@@ -3744,7 +5188,7 @@
 }
 },
 {
-"id": "ow0143",
+"id": "ow0196",
 "type": "image",
 "name": "Right 1 q charges",
 "x": 1679,
@@ -3769,14 +5213,14 @@
 }
 },
 {
-"id": "ow0144",
+"id": "ow0197",
 "type": "image",
 "name": "Right 1 abil picture",
 "x": 1648,
 "y": 566,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 1 agent}}/E.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 1 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 1 up}}",
 "anim": {
@@ -3794,7 +5238,7 @@
 }
 },
 {
-"id": "ow0145",
+"id": "ow0198",
 "type": "image",
 "name": "Right 1 e charges",
 "x": 1648,
@@ -3819,7 +5263,7 @@
 }
 },
 {
-"id": "ow0146",
+"id": "ow0199",
 "type": "image",
 "name": "Right 1 ult ring",
 "x": 1599,
@@ -3844,14 +5288,14 @@
 }
 },
 {
-"id": "ow0147",
+"id": "ow0200",
 "type": "image",
 "name": "Right 1 icon picture",
 "x": 1610.5,
 "y": 567.5,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 1 agent}}/X.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 1 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Right 1 here}}",
@@ -3870,12 +5314,101 @@
 }
 },
 {
-"id": "ow0148",
+"id": "ow0201",
+"type": "text",
+"name": "Right 1 i text",
+"x": 1775,
+"y": 607.2,
+"w": 120,
+"h": 20,
+"text": "{{VALORANT!Right 1 kda}}",
+"font": "Rubik",
+"size": 20.0,
+"weight": 400,
+"color": "rgb(255, 255, 255)",
+"align": "right",
+"valign": "middle",
+"caps": false,
+"fit": "shrink",
+"show": "{{VALORANT!Right 1 down}}",
+"anim": {
+"in": {
+"type": "push-left",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-left",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0202",
+"type": "text",
+"name": "Right 1 i text",
+"x": 1599,
+"y": 607.2,
+"w": 70,
+"h": 20,
+"text": "{{VALORANT!Right 1 cash}}",
+"font": "Rubik",
+"size": 20.0,
+"weight": 400,
+"color": "rgb(255, 255, 255)",
+"align": "left",
+"valign": "middle",
+"caps": false,
+"fit": "shrink",
+"show": "{{VALORANT!Right 1 down}}",
+"anim": {
+"in": {
+"type": "push-left",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-left",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0203",
+"type": "image",
+"name": "Right 1 cred icon icon",
+"x": 1654.3,
+"y": 608.5,
+"w": 15,
+"h": 15,
+"src": "/library/owen-hud/layers/140ee53748ae.svg",
+"fit": "fill",
+"show": "{{VALORANT!Right 1 down}}",
+"anim": {
+"in": {
+"type": "push-left",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-left",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0204",
 "type": "text",
 "name": "Right 1 i text",
 "x": 1795,
 "y": 607.2,
-"w": 96,
+"w": 75.0,
 "h": 20,
 "text": "{{VALORANT!Right 1 cash}}",
 "font": "Rubik",
@@ -3902,7 +5435,7 @@
 }
 },
 {
-"id": "ow0149",
+"id": "ow0205",
 "type": "image",
 "name": "Right 1 cred icon icon",
 "x": 1876,
@@ -3927,14 +5460,14 @@
 }
 },
 {
-"id": "ow0150",
+"id": "ow0206",
 "type": "image",
 "name": "Right 1 gun picture",
 "x": 1700,
 "y": 607,
 "w": 62,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Right 1 weapon}}.png",
+"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Right 1 weapon file}}.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 1 up}}",
 "anim": {
@@ -3952,7 +5485,7 @@
 }
 },
 {
-"id": "ow0151",
+"id": "ow0207",
 "type": "image",
 "name": "Right 1 armor",
 "x": 1640,
@@ -3977,7 +5510,7 @@
 }
 },
 {
-"id": "ow0152",
+"id": "ow0208",
 "type": "text",
 "name": "Right 1 i text",
 "x": 1598,
@@ -4009,7 +5542,7 @@
 }
 },
 {
-"id": "ow0153",
+"id": "ow0209",
 "type": "image",
 "name": "Right 1 hp bar",
 "x": 1594,
@@ -4034,7 +5567,90 @@
 }
 },
 {
-"id": "ow0154",
+"id": "ow0210",
+"type": "rect",
+"name": "Right 2 tab",
+"x": 1593,
+"y": 657,
+"w": 310,
+"h": 88,
+"fill": "linear-gradient(270deg, rgba(58, 58, 58, 0.9), rgba(58, 58, 58, 0)), none, rgba(0, 0, 0, 0.25)",
+"radius": 25.0,
+"stroke": "rgba(0, 0, 0, 0)",
+"strokeWidth": 1.0,
+"show": "{{VALORANT!Right 2 down}}",
+"anim": {
+"in": {
+"type": "push-left",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-left",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0211",
+"type": "rect",
+"name": "Right 2 agent",
+"x": 1852,
+"y": 657,
+"w": 51,
+"h": 51,
+"fill": "rgb(57, 57, 57)",
+"radius": "25 0 25 0",
+"stroke": "rgba(0, 0, 0, 0)",
+"strokeWidth": 1.0,
+"show": "{{VALORANT!Right 2 down}}",
+"anim": {
+"in": {
+"type": "push-left",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-left",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0212",
+"type": "image",
+"name": "Right 2 agent picture",
+"x": 1852,
+"y": 657,
+"w": 51,
+"h": 51,
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 2 agent file}}/{{VALORANT!Right 2 agent file}}.png",
+"fit": "cover",
+"radius": "25 0 25 0",
+"pic": {
+"flipX": true
+},
+"show": "{{VALORANT!Right 2 down}}",
+"anim": {
+"in": {
+"type": "push-left",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-left",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0213",
 "type": "rect",
 "name": "Right 2 tab",
 "x": 1593,
@@ -4045,7 +5661,7 @@
 "radius": 25.0,
 "stroke": "rgb(255, 255, 255)",
 "strokeWidth": 1.0,
-"show": "{{VALORANT!Right 2 here}}",
+"show": "{{VALORANT!Right 2 up}}",
 "anim": {
 "in": {
 "type": "push-left",
@@ -4061,7 +5677,7 @@
 }
 },
 {
-"id": "ow0155",
+"id": "ow0214",
 "type": "rect",
 "name": "Right 2 agent",
 "x": 1852,
@@ -4072,7 +5688,7 @@
 "radius": "25 0 25 0",
 "stroke": "rgb(255, 255, 255)",
 "strokeWidth": 1.0,
-"show": "{{VALORANT!Right 2 here}}",
+"show": "{{VALORANT!Right 2 up}}",
 "anim": {
 "in": {
 "type": "push-left",
@@ -4088,20 +5704,20 @@
 }
 },
 {
-"id": "ow0156",
+"id": "ow0215",
 "type": "image",
 "name": "Right 2 agent picture",
 "x": 1852,
 "y": 657,
 "w": 51,
 "h": 51,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 2 agent}}/{{VALORANT!Right 2 agent}}.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 2 agent file}}/{{VALORANT!Right 2 agent file}}.png",
 "fit": "cover",
 "radius": "25 0 25 0",
 "pic": {
 "flipX": true
 },
-"show": "{{VALORANT!Right 2 here}}",
+"show": "{{VALORANT!Right 2 up}}",
 "anim": {
 "in": {
 "type": "push-left",
@@ -4117,7 +5733,7 @@
 }
 },
 {
-"id": "ow0157",
+"id": "ow0216",
 "type": "text",
 "name": "Right 2 i text",
 "x": 1733,
@@ -4149,14 +5765,14 @@
 }
 },
 {
-"id": "ow0158",
+"id": "ow0217",
 "type": "image",
 "name": "Right 2 abil picture",
 "x": 1710,
 "y": 672,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 2 agent}}/C.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 2 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 2 up}}",
 "anim": {
@@ -4174,7 +5790,7 @@
 }
 },
 {
-"id": "ow0159",
+"id": "ow0218",
 "type": "image",
 "name": "Right 2 c charges",
 "x": 1710,
@@ -4199,14 +5815,14 @@
 }
 },
 {
-"id": "ow0160",
+"id": "ow0219",
 "type": "image",
 "name": "Right 2 abil picture",
 "x": 1679,
 "y": 672,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 2 agent}}/Q.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 2 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 2 up}}",
 "anim": {
@@ -4224,7 +5840,7 @@
 }
 },
 {
-"id": "ow0161",
+"id": "ow0220",
 "type": "image",
 "name": "Right 2 q charges",
 "x": 1679,
@@ -4249,14 +5865,14 @@
 }
 },
 {
-"id": "ow0162",
+"id": "ow0221",
 "type": "image",
 "name": "Right 2 abil picture",
 "x": 1648,
 "y": 672,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 2 agent}}/E.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 2 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 2 up}}",
 "anim": {
@@ -4274,7 +5890,7 @@
 }
 },
 {
-"id": "ow0163",
+"id": "ow0222",
 "type": "image",
 "name": "Right 2 e charges",
 "x": 1648,
@@ -4299,7 +5915,7 @@
 }
 },
 {
-"id": "ow0164",
+"id": "ow0223",
 "type": "image",
 "name": "Right 2 ult ring",
 "x": 1599,
@@ -4324,14 +5940,14 @@
 }
 },
 {
-"id": "ow0165",
+"id": "ow0224",
 "type": "image",
 "name": "Right 2 icon picture",
 "x": 1610.5,
 "y": 673.5,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 2 agent}}/X.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 2 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Right 2 here}}",
@@ -4350,12 +5966,101 @@
 }
 },
 {
-"id": "ow0166",
+"id": "ow0225",
+"type": "text",
+"name": "Right 2 i text",
+"x": 1775,
+"y": 713.2,
+"w": 120,
+"h": 20,
+"text": "{{VALORANT!Right 2 kda}}",
+"font": "Rubik",
+"size": 20.0,
+"weight": 400,
+"color": "rgb(255, 255, 255)",
+"align": "right",
+"valign": "middle",
+"caps": false,
+"fit": "shrink",
+"show": "{{VALORANT!Right 2 down}}",
+"anim": {
+"in": {
+"type": "push-left",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-left",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0226",
+"type": "text",
+"name": "Right 2 i text",
+"x": 1599,
+"y": 713.2,
+"w": 70,
+"h": 20,
+"text": "{{VALORANT!Right 2 cash}}",
+"font": "Rubik",
+"size": 20.0,
+"weight": 400,
+"color": "rgb(255, 255, 255)",
+"align": "left",
+"valign": "middle",
+"caps": false,
+"fit": "shrink",
+"show": "{{VALORANT!Right 2 down}}",
+"anim": {
+"in": {
+"type": "push-left",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-left",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0227",
+"type": "image",
+"name": "Right 2 cred icon icon",
+"x": 1658.9,
+"y": 714.5,
+"w": 15,
+"h": 15,
+"src": "/library/owen-hud/layers/140ee53748ae.svg",
+"fit": "fill",
+"show": "{{VALORANT!Right 2 down}}",
+"anim": {
+"in": {
+"type": "push-left",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-left",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0228",
 "type": "text",
 "name": "Right 2 i text",
 "x": 1795,
 "y": 713.2,
-"w": 96,
+"w": 75.0,
 "h": 20,
 "text": "{{VALORANT!Right 2 cash}}",
 "font": "Rubik",
@@ -4382,7 +6087,7 @@
 }
 },
 {
-"id": "ow0167",
+"id": "ow0229",
 "type": "image",
 "name": "Right 2 cred icon icon",
 "x": 1876,
@@ -4407,14 +6112,14 @@
 }
 },
 {
-"id": "ow0168",
+"id": "ow0230",
 "type": "image",
 "name": "Right 2 gun picture",
 "x": 1700,
 "y": 713,
 "w": 62,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Right 2 weapon}}.png",
+"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Right 2 weapon file}}.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 2 up}}",
 "anim": {
@@ -4432,7 +6137,7 @@
 }
 },
 {
-"id": "ow0169",
+"id": "ow0231",
 "type": "image",
 "name": "Right 2 armor",
 "x": 1640,
@@ -4457,7 +6162,7 @@
 }
 },
 {
-"id": "ow0170",
+"id": "ow0232",
 "type": "text",
 "name": "Right 2 i text",
 "x": 1598,
@@ -4489,7 +6194,7 @@
 }
 },
 {
-"id": "ow0171",
+"id": "ow0233",
 "type": "image",
 "name": "Right 2 hp bar",
 "x": 1594,
@@ -4514,7 +6219,90 @@
 }
 },
 {
-"id": "ow0172",
+"id": "ow0234",
+"type": "rect",
+"name": "Right 3 tab",
+"x": 1593,
+"y": 763,
+"w": 310,
+"h": 88,
+"fill": "linear-gradient(270deg, rgba(58, 58, 58, 0.9), rgba(58, 58, 58, 0)), none, rgba(0, 0, 0, 0.25)",
+"radius": 25.0,
+"stroke": "rgba(0, 0, 0, 0)",
+"strokeWidth": 1.0,
+"show": "{{VALORANT!Right 3 down}}",
+"anim": {
+"in": {
+"type": "push-left",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-left",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0235",
+"type": "rect",
+"name": "Right 3 agent",
+"x": 1852,
+"y": 763,
+"w": 51,
+"h": 51,
+"fill": "rgb(57, 57, 57)",
+"radius": "25 0 25 0",
+"stroke": "rgba(0, 0, 0, 0)",
+"strokeWidth": 1.0,
+"show": "{{VALORANT!Right 3 down}}",
+"anim": {
+"in": {
+"type": "push-left",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-left",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0236",
+"type": "image",
+"name": "Right 3 agent picture",
+"x": 1852,
+"y": 763,
+"w": 51,
+"h": 51,
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 3 agent file}}/{{VALORANT!Right 3 agent file}}.png",
+"fit": "cover",
+"radius": "25 0 25 0",
+"pic": {
+"flipX": true
+},
+"show": "{{VALORANT!Right 3 down}}",
+"anim": {
+"in": {
+"type": "push-left",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-left",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0237",
 "type": "rect",
 "name": "Right 3 tab",
 "x": 1593,
@@ -4525,7 +6313,7 @@
 "radius": 25.0,
 "stroke": "rgb(255, 255, 255)",
 "strokeWidth": 1.0,
-"show": "{{VALORANT!Right 3 here}}",
+"show": "{{VALORANT!Right 3 up}}",
 "anim": {
 "in": {
 "type": "push-left",
@@ -4541,7 +6329,7 @@
 }
 },
 {
-"id": "ow0173",
+"id": "ow0238",
 "type": "rect",
 "name": "Right 3 agent",
 "x": 1852,
@@ -4552,7 +6340,7 @@
 "radius": "25 0 25 0",
 "stroke": "rgb(255, 255, 255)",
 "strokeWidth": 1.0,
-"show": "{{VALORANT!Right 3 here}}",
+"show": "{{VALORANT!Right 3 up}}",
 "anim": {
 "in": {
 "type": "push-left",
@@ -4568,20 +6356,20 @@
 }
 },
 {
-"id": "ow0174",
+"id": "ow0239",
 "type": "image",
 "name": "Right 3 agent picture",
 "x": 1852,
 "y": 763,
 "w": 51,
 "h": 51,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 3 agent}}/{{VALORANT!Right 3 agent}}.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 3 agent file}}/{{VALORANT!Right 3 agent file}}.png",
 "fit": "cover",
 "radius": "25 0 25 0",
 "pic": {
 "flipX": true
 },
-"show": "{{VALORANT!Right 3 here}}",
+"show": "{{VALORANT!Right 3 up}}",
 "anim": {
 "in": {
 "type": "push-left",
@@ -4597,7 +6385,7 @@
 }
 },
 {
-"id": "ow0175",
+"id": "ow0240",
 "type": "text",
 "name": "Right 3 i text",
 "x": 1733,
@@ -4629,14 +6417,14 @@
 }
 },
 {
-"id": "ow0176",
+"id": "ow0241",
 "type": "image",
 "name": "Right 3 abil picture",
 "x": 1710,
 "y": 778,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 3 agent}}/C.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 3 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 3 up}}",
 "anim": {
@@ -4654,7 +6442,7 @@
 }
 },
 {
-"id": "ow0177",
+"id": "ow0242",
 "type": "image",
 "name": "Right 3 c charges",
 "x": 1710,
@@ -4679,14 +6467,14 @@
 }
 },
 {
-"id": "ow0178",
+"id": "ow0243",
 "type": "image",
 "name": "Right 3 abil picture",
 "x": 1679,
 "y": 778,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 3 agent}}/Q.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 3 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 3 up}}",
 "anim": {
@@ -4704,7 +6492,7 @@
 }
 },
 {
-"id": "ow0179",
+"id": "ow0244",
 "type": "image",
 "name": "Right 3 q charges",
 "x": 1679,
@@ -4729,14 +6517,14 @@
 }
 },
 {
-"id": "ow0180",
+"id": "ow0245",
 "type": "image",
 "name": "Right 3 abil picture",
 "x": 1648,
 "y": 778,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 3 agent}}/E.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 3 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 3 up}}",
 "anim": {
@@ -4754,7 +6542,7 @@
 }
 },
 {
-"id": "ow0181",
+"id": "ow0246",
 "type": "image",
 "name": "Right 3 e charges",
 "x": 1648,
@@ -4779,7 +6567,7 @@
 }
 },
 {
-"id": "ow0182",
+"id": "ow0247",
 "type": "image",
 "name": "Right 3 ult ring",
 "x": 1599,
@@ -4804,14 +6592,14 @@
 }
 },
 {
-"id": "ow0183",
+"id": "ow0248",
 "type": "image",
 "name": "Right 3 icon picture",
 "x": 1610.5,
 "y": 779.5,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 3 agent}}/X.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 3 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Right 3 here}}",
@@ -4830,12 +6618,101 @@
 }
 },
 {
-"id": "ow0184",
+"id": "ow0249",
+"type": "text",
+"name": "Right 3 i text",
+"x": 1775,
+"y": 819.2,
+"w": 120,
+"h": 20,
+"text": "{{VALORANT!Right 3 kda}}",
+"font": "Rubik",
+"size": 20.0,
+"weight": 400,
+"color": "rgb(255, 255, 255)",
+"align": "right",
+"valign": "middle",
+"caps": false,
+"fit": "shrink",
+"show": "{{VALORANT!Right 3 down}}",
+"anim": {
+"in": {
+"type": "push-left",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-left",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0250",
+"type": "text",
+"name": "Right 3 i text",
+"x": 1599,
+"y": 819.2,
+"w": 70,
+"h": 20,
+"text": "{{VALORANT!Right 3 cash}}",
+"font": "Rubik",
+"size": 20.0,
+"weight": 400,
+"color": "rgb(255, 255, 255)",
+"align": "left",
+"valign": "middle",
+"caps": false,
+"fit": "shrink",
+"show": "{{VALORANT!Right 3 down}}",
+"anim": {
+"in": {
+"type": "push-left",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-left",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0251",
+"type": "image",
+"name": "Right 3 cred icon icon",
+"x": 1659.1,
+"y": 820.5,
+"w": 15,
+"h": 15,
+"src": "/library/owen-hud/layers/140ee53748ae.svg",
+"fit": "fill",
+"show": "{{VALORANT!Right 3 down}}",
+"anim": {
+"in": {
+"type": "push-left",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-left",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0252",
 "type": "text",
 "name": "Right 3 i text",
 "x": 1795,
 "y": 819.2,
-"w": 96,
+"w": 75.0,
 "h": 20,
 "text": "{{VALORANT!Right 3 cash}}",
 "font": "Rubik",
@@ -4862,7 +6739,7 @@
 }
 },
 {
-"id": "ow0185",
+"id": "ow0253",
 "type": "image",
 "name": "Right 3 cred icon icon",
 "x": 1876,
@@ -4887,14 +6764,14 @@
 }
 },
 {
-"id": "ow0186",
+"id": "ow0254",
 "type": "image",
 "name": "Right 3 gun picture",
 "x": 1700,
 "y": 819,
 "w": 62,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Right 3 weapon}}.png",
+"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Right 3 weapon file}}.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 3 up}}",
 "anim": {
@@ -4912,7 +6789,7 @@
 }
 },
 {
-"id": "ow0187",
+"id": "ow0255",
 "type": "image",
 "name": "Right 3 armor",
 "x": 1640,
@@ -4937,7 +6814,7 @@
 }
 },
 {
-"id": "ow0188",
+"id": "ow0256",
 "type": "text",
 "name": "Right 3 i text",
 "x": 1598,
@@ -4969,7 +6846,7 @@
 }
 },
 {
-"id": "ow0189",
+"id": "ow0257",
 "type": "image",
 "name": "Right 3 hp bar",
 "x": 1594,
@@ -4994,7 +6871,90 @@
 }
 },
 {
-"id": "ow0190",
+"id": "ow0258",
+"type": "rect",
+"name": "Right 4 tab",
+"x": 1593,
+"y": 869,
+"w": 310,
+"h": 88,
+"fill": "linear-gradient(270deg, rgba(58, 58, 58, 0.9), rgba(58, 58, 58, 0)), none, rgba(0, 0, 0, 0.25)",
+"radius": 25.0,
+"stroke": "rgba(0, 0, 0, 0)",
+"strokeWidth": 1.0,
+"show": "{{VALORANT!Right 4 down}}",
+"anim": {
+"in": {
+"type": "push-left",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-left",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0259",
+"type": "rect",
+"name": "Right 4 agent",
+"x": 1852,
+"y": 869,
+"w": 51,
+"h": 51,
+"fill": "rgb(57, 57, 57)",
+"radius": "25 0 25 0",
+"stroke": "rgba(0, 0, 0, 0)",
+"strokeWidth": 1.0,
+"show": "{{VALORANT!Right 4 down}}",
+"anim": {
+"in": {
+"type": "push-left",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-left",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0260",
+"type": "image",
+"name": "Right 4 agent picture",
+"x": 1852,
+"y": 869,
+"w": 51,
+"h": 51,
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 4 agent file}}/{{VALORANT!Right 4 agent file}}.png",
+"fit": "cover",
+"radius": "25 0 25 0",
+"pic": {
+"flipX": true
+},
+"show": "{{VALORANT!Right 4 down}}",
+"anim": {
+"in": {
+"type": "push-left",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-left",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0261",
 "type": "rect",
 "name": "Right 4 tab",
 "x": 1593,
@@ -5005,7 +6965,7 @@
 "radius": 25.0,
 "stroke": "rgb(255, 255, 255)",
 "strokeWidth": 1.0,
-"show": "{{VALORANT!Right 4 here}}",
+"show": "{{VALORANT!Right 4 up}}",
 "anim": {
 "in": {
 "type": "push-left",
@@ -5021,7 +6981,7 @@
 }
 },
 {
-"id": "ow0191",
+"id": "ow0262",
 "type": "rect",
 "name": "Right 4 agent",
 "x": 1852,
@@ -5032,7 +6992,7 @@
 "radius": "25 0 25 0",
 "stroke": "rgb(255, 255, 255)",
 "strokeWidth": 1.0,
-"show": "{{VALORANT!Right 4 here}}",
+"show": "{{VALORANT!Right 4 up}}",
 "anim": {
 "in": {
 "type": "push-left",
@@ -5048,20 +7008,20 @@
 }
 },
 {
-"id": "ow0192",
+"id": "ow0263",
 "type": "image",
 "name": "Right 4 agent picture",
 "x": 1852,
 "y": 869,
 "w": 51,
 "h": 51,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 4 agent}}/{{VALORANT!Right 4 agent}}.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 4 agent file}}/{{VALORANT!Right 4 agent file}}.png",
 "fit": "cover",
 "radius": "25 0 25 0",
 "pic": {
 "flipX": true
 },
-"show": "{{VALORANT!Right 4 here}}",
+"show": "{{VALORANT!Right 4 up}}",
 "anim": {
 "in": {
 "type": "push-left",
@@ -5077,7 +7037,7 @@
 }
 },
 {
-"id": "ow0193",
+"id": "ow0264",
 "type": "text",
 "name": "Right 4 i text",
 "x": 1733,
@@ -5109,14 +7069,14 @@
 }
 },
 {
-"id": "ow0194",
+"id": "ow0265",
 "type": "image",
 "name": "Right 4 abil picture",
 "x": 1710,
 "y": 884,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 4 agent}}/C.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 4 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 4 up}}",
 "anim": {
@@ -5134,7 +7094,7 @@
 }
 },
 {
-"id": "ow0195",
+"id": "ow0266",
 "type": "image",
 "name": "Right 4 c charges",
 "x": 1710,
@@ -5159,14 +7119,14 @@
 }
 },
 {
-"id": "ow0196",
+"id": "ow0267",
 "type": "image",
 "name": "Right 4 abil picture",
 "x": 1679,
 "y": 884,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 4 agent}}/Q.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 4 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 4 up}}",
 "anim": {
@@ -5184,7 +7144,7 @@
 }
 },
 {
-"id": "ow0197",
+"id": "ow0268",
 "type": "image",
 "name": "Right 4 q charges",
 "x": 1679,
@@ -5209,14 +7169,14 @@
 }
 },
 {
-"id": "ow0198",
+"id": "ow0269",
 "type": "image",
 "name": "Right 4 abil picture",
 "x": 1648,
 "y": 884,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 4 agent}}/E.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 4 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 4 up}}",
 "anim": {
@@ -5234,7 +7194,7 @@
 }
 },
 {
-"id": "ow0199",
+"id": "ow0270",
 "type": "image",
 "name": "Right 4 e charges",
 "x": 1648,
@@ -5259,7 +7219,7 @@
 }
 },
 {
-"id": "ow0200",
+"id": "ow0271",
 "type": "image",
 "name": "Right 4 ult ring",
 "x": 1599,
@@ -5284,14 +7244,14 @@
 }
 },
 {
-"id": "ow0201",
+"id": "ow0272",
 "type": "image",
 "name": "Right 4 icon picture",
 "x": 1610.5,
 "y": 885.5,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 4 agent}}/X.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 4 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Right 4 here}}",
@@ -5310,12 +7270,101 @@
 }
 },
 {
-"id": "ow0202",
+"id": "ow0273",
+"type": "text",
+"name": "Right 4 i text",
+"x": 1775,
+"y": 925.2,
+"w": 120,
+"h": 20,
+"text": "{{VALORANT!Right 4 kda}}",
+"font": "Rubik",
+"size": 20.0,
+"weight": 400,
+"color": "rgb(255, 255, 255)",
+"align": "right",
+"valign": "middle",
+"caps": false,
+"fit": "shrink",
+"show": "{{VALORANT!Right 4 down}}",
+"anim": {
+"in": {
+"type": "push-left",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-left",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0274",
+"type": "text",
+"name": "Right 4 i text",
+"x": 1599,
+"y": 925.2,
+"w": 70,
+"h": 20,
+"text": "{{VALORANT!Right 4 cash}}",
+"font": "Rubik",
+"size": 20.0,
+"weight": 400,
+"color": "rgb(255, 255, 255)",
+"align": "left",
+"valign": "middle",
+"caps": false,
+"fit": "shrink",
+"show": "{{VALORANT!Right 4 down}}",
+"anim": {
+"in": {
+"type": "push-left",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-left",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0275",
+"type": "image",
+"name": "Right 4 cred icon icon",
+"x": 1659.2,
+"y": 926.5,
+"w": 15,
+"h": 15,
+"src": "/library/owen-hud/layers/140ee53748ae.svg",
+"fit": "fill",
+"show": "{{VALORANT!Right 4 down}}",
+"anim": {
+"in": {
+"type": "push-left",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-left",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0276",
 "type": "text",
 "name": "Right 4 i text",
 "x": 1795,
 "y": 925.2,
-"w": 96,
+"w": 75.0,
 "h": 20,
 "text": "{{VALORANT!Right 4 cash}}",
 "font": "Rubik",
@@ -5342,7 +7391,7 @@
 }
 },
 {
-"id": "ow0203",
+"id": "ow0277",
 "type": "image",
 "name": "Right 4 cred icon icon",
 "x": 1876,
@@ -5367,14 +7416,14 @@
 }
 },
 {
-"id": "ow0204",
+"id": "ow0278",
 "type": "image",
 "name": "Right 4 gun picture",
 "x": 1700,
 "y": 925,
 "w": 62,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Right 4 weapon}}.png",
+"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Right 4 weapon file}}.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 4 up}}",
 "anim": {
@@ -5392,7 +7441,7 @@
 }
 },
 {
-"id": "ow0205",
+"id": "ow0279",
 "type": "image",
 "name": "Right 4 armor",
 "x": 1640,
@@ -5417,7 +7466,7 @@
 }
 },
 {
-"id": "ow0206",
+"id": "ow0280",
 "type": "text",
 "name": "Right 4 i text",
 "x": 1598,
@@ -5449,7 +7498,7 @@
 }
 },
 {
-"id": "ow0207",
+"id": "ow0281",
 "type": "image",
 "name": "Right 4 hp bar",
 "x": 1594,
@@ -5474,7 +7523,90 @@
 }
 },
 {
-"id": "ow0208",
+"id": "ow0282",
+"type": "rect",
+"name": "Right 5 tab",
+"x": 1593,
+"y": 975,
+"w": 310,
+"h": 88,
+"fill": "linear-gradient(270deg, rgba(58, 58, 58, 0.9), rgba(58, 58, 58, 0)), none, rgba(0, 0, 0, 0.25)",
+"radius": 25.0,
+"stroke": "rgba(0, 0, 0, 0)",
+"strokeWidth": 1.0,
+"show": "{{VALORANT!Right 5 down}}",
+"anim": {
+"in": {
+"type": "push-left",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-left",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0283",
+"type": "rect",
+"name": "Right 5 agent",
+"x": 1852,
+"y": 975,
+"w": 51,
+"h": 51,
+"fill": "rgb(57, 57, 57)",
+"radius": "25 0 25 0",
+"stroke": "rgba(0, 0, 0, 0)",
+"strokeWidth": 1.0,
+"show": "{{VALORANT!Right 5 down}}",
+"anim": {
+"in": {
+"type": "push-left",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-left",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0284",
+"type": "image",
+"name": "Right 5 agent picture",
+"x": 1852,
+"y": 975,
+"w": 51,
+"h": 51,
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 5 agent file}}/{{VALORANT!Right 5 agent file}}.png",
+"fit": "cover",
+"radius": "25 0 25 0",
+"pic": {
+"flipX": true
+},
+"show": "{{VALORANT!Right 5 down}}",
+"anim": {
+"in": {
+"type": "push-left",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-left",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0285",
 "type": "rect",
 "name": "Right 5 tab",
 "x": 1593,
@@ -5485,7 +7617,7 @@
 "radius": 25.0,
 "stroke": "rgb(255, 255, 255)",
 "strokeWidth": 1.0,
-"show": "{{VALORANT!Right 5 here}}",
+"show": "{{VALORANT!Right 5 up}}",
 "anim": {
 "in": {
 "type": "push-left",
@@ -5501,7 +7633,7 @@
 }
 },
 {
-"id": "ow0209",
+"id": "ow0286",
 "type": "rect",
 "name": "Right 5 agent",
 "x": 1852,
@@ -5512,7 +7644,7 @@
 "radius": "25 0 25 0",
 "stroke": "rgb(255, 255, 255)",
 "strokeWidth": 1.0,
-"show": "{{VALORANT!Right 5 here}}",
+"show": "{{VALORANT!Right 5 up}}",
 "anim": {
 "in": {
 "type": "push-left",
@@ -5528,20 +7660,20 @@
 }
 },
 {
-"id": "ow0210",
+"id": "ow0287",
 "type": "image",
 "name": "Right 5 agent picture",
 "x": 1852,
 "y": 975,
 "w": 51,
 "h": 51,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 5 agent}}/{{VALORANT!Right 5 agent}}.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 5 agent file}}/{{VALORANT!Right 5 agent file}}.png",
 "fit": "cover",
 "radius": "25 0 25 0",
 "pic": {
 "flipX": true
 },
-"show": "{{VALORANT!Right 5 here}}",
+"show": "{{VALORANT!Right 5 up}}",
 "anim": {
 "in": {
 "type": "push-left",
@@ -5557,7 +7689,7 @@
 }
 },
 {
-"id": "ow0211",
+"id": "ow0288",
 "type": "text",
 "name": "Right 5 i text",
 "x": 1733,
@@ -5589,14 +7721,14 @@
 }
 },
 {
-"id": "ow0212",
+"id": "ow0289",
 "type": "image",
 "name": "Right 5 abil picture",
 "x": 1710,
 "y": 990,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 5 agent}}/C.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 5 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 5 up}}",
 "anim": {
@@ -5614,7 +7746,7 @@
 }
 },
 {
-"id": "ow0213",
+"id": "ow0290",
 "type": "image",
 "name": "Right 5 c charges",
 "x": 1710,
@@ -5639,14 +7771,14 @@
 }
 },
 {
-"id": "ow0214",
+"id": "ow0291",
 "type": "image",
 "name": "Right 5 abil picture",
 "x": 1679,
 "y": 990,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 5 agent}}/Q.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 5 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 5 up}}",
 "anim": {
@@ -5664,7 +7796,7 @@
 }
 },
 {
-"id": "ow0215",
+"id": "ow0292",
 "type": "image",
 "name": "Right 5 q charges",
 "x": 1679,
@@ -5689,14 +7821,14 @@
 }
 },
 {
-"id": "ow0216",
+"id": "ow0293",
 "type": "image",
 "name": "Right 5 abil picture",
 "x": 1648,
 "y": 990,
 "w": 21,
 "h": 21,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 5 agent}}/E.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 5 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 5 up}}",
 "anim": {
@@ -5714,7 +7846,7 @@
 }
 },
 {
-"id": "ow0217",
+"id": "ow0294",
 "type": "image",
 "name": "Right 5 e charges",
 "x": 1648,
@@ -5739,7 +7871,7 @@
 }
 },
 {
-"id": "ow0218",
+"id": "ow0295",
 "type": "image",
 "name": "Right 5 ult ring",
 "x": 1599,
@@ -5764,14 +7896,14 @@
 }
 },
 {
-"id": "ow0219",
+"id": "ow0296",
 "type": "image",
 "name": "Right 5 icon picture",
 "x": 1610.5,
 "y": 991.5,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 5 agent}}/X.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 5 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Right 5 here}}",
@@ -5790,12 +7922,101 @@
 }
 },
 {
-"id": "ow0220",
+"id": "ow0297",
+"type": "text",
+"name": "Right 5 i text",
+"x": 1775,
+"y": 1031.2,
+"w": 120,
+"h": 20,
+"text": "{{VALORANT!Right 5 kda}}",
+"font": "Rubik",
+"size": 20.0,
+"weight": 400,
+"color": "rgb(255, 255, 255)",
+"align": "right",
+"valign": "middle",
+"caps": false,
+"fit": "shrink",
+"show": "{{VALORANT!Right 5 down}}",
+"anim": {
+"in": {
+"type": "push-left",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-left",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0298",
+"type": "text",
+"name": "Right 5 i text",
+"x": 1599,
+"y": 1031.2,
+"w": 70,
+"h": 20,
+"text": "{{VALORANT!Right 5 cash}}",
+"font": "Rubik",
+"size": 20.0,
+"weight": 400,
+"color": "rgb(255, 255, 255)",
+"align": "left",
+"valign": "middle",
+"caps": false,
+"fit": "shrink",
+"show": "{{VALORANT!Right 5 down}}",
+"anim": {
+"in": {
+"type": "push-left",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-left",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0299",
+"type": "image",
+"name": "Right 5 cred icon icon",
+"x": 1659,
+"y": 1032.5,
+"w": 15,
+"h": 15,
+"src": "/library/owen-hud/layers/140ee53748ae.svg",
+"fit": "fill",
+"show": "{{VALORANT!Right 5 down}}",
+"anim": {
+"in": {
+"type": "push-left",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-left",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0300",
 "type": "text",
 "name": "Right 5 i text",
 "x": 1795,
 "y": 1031.2,
-"w": 96,
+"w": 75,
 "h": 20,
 "text": "{{VALORANT!Right 5 cash}}",
 "font": "Rubik",
@@ -5822,7 +8043,7 @@
 }
 },
 {
-"id": "ow0221",
+"id": "ow0301",
 "type": "image",
 "name": "Right 5 cred icon icon",
 "x": 1876,
@@ -5847,14 +8068,14 @@
 }
 },
 {
-"id": "ow0222",
+"id": "ow0302",
 "type": "image",
 "name": "Right 5 gun picture",
 "x": 1700,
 "y": 1031,
 "w": 62,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Right 5 weapon}}.png",
+"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Right 5 weapon file}}.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 5 up}}",
 "anim": {
@@ -5872,7 +8093,7 @@
 }
 },
 {
-"id": "ow0223",
+"id": "ow0303",
 "type": "image",
 "name": "Right 5 armor",
 "x": 1640,
@@ -5897,7 +8118,7 @@
 }
 },
 {
-"id": "ow0224",
+"id": "ow0304",
 "type": "text",
 "name": "Right 5 i text",
 "x": 1598,
@@ -5929,7 +8150,7 @@
 }
 },
 {
-"id": "ow0225",
+"id": "ow0305",
 "type": "image",
 "name": "Right 5 hp bar",
 "x": 1594,
@@ -5961,7 +8182,7 @@
 "on": true,
 "layers": [
 {
-"id": "ow0394",
+"id": "ow0474",
 "type": "rect",
 "name": "bar",
 "x": 0,
@@ -5986,7 +8207,7 @@
 }
 },
 {
-"id": "ow0395",
+"id": "ow0475",
 "type": "image",
 "name": "mark",
 "x": 678,
@@ -6012,7 +8233,7 @@
 }
 },
 {
-"id": "ow0396",
+"id": "ow0476",
 "type": "image",
 "name": "mark",
 "x": 1069,
@@ -6038,7 +8259,7 @@
 }
 },
 {
-"id": "ow0397",
+"id": "ow0477",
 "type": "rect",
 "name": "Left 1 box",
 "x": 16,
@@ -6065,7 +8286,7 @@
 }
 },
 {
-"id": "ow0398",
+"id": "ow0478",
 "type": "image",
 "name": "Left 1 cred icon icon",
 "x": 101.8,
@@ -6090,7 +8311,7 @@
 }
 },
 {
-"id": "ow0399",
+"id": "ow0479",
 "type": "text",
 "name": "Left 1 i text",
 "x": 70,
@@ -6122,7 +8343,7 @@
 }
 },
 {
-"id": "ow0400",
+"id": "ow0480",
 "type": "rect",
 "name": "Left 1 box",
 "x": 189,
@@ -6149,14 +8370,14 @@
 }
 },
 {
-"id": "ow0401",
+"id": "ow0481",
 "type": "image",
 "name": "Left 1 abil picture",
 "x": 203,
 "y": 793,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 1 agent}}/C.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 1 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 1 board}}",
 "anim": {
@@ -6174,7 +8395,7 @@
 }
 },
 {
-"id": "ow0402",
+"id": "ow0482",
 "type": "image",
 "name": "Left 1 c charges",
 "x": 203,
@@ -6199,14 +8420,14 @@
 }
 },
 {
-"id": "ow0403",
+"id": "ow0483",
 "type": "image",
 "name": "Left 1 abil picture",
 "x": 247,
 "y": 793,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 1 agent}}/Q.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 1 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 1 board}}",
 "anim": {
@@ -6224,7 +8445,7 @@
 }
 },
 {
-"id": "ow0404",
+"id": "ow0484",
 "type": "image",
 "name": "Left 1 q charges",
 "x": 247,
@@ -6249,14 +8470,14 @@
 }
 },
 {
-"id": "ow0405",
+"id": "ow0485",
 "type": "image",
 "name": "Left 1 abil picture",
 "x": 291,
 "y": 793,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 1 agent}}/E.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 1 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 1 board}}",
 "anim": {
@@ -6274,7 +8495,7 @@
 }
 },
 {
-"id": "ow0406",
+"id": "ow0486",
 "type": "image",
 "name": "Left 1 e charges",
 "x": 291,
@@ -6299,7 +8520,7 @@
 }
 },
 {
-"id": "ow0407",
+"id": "ow0487",
 "type": "rect",
 "name": "Left 1 box",
 "x": 342,
@@ -6326,7 +8547,7 @@
 }
 },
 {
-"id": "ow0408",
+"id": "ow0488",
 "type": "image",
 "name": "Left 1 shieldimg picture",
 "x": 354,
@@ -6351,14 +8572,14 @@
 }
 },
 {
-"id": "ow0409",
+"id": "ow0489",
 "type": "image",
 "name": "Left 1 gun picture",
 "x": 397,
 "y": 797,
 "w": 110,
 "h": 28,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Left 1 weapon}}.png",
+"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Left 1 weapon file}}.png",
 "fit": "contain",
 "pic": {
 "flipX": true
@@ -6379,7 +8600,7 @@
 }
 },
 {
-"id": "ow0410",
+"id": "ow0490",
 "type": "image",
 "name": "Left 1 ult ring",
 "x": 515,
@@ -6404,14 +8625,14 @@
 }
 },
 {
-"id": "ow0411",
+"id": "ow0491",
 "type": "image",
 "name": "Left 1 icon picture",
 "x": 526.5,
 "y": 802,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 1 agent}}/X.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 1 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Left 1 board}}",
@@ -6430,7 +8651,7 @@
 }
 },
 {
-"id": "ow0412",
+"id": "ow0492",
 "type": "rect",
 "name": "Left 1 box",
 "x": 575,
@@ -6457,14 +8678,40 @@
 }
 },
 {
-"id": "ow0413",
+"id": "ow0493",
+"type": "rect",
+"name": "Left 1 wash",
+"x": 575,
+"y": 785,
+"w": 381,
+"h": 52,
+"fill": "linear-gradient(90deg, {{VALORANT!Left color}}, transparent 50%)",
+"radius": 4,
+"opacity": 0.2,
+"show": "{{VALORANT!Left 1 board}}",
+"anim": {
+"in": {
+"type": "push-up",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-up",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0494",
 "type": "image",
 "name": "Left 1 agent picture",
 "x": 576,
 "y": 786,
 "w": 74,
 "h": 50,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 1 agent}}/{{VALORANT!Left 1 agent}}.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 1 agent file}}/{{VALORANT!Left 1 agent file}}.png",
 "fit": "cover",
 "radius": "4 0 0 4",
 "show": "{{VALORANT!Left 1 board}}",
@@ -6483,7 +8730,7 @@
 }
 },
 {
-"id": "ow0414",
+"id": "ow0495",
 "type": "text",
 "name": "Left 1 i text",
 "x": 661,
@@ -6515,7 +8762,7 @@
 }
 },
 {
-"id": "ow0415",
+"id": "ow0496",
 "type": "text",
 "name": "Left 1 i text",
 "x": 827,
@@ -6547,7 +8794,7 @@
 }
 },
 {
-"id": "ow0416",
+"id": "ow0497",
 "type": "rect",
 "name": "Left 2 box",
 "x": 16,
@@ -6574,7 +8821,7 @@
 }
 },
 {
-"id": "ow0417",
+"id": "ow0498",
 "type": "image",
 "name": "Left 2 cred icon icon",
 "x": 97.3,
@@ -6599,7 +8846,7 @@
 }
 },
 {
-"id": "ow0418",
+"id": "ow0499",
 "type": "text",
 "name": "Left 2 i text",
 "x": 70,
@@ -6631,7 +8878,7 @@
 }
 },
 {
-"id": "ow0419",
+"id": "ow0500",
 "type": "rect",
 "name": "Left 2 box",
 "x": 189,
@@ -6658,14 +8905,14 @@
 }
 },
 {
-"id": "ow0420",
+"id": "ow0501",
 "type": "image",
 "name": "Left 2 abil picture",
 "x": 203,
 "y": 849,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 2 agent}}/C.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 2 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 2 board}}",
 "anim": {
@@ -6683,7 +8930,7 @@
 }
 },
 {
-"id": "ow0421",
+"id": "ow0502",
 "type": "image",
 "name": "Left 2 c charges",
 "x": 203,
@@ -6708,14 +8955,14 @@
 }
 },
 {
-"id": "ow0422",
+"id": "ow0503",
 "type": "image",
 "name": "Left 2 abil picture",
 "x": 247,
 "y": 849,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 2 agent}}/Q.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 2 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 2 board}}",
 "anim": {
@@ -6733,7 +8980,7 @@
 }
 },
 {
-"id": "ow0423",
+"id": "ow0504",
 "type": "image",
 "name": "Left 2 q charges",
 "x": 247,
@@ -6758,14 +9005,14 @@
 }
 },
 {
-"id": "ow0424",
+"id": "ow0505",
 "type": "image",
 "name": "Left 2 abil picture",
 "x": 291,
 "y": 849,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 2 agent}}/E.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 2 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 2 board}}",
 "anim": {
@@ -6783,7 +9030,7 @@
 }
 },
 {
-"id": "ow0425",
+"id": "ow0506",
 "type": "image",
 "name": "Left 2 e charges",
 "x": 291,
@@ -6808,7 +9055,7 @@
 }
 },
 {
-"id": "ow0426",
+"id": "ow0507",
 "type": "rect",
 "name": "Left 2 box",
 "x": 342,
@@ -6835,7 +9082,7 @@
 }
 },
 {
-"id": "ow0427",
+"id": "ow0508",
 "type": "image",
 "name": "Left 2 shieldimg picture",
 "x": 354,
@@ -6860,14 +9107,14 @@
 }
 },
 {
-"id": "ow0428",
+"id": "ow0509",
 "type": "image",
 "name": "Left 2 gun picture",
 "x": 397,
 "y": 853,
 "w": 110,
 "h": 28,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Left 2 weapon}}.png",
+"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Left 2 weapon file}}.png",
 "fit": "contain",
 "pic": {
 "flipX": true
@@ -6888,7 +9135,7 @@
 }
 },
 {
-"id": "ow0429",
+"id": "ow0510",
 "type": "image",
 "name": "Left 2 ult ring",
 "x": 515,
@@ -6913,14 +9160,14 @@
 }
 },
 {
-"id": "ow0430",
+"id": "ow0511",
 "type": "image",
 "name": "Left 2 icon picture",
 "x": 526.5,
 "y": 858,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 2 agent}}/X.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 2 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Left 2 board}}",
@@ -6939,7 +9186,7 @@
 }
 },
 {
-"id": "ow0431",
+"id": "ow0512",
 "type": "rect",
 "name": "Left 2 box",
 "x": 575,
@@ -6966,14 +9213,40 @@
 }
 },
 {
-"id": "ow0432",
+"id": "ow0513",
+"type": "rect",
+"name": "Left 2 wash",
+"x": 575,
+"y": 841,
+"w": 381,
+"h": 52,
+"fill": "linear-gradient(90deg, {{VALORANT!Left color}}, transparent 50%)",
+"radius": 4,
+"opacity": 0.2,
+"show": "{{VALORANT!Left 2 board}}",
+"anim": {
+"in": {
+"type": "push-up",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-up",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0514",
 "type": "image",
 "name": "Left 2 agent picture",
 "x": 576,
 "y": 842,
 "w": 74,
 "h": 50,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 2 agent}}/{{VALORANT!Left 2 agent}}.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 2 agent file}}/{{VALORANT!Left 2 agent file}}.png",
 "fit": "cover",
 "radius": "4 0 0 4",
 "show": "{{VALORANT!Left 2 board}}",
@@ -6992,7 +9265,7 @@
 }
 },
 {
-"id": "ow0433",
+"id": "ow0515",
 "type": "text",
 "name": "Left 2 i text",
 "x": 661,
@@ -7024,7 +9297,7 @@
 }
 },
 {
-"id": "ow0434",
+"id": "ow0516",
 "type": "text",
 "name": "Left 2 i text",
 "x": 827,
@@ -7056,7 +9329,7 @@
 }
 },
 {
-"id": "ow0435",
+"id": "ow0517",
 "type": "rect",
 "name": "Left 3 box",
 "x": 16,
@@ -7083,7 +9356,7 @@
 }
 },
 {
-"id": "ow0436",
+"id": "ow0518",
 "type": "image",
 "name": "Left 3 cred icon icon",
 "x": 97.0,
@@ -7108,7 +9381,7 @@
 }
 },
 {
-"id": "ow0437",
+"id": "ow0519",
 "type": "text",
 "name": "Left 3 i text",
 "x": 70,
@@ -7140,7 +9413,7 @@
 }
 },
 {
-"id": "ow0438",
+"id": "ow0520",
 "type": "rect",
 "name": "Left 3 box",
 "x": 189,
@@ -7167,14 +9440,14 @@
 }
 },
 {
-"id": "ow0439",
+"id": "ow0521",
 "type": "image",
 "name": "Left 3 abil picture",
 "x": 203,
 "y": 905,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 3 agent}}/C.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 3 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 3 board}}",
 "anim": {
@@ -7192,7 +9465,7 @@
 }
 },
 {
-"id": "ow0440",
+"id": "ow0522",
 "type": "image",
 "name": "Left 3 c charges",
 "x": 203,
@@ -7217,14 +9490,14 @@
 }
 },
 {
-"id": "ow0441",
+"id": "ow0523",
 "type": "image",
 "name": "Left 3 abil picture",
 "x": 247,
 "y": 905,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 3 agent}}/Q.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 3 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 3 board}}",
 "anim": {
@@ -7242,7 +9515,7 @@
 }
 },
 {
-"id": "ow0442",
+"id": "ow0524",
 "type": "image",
 "name": "Left 3 q charges",
 "x": 247,
@@ -7267,14 +9540,14 @@
 }
 },
 {
-"id": "ow0443",
+"id": "ow0525",
 "type": "image",
 "name": "Left 3 abil picture",
 "x": 291,
 "y": 905,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 3 agent}}/E.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 3 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 3 board}}",
 "anim": {
@@ -7292,7 +9565,7 @@
 }
 },
 {
-"id": "ow0444",
+"id": "ow0526",
 "type": "image",
 "name": "Left 3 e charges",
 "x": 291,
@@ -7317,7 +9590,7 @@
 }
 },
 {
-"id": "ow0445",
+"id": "ow0527",
 "type": "rect",
 "name": "Left 3 box",
 "x": 342,
@@ -7344,7 +9617,7 @@
 }
 },
 {
-"id": "ow0446",
+"id": "ow0528",
 "type": "image",
 "name": "Left 3 shieldimg picture",
 "x": 354,
@@ -7369,14 +9642,14 @@
 }
 },
 {
-"id": "ow0447",
+"id": "ow0529",
 "type": "image",
 "name": "Left 3 gun picture",
 "x": 397,
 "y": 909,
 "w": 110,
 "h": 28,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Left 3 weapon}}.png",
+"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Left 3 weapon file}}.png",
 "fit": "contain",
 "pic": {
 "flipX": true
@@ -7397,7 +9670,7 @@
 }
 },
 {
-"id": "ow0448",
+"id": "ow0530",
 "type": "image",
 "name": "Left 3 ult ring",
 "x": 515,
@@ -7422,14 +9695,14 @@
 }
 },
 {
-"id": "ow0449",
+"id": "ow0531",
 "type": "image",
 "name": "Left 3 icon picture",
 "x": 526.5,
 "y": 914,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 3 agent}}/X.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 3 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Left 3 board}}",
@@ -7448,7 +9721,7 @@
 }
 },
 {
-"id": "ow0450",
+"id": "ow0532",
 "type": "rect",
 "name": "Left 3 box",
 "x": 575,
@@ -7475,14 +9748,40 @@
 }
 },
 {
-"id": "ow0451",
+"id": "ow0533",
+"type": "rect",
+"name": "Left 3 wash",
+"x": 575,
+"y": 897,
+"w": 381,
+"h": 52,
+"fill": "linear-gradient(90deg, {{VALORANT!Left color}}, transparent 50%)",
+"radius": 4,
+"opacity": 0.2,
+"show": "{{VALORANT!Left 3 board}}",
+"anim": {
+"in": {
+"type": "push-up",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-up",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0534",
 "type": "image",
 "name": "Left 3 agent picture",
 "x": 576,
 "y": 898,
 "w": 74,
 "h": 50,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 3 agent}}/{{VALORANT!Left 3 agent}}.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 3 agent file}}/{{VALORANT!Left 3 agent file}}.png",
 "fit": "cover",
 "radius": "4 0 0 4",
 "show": "{{VALORANT!Left 3 board}}",
@@ -7501,7 +9800,7 @@
 }
 },
 {
-"id": "ow0452",
+"id": "ow0535",
 "type": "text",
 "name": "Left 3 i text",
 "x": 661,
@@ -7533,7 +9832,7 @@
 }
 },
 {
-"id": "ow0453",
+"id": "ow0536",
 "type": "text",
 "name": "Left 3 i text",
 "x": 827,
@@ -7565,7 +9864,7 @@
 }
 },
 {
-"id": "ow0454",
+"id": "ow0537",
 "type": "rect",
 "name": "Left 4 box",
 "x": 16,
@@ -7592,7 +9891,7 @@
 }
 },
 {
-"id": "ow0455",
+"id": "ow0538",
 "type": "image",
 "name": "Left 4 cred icon icon",
 "x": 96.9,
@@ -7617,7 +9916,7 @@
 }
 },
 {
-"id": "ow0456",
+"id": "ow0539",
 "type": "text",
 "name": "Left 4 i text",
 "x": 70,
@@ -7649,7 +9948,7 @@
 }
 },
 {
-"id": "ow0457",
+"id": "ow0540",
 "type": "rect",
 "name": "Left 4 box",
 "x": 189,
@@ -7676,14 +9975,14 @@
 }
 },
 {
-"id": "ow0458",
+"id": "ow0541",
 "type": "image",
 "name": "Left 4 abil picture",
 "x": 203,
 "y": 961,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 4 agent}}/C.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 4 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 4 board}}",
 "anim": {
@@ -7701,7 +10000,7 @@
 }
 },
 {
-"id": "ow0459",
+"id": "ow0542",
 "type": "image",
 "name": "Left 4 c charges",
 "x": 203,
@@ -7726,14 +10025,14 @@
 }
 },
 {
-"id": "ow0460",
+"id": "ow0543",
 "type": "image",
 "name": "Left 4 abil picture",
 "x": 247,
 "y": 961,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 4 agent}}/Q.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 4 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 4 board}}",
 "anim": {
@@ -7751,7 +10050,7 @@
 }
 },
 {
-"id": "ow0461",
+"id": "ow0544",
 "type": "image",
 "name": "Left 4 q charges",
 "x": 247,
@@ -7776,14 +10075,14 @@
 }
 },
 {
-"id": "ow0462",
+"id": "ow0545",
 "type": "image",
 "name": "Left 4 abil picture",
 "x": 291,
 "y": 961,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 4 agent}}/E.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 4 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 4 board}}",
 "anim": {
@@ -7801,7 +10100,7 @@
 }
 },
 {
-"id": "ow0463",
+"id": "ow0546",
 "type": "image",
 "name": "Left 4 e charges",
 "x": 291,
@@ -7826,7 +10125,7 @@
 }
 },
 {
-"id": "ow0464",
+"id": "ow0547",
 "type": "rect",
 "name": "Left 4 box",
 "x": 342,
@@ -7853,7 +10152,7 @@
 }
 },
 {
-"id": "ow0465",
+"id": "ow0548",
 "type": "image",
 "name": "Left 4 shieldimg picture",
 "x": 354,
@@ -7878,14 +10177,14 @@
 }
 },
 {
-"id": "ow0466",
+"id": "ow0549",
 "type": "image",
 "name": "Left 4 gun picture",
 "x": 397,
 "y": 965,
 "w": 110,
 "h": 28,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Left 4 weapon}}.png",
+"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Left 4 weapon file}}.png",
 "fit": "contain",
 "pic": {
 "flipX": true
@@ -7906,7 +10205,7 @@
 }
 },
 {
-"id": "ow0467",
+"id": "ow0550",
 "type": "image",
 "name": "Left 4 ult ring",
 "x": 515,
@@ -7931,14 +10230,14 @@
 }
 },
 {
-"id": "ow0468",
+"id": "ow0551",
 "type": "image",
 "name": "Left 4 icon picture",
 "x": 526.5,
 "y": 970,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 4 agent}}/X.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 4 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Left 4 board}}",
@@ -7957,7 +10256,7 @@
 }
 },
 {
-"id": "ow0469",
+"id": "ow0552",
 "type": "rect",
 "name": "Left 4 box",
 "x": 575,
@@ -7984,14 +10283,40 @@
 }
 },
 {
-"id": "ow0470",
+"id": "ow0553",
+"type": "rect",
+"name": "Left 4 wash",
+"x": 575,
+"y": 953,
+"w": 381,
+"h": 52,
+"fill": "linear-gradient(90deg, {{VALORANT!Left color}}, transparent 50%)",
+"radius": 4,
+"opacity": 0.2,
+"show": "{{VALORANT!Left 4 board}}",
+"anim": {
+"in": {
+"type": "push-up",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-up",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0554",
 "type": "image",
 "name": "Left 4 agent picture",
 "x": 576,
 "y": 954,
 "w": 74,
 "h": 50,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 4 agent}}/{{VALORANT!Left 4 agent}}.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 4 agent file}}/{{VALORANT!Left 4 agent file}}.png",
 "fit": "cover",
 "radius": "4 0 0 4",
 "show": "{{VALORANT!Left 4 board}}",
@@ -8010,7 +10335,7 @@
 }
 },
 {
-"id": "ow0471",
+"id": "ow0555",
 "type": "text",
 "name": "Left 4 i text",
 "x": 661,
@@ -8042,7 +10367,7 @@
 }
 },
 {
-"id": "ow0472",
+"id": "ow0556",
 "type": "text",
 "name": "Left 4 i text",
 "x": 827,
@@ -8074,7 +10399,7 @@
 }
 },
 {
-"id": "ow0473",
+"id": "ow0557",
 "type": "rect",
 "name": "Left 5 box",
 "x": 16,
@@ -8101,7 +10426,7 @@
 }
 },
 {
-"id": "ow0474",
+"id": "ow0558",
 "type": "image",
 "name": "Left 5 cred icon icon",
 "x": 97.2,
@@ -8126,7 +10451,7 @@
 }
 },
 {
-"id": "ow0475",
+"id": "ow0559",
 "type": "text",
 "name": "Left 5 i text",
 "x": 70,
@@ -8158,7 +10483,7 @@
 }
 },
 {
-"id": "ow0476",
+"id": "ow0560",
 "type": "rect",
 "name": "Left 5 box",
 "x": 189,
@@ -8185,14 +10510,14 @@
 }
 },
 {
-"id": "ow0477",
+"id": "ow0561",
 "type": "image",
 "name": "Left 5 abil picture",
 "x": 203,
 "y": 1017,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 5 agent}}/C.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 5 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 5 board}}",
 "anim": {
@@ -8210,7 +10535,7 @@
 }
 },
 {
-"id": "ow0478",
+"id": "ow0562",
 "type": "image",
 "name": "Left 5 c charges",
 "x": 203,
@@ -8235,14 +10560,14 @@
 }
 },
 {
-"id": "ow0479",
+"id": "ow0563",
 "type": "image",
 "name": "Left 5 abil picture",
 "x": 247,
 "y": 1017,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 5 agent}}/Q.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 5 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 5 board}}",
 "anim": {
@@ -8260,7 +10585,7 @@
 }
 },
 {
-"id": "ow0480",
+"id": "ow0564",
 "type": "image",
 "name": "Left 5 q charges",
 "x": 247,
@@ -8285,14 +10610,14 @@
 }
 },
 {
-"id": "ow0481",
+"id": "ow0565",
 "type": "image",
 "name": "Left 5 abil picture",
 "x": 291,
 "y": 1017,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 5 agent}}/E.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 5 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Left 5 board}}",
 "anim": {
@@ -8310,7 +10635,7 @@
 }
 },
 {
-"id": "ow0482",
+"id": "ow0566",
 "type": "image",
 "name": "Left 5 e charges",
 "x": 291,
@@ -8335,7 +10660,7 @@
 }
 },
 {
-"id": "ow0483",
+"id": "ow0567",
 "type": "rect",
 "name": "Left 5 box",
 "x": 342,
@@ -8362,7 +10687,7 @@
 }
 },
 {
-"id": "ow0484",
+"id": "ow0568",
 "type": "image",
 "name": "Left 5 shieldimg picture",
 "x": 354,
@@ -8387,14 +10712,14 @@
 }
 },
 {
-"id": "ow0485",
+"id": "ow0569",
 "type": "image",
 "name": "Left 5 gun picture",
 "x": 397,
 "y": 1021,
 "w": 110,
 "h": 28,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Left 5 weapon}}.png",
+"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Left 5 weapon file}}.png",
 "fit": "contain",
 "pic": {
 "flipX": true
@@ -8415,7 +10740,7 @@
 }
 },
 {
-"id": "ow0486",
+"id": "ow0570",
 "type": "image",
 "name": "Left 5 ult ring",
 "x": 515,
@@ -8440,14 +10765,14 @@
 }
 },
 {
-"id": "ow0487",
+"id": "ow0571",
 "type": "image",
 "name": "Left 5 icon picture",
 "x": 526.5,
 "y": 1026,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 5 agent}}/X.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 5 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Left 5 board}}",
@@ -8466,7 +10791,7 @@
 }
 },
 {
-"id": "ow0488",
+"id": "ow0572",
 "type": "rect",
 "name": "Left 5 box",
 "x": 575,
@@ -8493,14 +10818,40 @@
 }
 },
 {
-"id": "ow0489",
+"id": "ow0573",
+"type": "rect",
+"name": "Left 5 wash",
+"x": 575,
+"y": 1009,
+"w": 381,
+"h": 52,
+"fill": "linear-gradient(90deg, {{VALORANT!Left color}}, transparent 50%)",
+"radius": 4,
+"opacity": 0.2,
+"show": "{{VALORANT!Left 5 board}}",
+"anim": {
+"in": {
+"type": "push-up",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-up",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0574",
 "type": "image",
 "name": "Left 5 agent picture",
 "x": 576,
 "y": 1010,
 "w": 74,
 "h": 50,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 5 agent}}/{{VALORANT!Left 5 agent}}.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Left 5 agent file}}/{{VALORANT!Left 5 agent file}}.png",
 "fit": "cover",
 "radius": "4 0 0 4",
 "show": "{{VALORANT!Left 5 board}}",
@@ -8519,7 +10870,7 @@
 }
 },
 {
-"id": "ow0490",
+"id": "ow0575",
 "type": "text",
 "name": "Left 5 i text",
 "x": 661,
@@ -8551,7 +10902,7 @@
 }
 },
 {
-"id": "ow0491",
+"id": "ow0576",
 "type": "text",
 "name": "Left 5 i text",
 "x": 827,
@@ -8583,7 +10934,7 @@
 }
 },
 {
-"id": "ow0492",
+"id": "ow0577",
 "type": "rect",
 "name": "Right 1 box",
 "x": 1741,
@@ -8610,7 +10961,7 @@
 }
 },
 {
-"id": "ow0493",
+"id": "ow0578",
 "type": "image",
 "name": "Right 1 cred icon icon",
 "x": 1751,
@@ -8635,7 +10986,7 @@
 }
 },
 {
-"id": "ow0494",
+"id": "ow0579",
 "type": "text",
 "name": "Right 1 i text",
 "x": 1773,
@@ -8667,7 +11018,7 @@
 }
 },
 {
-"id": "ow0495",
+"id": "ow0580",
 "type": "rect",
 "name": "Right 1 box",
 "x": 1588,
@@ -8694,14 +11045,14 @@
 }
 },
 {
-"id": "ow0496",
+"id": "ow0581",
 "type": "image",
 "name": "Right 1 abil picture",
 "x": 1688,
 "y": 793,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 1 agent}}/C.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 1 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 1 board}}",
 "anim": {
@@ -8719,7 +11070,7 @@
 }
 },
 {
-"id": "ow0497",
+"id": "ow0582",
 "type": "image",
 "name": "Right 1 c charges",
 "x": 1688,
@@ -8744,14 +11095,14 @@
 }
 },
 {
-"id": "ow0498",
+"id": "ow0583",
 "type": "image",
 "name": "Right 1 abil picture",
 "x": 1644,
 "y": 793,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 1 agent}}/Q.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 1 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 1 board}}",
 "anim": {
@@ -8769,7 +11120,7 @@
 }
 },
 {
-"id": "ow0499",
+"id": "ow0584",
 "type": "image",
 "name": "Right 1 q charges",
 "x": 1644,
@@ -8794,14 +11145,14 @@
 }
 },
 {
-"id": "ow0500",
+"id": "ow0585",
 "type": "image",
 "name": "Right 1 abil picture",
 "x": 1600,
 "y": 793,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 1 agent}}/E.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 1 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 1 board}}",
 "anim": {
@@ -8819,7 +11170,7 @@
 }
 },
 {
-"id": "ow0501",
+"id": "ow0586",
 "type": "image",
 "name": "Right 1 e charges",
 "x": 1600,
@@ -8844,7 +11195,7 @@
 }
 },
 {
-"id": "ow0502",
+"id": "ow0587",
 "type": "rect",
 "name": "Right 1 box",
 "x": 1355,
@@ -8871,7 +11222,7 @@
 }
 },
 {
-"id": "ow0503",
+"id": "ow0588",
 "type": "image",
 "name": "Right 1 shieldimg picture",
 "x": 1542,
@@ -8896,14 +11247,14 @@
 }
 },
 {
-"id": "ow0504",
+"id": "ow0589",
 "type": "image",
 "name": "Right 1 gun picture",
 "x": 1414,
 "y": 797,
 "w": 110,
 "h": 28,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Right 1 weapon}}.png",
+"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Right 1 weapon file}}.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 1 board}}",
 "anim": {
@@ -8921,7 +11272,7 @@
 }
 },
 {
-"id": "ow0505",
+"id": "ow0590",
 "type": "image",
 "name": "Right 1 ult ring",
 "x": 1365,
@@ -8946,14 +11297,14 @@
 }
 },
 {
-"id": "ow0506",
+"id": "ow0591",
 "type": "image",
 "name": "Right 1 icon picture",
 "x": 1376.5,
 "y": 802,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 1 agent}}/X.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 1 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Right 1 board}}",
@@ -8972,7 +11323,7 @@
 }
 },
 {
-"id": "ow0507",
+"id": "ow0592",
 "type": "rect",
 "name": "Right 1 box",
 "x": 965,
@@ -8999,14 +11350,40 @@
 }
 },
 {
-"id": "ow0508",
+"id": "ow0593",
+"type": "rect",
+"name": "Right 1 wash",
+"x": 965,
+"y": 785,
+"w": 381,
+"h": 52,
+"fill": "linear-gradient(270deg, {{VALORANT!Right color}}, transparent 50%)",
+"radius": 4,
+"opacity": 0.2,
+"show": "{{VALORANT!Right 1 board}}",
+"anim": {
+"in": {
+"type": "push-up",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-up",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0594",
 "type": "image",
 "name": "Right 1 agent picture",
 "x": 1271,
 "y": 786,
 "w": 74,
 "h": 50,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 1 agent}}/{{VALORANT!Right 1 agent}}.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 1 agent file}}/{{VALORANT!Right 1 agent file}}.png",
 "fit": "cover",
 "radius": "4 0 0 4",
 "pic": {
@@ -9028,7 +11405,7 @@
 }
 },
 {
-"id": "ow0509",
+"id": "ow0595",
 "type": "text",
 "name": "Right 1 i text",
 "x": 1090,
@@ -9060,7 +11437,7 @@
 }
 },
 {
-"id": "ow0510",
+"id": "ow0596",
 "type": "text",
 "name": "Right 1 i text",
 "x": 984,
@@ -9092,7 +11469,7 @@
 }
 },
 {
-"id": "ow0511",
+"id": "ow0597",
 "type": "rect",
 "name": "Right 2 box",
 "x": 1741,
@@ -9119,7 +11496,7 @@
 }
 },
 {
-"id": "ow0512",
+"id": "ow0598",
 "type": "image",
 "name": "Right 2 cred icon icon",
 "x": 1751,
@@ -9144,7 +11521,7 @@
 }
 },
 {
-"id": "ow0513",
+"id": "ow0599",
 "type": "text",
 "name": "Right 2 i text",
 "x": 1773,
@@ -9176,7 +11553,7 @@
 }
 },
 {
-"id": "ow0514",
+"id": "ow0600",
 "type": "rect",
 "name": "Right 2 box",
 "x": 1588,
@@ -9203,14 +11580,14 @@
 }
 },
 {
-"id": "ow0515",
+"id": "ow0601",
 "type": "image",
 "name": "Right 2 abil picture",
 "x": 1688,
 "y": 849,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 2 agent}}/C.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 2 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 2 board}}",
 "anim": {
@@ -9228,7 +11605,7 @@
 }
 },
 {
-"id": "ow0516",
+"id": "ow0602",
 "type": "image",
 "name": "Right 2 c charges",
 "x": 1688,
@@ -9253,14 +11630,14 @@
 }
 },
 {
-"id": "ow0517",
+"id": "ow0603",
 "type": "image",
 "name": "Right 2 abil picture",
 "x": 1644,
 "y": 849,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 2 agent}}/Q.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 2 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 2 board}}",
 "anim": {
@@ -9278,7 +11655,7 @@
 }
 },
 {
-"id": "ow0518",
+"id": "ow0604",
 "type": "image",
 "name": "Right 2 q charges",
 "x": 1644,
@@ -9303,14 +11680,14 @@
 }
 },
 {
-"id": "ow0519",
+"id": "ow0605",
 "type": "image",
 "name": "Right 2 abil picture",
 "x": 1600,
 "y": 849,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 2 agent}}/E.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 2 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 2 board}}",
 "anim": {
@@ -9328,7 +11705,7 @@
 }
 },
 {
-"id": "ow0520",
+"id": "ow0606",
 "type": "image",
 "name": "Right 2 e charges",
 "x": 1600,
@@ -9353,7 +11730,7 @@
 }
 },
 {
-"id": "ow0521",
+"id": "ow0607",
 "type": "rect",
 "name": "Right 2 box",
 "x": 1355,
@@ -9380,7 +11757,7 @@
 }
 },
 {
-"id": "ow0522",
+"id": "ow0608",
 "type": "image",
 "name": "Right 2 shieldimg picture",
 "x": 1542,
@@ -9405,14 +11782,14 @@
 }
 },
 {
-"id": "ow0523",
+"id": "ow0609",
 "type": "image",
 "name": "Right 2 gun picture",
 "x": 1414,
 "y": 853,
 "w": 110,
 "h": 28,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Right 2 weapon}}.png",
+"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Right 2 weapon file}}.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 2 board}}",
 "anim": {
@@ -9430,7 +11807,7 @@
 }
 },
 {
-"id": "ow0524",
+"id": "ow0610",
 "type": "image",
 "name": "Right 2 ult ring",
 "x": 1365,
@@ -9455,14 +11832,14 @@
 }
 },
 {
-"id": "ow0525",
+"id": "ow0611",
 "type": "image",
 "name": "Right 2 icon picture",
 "x": 1376.5,
 "y": 858,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 2 agent}}/X.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 2 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Right 2 board}}",
@@ -9481,7 +11858,7 @@
 }
 },
 {
-"id": "ow0526",
+"id": "ow0612",
 "type": "rect",
 "name": "Right 2 box",
 "x": 965,
@@ -9508,14 +11885,40 @@
 }
 },
 {
-"id": "ow0527",
+"id": "ow0613",
+"type": "rect",
+"name": "Right 2 wash",
+"x": 965,
+"y": 841,
+"w": 381,
+"h": 52,
+"fill": "linear-gradient(270deg, {{VALORANT!Right color}}, transparent 50%)",
+"radius": 4,
+"opacity": 0.2,
+"show": "{{VALORANT!Right 2 board}}",
+"anim": {
+"in": {
+"type": "push-up",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-up",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0614",
 "type": "image",
 "name": "Right 2 agent picture",
 "x": 1271,
 "y": 842,
 "w": 74,
 "h": 50,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 2 agent}}/{{VALORANT!Right 2 agent}}.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 2 agent file}}/{{VALORANT!Right 2 agent file}}.png",
 "fit": "cover",
 "radius": "4 0 0 4",
 "pic": {
@@ -9537,7 +11940,7 @@
 }
 },
 {
-"id": "ow0528",
+"id": "ow0615",
 "type": "text",
 "name": "Right 2 i text",
 "x": 1090,
@@ -9569,7 +11972,7 @@
 }
 },
 {
-"id": "ow0529",
+"id": "ow0616",
 "type": "text",
 "name": "Right 2 i text",
 "x": 984,
@@ -9601,7 +12004,7 @@
 }
 },
 {
-"id": "ow0530",
+"id": "ow0617",
 "type": "rect",
 "name": "Right 3 box",
 "x": 1741,
@@ -9628,7 +12031,7 @@
 }
 },
 {
-"id": "ow0531",
+"id": "ow0618",
 "type": "image",
 "name": "Right 3 cred icon icon",
 "x": 1751,
@@ -9653,7 +12056,7 @@
 }
 },
 {
-"id": "ow0532",
+"id": "ow0619",
 "type": "text",
 "name": "Right 3 i text",
 "x": 1773,
@@ -9685,7 +12088,7 @@
 }
 },
 {
-"id": "ow0533",
+"id": "ow0620",
 "type": "rect",
 "name": "Right 3 box",
 "x": 1588,
@@ -9712,14 +12115,14 @@
 }
 },
 {
-"id": "ow0534",
+"id": "ow0621",
 "type": "image",
 "name": "Right 3 abil picture",
 "x": 1688,
 "y": 905,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 3 agent}}/C.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 3 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 3 board}}",
 "anim": {
@@ -9737,7 +12140,7 @@
 }
 },
 {
-"id": "ow0535",
+"id": "ow0622",
 "type": "image",
 "name": "Right 3 c charges",
 "x": 1688,
@@ -9762,14 +12165,14 @@
 }
 },
 {
-"id": "ow0536",
+"id": "ow0623",
 "type": "image",
 "name": "Right 3 abil picture",
 "x": 1644,
 "y": 905,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 3 agent}}/Q.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 3 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 3 board}}",
 "anim": {
@@ -9787,7 +12190,7 @@
 }
 },
 {
-"id": "ow0537",
+"id": "ow0624",
 "type": "image",
 "name": "Right 3 q charges",
 "x": 1644,
@@ -9812,14 +12215,14 @@
 }
 },
 {
-"id": "ow0538",
+"id": "ow0625",
 "type": "image",
 "name": "Right 3 abil picture",
 "x": 1600,
 "y": 905,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 3 agent}}/E.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 3 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 3 board}}",
 "anim": {
@@ -9837,7 +12240,7 @@
 }
 },
 {
-"id": "ow0539",
+"id": "ow0626",
 "type": "image",
 "name": "Right 3 e charges",
 "x": 1600,
@@ -9862,7 +12265,7 @@
 }
 },
 {
-"id": "ow0540",
+"id": "ow0627",
 "type": "rect",
 "name": "Right 3 box",
 "x": 1355,
@@ -9889,7 +12292,7 @@
 }
 },
 {
-"id": "ow0541",
+"id": "ow0628",
 "type": "image",
 "name": "Right 3 shieldimg picture",
 "x": 1542,
@@ -9914,14 +12317,14 @@
 }
 },
 {
-"id": "ow0542",
+"id": "ow0629",
 "type": "image",
 "name": "Right 3 gun picture",
 "x": 1414,
 "y": 909,
 "w": 110,
 "h": 28,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Right 3 weapon}}.png",
+"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Right 3 weapon file}}.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 3 board}}",
 "anim": {
@@ -9939,7 +12342,7 @@
 }
 },
 {
-"id": "ow0543",
+"id": "ow0630",
 "type": "image",
 "name": "Right 3 ult ring",
 "x": 1365,
@@ -9964,14 +12367,14 @@
 }
 },
 {
-"id": "ow0544",
+"id": "ow0631",
 "type": "image",
 "name": "Right 3 icon picture",
 "x": 1376.5,
 "y": 914,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 3 agent}}/X.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 3 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Right 3 board}}",
@@ -9990,7 +12393,7 @@
 }
 },
 {
-"id": "ow0545",
+"id": "ow0632",
 "type": "rect",
 "name": "Right 3 box",
 "x": 965,
@@ -10017,14 +12420,40 @@
 }
 },
 {
-"id": "ow0546",
+"id": "ow0633",
+"type": "rect",
+"name": "Right 3 wash",
+"x": 965,
+"y": 897,
+"w": 381,
+"h": 52,
+"fill": "linear-gradient(270deg, {{VALORANT!Right color}}, transparent 50%)",
+"radius": 4,
+"opacity": 0.2,
+"show": "{{VALORANT!Right 3 board}}",
+"anim": {
+"in": {
+"type": "push-up",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-up",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0634",
 "type": "image",
 "name": "Right 3 agent picture",
 "x": 1271,
 "y": 898,
 "w": 74,
 "h": 50,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 3 agent}}/{{VALORANT!Right 3 agent}}.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 3 agent file}}/{{VALORANT!Right 3 agent file}}.png",
 "fit": "cover",
 "radius": "4 0 0 4",
 "pic": {
@@ -10046,7 +12475,7 @@
 }
 },
 {
-"id": "ow0547",
+"id": "ow0635",
 "type": "text",
 "name": "Right 3 i text",
 "x": 1090,
@@ -10078,7 +12507,7 @@
 }
 },
 {
-"id": "ow0548",
+"id": "ow0636",
 "type": "text",
 "name": "Right 3 i text",
 "x": 984,
@@ -10110,7 +12539,7 @@
 }
 },
 {
-"id": "ow0549",
+"id": "ow0637",
 "type": "rect",
 "name": "Right 4 box",
 "x": 1741,
@@ -10137,7 +12566,7 @@
 }
 },
 {
-"id": "ow0550",
+"id": "ow0638",
 "type": "image",
 "name": "Right 4 cred icon icon",
 "x": 1751,
@@ -10162,7 +12591,7 @@
 }
 },
 {
-"id": "ow0551",
+"id": "ow0639",
 "type": "text",
 "name": "Right 4 i text",
 "x": 1773,
@@ -10194,7 +12623,7 @@
 }
 },
 {
-"id": "ow0552",
+"id": "ow0640",
 "type": "rect",
 "name": "Right 4 box",
 "x": 1588,
@@ -10221,14 +12650,14 @@
 }
 },
 {
-"id": "ow0553",
+"id": "ow0641",
 "type": "image",
 "name": "Right 4 abil picture",
 "x": 1688,
 "y": 961,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 4 agent}}/C.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 4 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 4 board}}",
 "anim": {
@@ -10246,7 +12675,7 @@
 }
 },
 {
-"id": "ow0554",
+"id": "ow0642",
 "type": "image",
 "name": "Right 4 c charges",
 "x": 1688,
@@ -10271,14 +12700,14 @@
 }
 },
 {
-"id": "ow0555",
+"id": "ow0643",
 "type": "image",
 "name": "Right 4 abil picture",
 "x": 1644,
 "y": 961,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 4 agent}}/Q.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 4 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 4 board}}",
 "anim": {
@@ -10296,7 +12725,7 @@
 }
 },
 {
-"id": "ow0556",
+"id": "ow0644",
 "type": "image",
 "name": "Right 4 q charges",
 "x": 1644,
@@ -10321,14 +12750,14 @@
 }
 },
 {
-"id": "ow0557",
+"id": "ow0645",
 "type": "image",
 "name": "Right 4 abil picture",
 "x": 1600,
 "y": 961,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 4 agent}}/E.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 4 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 4 board}}",
 "anim": {
@@ -10346,7 +12775,7 @@
 }
 },
 {
-"id": "ow0558",
+"id": "ow0646",
 "type": "image",
 "name": "Right 4 e charges",
 "x": 1600,
@@ -10371,7 +12800,7 @@
 }
 },
 {
-"id": "ow0559",
+"id": "ow0647",
 "type": "rect",
 "name": "Right 4 box",
 "x": 1355,
@@ -10398,7 +12827,7 @@
 }
 },
 {
-"id": "ow0560",
+"id": "ow0648",
 "type": "image",
 "name": "Right 4 shieldimg picture",
 "x": 1542,
@@ -10423,14 +12852,14 @@
 }
 },
 {
-"id": "ow0561",
+"id": "ow0649",
 "type": "image",
 "name": "Right 4 gun picture",
 "x": 1414,
 "y": 965,
 "w": 110,
 "h": 28,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Right 4 weapon}}.png",
+"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Right 4 weapon file}}.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 4 board}}",
 "anim": {
@@ -10448,7 +12877,7 @@
 }
 },
 {
-"id": "ow0562",
+"id": "ow0650",
 "type": "image",
 "name": "Right 4 ult ring",
 "x": 1365,
@@ -10473,14 +12902,14 @@
 }
 },
 {
-"id": "ow0563",
+"id": "ow0651",
 "type": "image",
 "name": "Right 4 icon picture",
 "x": 1376.5,
 "y": 970,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 4 agent}}/X.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 4 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Right 4 board}}",
@@ -10499,7 +12928,7 @@
 }
 },
 {
-"id": "ow0564",
+"id": "ow0652",
 "type": "rect",
 "name": "Right 4 box",
 "x": 965,
@@ -10526,14 +12955,40 @@
 }
 },
 {
-"id": "ow0565",
+"id": "ow0653",
+"type": "rect",
+"name": "Right 4 wash",
+"x": 965,
+"y": 953,
+"w": 381,
+"h": 52,
+"fill": "linear-gradient(270deg, {{VALORANT!Right color}}, transparent 50%)",
+"radius": 4,
+"opacity": 0.2,
+"show": "{{VALORANT!Right 4 board}}",
+"anim": {
+"in": {
+"type": "push-up",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-up",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0654",
 "type": "image",
 "name": "Right 4 agent picture",
 "x": 1271,
 "y": 954,
 "w": 74,
 "h": 50,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 4 agent}}/{{VALORANT!Right 4 agent}}.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 4 agent file}}/{{VALORANT!Right 4 agent file}}.png",
 "fit": "cover",
 "radius": "4 0 0 4",
 "pic": {
@@ -10555,7 +13010,7 @@
 }
 },
 {
-"id": "ow0566",
+"id": "ow0655",
 "type": "text",
 "name": "Right 4 i text",
 "x": 1090,
@@ -10587,7 +13042,7 @@
 }
 },
 {
-"id": "ow0567",
+"id": "ow0656",
 "type": "text",
 "name": "Right 4 i text",
 "x": 984,
@@ -10619,7 +13074,7 @@
 }
 },
 {
-"id": "ow0568",
+"id": "ow0657",
 "type": "rect",
 "name": "Right 5 box",
 "x": 1741,
@@ -10646,7 +13101,7 @@
 }
 },
 {
-"id": "ow0569",
+"id": "ow0658",
 "type": "image",
 "name": "Right 5 cred icon icon",
 "x": 1751,
@@ -10671,7 +13126,7 @@
 }
 },
 {
-"id": "ow0570",
+"id": "ow0659",
 "type": "text",
 "name": "Right 5 i text",
 "x": 1773,
@@ -10703,7 +13158,7 @@
 }
 },
 {
-"id": "ow0571",
+"id": "ow0660",
 "type": "rect",
 "name": "Right 5 box",
 "x": 1588,
@@ -10730,14 +13185,14 @@
 }
 },
 {
-"id": "ow0572",
+"id": "ow0661",
 "type": "image",
 "name": "Right 5 abil picture",
 "x": 1688,
 "y": 1017,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 5 agent}}/C.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 5 agent file}}/C.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 5 board}}",
 "anim": {
@@ -10755,7 +13210,7 @@
 }
 },
 {
-"id": "ow0573",
+"id": "ow0662",
 "type": "image",
 "name": "Right 5 c charges",
 "x": 1688,
@@ -10780,14 +13235,14 @@
 }
 },
 {
-"id": "ow0574",
+"id": "ow0663",
 "type": "image",
 "name": "Right 5 abil picture",
 "x": 1644,
 "y": 1017,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 5 agent}}/Q.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 5 agent file}}/Q.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 5 board}}",
 "anim": {
@@ -10805,7 +13260,7 @@
 }
 },
 {
-"id": "ow0575",
+"id": "ow0664",
 "type": "image",
 "name": "Right 5 q charges",
 "x": 1644,
@@ -10830,14 +13285,14 @@
 }
 },
 {
-"id": "ow0576",
+"id": "ow0665",
 "type": "image",
 "name": "Right 5 abil picture",
 "x": 1600,
 "y": 1017,
 "w": 30,
 "h": 30,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 5 agent}}/E.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 5 agent file}}/E.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 5 board}}",
 "anim": {
@@ -10855,7 +13310,7 @@
 }
 },
 {
-"id": "ow0577",
+"id": "ow0666",
 "type": "image",
 "name": "Right 5 e charges",
 "x": 1600,
@@ -10880,7 +13335,7 @@
 }
 },
 {
-"id": "ow0578",
+"id": "ow0667",
 "type": "rect",
 "name": "Right 5 box",
 "x": 1355,
@@ -10907,7 +13362,7 @@
 }
 },
 {
-"id": "ow0579",
+"id": "ow0668",
 "type": "image",
 "name": "Right 5 shieldimg picture",
 "x": 1542,
@@ -10932,14 +13387,14 @@
 }
 },
 {
-"id": "ow0580",
+"id": "ow0669",
 "type": "image",
 "name": "Right 5 gun picture",
 "x": 1414,
 "y": 1021,
 "w": 110,
 "h": 28,
-"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Right 5 weapon}}.png",
+"src": "/library/owen-hud/hud/Resources/Armas/{{VALORANT!Right 5 weapon file}}.png",
 "fit": "contain",
 "show": "{{VALORANT!Right 5 board}}",
 "anim": {
@@ -10957,7 +13412,7 @@
 }
 },
 {
-"id": "ow0581",
+"id": "ow0670",
 "type": "image",
 "name": "Right 5 ult ring",
 "x": 1365,
@@ -10982,14 +13437,14 @@
 }
 },
 {
-"id": "ow0582",
+"id": "ow0671",
 "type": "image",
 "name": "Right 5 icon picture",
 "x": 1376.5,
 "y": 1026,
 "w": 18,
 "h": 18,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 5 agent}}/X.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 5 agent file}}/X.png",
 "fit": "contain",
 "opacity": 0.55,
 "show": "{{VALORANT!Right 5 board}}",
@@ -11008,7 +13463,7 @@
 }
 },
 {
-"id": "ow0583",
+"id": "ow0672",
 "type": "rect",
 "name": "Right 5 box",
 "x": 965,
@@ -11035,14 +13490,40 @@
 }
 },
 {
-"id": "ow0584",
+"id": "ow0673",
+"type": "rect",
+"name": "Right 5 wash",
+"x": 965,
+"y": 1009,
+"w": 381,
+"h": 52,
+"fill": "linear-gradient(270deg, {{VALORANT!Right color}}, transparent 50%)",
+"radius": 4,
+"opacity": 0.2,
+"show": "{{VALORANT!Right 5 board}}",
+"anim": {
+"in": {
+"type": "push-up",
+"dur": 450,
+"delay": 0,
+"ease": "out"
+},
+"out": {
+"type": "push-up",
+"dur": 340,
+"delay": 0
+}
+}
+},
+{
+"id": "ow0674",
 "type": "image",
 "name": "Right 5 agent picture",
 "x": 1271,
 "y": 1010,
 "w": 74,
 "h": 50,
-"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 5 agent}}/{{VALORANT!Right 5 agent}}.png",
+"src": "/library/owen-hud/hud/Resources/Agentes/{{VALORANT!Right 5 agent file}}/{{VALORANT!Right 5 agent file}}.png",
 "fit": "cover",
 "radius": "4 0 0 4",
 "pic": {
@@ -11064,7 +13545,7 @@
 }
 },
 {
-"id": "ow0585",
+"id": "ow0675",
 "type": "text",
 "name": "Right 5 i text",
 "x": 1090,
@@ -11096,7 +13577,7 @@
 }
 },
 {
-"id": "ow0586",
+"id": "ow0676",
 "type": "text",
 "name": "Right 5 i text",
 "x": 984,
@@ -11128,7 +13609,7 @@
 }
 },
 {
-"id": "ow0587",
+"id": "ow0677",
 "type": "rect",
 "name": "tracker",
 "x": 420,
@@ -11153,7 +13634,7 @@
 }
 },
 {
-"id": "ow0588",
+"id": "ow0678",
 "type": "rect",
 "name": "team",
 "x": 435,
@@ -11178,7 +13659,7 @@
 }
 },
 {
-"id": "ow0589",
+"id": "ow0679",
 "type": "rect",
 "name": "edge",
 "x": 435,
@@ -11202,7 +13683,7 @@
 }
 },
 {
-"id": "ow0590",
+"id": "ow0680",
 "type": "image",
 "name": "img",
 "x": 450,
@@ -11227,7 +13708,7 @@
 }
 },
 {
-"id": "ow0591",
+"id": "ow0681",
 "type": "text",
 "name": "i text",
 "x": 488,
@@ -11259,7 +13740,7 @@
 }
 },
 {
-"id": "ow0592",
+"id": "ow0682",
 "type": "rect",
 "name": "dot",
 "x": 552,
@@ -11286,7 +13767,7 @@
 }
 },
 {
-"id": "ow0593",
+"id": "ow0683",
 "type": "rect",
 "name": "dot",
 "x": 552,
@@ -11313,7 +13794,7 @@
 }
 },
 {
-"id": "ow0594",
+"id": "ow0684",
 "type": "rect",
 "name": "team",
 "x": 435,
@@ -11338,7 +13819,7 @@
 }
 },
 {
-"id": "ow0595",
+"id": "ow0685",
 "type": "rect",
 "name": "edge",
 "x": 435,
@@ -11362,7 +13843,7 @@
 }
 },
 {
-"id": "ow0596",
+"id": "ow0686",
 "type": "image",
 "name": "img",
 "x": 450,
@@ -11387,7 +13868,7 @@
 }
 },
 {
-"id": "ow0597",
+"id": "ow0687",
 "type": "text",
 "name": "i text",
 "x": 488,
@@ -11419,7 +13900,7 @@
 }
 },
 {
-"id": "ow0598",
+"id": "ow0688",
 "type": "rect",
 "name": "dot",
 "x": 552,
@@ -11446,7 +13927,7 @@
 }
 },
 {
-"id": "ow0599",
+"id": "ow0689",
 "type": "rect",
 "name": "dot",
 "x": 552,
@@ -11473,7 +13954,7 @@
 }
 },
 {
-"id": "ow0600",
+"id": "ow0690",
 "type": "rect",
 "name": "grid",
 "x": 574,
@@ -11499,7 +13980,7 @@
 }
 },
 {
-"id": "ow0601",
+"id": "ow0691",
 "type": "text",
 "name": "i text",
 "x": 583,
@@ -11531,7 +14012,7 @@
 }
 },
 {
-"id": "ow0602",
+"id": "ow0692",
 "type": "text",
 "name": "i text",
 "x": 620,
@@ -11563,7 +14044,7 @@
 }
 },
 {
-"id": "ow0603",
+"id": "ow0693",
 "type": "text",
 "name": "i text",
 "x": 657,
@@ -11595,7 +14076,7 @@
 }
 },
 {
-"id": "ow0604",
+"id": "ow0694",
 "type": "text",
 "name": "i text",
 "x": 694,
@@ -11627,7 +14108,7 @@
 }
 },
 {
-"id": "ow0605",
+"id": "ow0695",
 "type": "text",
 "name": "i text",
 "x": 731,
@@ -11659,7 +14140,7 @@
 }
 },
 {
-"id": "ow0606",
+"id": "ow0696",
 "type": "text",
 "name": "i text",
 "x": 768,
@@ -11691,7 +14172,7 @@
 }
 },
 {
-"id": "ow0607",
+"id": "ow0697",
 "type": "text",
 "name": "i text",
 "x": 805,
@@ -11723,7 +14204,7 @@
 }
 },
 {
-"id": "ow0608",
+"id": "ow0698",
 "type": "text",
 "name": "i text",
 "x": 842,
@@ -11755,7 +14236,7 @@
 }
 },
 {
-"id": "ow0609",
+"id": "ow0699",
 "type": "text",
 "name": "i text",
 "x": 879,
@@ -11787,7 +14268,7 @@
 }
 },
 {
-"id": "ow0610",
+"id": "ow0700",
 "type": "text",
 "name": "i text",
 "x": 916,
@@ -11819,7 +14300,7 @@
 }
 },
 {
-"id": "ow0611",
+"id": "ow0701",
 "type": "text",
 "name": "i text",
 "x": 953,
@@ -11851,7 +14332,7 @@
 }
 },
 {
-"id": "ow0612",
+"id": "ow0702",
 "type": "text",
 "name": "i text",
 "x": 990,
@@ -11883,7 +14364,7 @@
 }
 },
 {
-"id": "ow0613",
+"id": "ow0703",
 "type": "text",
 "name": "i text",
 "x": 1039,
@@ -11915,7 +14396,7 @@
 }
 },
 {
-"id": "ow0614",
+"id": "ow0704",
 "type": "text",
 "name": "i text",
 "x": 1076,
@@ -11947,7 +14428,7 @@
 }
 },
 {
-"id": "ow0615",
+"id": "ow0705",
 "type": "text",
 "name": "i text",
 "x": 1113,
@@ -11979,7 +14460,7 @@
 }
 },
 {
-"id": "ow0616",
+"id": "ow0706",
 "type": "text",
 "name": "i text",
 "x": 1150,
@@ -12011,7 +14492,7 @@
 }
 },
 {
-"id": "ow0617",
+"id": "ow0707",
 "type": "text",
 "name": "i text",
 "x": 1187,
@@ -12043,7 +14524,7 @@
 }
 },
 {
-"id": "ow0618",
+"id": "ow0708",
 "type": "text",
 "name": "i text",
 "x": 1224,
@@ -12075,7 +14556,7 @@
 }
 },
 {
-"id": "ow0619",
+"id": "ow0709",
 "type": "text",
 "name": "i text",
 "x": 1261,
@@ -12107,7 +14588,7 @@
 }
 },
 {
-"id": "ow0620",
+"id": "ow0710",
 "type": "text",
 "name": "i text",
 "x": 1298,
@@ -12139,7 +14620,7 @@
 }
 },
 {
-"id": "ow0621",
+"id": "ow0711",
 "type": "text",
 "name": "i text",
 "x": 1335,
@@ -12171,7 +14652,7 @@
 }
 },
 {
-"id": "ow0622",
+"id": "ow0712",
 "type": "text",
 "name": "i text",
 "x": 1372,
@@ -12203,7 +14684,7 @@
 }
 },
 {
-"id": "ow0623",
+"id": "ow0713",
 "type": "text",
 "name": "i text",
 "x": 1409,
@@ -12235,7 +14716,7 @@
 }
 },
 {
-"id": "ow0624",
+"id": "ow0714",
 "type": "text",
 "name": "i text",
 "x": 1446,
@@ -12267,7 +14748,7 @@
 }
 },
 {
-"id": "ow0625",
+"id": "ow0715",
 "type": "rect",
 "name": "half",
 "x": 1030.5,
@@ -12291,7 +14772,7 @@
 }
 },
 {
-"id": "ow0226",
+"id": "ow0306",
 "type": "rect",
 "name": "Round 1 left cell",
 "x": 583,
@@ -12317,7 +14798,7 @@
 }
 },
 {
-"id": "ow0227",
+"id": "ow0307",
 "type": "rect",
 "name": "Round 1 left won",
 "x": 583,
@@ -12343,7 +14824,7 @@
 }
 },
 {
-"id": "ow0228",
+"id": "ow0308",
 "type": "image",
 "name": "Round 1 left icon",
 "x": 588,
@@ -12369,7 +14850,7 @@
 }
 },
 {
-"id": "ow0229",
+"id": "ow0309",
 "type": "rect",
 "name": "Round 1 right cell",
 "x": 583,
@@ -12395,7 +14876,7 @@
 }
 },
 {
-"id": "ow0230",
+"id": "ow0310",
 "type": "rect",
 "name": "Round 1 right won",
 "x": 583,
@@ -12421,7 +14902,7 @@
 }
 },
 {
-"id": "ow0231",
+"id": "ow0311",
 "type": "image",
 "name": "Round 1 right icon",
 "x": 588,
@@ -12447,7 +14928,7 @@
 }
 },
 {
-"id": "ow0232",
+"id": "ow0312",
 "type": "rect",
 "name": "Round 1 now",
 "x": 580,
@@ -12473,7 +14954,7 @@
 }
 },
 {
-"id": "ow0233",
+"id": "ow0313",
 "type": "rect",
 "name": "Round 2 left cell",
 "x": 620,
@@ -12499,7 +14980,7 @@
 }
 },
 {
-"id": "ow0234",
+"id": "ow0314",
 "type": "rect",
 "name": "Round 2 left won",
 "x": 620,
@@ -12525,7 +15006,7 @@
 }
 },
 {
-"id": "ow0235",
+"id": "ow0315",
 "type": "image",
 "name": "Round 2 left icon",
 "x": 625,
@@ -12551,7 +15032,7 @@
 }
 },
 {
-"id": "ow0236",
+"id": "ow0316",
 "type": "rect",
 "name": "Round 2 right cell",
 "x": 620,
@@ -12577,7 +15058,7 @@
 }
 },
 {
-"id": "ow0237",
+"id": "ow0317",
 "type": "rect",
 "name": "Round 2 right won",
 "x": 620,
@@ -12603,7 +15084,7 @@
 }
 },
 {
-"id": "ow0238",
+"id": "ow0318",
 "type": "image",
 "name": "Round 2 right icon",
 "x": 625,
@@ -12629,7 +15110,7 @@
 }
 },
 {
-"id": "ow0239",
+"id": "ow0319",
 "type": "rect",
 "name": "Round 2 now",
 "x": 617,
@@ -12655,7 +15136,7 @@
 }
 },
 {
-"id": "ow0240",
+"id": "ow0320",
 "type": "rect",
 "name": "Round 3 left cell",
 "x": 657,
@@ -12681,7 +15162,7 @@
 }
 },
 {
-"id": "ow0241",
+"id": "ow0321",
 "type": "rect",
 "name": "Round 3 left won",
 "x": 657,
@@ -12707,7 +15188,7 @@
 }
 },
 {
-"id": "ow0242",
+"id": "ow0322",
 "type": "image",
 "name": "Round 3 left icon",
 "x": 662,
@@ -12733,7 +15214,7 @@
 }
 },
 {
-"id": "ow0243",
+"id": "ow0323",
 "type": "rect",
 "name": "Round 3 right cell",
 "x": 657,
@@ -12759,7 +15240,7 @@
 }
 },
 {
-"id": "ow0244",
+"id": "ow0324",
 "type": "rect",
 "name": "Round 3 right won",
 "x": 657,
@@ -12785,7 +15266,7 @@
 }
 },
 {
-"id": "ow0245",
+"id": "ow0325",
 "type": "image",
 "name": "Round 3 right icon",
 "x": 662,
@@ -12811,7 +15292,7 @@
 }
 },
 {
-"id": "ow0246",
+"id": "ow0326",
 "type": "rect",
 "name": "Round 3 now",
 "x": 654,
@@ -12837,7 +15318,7 @@
 }
 },
 {
-"id": "ow0247",
+"id": "ow0327",
 "type": "rect",
 "name": "Round 4 left cell",
 "x": 694,
@@ -12863,7 +15344,7 @@
 }
 },
 {
-"id": "ow0248",
+"id": "ow0328",
 "type": "rect",
 "name": "Round 4 left won",
 "x": 694,
@@ -12889,7 +15370,7 @@
 }
 },
 {
-"id": "ow0249",
+"id": "ow0329",
 "type": "image",
 "name": "Round 4 left icon",
 "x": 699,
@@ -12915,7 +15396,7 @@
 }
 },
 {
-"id": "ow0250",
+"id": "ow0330",
 "type": "rect",
 "name": "Round 4 right cell",
 "x": 694,
@@ -12941,7 +15422,7 @@
 }
 },
 {
-"id": "ow0251",
+"id": "ow0331",
 "type": "rect",
 "name": "Round 4 right won",
 "x": 694,
@@ -12967,7 +15448,7 @@
 }
 },
 {
-"id": "ow0252",
+"id": "ow0332",
 "type": "image",
 "name": "Round 4 right icon",
 "x": 699,
@@ -12993,7 +15474,7 @@
 }
 },
 {
-"id": "ow0253",
+"id": "ow0333",
 "type": "rect",
 "name": "Round 4 now",
 "x": 691,
@@ -13019,7 +15500,7 @@
 }
 },
 {
-"id": "ow0254",
+"id": "ow0334",
 "type": "rect",
 "name": "Round 5 left cell",
 "x": 731,
@@ -13045,7 +15526,7 @@
 }
 },
 {
-"id": "ow0255",
+"id": "ow0335",
 "type": "rect",
 "name": "Round 5 left won",
 "x": 731,
@@ -13071,7 +15552,7 @@
 }
 },
 {
-"id": "ow0256",
+"id": "ow0336",
 "type": "image",
 "name": "Round 5 left icon",
 "x": 736,
@@ -13097,7 +15578,7 @@
 }
 },
 {
-"id": "ow0257",
+"id": "ow0337",
 "type": "rect",
 "name": "Round 5 right cell",
 "x": 731,
@@ -13123,7 +15604,7 @@
 }
 },
 {
-"id": "ow0258",
+"id": "ow0338",
 "type": "rect",
 "name": "Round 5 right won",
 "x": 731,
@@ -13149,7 +15630,7 @@
 }
 },
 {
-"id": "ow0259",
+"id": "ow0339",
 "type": "image",
 "name": "Round 5 right icon",
 "x": 736,
@@ -13175,7 +15656,7 @@
 }
 },
 {
-"id": "ow0260",
+"id": "ow0340",
 "type": "rect",
 "name": "Round 5 now",
 "x": 728,
@@ -13201,7 +15682,7 @@
 }
 },
 {
-"id": "ow0261",
+"id": "ow0341",
 "type": "rect",
 "name": "Round 6 left cell",
 "x": 768,
@@ -13227,7 +15708,7 @@
 }
 },
 {
-"id": "ow0262",
+"id": "ow0342",
 "type": "rect",
 "name": "Round 6 left won",
 "x": 768,
@@ -13253,7 +15734,7 @@
 }
 },
 {
-"id": "ow0263",
+"id": "ow0343",
 "type": "image",
 "name": "Round 6 left icon",
 "x": 773,
@@ -13279,7 +15760,7 @@
 }
 },
 {
-"id": "ow0264",
+"id": "ow0344",
 "type": "rect",
 "name": "Round 6 right cell",
 "x": 768,
@@ -13305,7 +15786,7 @@
 }
 },
 {
-"id": "ow0265",
+"id": "ow0345",
 "type": "rect",
 "name": "Round 6 right won",
 "x": 768,
@@ -13331,7 +15812,7 @@
 }
 },
 {
-"id": "ow0266",
+"id": "ow0346",
 "type": "image",
 "name": "Round 6 right icon",
 "x": 773,
@@ -13357,7 +15838,7 @@
 }
 },
 {
-"id": "ow0267",
+"id": "ow0347",
 "type": "rect",
 "name": "Round 6 now",
 "x": 765,
@@ -13383,7 +15864,7 @@
 }
 },
 {
-"id": "ow0268",
+"id": "ow0348",
 "type": "rect",
 "name": "Round 7 left cell",
 "x": 805,
@@ -13409,7 +15890,7 @@
 }
 },
 {
-"id": "ow0269",
+"id": "ow0349",
 "type": "rect",
 "name": "Round 7 left won",
 "x": 805,
@@ -13435,7 +15916,7 @@
 }
 },
 {
-"id": "ow0270",
+"id": "ow0350",
 "type": "image",
 "name": "Round 7 left icon",
 "x": 810,
@@ -13461,7 +15942,7 @@
 }
 },
 {
-"id": "ow0271",
+"id": "ow0351",
 "type": "rect",
 "name": "Round 7 right cell",
 "x": 805,
@@ -13487,7 +15968,7 @@
 }
 },
 {
-"id": "ow0272",
+"id": "ow0352",
 "type": "rect",
 "name": "Round 7 right won",
 "x": 805,
@@ -13513,7 +15994,7 @@
 }
 },
 {
-"id": "ow0273",
+"id": "ow0353",
 "type": "image",
 "name": "Round 7 right icon",
 "x": 810,
@@ -13539,7 +16020,7 @@
 }
 },
 {
-"id": "ow0274",
+"id": "ow0354",
 "type": "rect",
 "name": "Round 7 now",
 "x": 802,
@@ -13565,7 +16046,7 @@
 }
 },
 {
-"id": "ow0275",
+"id": "ow0355",
 "type": "rect",
 "name": "Round 8 left cell",
 "x": 842,
@@ -13591,7 +16072,7 @@
 }
 },
 {
-"id": "ow0276",
+"id": "ow0356",
 "type": "rect",
 "name": "Round 8 left won",
 "x": 842,
@@ -13617,7 +16098,7 @@
 }
 },
 {
-"id": "ow0277",
+"id": "ow0357",
 "type": "image",
 "name": "Round 8 left icon",
 "x": 847,
@@ -13643,7 +16124,7 @@
 }
 },
 {
-"id": "ow0278",
+"id": "ow0358",
 "type": "rect",
 "name": "Round 8 right cell",
 "x": 842,
@@ -13669,7 +16150,7 @@
 }
 },
 {
-"id": "ow0279",
+"id": "ow0359",
 "type": "rect",
 "name": "Round 8 right won",
 "x": 842,
@@ -13695,7 +16176,7 @@
 }
 },
 {
-"id": "ow0280",
+"id": "ow0360",
 "type": "image",
 "name": "Round 8 right icon",
 "x": 847,
@@ -13721,7 +16202,7 @@
 }
 },
 {
-"id": "ow0281",
+"id": "ow0361",
 "type": "rect",
 "name": "Round 8 now",
 "x": 839,
@@ -13747,7 +16228,7 @@
 }
 },
 {
-"id": "ow0282",
+"id": "ow0362",
 "type": "rect",
 "name": "Round 9 left cell",
 "x": 879,
@@ -13773,7 +16254,7 @@
 }
 },
 {
-"id": "ow0283",
+"id": "ow0363",
 "type": "rect",
 "name": "Round 9 left won",
 "x": 879,
@@ -13799,7 +16280,7 @@
 }
 },
 {
-"id": "ow0284",
+"id": "ow0364",
 "type": "image",
 "name": "Round 9 left icon",
 "x": 884,
@@ -13825,7 +16306,7 @@
 }
 },
 {
-"id": "ow0285",
+"id": "ow0365",
 "type": "rect",
 "name": "Round 9 right cell",
 "x": 879,
@@ -13851,7 +16332,7 @@
 }
 },
 {
-"id": "ow0286",
+"id": "ow0366",
 "type": "rect",
 "name": "Round 9 right won",
 "x": 879,
@@ -13877,7 +16358,7 @@
 }
 },
 {
-"id": "ow0287",
+"id": "ow0367",
 "type": "image",
 "name": "Round 9 right icon",
 "x": 884,
@@ -13903,7 +16384,7 @@
 }
 },
 {
-"id": "ow0288",
+"id": "ow0368",
 "type": "rect",
 "name": "Round 9 now",
 "x": 876,
@@ -13929,7 +16410,7 @@
 }
 },
 {
-"id": "ow0289",
+"id": "ow0369",
 "type": "rect",
 "name": "Round 10 left cell",
 "x": 916,
@@ -13955,7 +16436,7 @@
 }
 },
 {
-"id": "ow0290",
+"id": "ow0370",
 "type": "rect",
 "name": "Round 10 left won",
 "x": 916,
@@ -13981,7 +16462,7 @@
 }
 },
 {
-"id": "ow0291",
+"id": "ow0371",
 "type": "image",
 "name": "Round 10 left icon",
 "x": 921,
@@ -14007,7 +16488,7 @@
 }
 },
 {
-"id": "ow0292",
+"id": "ow0372",
 "type": "rect",
 "name": "Round 10 right cell",
 "x": 916,
@@ -14033,7 +16514,7 @@
 }
 },
 {
-"id": "ow0293",
+"id": "ow0373",
 "type": "rect",
 "name": "Round 10 right won",
 "x": 916,
@@ -14059,7 +16540,7 @@
 }
 },
 {
-"id": "ow0294",
+"id": "ow0374",
 "type": "image",
 "name": "Round 10 right icon",
 "x": 921,
@@ -14085,7 +16566,7 @@
 }
 },
 {
-"id": "ow0295",
+"id": "ow0375",
 "type": "rect",
 "name": "Round 10 now",
 "x": 913,
@@ -14111,7 +16592,7 @@
 }
 },
 {
-"id": "ow0296",
+"id": "ow0376",
 "type": "rect",
 "name": "Round 11 left cell",
 "x": 953,
@@ -14137,7 +16618,7 @@
 }
 },
 {
-"id": "ow0297",
+"id": "ow0377",
 "type": "rect",
 "name": "Round 11 left won",
 "x": 953,
@@ -14163,7 +16644,7 @@
 }
 },
 {
-"id": "ow0298",
+"id": "ow0378",
 "type": "image",
 "name": "Round 11 left icon",
 "x": 958,
@@ -14189,7 +16670,7 @@
 }
 },
 {
-"id": "ow0299",
+"id": "ow0379",
 "type": "rect",
 "name": "Round 11 right cell",
 "x": 953,
@@ -14215,7 +16696,7 @@
 }
 },
 {
-"id": "ow0300",
+"id": "ow0380",
 "type": "rect",
 "name": "Round 11 right won",
 "x": 953,
@@ -14241,7 +16722,7 @@
 }
 },
 {
-"id": "ow0301",
+"id": "ow0381",
 "type": "image",
 "name": "Round 11 right icon",
 "x": 958,
@@ -14267,7 +16748,7 @@
 }
 },
 {
-"id": "ow0302",
+"id": "ow0382",
 "type": "rect",
 "name": "Round 11 now",
 "x": 950,
@@ -14293,7 +16774,7 @@
 }
 },
 {
-"id": "ow0303",
+"id": "ow0383",
 "type": "rect",
 "name": "Round 12 left cell",
 "x": 990,
@@ -14319,7 +16800,7 @@
 }
 },
 {
-"id": "ow0304",
+"id": "ow0384",
 "type": "rect",
 "name": "Round 12 left won",
 "x": 990,
@@ -14345,7 +16826,7 @@
 }
 },
 {
-"id": "ow0305",
+"id": "ow0385",
 "type": "image",
 "name": "Round 12 left icon",
 "x": 995,
@@ -14371,7 +16852,7 @@
 }
 },
 {
-"id": "ow0306",
+"id": "ow0386",
 "type": "rect",
 "name": "Round 12 right cell",
 "x": 990,
@@ -14397,7 +16878,7 @@
 }
 },
 {
-"id": "ow0307",
+"id": "ow0387",
 "type": "rect",
 "name": "Round 12 right won",
 "x": 990,
@@ -14423,7 +16904,7 @@
 }
 },
 {
-"id": "ow0308",
+"id": "ow0388",
 "type": "image",
 "name": "Round 12 right icon",
 "x": 995,
@@ -14449,7 +16930,7 @@
 }
 },
 {
-"id": "ow0309",
+"id": "ow0389",
 "type": "rect",
 "name": "Round 12 now",
 "x": 987,
@@ -14475,7 +16956,7 @@
 }
 },
 {
-"id": "ow0310",
+"id": "ow0390",
 "type": "rect",
 "name": "Round 13 left cell",
 "x": 1039,
@@ -14501,7 +16982,7 @@
 }
 },
 {
-"id": "ow0311",
+"id": "ow0391",
 "type": "rect",
 "name": "Round 13 left won",
 "x": 1039,
@@ -14527,7 +17008,7 @@
 }
 },
 {
-"id": "ow0312",
+"id": "ow0392",
 "type": "image",
 "name": "Round 13 left icon",
 "x": 1044,
@@ -14553,7 +17034,7 @@
 }
 },
 {
-"id": "ow0313",
+"id": "ow0393",
 "type": "rect",
 "name": "Round 13 right cell",
 "x": 1039,
@@ -14579,7 +17060,7 @@
 }
 },
 {
-"id": "ow0314",
+"id": "ow0394",
 "type": "rect",
 "name": "Round 13 right won",
 "x": 1039,
@@ -14605,7 +17086,7 @@
 }
 },
 {
-"id": "ow0315",
+"id": "ow0395",
 "type": "image",
 "name": "Round 13 right icon",
 "x": 1044,
@@ -14631,7 +17112,7 @@
 }
 },
 {
-"id": "ow0316",
+"id": "ow0396",
 "type": "rect",
 "name": "Round 13 now",
 "x": 1036,
@@ -14657,7 +17138,7 @@
 }
 },
 {
-"id": "ow0317",
+"id": "ow0397",
 "type": "rect",
 "name": "Round 14 left cell",
 "x": 1076,
@@ -14683,7 +17164,7 @@
 }
 },
 {
-"id": "ow0318",
+"id": "ow0398",
 "type": "rect",
 "name": "Round 14 left won",
 "x": 1076,
@@ -14709,7 +17190,7 @@
 }
 },
 {
-"id": "ow0319",
+"id": "ow0399",
 "type": "image",
 "name": "Round 14 left icon",
 "x": 1081,
@@ -14735,7 +17216,7 @@
 }
 },
 {
-"id": "ow0320",
+"id": "ow0400",
 "type": "rect",
 "name": "Round 14 right cell",
 "x": 1076,
@@ -14761,7 +17242,7 @@
 }
 },
 {
-"id": "ow0321",
+"id": "ow0401",
 "type": "rect",
 "name": "Round 14 right won",
 "x": 1076,
@@ -14787,7 +17268,7 @@
 }
 },
 {
-"id": "ow0322",
+"id": "ow0402",
 "type": "image",
 "name": "Round 14 right icon",
 "x": 1081,
@@ -14813,7 +17294,7 @@
 }
 },
 {
-"id": "ow0323",
+"id": "ow0403",
 "type": "rect",
 "name": "Round 14 now",
 "x": 1073,
@@ -14839,7 +17320,7 @@
 }
 },
 {
-"id": "ow0324",
+"id": "ow0404",
 "type": "rect",
 "name": "Round 15 left cell",
 "x": 1113,
@@ -14865,7 +17346,7 @@
 }
 },
 {
-"id": "ow0325",
+"id": "ow0405",
 "type": "rect",
 "name": "Round 15 left won",
 "x": 1113,
@@ -14891,7 +17372,7 @@
 }
 },
 {
-"id": "ow0326",
+"id": "ow0406",
 "type": "image",
 "name": "Round 15 left icon",
 "x": 1118,
@@ -14917,7 +17398,7 @@
 }
 },
 {
-"id": "ow0327",
+"id": "ow0407",
 "type": "rect",
 "name": "Round 15 right cell",
 "x": 1113,
@@ -14943,7 +17424,7 @@
 }
 },
 {
-"id": "ow0328",
+"id": "ow0408",
 "type": "rect",
 "name": "Round 15 right won",
 "x": 1113,
@@ -14969,7 +17450,7 @@
 }
 },
 {
-"id": "ow0329",
+"id": "ow0409",
 "type": "image",
 "name": "Round 15 right icon",
 "x": 1118,
@@ -14995,7 +17476,7 @@
 }
 },
 {
-"id": "ow0330",
+"id": "ow0410",
 "type": "rect",
 "name": "Round 15 now",
 "x": 1110,
@@ -15021,7 +17502,7 @@
 }
 },
 {
-"id": "ow0331",
+"id": "ow0411",
 "type": "rect",
 "name": "Round 16 left cell",
 "x": 1150,
@@ -15047,7 +17528,7 @@
 }
 },
 {
-"id": "ow0332",
+"id": "ow0412",
 "type": "rect",
 "name": "Round 16 left won",
 "x": 1150,
@@ -15073,7 +17554,7 @@
 }
 },
 {
-"id": "ow0333",
+"id": "ow0413",
 "type": "image",
 "name": "Round 16 left icon",
 "x": 1155,
@@ -15099,7 +17580,7 @@
 }
 },
 {
-"id": "ow0334",
+"id": "ow0414",
 "type": "rect",
 "name": "Round 16 right cell",
 "x": 1150,
@@ -15125,7 +17606,7 @@
 }
 },
 {
-"id": "ow0335",
+"id": "ow0415",
 "type": "rect",
 "name": "Round 16 right won",
 "x": 1150,
@@ -15151,7 +17632,7 @@
 }
 },
 {
-"id": "ow0336",
+"id": "ow0416",
 "type": "image",
 "name": "Round 16 right icon",
 "x": 1155,
@@ -15177,7 +17658,7 @@
 }
 },
 {
-"id": "ow0337",
+"id": "ow0417",
 "type": "rect",
 "name": "Round 16 now",
 "x": 1147,
@@ -15203,7 +17684,7 @@
 }
 },
 {
-"id": "ow0338",
+"id": "ow0418",
 "type": "rect",
 "name": "Round 17 left cell",
 "x": 1187,
@@ -15229,7 +17710,7 @@
 }
 },
 {
-"id": "ow0339",
+"id": "ow0419",
 "type": "rect",
 "name": "Round 17 left won",
 "x": 1187,
@@ -15255,7 +17736,7 @@
 }
 },
 {
-"id": "ow0340",
+"id": "ow0420",
 "type": "image",
 "name": "Round 17 left icon",
 "x": 1192,
@@ -15281,7 +17762,7 @@
 }
 },
 {
-"id": "ow0341",
+"id": "ow0421",
 "type": "rect",
 "name": "Round 17 right cell",
 "x": 1187,
@@ -15307,7 +17788,7 @@
 }
 },
 {
-"id": "ow0342",
+"id": "ow0422",
 "type": "rect",
 "name": "Round 17 right won",
 "x": 1187,
@@ -15333,7 +17814,7 @@
 }
 },
 {
-"id": "ow0343",
+"id": "ow0423",
 "type": "image",
 "name": "Round 17 right icon",
 "x": 1192,
@@ -15359,7 +17840,7 @@
 }
 },
 {
-"id": "ow0344",
+"id": "ow0424",
 "type": "rect",
 "name": "Round 17 now",
 "x": 1184,
@@ -15385,7 +17866,7 @@
 }
 },
 {
-"id": "ow0345",
+"id": "ow0425",
 "type": "rect",
 "name": "Round 18 left cell",
 "x": 1224,
@@ -15411,7 +17892,7 @@
 }
 },
 {
-"id": "ow0346",
+"id": "ow0426",
 "type": "rect",
 "name": "Round 18 left won",
 "x": 1224,
@@ -15437,7 +17918,7 @@
 }
 },
 {
-"id": "ow0347",
+"id": "ow0427",
 "type": "image",
 "name": "Round 18 left icon",
 "x": 1229,
@@ -15463,7 +17944,7 @@
 }
 },
 {
-"id": "ow0348",
+"id": "ow0428",
 "type": "rect",
 "name": "Round 18 right cell",
 "x": 1224,
@@ -15489,7 +17970,7 @@
 }
 },
 {
-"id": "ow0349",
+"id": "ow0429",
 "type": "rect",
 "name": "Round 18 right won",
 "x": 1224,
@@ -15515,7 +17996,7 @@
 }
 },
 {
-"id": "ow0350",
+"id": "ow0430",
 "type": "image",
 "name": "Round 18 right icon",
 "x": 1229,
@@ -15541,7 +18022,7 @@
 }
 },
 {
-"id": "ow0351",
+"id": "ow0431",
 "type": "rect",
 "name": "Round 18 now",
 "x": 1221,
@@ -15567,7 +18048,7 @@
 }
 },
 {
-"id": "ow0352",
+"id": "ow0432",
 "type": "rect",
 "name": "Round 19 left cell",
 "x": 1261,
@@ -15593,7 +18074,7 @@
 }
 },
 {
-"id": "ow0353",
+"id": "ow0433",
 "type": "rect",
 "name": "Round 19 left won",
 "x": 1261,
@@ -15619,7 +18100,7 @@
 }
 },
 {
-"id": "ow0354",
+"id": "ow0434",
 "type": "image",
 "name": "Round 19 left icon",
 "x": 1266,
@@ -15645,7 +18126,7 @@
 }
 },
 {
-"id": "ow0355",
+"id": "ow0435",
 "type": "rect",
 "name": "Round 19 right cell",
 "x": 1261,
@@ -15671,7 +18152,7 @@
 }
 },
 {
-"id": "ow0356",
+"id": "ow0436",
 "type": "rect",
 "name": "Round 19 right won",
 "x": 1261,
@@ -15697,7 +18178,7 @@
 }
 },
 {
-"id": "ow0357",
+"id": "ow0437",
 "type": "image",
 "name": "Round 19 right icon",
 "x": 1266,
@@ -15723,7 +18204,7 @@
 }
 },
 {
-"id": "ow0358",
+"id": "ow0438",
 "type": "rect",
 "name": "Round 19 now",
 "x": 1258,
@@ -15749,7 +18230,7 @@
 }
 },
 {
-"id": "ow0359",
+"id": "ow0439",
 "type": "rect",
 "name": "Round 20 left cell",
 "x": 1298,
@@ -15775,7 +18256,7 @@
 }
 },
 {
-"id": "ow0360",
+"id": "ow0440",
 "type": "rect",
 "name": "Round 20 left won",
 "x": 1298,
@@ -15801,7 +18282,7 @@
 }
 },
 {
-"id": "ow0361",
+"id": "ow0441",
 "type": "image",
 "name": "Round 20 left icon",
 "x": 1303,
@@ -15827,7 +18308,7 @@
 }
 },
 {
-"id": "ow0362",
+"id": "ow0442",
 "type": "rect",
 "name": "Round 20 right cell",
 "x": 1298,
@@ -15853,7 +18334,7 @@
 }
 },
 {
-"id": "ow0363",
+"id": "ow0443",
 "type": "rect",
 "name": "Round 20 right won",
 "x": 1298,
@@ -15879,7 +18360,7 @@
 }
 },
 {
-"id": "ow0364",
+"id": "ow0444",
 "type": "image",
 "name": "Round 20 right icon",
 "x": 1303,
@@ -15905,7 +18386,7 @@
 }
 },
 {
-"id": "ow0365",
+"id": "ow0445",
 "type": "rect",
 "name": "Round 20 now",
 "x": 1295,
@@ -15931,7 +18412,7 @@
 }
 },
 {
-"id": "ow0366",
+"id": "ow0446",
 "type": "rect",
 "name": "Round 21 left cell",
 "x": 1335,
@@ -15957,7 +18438,7 @@
 }
 },
 {
-"id": "ow0367",
+"id": "ow0447",
 "type": "rect",
 "name": "Round 21 left won",
 "x": 1335,
@@ -15983,7 +18464,7 @@
 }
 },
 {
-"id": "ow0368",
+"id": "ow0448",
 "type": "image",
 "name": "Round 21 left icon",
 "x": 1340,
@@ -16009,7 +18490,7 @@
 }
 },
 {
-"id": "ow0369",
+"id": "ow0449",
 "type": "rect",
 "name": "Round 21 right cell",
 "x": 1335,
@@ -16035,7 +18516,7 @@
 }
 },
 {
-"id": "ow0370",
+"id": "ow0450",
 "type": "rect",
 "name": "Round 21 right won",
 "x": 1335,
@@ -16061,7 +18542,7 @@
 }
 },
 {
-"id": "ow0371",
+"id": "ow0451",
 "type": "image",
 "name": "Round 21 right icon",
 "x": 1340,
@@ -16087,7 +18568,7 @@
 }
 },
 {
-"id": "ow0372",
+"id": "ow0452",
 "type": "rect",
 "name": "Round 21 now",
 "x": 1332,
@@ -16113,7 +18594,7 @@
 }
 },
 {
-"id": "ow0373",
+"id": "ow0453",
 "type": "rect",
 "name": "Round 22 left cell",
 "x": 1372,
@@ -16139,7 +18620,7 @@
 }
 },
 {
-"id": "ow0374",
+"id": "ow0454",
 "type": "rect",
 "name": "Round 22 left won",
 "x": 1372,
@@ -16165,7 +18646,7 @@
 }
 },
 {
-"id": "ow0375",
+"id": "ow0455",
 "type": "image",
 "name": "Round 22 left icon",
 "x": 1377,
@@ -16191,7 +18672,7 @@
 }
 },
 {
-"id": "ow0376",
+"id": "ow0456",
 "type": "rect",
 "name": "Round 22 right cell",
 "x": 1372,
@@ -16217,7 +18698,7 @@
 }
 },
 {
-"id": "ow0377",
+"id": "ow0457",
 "type": "rect",
 "name": "Round 22 right won",
 "x": 1372,
@@ -16243,7 +18724,7 @@
 }
 },
 {
-"id": "ow0378",
+"id": "ow0458",
 "type": "image",
 "name": "Round 22 right icon",
 "x": 1377,
@@ -16269,7 +18750,7 @@
 }
 },
 {
-"id": "ow0379",
+"id": "ow0459",
 "type": "rect",
 "name": "Round 22 now",
 "x": 1369,
@@ -16295,7 +18776,7 @@
 }
 },
 {
-"id": "ow0380",
+"id": "ow0460",
 "type": "rect",
 "name": "Round 23 left cell",
 "x": 1409,
@@ -16321,7 +18802,7 @@
 }
 },
 {
-"id": "ow0381",
+"id": "ow0461",
 "type": "rect",
 "name": "Round 23 left won",
 "x": 1409,
@@ -16347,7 +18828,7 @@
 }
 },
 {
-"id": "ow0382",
+"id": "ow0462",
 "type": "image",
 "name": "Round 23 left icon",
 "x": 1414,
@@ -16373,7 +18854,7 @@
 }
 },
 {
-"id": "ow0383",
+"id": "ow0463",
 "type": "rect",
 "name": "Round 23 right cell",
 "x": 1409,
@@ -16399,7 +18880,7 @@
 }
 },
 {
-"id": "ow0384",
+"id": "ow0464",
 "type": "rect",
 "name": "Round 23 right won",
 "x": 1409,
@@ -16425,7 +18906,7 @@
 }
 },
 {
-"id": "ow0385",
+"id": "ow0465",
 "type": "image",
 "name": "Round 23 right icon",
 "x": 1414,
@@ -16451,7 +18932,7 @@
 }
 },
 {
-"id": "ow0386",
+"id": "ow0466",
 "type": "rect",
 "name": "Round 23 now",
 "x": 1406,
@@ -16477,7 +18958,7 @@
 }
 },
 {
-"id": "ow0387",
+"id": "ow0467",
 "type": "rect",
 "name": "Round 24 left cell",
 "x": 1446,
@@ -16503,7 +18984,7 @@
 }
 },
 {
-"id": "ow0388",
+"id": "ow0468",
 "type": "rect",
 "name": "Round 24 left won",
 "x": 1446,
@@ -16529,7 +19010,7 @@
 }
 },
 {
-"id": "ow0389",
+"id": "ow0469",
 "type": "image",
 "name": "Round 24 left icon",
 "x": 1451,
@@ -16555,7 +19036,7 @@
 }
 },
 {
-"id": "ow0390",
+"id": "ow0470",
 "type": "rect",
 "name": "Round 24 right cell",
 "x": 1446,
@@ -16581,7 +19062,7 @@
 }
 },
 {
-"id": "ow0391",
+"id": "ow0471",
 "type": "rect",
 "name": "Round 24 right won",
 "x": 1446,
@@ -16607,7 +19088,7 @@
 }
 },
 {
-"id": "ow0392",
+"id": "ow0472",
 "type": "image",
 "name": "Round 24 right icon",
 "x": 1451,
@@ -16633,7 +19114,7 @@
 }
 },
 {
-"id": "ow0393",
+"id": "ow0473",
 "type": "rect",
 "name": "Round 24 now",
 "x": 1443,
@@ -16666,7 +19147,7 @@
 "on": true,
 "layers": [
 {
-"id": "ow0626",
+"id": "ow0716",
 "type": "image",
 "name": "bg picture",
 "x": 570,
@@ -16690,7 +19171,7 @@
 }
 },
 {
-"id": "ow0627",
+"id": "ow0717",
 "type": "image",
 "name": "crest picture",
 "x": 919.1,
@@ -16714,7 +19195,7 @@
 }
 },
 {
-"id": "ow0628",
+"id": "ow0718",
 "type": "text",
 "name": "i text",
 "x": 733.2,
@@ -16745,7 +19226,7 @@
 }
 },
 {
-"id": "ow0629",
+"id": "ow0719",
 "type": "rect",
 "name": "bar",
 "x": 627.5,
@@ -16768,50 +19249,19 @@
 }
 },
 {
-"id": "ow0630",
+"id": "ow0720",
 "type": "text",
-"name": "team text",
-"x": 876.4,
-"y": 355.4,
-"w": 55.2,
-"h": 25.8,
-"text": "{{VALORANT!Left tricode}}",
+"name": "Round win line",
+"x": 627.5,
+"y": 346.0,
+"w": 679.4,
+"h": 44.6,
+"text": "{{VAL Last round!Winner line}}",
 "font": "FoundryGridnik-ExtraBold",
-"size": 25.88,
+"size": 25.79,
 "weight": 400,
 "color": "rgb(17, 24, 35)",
-"align": "left",
-"valign": "middle",
-"caps": true,
-"fit": "shrink",
-"show": "{{VALORANT!Round won}}",
-"anim": {
-"in": {
-"type": "slide-up",
-"dur": 450,
-"delay": 400
-},
-"out": {
-"type": "slide-up",
-"dur": 337,
-"delay": 0
-}
-}
-},
-{
-"id": "ow0631",
-"type": "text",
-"name": "side text",
-"x": 945.6,
-"y": 355.4,
-"w": 112.4,
-"h": 25.8,
-"text": "{{VAL Last round!Winner role}}",
-"font": "FoundryGridnik-ExtraBold",
-"size": 25.76,
-"weight": 400,
-"color": "rgb(17, 24, 35)",
-"align": "left",
+"align": "center",
 "valign": "middle",
 "caps": true,
 "fit": "shrink",

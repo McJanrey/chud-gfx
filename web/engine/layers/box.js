@@ -11,6 +11,18 @@ export function box(layer) {
   if (+layer.rotation) s.rotate = `${+layer.rotation}deg`;
   if (layer.blend && layer.blend !== "normal") s.mixBlendMode = layer.blend;
   if (layer.visible === false) s.display = "none";
+  // blink: on and off every `blink` ms (the spike flashing), in step on every output (from the clock)
+  const bl = +layer.blink;
+  if (bl > 0 && typeof document !== "undefined") {
+    if (!document.getElementById("sg-blink-css")) {
+      const st = document.createElement("style");
+      st.id = "sg-blink-css";
+      st.textContent = "@keyframes sgBlink { 0% { opacity: 1 } 50% { opacity: 0 } }";
+      (document.head || document.documentElement).appendChild(st);
+    }
+    s.animation = `sgBlink ${bl * 2}ms steps(1, end) infinite`;
+    s.animationDelay = `-${Date.now() % (bl * 2)}ms`;
+  }
   return el;
 }
 
