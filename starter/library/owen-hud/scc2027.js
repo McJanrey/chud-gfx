@@ -358,9 +358,9 @@
     function show() { showSponsor(paths[sponsor.i % paths.length]); sponsor.i++; }
     show();
     ui.sponsorLogo.style.opacity = "1";
-    if (paths.length > 1) sponsor.timer = setInterval(function () { var BASE = "/library/owen-hud/";
+    if (paths.length > 1) sponsor.timer = setInterval(function () {
       ui.sponsorLogo.style.opacity = "0";
-      sponsor.swap = setTimeout(function () { var BASE = "/library/owen-hud/"; show(); ui.sponsorLogo.style.opacity = "1"; }, 400);
+      sponsor.swap = setTimeout(function () { show(); ui.sponsorLogo.style.opacity = "1"; }, 400);
     }, Math.max(1, Number(seconds) || 4) * 1000);
   }
 
@@ -421,10 +421,10 @@
     }
     if (on) {
       tabsAway(true);
-      boardTimer = setTimeout(function () { var BASE = "/library/owen-hud/"; toggle(ui.board, "away", false); }, SET("board.swap", PANELS_MS / 1000) * 1000);
+      boardTimer = setTimeout(function () { toggle(ui.board, "away", false); }, SET("board.swap", PANELS_MS / 1000) * 1000);
     } else {
       toggle(ui.board, "away", true);
-      boardTimer = setTimeout(function () { var BASE = "/library/owen-hud/"; tabsAway(false); }, SET("board.swap", PANELS_MS / 1000) * 1000);
+      boardTimer = setTimeout(function () { tabsAway(false); }, SET("board.swap", PANELS_MS / 1000) * 1000);
     }
   }
 
@@ -534,7 +534,7 @@
     if (!on) return;
     // the Default 2026 flashing: every second for 20 s, every half second
     // for 18 s, then three times a second (the spike's 45 seconds)
-    bomb.flash = setInterval(function () { var BASE = "/library/owen-hud/";
+    bomb.flash = setInterval(function () {
       var e = (Date.now() - bomb.at) / 1000;
       var n = e < 20 ? Math.floor(e) : e < 38 ? 20 + Math.floor((e - 20) / .5) : 56 + Math.floor(Math.min(e - 38, 7) / (1 / 3));
       if (n === bomb.lit) return;
@@ -732,7 +732,7 @@
     clearTimeout(ace.timer);
     var aceMs = SET("ace.seconds", 7) * 1000;
     ace.until = Date.now() + aceMs;
-    ace.timer = setTimeout(function () { var BASE = "/library/owen-hud/"; ui.ace.classList.remove("on"); }, aceMs);
+    ace.timer = setTimeout(function () { ui.ace.classList.remove("on"); }, aceMs);
   }
   // The round win and the Ace held up while HUD Builder shows them.
   var shownByEditor = { rwin: false, ace: false };
@@ -802,11 +802,11 @@
     R.classList.remove("on", "text", "out");
     void R.offsetWidth;
     R.classList.add("on");
-    rwin.inner = setTimeout(function () { var BASE = "/library/owen-hud/"; R.classList.add("text"); }, 750);
+    rwin.inner = setTimeout(function () { R.classList.add("text"); }, 750);
     if (hold) return;
     var rwMs = SET("rwin.seconds", 4.7) * 1000;
-    rwin.out = setTimeout(function () { var BASE = "/library/owen-hud/"; R.classList.add("out"); }, rwMs);
-    rwin.timer = setTimeout(function () { var BASE = "/library/owen-hud/"; R.classList.remove("on", "text", "out"); }, rwMs + 400);
+    rwin.out = setTimeout(function () { R.classList.add("out"); }, rwMs);
+    rwin.timer = setTimeout(function () { R.classList.remove("on", "text", "out"); }, rwMs + 400);
   }
 
   // ------------------------------------------------------------- listen
@@ -955,7 +955,7 @@
       .then(function (r) { return r.json(); })
       .then(function (s) { applyState(s); previews(s); })
       .catch(function (e) { if (window.console) console.warn(e); })
-      .then(function () { var BASE = "/library/owen-hud/"; setTimeout(poll, 250); });
+      .then(function () { setTimeout(poll, 250); });
   }
 
   if (params.get("fit") === "1") {
@@ -968,7 +968,7 @@
     fitPage();
   }
   // (names fit again once the fonts are in: they change the widths)
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { var BASE = "/library/owen-hud/";
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () {
     stage.querySelectorAll(".t").forEach(function (b) { b.fitted = false; if (b.i) fit(b); });
   });
   poll();

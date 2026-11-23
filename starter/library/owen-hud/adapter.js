@@ -18,9 +18,10 @@
         players.push(q);
       });
     });
+    function won(i) { return (h.history || []).filter(function (r) { return r.winner === i; }).length; }   // (no score sent: count the round history)
     var rounds = (h.history || []).map(function (r) { return { winner: SIDES[r.winner] || "left", win_type: WIN[r.how] || "Elimination" }; });
     var match = { map: h.map || "", round: h.round || 1, phase: h.phase || "", timer: secs(h.timer),
-      score: { left: (T[0] || {}).score || 0, right: (T[1] || {}).score || 0 }, attackers: atk,
+      score: { left: (T[0] || {}).score || won(0), right: (T[1] || {}).score || won(1) }, attackers: atk,
       spike: carrier && !h.spike ? { state: "carried", carrier: carrier } : { state: h.spike || "", timer: 0 },
       rounds: rounds, round_winner: "", win_type: "", observed: null };
     if (rounds.length && h.phase === "end") { match.round_winner = rounds[rounds.length - 1].winner; match.win_type = rounds[rounds.length - 1].win_type; }
