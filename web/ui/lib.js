@@ -205,6 +205,8 @@ const FORM = "input, select, textarea";
 if (typeof document !== "undefined") document.addEventListener("change", e => { if (e.target && e.target.matches && e.target.matches("select")) e.target.blur(); }, true);
 
 export function morph(a, b) {
+  if (a === b) return;
+  if (a._whole || b._whole) { a.replaceWith(b); return; }   // (a node kept alive on purpose, e.g. a running iframe: swap it in or out whole, never morph it)
   if (a.nodeType !== b.nodeType || a.nodeName !== b.nodeName || (a.nodeType === 1 && a.type !== b.type)) { a.replaceWith(b); return; }
   if (a.nodeType === 3 || a.nodeType === 8) { if (a.data !== b.data) a.data = b.data; return; }
   if (a.nodeType !== 1) return;

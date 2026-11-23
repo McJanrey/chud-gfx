@@ -2,6 +2,7 @@
 // the VALORANT module (App.state.val), Global's teams and series, the "VALORANT graphics" HUD.
 import { $, el, api, App, pages, toast, morphKids, typingIn } from "./lib.js";
 import { outputs, sourcePicker } from "./valorant.js";
+import { PHASES, curMap, mapArt } from "./valmap.js";
 
 const TABS = [["overview", "Overview"], ["players", "Players and teams"], ["tournament", "Tournament"], ["live", "Live game"], ["select", "Agent select"]];
 let tab = "overview", cat = null, sig = "";
@@ -52,7 +53,7 @@ function liveCard() {
 // --- overview -----------------------------------------------------------------
 function overview() {
   const app = App.state.app || {};
-  return [card("Outputs", ...outputs(app),
+  return [previewCard(), card("Outputs", ...outputs(app),
       el("p", { class: "muted small" }, `From another PC, use this PC's network address instead of 127.0.0.1${(app.addresses || [])[0] ? ` (for example http://${app.addresses[0]}:${app.port || location.port}/hud/val27)` : ""}.`)),
     liveCard()];
 }
@@ -118,13 +119,30 @@ function tournament() {
 }
 
 // --- live game ----------------------------------------------------------------
-let preview = null;
-function previewBox() {
-  if (preview) return preview;
-  const frame = el("iframe", { src: "/hud/val27", title: "VALORANT HUD preview", tabindex: "-1" });
-  preview = el("div", { class: "val-preview" }, frame);
-  new ResizeObserver(() => { frame.style.transform = `scale(${preview.clientWidth / 1920})`; }).observe(preview);
-  return preview;
+let preview = null, bgImg = null, bgFor = null, pframe = null, phase = "Live", phaseBtns = [];
+// One preview node, moved between the Overview and Live game sections (only the shown tab keeps its iframe running).
+function previewCard() {
+  if (!preview) {
+    pframe = el("iframe", { src: "/hud/val27", title: "VALORANT HUD preview", tabindex: "-1" });
+    bgImg = el("img", { class: "val-pbg", alt: "" });
+    const box = el("div", { class: "val-preview" }, bgImg, pframe);
+    new ResizeObserver(() => { pframe.style.transform = `scale(${box.clientWidth / 1920})`; }).observe(box);
+    const pick = n => {   // ("Live" = the real feed, no force; the rest force one phase's fields)
+      phase = n; phaseBtns.forEach(([k, b]) => b.classList.toggle("on", k === n));
+      const f = (PHASES.VALORANT.find(([k]) => k === n) || [])[1];
+      pframe.src = "/hud/val27" + (f ? "?force=" + encodeURIComponent(JSON.stringify({ VALORANT: f })) : "");
+    };
+    const names = ["Live", "Buy phase", "Round in play", "Top bar small", "Spike planted", "Round win"];
+    phaseBtns = names.map(n => [n, el("button", { class: n === phase ? "on" : "", onclick: () => pick(n) }, n)]);
+    preview = [box, el("div", { class: "seg val-phases", role: "group", "aria-label": "Preview state" }, ...phaseBtns.map(b => b[1])),
+      el("a", { class: "btn small", href: "/hud/val27", target: "_blank" }, "Open the HUD")];
+  }
+  const name = curMap();
+  if (name !== bgFor) {   // (art follows the map; no map yet = Ascent, else a dark gradient)
+    bgFor = name;
+    mapArt(name).then(u => { if (bgFor === name) { bgImg.hidden = !u; if (u) bgImg.src = u; } });
+  }
+  return card("Preview", ...preview);   // (a fresh card around the kept nodes, like liveCard keeps its own)
 }
 function broadcast() {
   const m = M(), to = (m.teams || []).map(t => +t.timeouts || 0), hud = (App.state.project.huds || []).find(h => h.id === "val");
@@ -146,7 +164,7 @@ function broadcast() {
       : el("p", { class: "muted small" }, "These graphics are added with the first VALORANT data (try the demo match)."));
 }
 function live() {
-  return [card("Preview", previewBox(), el("a", { class: "btn small", href: "/hud/val27", target: "_blank" }, "Open the HUD")), broadcast(), liveCard()];
+  return [previewCard(), broadcast(), liveCard()];
 }
 
 // --- agent select ---------------------------------------------------------------

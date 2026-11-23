@@ -5,6 +5,7 @@
 // HUD itself: every change saves at once and shows wherever its browser source is.
 import { $, el, api, App, toast, pages, askText, ask } from "./lib.js";
 import { composer } from "./composer.js";
+import { PHASES } from "./valmap.js";
 
 let built = false, view = "list", hudId = null, partId = null, mode = "live", demo = false;
 const GAMES = { valorant: "VALORANT", val: "VALORANT", lol: "League of Legends", league: "League of Legends", rl: "Rocket League", rocket: "Rocket League", other: "Other" };
@@ -12,16 +13,6 @@ const gameName = g => GAMES[String(g || "other").toLowerCase()] || g;
 const huds = () => (App.state.project.huds || []);
 const hud = () => huds().find(h => h.id === hudId);
 const uid = () => Math.random().toString(16).slice(2, 10);
-// The Show buttons: one phase of the HUD without a game (fields forced in this editor only, never on air).
-const PHASES = {
-  VALORANT: [["Round in play", { "In round": "yes", "Names": "yes", "Condensed": "", "Top on": "yes", "Buy phase": "", "Planted": "", "Round won": "", "Select on": "" }],
-    ["Top bar small", { "In round": "yes", "Names": "", "Condensed": "yes", "Top on": "yes", "Buy phase": "", "Planted": "", "Select on": "" }],
-    ["Spike planted", { "In round": "yes", "Names": "", "Condensed": "yes", "Top on": "yes", "Planted": "yes", "Buy phase": "", "Select on": "" }],
-    ["Buy phase", { "Buy phase": "yes", "In round": "", "Names": "yes", "Condensed": "", "Top on": "yes", "Planted": "", "Round won": "", "Select on": "" }],
-    ["Round win", { "Round won": "yes", "Names": "yes", "Condensed": "", "Top on": "yes", "Planted": "", "Banner": "ROUND WIN" }],
-    ["Agent select", { "Select on": "yes", "Top on": "", "In round": "", "Buy phase": "" }]],
-};
-
 function build() {
   if (built) return; built = true;
   $("#page-hudbuilder").replaceChildren(

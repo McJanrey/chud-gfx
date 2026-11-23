@@ -5,6 +5,7 @@ import { Stage, W, H } from "../engine/stage.js";
 import { play } from "../engine/anim.js";
 import { clipShapes } from "../engine/layers/box.js";
 import { LOOKS } from "../engine/layers/shader.js";
+import { mapArt, curMap } from "./valmap.js";
 
 let comp = null, compId = null, sel = new Set(), undo = [], redo = [], saveTimer = null, dirty = false, dragging = false;
 // HUD mode: the HUD Builder edits one part of a HUD here (same canvas and tools); the rest of the HUD shows dimmed
@@ -817,10 +818,15 @@ rulerY.addEventListener("mousedown", e => { e.stopPropagation(); addGuide("y")(e
 new ResizeObserver(() => drawRulers()).observe(view);
 function canvasTools() {
   const t = $("#cmp-canvas-tools");
-  const bgs = [["checker", "Checker"], ["#000", "Black"], ["#808080", "Grey"], ["#fff", "White"]];
+  const bgs = [["checker", "Checker"], ["#000", "Black"], ["#808080", "Grey"], ["#fff", "White"], ["map", "Map"]];
   let bg = "checker";
   try { bg = localStorage.getItem("sg-cmp-bg") || bg; } catch (e) { /* */ }
-  const paint = () => { view.dataset.bg = bg === "checker" ? "checker" : ""; view.style.setProperty("--cmp-bg", bg === "checker" ? "" : bg); };
+  const paint = async () => {
+    view.dataset.bg = bg === "checker" ? "checker" : "";
+    let v = bg === "checker" ? "" : bg;
+    if (bg === "map") { const u = await mapArt(curMap()); v = u ? `linear-gradient(#0006, #0006), url(${u}) center / cover` : "linear-gradient(#1b2433, #0a0e14)"; }   // (darkened, like the page preview)
+    view.style.setProperty("--cmp-bg", v);
+  };
   paint();
   t.replaceChildren(
     el("div", { class: "seg" }, el("button", { class: "small", id: "cmp-undo", "aria-label": "Undo", title: "Undo (Ctrl+Z)", disabled: true, onclick: () => back(undo, redo) }, "↶ Undo"),
