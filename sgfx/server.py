@@ -1169,11 +1169,15 @@ class Engine:
         elif path == "/api/val/clear":
             self.val.clear()
         elif path == "/api/val/demo":   # (a made-up match, to try the HUD and graphics without a game)
+            if body.get("on") and not self.val.cfg().get("on", True):   # (the sample match needs VALORANT on, or it shows nothing)
+                self.val.set({"on": True})
             (self.valdemo.start if body.get("on") else self.valdemo.stop)()
             result = {"on": self.valdemo.on}
         elif path == "/api/val/reader":   # (read this PC's screen: the observer's VALORANT)
             r = self.valreader
             r.on = bool(body.get("on", r.on))
+            if body.get("on") and not self.val.cfg().get("on", True):   # (reading the game turns VALORANT on: off, its data goes nowhere)
+                self.val.set({"on": True})
             src = body.get("source")
             if body.get("screen") and not src:
                 src = {"kind": "screen", "n": int(body["screen"])}
