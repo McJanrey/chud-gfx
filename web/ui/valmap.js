@@ -5,7 +5,9 @@ import { App } from "./lib.js";
 // (each player's own show flags too: the tabs and the buy-phase board rows wait on them, not just the phase)
 const each = (here, up, board) => Object.fromEntries(["Left", "Right"].flatMap(sd => [1, 2, 3, 4, 5].flatMap(n => [
   [`${sd} ${n} here`, here], [`${sd} ${n} up`, up], [`${sd} ${n} down`, ""], [`${sd} ${n} board`, board]])));
-const TABS = each("yes", "yes", ""), BOARD = each("", "", "yes"), NONE = each("", "", "");
+// (the round tracker's per-round fields are off outside the buy-phase board: a preview mid-buy shows no stray win icons)
+const NOROUNDS = Object.fromEntries(Array.from({ length: 24 }, (_, i) => i + 1).flatMap(r => [[`Round ${r} left won`, ""], [`Round ${r} right won`, ""], [`Round ${r} now`, ""]]));
+const TABS = { ...each("yes", "yes", ""), ...NOROUNDS }, BOARD = each("", "", "yes"), NONE = { ...each("", "", ""), ...NOROUNDS };
 export const PHASES = {
   // (every preset sets all of the phase keys, so one phase never mixes with the live data's other states)
   VALORANT: [["Round in play", { "In round": "yes", "Names": "yes", "Condensed": "", "Top on": "yes", "Buy phase": "", "Planted": "", "Round won": "", "Select on": "", "Banner": "", ...TABS }],
