@@ -4,6 +4,8 @@ A HUD is {id, name, game, parts: [{id, name, on, layers}]}, in project["huds"]. 
 as graphics, but a HUD is never TAKEn: its browser source (/hud/<id>) shows every part that's on, all the time,
 and each layer shows itself from the game's live data ("Show only while"). Edited on the HUD Builder page.
 """
+import os
+import json
 import re
 import uuid
 
@@ -76,12 +78,11 @@ def delete(engine, hid):
 
 def builtin(key):
     """The built-in parts for a built-in HUD's key, or None."""
-    if key == "val27":
+    if key == "val27":   # (Owen's SCC 2027 HUD as layers: every part read from his page, val27_owen.json; agent select is ours)
         from . import valhud
-        return [(k, n.replace("VAL HUD · ", ""), kd, l) for k, n, kd, l in valhud.comps()]
-    if key == "owen27":   # (Owen's own SCC 2027 VALORANT HUD, run from library/owen-hud on this app's VALORANT data)
-        return [("owen27:hud", "HUD", "hud", [{"id": "owen27web", "type": "web", "name": "Owen SCC 2027 HUD", "src": "/library/owen-hud/index.html",
-                                              "x": 0, "y": 0, "w": 1920, "h": 1080}])]
+        with open(os.path.join(os.path.dirname(__file__), "val27_owen.json"), encoding="utf-8") as f:
+            owen = [(f"val27:{p['id']}", p["name"], "hud", p["layers"]) for p in json.load(f)]
+        return owen + [(k, n.replace("VAL HUD · ", ""), kd, l) for k, n, kd, l in valhud.comps() if "agent select" in n.lower()]
     return None
 
 
@@ -98,6 +99,19 @@ def rebuild(engine, hid):
     engine.save_project()
     engine.changed()
     return h
+
+
+def upgrade_val27(engine):
+    """VAL HUD (SCC 2027) made before it was rebuilt from Owen's page: its parts become his (Agent select kept). Once."""
+    h = find(engine, "val27")
+    if not h or "owtop" in (h.get("built") or []):
+        return False
+    new = builtin("val27")
+    keep = [p for p in h.get("parts") or [] if "agent select" in str(p.get("name", "")).lower()]
+    h["parts"] = [{"id": k.split(":")[-1], "name": n, "on": True, "layers": l} for k, n, _, l in new if "agent select" not in n.lower()] + keep
+    h["built"] = sorted(set((h.get("built") or []) + [k.split(":")[-1] for k, _, _, _ in new] + [p["id"] for p in keep]))
+    engine.save_project()
+    return True
 
 
 def ensure(engine, key, name, game, parts):

@@ -17,8 +17,8 @@ const PHASES = {
   VALORANT: [["Round in play", { "In round": "yes", "Names": "yes", "Condensed": "", "Top on": "yes", "Buy phase": "", "Planted": "", "Round won": "", "Select on": "" }],
     ["Top bar small", { "In round": "yes", "Names": "", "Condensed": "yes", "Top on": "yes", "Buy phase": "", "Planted": "", "Select on": "" }],
     ["Spike planted", { "In round": "yes", "Names": "", "Condensed": "yes", "Top on": "yes", "Planted": "yes", "Buy phase": "", "Select on": "" }],
-    ["Buy phase", { "Buy phase": "yes", "In round": "", "Names": "yes", "Top on": "yes", "Planted": "", "Select on": "" }],
-    ["Round win", { "Round won": "yes", "Names": "yes", "Top on": "yes", "Banner": "ROUND WIN" }],
+    ["Buy phase", { "Buy phase": "yes", "In round": "", "Names": "yes", "Condensed": "", "Top on": "yes", "Planted": "", "Round won": "", "Select on": "" }],
+    ["Round win", { "Round won": "yes", "Names": "yes", "Condensed": "", "Top on": "yes", "Planted": "", "Banner": "ROUND WIN" }],
     ["Agent select", { "Select on": "yes", "Top on": "", "In round": "", "Buy phase": "" }]],
 };
 

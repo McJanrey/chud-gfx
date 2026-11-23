@@ -251,7 +251,10 @@ class Val:
         if ev == "round_end" and w in (0, 1):
             m = self.match
             m.history.append({"round": m.round, "winner": w, "how": str(body.get("how") or "")})
+            gt = ((self.engine.project.get("global") or {}).get(("left", "right")[w]) or {})
             self.last_round = {"Round": m.round, "Winner": m.teams[w]["name"], "Winner side": SIDES[w],
+                               "Winner tricode": str(gt.get("short") or gt.get("name") or m.teams[w]["name"] or "").upper(),
+                               "Winner role": "ATTACK" if attackers(m.round, m.first) == w else "DEFENSE",
                                "How": HOW.get(body.get("how"), str(body.get("how") or "")),
                                "Left score": m.teams[0]["score"], "Right score": m.teams[1]["score"]}
         elif ev == "map_end" and w in (0, 1):
@@ -414,9 +417,9 @@ class Val:
     def add_hud(self):
         done = self.engine.project.setdefault("hud_pages", [])
         from . import huds, valhud
-        if huds.ensure(self.engine, "val27", "VAL HUD (SCC 2027)", "valorant", huds.builtin("val27")):
+        if huds.upgrade_val27(self.engine):
             self.engine.changed()
-        if huds.ensure(self.engine, "owen27", "VAL HUD (Owen SCC 2027)", "valorant", huds.builtin("owen27")):
+        if huds.ensure(self.engine, "val27", "VAL HUD (SCC 2027)", "valorant", huds.builtin("val27")):
             self.engine.changed()
         from . import huds   # (in the HUD Builder as a HUD of their own, never among the show's graphics)
         if huds.ready_made(self.engine, "val", "VALORANT graphics", "valorant", hud_comps()):

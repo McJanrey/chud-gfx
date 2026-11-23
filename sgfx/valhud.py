@@ -15,6 +15,7 @@ SIDES = ("Left", "Right")
 SIDEARMS = {"Classic", "Shorty", "Frenzy", "Ghost", "Sheriff", "Bandit"}
 NAVY, BLUE, RED, GOLD, LINE = "#111823", "#66b5f4", "#ee5b58", "#f0cb74", "#acacac"
 UUID = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
+OWEN_WIN = {"elimination": "Elimination", "spike": "Detonation", "defuse": "Deactivation", "time": "Time"}
 WIN_HOW = {"elimination": "Elimination", "spike": "Detonation", "defuse": "Defuse", "time": "Time"}
 
 
@@ -113,6 +114,14 @@ def fields(m, g):
     f["Banner"] = getattr(m, "banner", "")
     f["Banner color"] = f[f"{SIDES[m.banner_side]} color"] if getattr(m, "banner_side", None) in (0, 1) else "#ffffff"
     f["Round tracker"] = f"/val-svg/tracker/{_track(m)}/{f['Left color'][1:]}/{f['Right color'][1:]}.svg"
+    # each round on its own (Owen's SCC 2027 tracker: a cell per team per round, the win icon in the winner's colour)
+    for r in range(1, 25):
+        h = m.history[r - 1] if r <= len(m.history) else None
+        w = h.get("winner") if h else None
+        f[f"Round {r} left won"] = "yes" if w == 0 else ""
+        f[f"Round {r} right won"] = "yes" if w == 1 else ""
+        f[f"Round {r} icon"] = f"/library/owen-hud/assets/win-{OWEN_WIN.get(h.get('how'), 'Elimination')}.png" if h else ""
+        f[f"Round {r} now"] = "yes" if r == m.round else ""
     if won:
         w = won["winner"]
         f.update({"Round winner": f["Left full name" if w == 0 else "Right full name"], "Round winner side": "ATTACK" if atk == w else "DEFENCE",
