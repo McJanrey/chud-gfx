@@ -879,7 +879,8 @@
 "dur": 225,
 "delay": 0
 }
-}
+},
+"visible": false
 }
 ]
 },

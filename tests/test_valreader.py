@@ -49,3 +49,26 @@ class ValReader(unittest.TestCase):
         d = V.killfeed(V.normalise(Image.open(os.path.join(HERE, "fixtures", "val_killfeed.png"))))
         self.assertEqual([(r["killer"], r["killer_team"], r["weapon"], r["headshot"], r["victim"], r["victim_team"]) for r in d],
                          [("ludociel", 1, "Guardian", True, "meowpilled", 0), ("SCCProd2", 0, "Bulldog", True, "Himmy Butler", 1)])
+
+
+@unittest.skipUnless(os.name == "nt", "Windows text recognition")
+class FromARealReplay(unittest.TestCase):
+    """Bits of a recorded VALORANT replay (2026-11-22) that the reader once got wrong."""
+
+    def setUp(self):
+        global V
+        from sgfx import valreader as V
+
+    def frame(self, name, at):
+        f = Image.new("RGB", (1920, 1080))
+        f.paste(Image.open(os.path.join(HERE, "fixtures", name)).convert("RGB"), at)
+        return f
+
+    def test_spike_on_the_dark_half_of_its_pulse(self):
+        self.assertTrue(V.spike_planted(self.frame("val_spike_dark.png", (900, 0))))
+
+    def test_match_point_is_a_buy_phase(self):
+        self.assertEqual(V.parse(self.frame("val_match_point.png", (560, 110))).get("phase"), "buy")
+
+    def test_round_end_numbers_are_not_a_clock(self):
+        self.assertIsNone(V.parse(self.frame("val_round_end_clock.png", (880, 0))).get("timer"))

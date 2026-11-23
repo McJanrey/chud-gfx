@@ -123,8 +123,9 @@ def fields(m, g):
     f["Banner color"] = f[f"{SIDES[m.banner_side]} color"] if getattr(m, "banner_side", None) in (0, 1) else "#ffffff"
     f["Round tracker"] = f"/val-svg/tracker/{_track(m)}/{f['Left color'][1:]}/{f['Right color'][1:]}.svg"
     # each round on its own (Owen's SCC 2027 tracker: a cell per team per round, the win icon in the winner's colour)
+    by_round = {h["round"]: h for h in m.history if isinstance(h.get("round"), int)}   # (by the round's own number: a reader that joins mid-match)
     for r in range(1, 25):
-        h = m.history[r - 1] if r <= len(m.history) else None
+        h = by_round.get(r) if by_round else (m.history[r - 1] if r <= len(m.history) else None)
         w = h.get("winner") if h else None
         board = f.get("Buy phase") == "yes"   # (the tracker is on the buy-phase board only)
         f[f"Round {r} left won"] = "yes" if w == 0 and board else ""

@@ -206,6 +206,7 @@ def main(argv=None):
             except ImportError:
                 log.warning("pywebview missing, using the browser")
         if webview:
+            webview.settings["ALLOW_DOWNLOADS"] = True   # (Export pack / HTML / CSV links save a file: the window blocks downloads unless told)
             webview.create_window(f"StandBy GFX", url, width=1440, height=900, min_size=(1024, 640), background_color="#0A0A0B", text_select=True)
             webview.start()
         else:

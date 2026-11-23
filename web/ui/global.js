@@ -78,10 +78,10 @@ function sponsors() {
     el("p", { class: "muted small" }, "Shown in turn wherever a graphic shows {{Sponsors}}."),
     ...list.map((s, i) => el("div", { class: "sponsor" },
       el("div", { class: "thumb-pick" }, s.logo ? el("img", { src: s.logo, alt: "" }) : el("span", { class: "muted" }, "—"),
-        picker("image", s.logo || "", v => { list[i] = { ...list[i], logo: v }; put(); }, "sponsors")),
+        picker("image", s.logo || "", v => { list[i] = { ...list[i], logo: v }; put(); }, "sponsors"),
+        el("span", { class: "sp-left", "data-i": String(i) })),   // (on air: a badge on the logo, so the row keeps its shape)
       el("label", { class: "inline" }, num(s.secs || 10, v => { list[i] = { ...list[i], secs: Math.max(1, v) }; put(); }, { min: 1, style: "width:70px" }), "s"),
       toggle("White", !!s.white, v => { list[i] = { ...list[i], white: v }; put(); }),   // (list[i], not s: an edit just before this one stays)
-      el("span", { class: "sp-left small", "data-i": String(i) }),
       el("button", { class: "small ghost", "aria-label": "Move up", disabled: !i, onclick: () => { [list[i - 1], list[i]] = [list[i], list[i - 1]]; put(); } }, "↑"),
       el("button", { class: "small ghost", "aria-label": "Remove", onclick: () => { list.splice(i, 1); put(); } }, "✕"))),
     el("button", { class: "small", onclick: () => { list.push({ logo: "", secs: 10, white: false }); put(); } }, "+ Sponsor"));
@@ -170,7 +170,8 @@ function render() {
     el("h4", { class: "g-head" }, "Match"),
     tag(team("left"), "g-match"), tag(series(), "g-match"), tag(team("right"), "g-match"),
     el("h4", { class: "g-head" }, "On screen"),
-    tag(sponsors(), "g-sponsors"), tournament(), loop(), ticker(), clock(), casters());
+    // (three columns that each stack: a tall card, like ten sponsors, leaves no hole beside it)
+    el("div", { class: "g-col" }, sponsors(), casters()), el("div", { class: "g-col" }, tournament(), ticker()), el("div", { class: "g-col" }, loop(), clock()));
 }
 App.on(() => { if (App.page === "global") render(); });
 // Which sponsor is on air now, and how long it has left (the rows with a logo take turns).
@@ -180,7 +181,7 @@ setInterval(() => {
   const withLogo = (G().sponsors || []).map((s, i) => s.logo ? i : -1).filter(i => i >= 0);
   for (const e of document.querySelectorAll(".sp-left")) {
     const on = t && withLogo[t.i] === +e.dataset.i;
-    e.textContent = on ? `On air · ${Math.ceil(t.left)}s left` : "";
+    e.textContent = on ? `On air ${Math.ceil(t.left)}s` : "";
     e.closest(".sponsor").classList.toggle("on-air", !!on);
   }
 }, 500);

@@ -397,7 +397,8 @@ def round_timer(img):
 def spike_planted(img):
     """While the spike is planted the round timer is replaced by a red spike icon."""
     a = np.asarray(img.crop((915, 18, 1005, 92)), dtype=np.int16)
-    red = (a[..., 0] > 170) & (a[..., 1] < 90) & (a[..., 2] < 90)
+    # (the icon pulses bright and dark red: any clearly red pixel counts, so both halves of the pulse read as planted)
+    red = (a[..., 0] > 100) & (a[..., 0] > a[..., 1] * 2.5) & (a[..., 0] > a[..., 2] * 2.5)
     return red.mean() > 0.12
 
 
@@ -424,7 +425,7 @@ def parse(img):
         t = clock or _text(img, (895, 22, 1025, 78), 3)
         m = re.search(r"(\d{1,2})[:.](\d\d)", t)
         d = digits(img.crop((895, 22, 1025, 78)))
-        if m:
+        if m and int(m.group(1)) <= 2 and int(m.group(2)) < 60:   # (a round clock never passes 1:40; "14:92" is the round-end numbers)
             out["timer"] = f"{int(m.group(1))}:{m.group(2)}"
         elif re.fullmatch(r"\d{3}", d or ""):    # (the colon is too small to be a glyph: "137" = 1:37)
             out["timer"] = f"{d[0]}:{d[1:]}"
@@ -436,7 +437,7 @@ def parse(img):
     m = re.search(r"ROUND\s*([0-9IL]{1,2})", banner)
     if m:
         out["round"] = int(m.group(1).replace("I", "1").replace("L", "1"))
-    if "BUY PHASE" in banner:
+    if "BUY PHASE" in banner or "TO BUY" in banner or "MATCH POINT" in banner:   # ("MATCH POINT" / "LAST ROUND" replace "BUY PHASE"; "PRESS B TO BUY" stays)
         out["phase"] = "buy"
     elif out.get("timer") and "phase" not in out:
         out["phase"] = "combat"

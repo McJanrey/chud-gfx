@@ -200,6 +200,10 @@ export const typingIn = box => {
 // change, nodes are added or removed, but the field with the cursor (and an open dropdown) is left exactly as it
 // is, so live info keeps coming in while someone types. Same-place matching: fine for cards and lists.
 const FORM = "input, select, textarea";
+// (a list picked from lets go of the focus once the pick is made, so the next redraw shows what's really chosen,
+// e.g. Global's "From the team list" after the team's name changes; an open list is still left alone)
+if (typeof document !== "undefined") document.addEventListener("change", e => { if (e.target && e.target.matches && e.target.matches("select")) e.target.blur(); }, true);
+
 export function morph(a, b) {
   if (a.nodeType !== b.nodeType || a.nodeName !== b.nodeName || (a.nodeType === 1 && a.type !== b.type)) { a.replaceWith(b); return; }
   if (a.nodeType === 3 || a.nodeType === 8) { if (a.data !== b.data) a.data = b.data; return; }
