@@ -1,0 +1,361 @@
+/* The SCC 2027 VALORANT HUD (owen's Figma: Round Phase Full Overlay, Buy Phase,
+   Buy Phase first 12 rounds, Death Left / Right, Ace Graphic, Listen In).
+   Every position is the Figma one, on a 1920x1080 page.
+   Fonts as designed: DIN 2014 / DIN 2014 Narrow (ParaType, owen's licensed
+   copies, 2026-11-18), Tungsten and Rubik. */
+@font-face { font-family: "S27 Tungsten"; src: url("hud/Resources/Tungsten-Bold.ttf"); }
+@font-face { font-family: "S27 Din"; src: url("fonts/DIN2014-Bold.woff2"); font-weight: 700; }
+@font-face { font-family: "S27 Din"; src: url("fonts/DIN2014-Regular.woff2"); font-weight: 400; }
+@font-face { font-family: "S27 Narrow"; src: url("fonts/DIN2014-Narrow-Bold.woff2"); font-weight: 700; }
+@font-face { font-family: "S27 Rubik"; src: url("fonts/Rubik.woff2"); font-weight: 300 900; }
+
+:root {
+  --navy: #111823;
+  --cell: #0d121a;
+  --blue: #66b5f4;
+  --red: #ee5b58;
+  --red2: #df5754;
+  --gold: #f0cb74;
+  --line: #acacac;
+  --left: var(--blue);
+  --right: var(--red);
+}
+html, body { margin: 0; padding: 0; background: transparent; overflow: hidden; }
+#stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; color: #fff;
+  font-family: "S27 Din", sans-serif; -webkit-font-smoothing: antialiased; }
+#stage div, #stage span, #stage img { position: absolute; box-sizing: border-box; }
+#stage img { display: block; }
+.hidden { display: none !important; }
+
+/* One-line text placed by its cap height (the Figma boxes are cap-height tall). */
+.t { white-space: nowrap; line-height: 1; display: flex; align-items: center; }
+.t > i { font-style: normal; position: static !important; display: block; }
+.t.c { justify-content: center; }
+.t.r { justify-content: flex-end; }
+.tung > i { font-family: "S27 Tungsten", sans-serif; transform: translateY(.04em); }
+.din > i { font-family: "S27 Din", sans-serif; font-weight: 700; transform: translateY(.06em); }
+.dinr > i { font-family: "S27 Din", sans-serif; font-weight: 400; transform: translateY(.06em); }
+.nar > i { font-family: "S27 Narrow", sans-serif; font-weight: 700; transform: translateY(.06em); }
+.rub > i { font-family: "S27 Rubik", sans-serif; font-weight: 400; transform: translateY(.03em); }
+.rubl > i { font-family: "S27 Rubik", sans-serif; font-weight: 300; transform: translateY(.03em); }
+.rubm > i { font-family: "S27 Rubik", sans-serif; font-weight: 500; transform: translateY(.03em); }
+
+/* ---------------------------------------------------------------- top bar */
+/* owen's "Main with Hole" (625..1295) and "Condensed with Hole" (710..1211)
+   figs: two halves with a hole at 890..1030 where the game's own timer
+   shows; the outline runs team colour -> white toward the middle. */
+#top { left: 0; top: 0; width: 1920px; height: 72px; pointer-events: none; }
+#top .half { top: 0; height: 72px; overflow: hidden; }
+#top .ol { left: 625px; width: 670px; height: 1px; background: linear-gradient(90deg, var(--left), #fff 50%, var(--right)); }
+#top .ol.t { top: 0; }
+#top .ol.b { top: 71px; }
+#top .ol { transition: left .5s cubic-bezier(.2, .8, .2, 1), width .5s cubic-bezier(.2, .8, .2, 1); }
+#top.cond .ol { left: 710px; width: 501px; }
+#top .half.l { left: 625px; width: 265px; border-radius: 10px 0 0 10px;
+  background: linear-gradient(90deg, var(--left), #fff) 0 0 / calc(100% + 70px) 100% no-repeat; }
+#top .half.r { left: 1030px; width: 265px; border-radius: 0 10px 10px 0;
+  background: linear-gradient(270deg, var(--right), #fff) 100% 0 / calc(100% + 70px) 100% no-repeat; }
+#top .half .fill { top: 1px; bottom: 1px; background: var(--navy); }
+#top .half.l .fill { left: 1px; right: 0; border-radius: 9px 0 0 9px; }
+#top .half.r .fill { left: 0; right: 1px; border-radius: 0 9px 9px 0; }
+#top .half .edge { top: 0; bottom: 0; width: 10px; }
+#top .half.l .edge { left: 0; background: var(--left); }
+#top .half.r .edge { right: 0; background: var(--right); }
+#top .div { top: 1px; width: 1px; height: 70px; background: #fff; }
+#top .div.l { left: 829px; }
+#top .div.r { left: 1089px; }
+#top .logo { top: 18px; width: 37px; height: 37px; object-fit: contain; }
+#top .logo.l { left: 657px; }
+#top .logo.r { left: 1226px; }
+#top .tri { height: 22px; font-size: 32px; }
+#top .sub { height: 10px; font-size: 15px; }
+#top .score { font-size: 52px; }
+#top .rnd { font-size: 15px; letter-spacing: .19em; }
+#top .rnd > i { margin-right: -.19em; }
+#top .pips.v { top: 13px; width: 10px; height: 46px; flex-direction: column; justify-content: safe center; gap: 8px; }
+#top .pips.v.l { left: 846px; }
+#top .pips.v.r { left: 1063px; }
+#top .pips.v > b { background: var(--navy); border-width: 1.4px; }
+#top .pips.v > b.won { background: var(--c); }
+/* condensed: no names, bigger logos (20.5 s into the round or at the plant) */
+#top .half, #top .logo { transition: left .5s cubic-bezier(.2, .8, .2, 1), width .5s cubic-bezier(.2, .8, .2, 1), top .5s cubic-bezier(.2, .8, .2, 1), height .5s cubic-bezier(.2, .8, .2, 1); }
+#top .tri, #top .sub { transition: opacity .3s ease; }
+#top.cond .half.l { left: 710px; width: 180px; }
+#top.cond .half.r { width: 181px; }
+#top.cond .half .edge { width: 9px; }
+#top.cond .logo { top: 11px; width: 50px; height: 50px; }
+#top.cond .logo.l { left: 750px; }
+#top.cond .logo.r { left: 1121px; }
+#top.cond .tri, #top.cond .sub { opacity: 0; }
+.pips { top: 11px; height: 10px; width: 60px; display: flex !important; justify-content: center; gap: 6px; }
+.pips > b { position: static; width: 10px; height: 10px; border-radius: 50%; box-sizing: border-box; border: 1px solid #fff; }
+.pips > b.won { background: var(--c); }
+/* the planted spike: the Default 2026 HUD's icon, box and take-in (slides
+   up into the box, over the game's own timer, where it sat in that HUD), flashing as it runs down */
+#bomb { left: 914px; top: 6px; width: 95px; height: 65px; overflow: hidden; background: url("assets/spike-default-bg.png") 0 0 / 95px 65px no-repeat; z-index: 6;
+  opacity: 0; visibility: hidden; transition: opacity .15s ease, visibility 0s linear .5s; }
+#bomb.on { opacity: 1; visibility: visible; transition: opacity .15s ease; }
+#bomb .icon { left: 12px; top: -1px; width: 70px; height: 70px; background: url("assets/spike-default.png") center / 70px 70px no-repeat;
+  transform: translateY(86px); transition: transform .5s ease;
+  filter: brightness(.142) sepia(1) hue-rotate(316deg) saturate(700%) brightness(200%) contrast(1); }
+#bomb.on .icon { transform: translateY(0); }
+#bomb .icon.dim { filter: brightness(.142) sepia(1) hue-rotate(316deg) saturate(700%) brightness(125%) contrast(1); }
+#top.planted .rnd { opacity: 0; }
+
+/* the banner under the top bar: timeouts, technical pause, round won */
+#banner { left: 710px; top: 80px; width: 500px; height: 40px; border-radius: 10px; background: var(--navy);
+  border: 1px solid #fff; opacity: 0; transform: translateY(-10px); transition: opacity .3s, transform .35s cubic-bezier(.2, .8, .2, 1); }
+#banner.on { opacity: 1; transform: none; }
+#banner .bar { left: 0; top: 0; bottom: 0; width: 8px; border-radius: 9px 0 0 9px; background: var(--c, #fff); }
+#banner .txt { left: 8px; right: 0; top: 0; bottom: 0; font-size: 20px; letter-spacing: .12em; }
+
+/* the event strip (top right), as in the round phase screenshot */
+/* event strip + sponsor box: owen's "Sponsor Rotation Full" fig (one outline
+   round both, the strip running into the box) and "... Condensed" (the box
+   alone once the strip tucks away); under the top bar in the stack */
+#event { left: 1295px; top: 0; width: 405px; height: 25px; background: var(--navy); border: 1px solid #fff; border-right: 0;
+  border-radius: 0 0 0 10.5px; }
+#event.solo { width: 435px; border-right: 1px solid #fff; border-radius: 0 0 10.5px 10.5px; }
+#event .t { left: 0; width: 394px; top: 7px; height: 8px; font-size: 12px; }
+#sponsor { left: 1688px; top: 0; width: 231px; height: 92px; background: var(--navy); border: 1px solid #fff; border-radius: 0 0 0 11px; }
+#sponsor .logo { left: 31px; top: 28px; width: 168px; height: 33px; transition: opacity .4s ease; }
+#sponsor .logo.white { background: #fff; -webkit-mask: var(--img) center / contain no-repeat; mask: var(--img) center / contain no-repeat; }
+#sponsor .logo.colour { background: var(--img) center / contain no-repeat; }
+
+/* the round phase and the buy phase swap */
+.phase { transition: opacity .35s ease, transform .5s cubic-bezier(.2, .8, .2, 1); }
+#side-left.away { transform: translateX(-360px); }
+#side-right.away { transform: translateX(360px); }
+/* the event strip comes out from behind the top bar for the buy
+   phase and go back behind it 20 seconds into the round (scc2027.js setStrips) */
+#top { z-index: 5; }
+#event { z-index: 3; }
+#sponsor { z-index: 4; }
+/* joins the box to the strip like the fig's cover rect: hides the box's left line above the strip's bottom line */
+#sponsor::before { content: ""; position: absolute; left: -1px; top: 0; width: 12px; height: 23px; background: var(--navy); }
+#event.tucked ~ #sponsor::before, #event.hidden ~ #sponsor::before { opacity: 0; }
+#sponsor::before { transition: opacity .3s ease; }
+#event { transition: opacity .45s ease, transform .6s cubic-bezier(.2, .8, .2, 1); }
+#event.tucked { opacity: 0; transform: translateX(400px); }
+#board.away { transform: translateY(470px); }
+#board.away-quick { transition: none; }
+
+/* --------------------------------------------------------- player tabs */
+#side-left, #side-right { left: 0; top: 0; width: 1920px; height: 1080px; pointer-events: none; }
+.tab { width: 310px; height: 88px; border-radius: 25px; border: 1px solid #fff; overflow: hidden;
+  background: linear-gradient(rgba(102, 102, 102, .2), rgba(0, 0, 0, .2)), rgba(17, 24, 35, .5);
+  transition: top .4s ease; }
+.tab.watched { border-color: var(--gold);
+  background: linear-gradient(rgba(240, 203, 116, .5), rgba(138, 117, 67, .5) 50%, rgba(240, 203, 116, .5)), rgba(17, 24, 35, .5); }
+.tab .agent { top: -1px; width: 51px; height: 51px; border: 1px solid #fff; background: var(--c) center / cover no-repeat; }
+.L .tab .agent { left: -1px; border-radius: 25px 0 25px 0; }
+/* the right team's agents face the other way (owen, 2026-11-18): the box is
+   mirrored, so its corners are given mirrored too */
+.R .tab .agent { right: -1px; border-radius: 25px 0 25px 0; transform: scaleX(-1); }
+.tab .name { top: 17px; height: 14px; font-size: 20px; width: 110px; }
+.tab .abil { top: 14px; width: 21px; height: 21px; background: center / contain no-repeat; }
+.tab .abil.none { opacity: .35; }
+.charges { top: 23px; left: 0; width: 100%; height: 2px; display: flex !important; justify-content: center; gap: 3px; }
+.charges > b { position: static; width: 8px; height: 2px; background: #fff; }
+.charges > b.used { background: rgba(255, 255, 255, .25); }
+.tab .ult { top: 4px; width: 41px; height: 41px; }
+.ult svg { position: absolute; left: 0; top: 0; overflow: visible; }
+.ult .icon { left: 11.5px; top: 11.5px; width: 18px; height: 18px; background: center / contain no-repeat; opacity: .55; }
+.ult.ready .icon { opacity: 1; }
+.ult.ready svg { filter: drop-shadow(0 0 1.5px rgba(255, 255, 255, .9)); }
+.tab .creds { top: 57px; height: 14px; font-size: 20px; gap: 6px; }
+.cred-icon { position: static !important; width: 15px; height: 15px; flex: 0 0 auto; }
+.tab .gun { top: 55px; height: 18px; background: center / contain no-repeat; }
+.tab .gun.side { width: 30px; }
+.tab .gun.main { width: 62px; }
+.L .tab .gun { transform: scaleX(-1); }   /* (the guns point in, like the Figma) */
+.tab .shield { top: 54px; width: 21px; height: 21px; }
+.shield { width: 21px; height: 21px; }
+.shield svg { position: absolute; left: 0; top: 0; }
+.shield .rg, .shield.regen .sh { display: none; }   /* the regen shield: its own round icon, no number */
+.shield.regen .rg { display: block; }
+.shield .t { left: 0; top: 0; width: 21px; height: 21px; font-size: 9px; }
+.tab .hp { top: 57px; height: 14px; font-size: 20px; width: 40px; }
+.tab .hpbar { left: 0; right: 0; bottom: 0; height: 8px; background: rgba(0, 0, 0, .35); }
+.tab .hpbar > b { position: absolute; top: 0; bottom: 0; background: var(--c); transition: width .35s ease; }
+.L .tab .hpbar > b { left: 0; }
+.R .tab .hpbar > b { right: 0; }
+.tab .kda { top: 57px; height: 14px; font-size: 20px; }
+.tab .deadonly { display: none !important; }
+/* dead (Death Left / Right) */
+.tab.dead { border-color: transparent;
+  background: linear-gradient(90deg, rgba(58, 58, 58, .9), rgba(58, 58, 58, 0)), rgba(0, 0, 0, .25); }
+.R .tab.dead { background: linear-gradient(270deg, rgba(58, 58, 58, .9), rgba(58, 58, 58, 0)), rgba(0, 0, 0, .25); }
+.tab.dead .agent { background-color: #393939; filter: grayscale(1); border-color: transparent; }
+.tab.dead .aliveonly { display: none !important; }
+.tab.dead .deadonly { display: flex !important; }
+.tab.dead .hpbar > b { background: #3a3a3a; width: 100% !important; }
+.tab.dead .ult .icon { filter: grayscale(1); }
+/* the spike carrier's badge */
+.spikebadge { width: 26px; height: 26px; border-radius: 50%; background: #c4c5ca; z-index: 3; opacity: 0; transform: scale(.4);
+  transition: opacity .25s, transform .3s cubic-bezier(.2, .8, .2, 1); }
+.spikebadge::after { content: ""; position: absolute; left: 4px; top: 5px; width: 18px; height: 16px;
+  background: #000; -webkit-mask: url("assets/spike.png") center / contain no-repeat; mask: url("assets/spike.png") center / contain no-repeat; }
+.spikebadge.on { opacity: 1; transform: none; }
+/* (the side-wide containers the 2v2 cams sit in: web/cams.js) */
+#teamIzquierda, #teamDerecha { left: 0; top: 0; width: 1920px; height: 1080px; pointer-events: none; }
+
+/* ---------------------------------------------------- spectated player cam */
+/* owen's "New Camera Placement" fig (2026-11-19): 278 x 156 at 477,849 */
+html.scc2027 #scc-cam { left: 477px; top: 849px; width: 278px; height: 156px; }
+html.scc2027 #scc-cam .scc-frame { background: #000; box-shadow: inset 0 0 0 1px #fff; }
+html.scc2027 #scc-cam video, html.scc2027 #scc-cam iframe, html.scc2027 #scc-cam .scc-dummy {
+  left: 1px; top: 1px; width: calc(100% - 2px); height: calc(100% - 2px); }
+html.scc2027 #scc-cam .scc-band { left: 1px; right: 1px; bottom: 1px; height: 36px; background: rgba(17, 24, 35, .5);
+  font-family: "S27 Narrow", sans-serif; font-weight: 700; font-size: 21px; }
+html.scc2027 #scc-cam .scc-bar { flex: 0 0 64px; margin-right: 0; background: none; }
+html.scc2027 #scc-cam .scc-name { transform: translateY(.04em); }
+html.scc2027 #scc-cam .scc-kda { font-family: "S27 Din", sans-serif; font-weight: 400; font-size: 18px; padding: 0 20px 0 10px;
+  transform: translateY(.06em); letter-spacing: 0; }
+html.scc2027 #scc-cam .s27-agent { left: 1px; bottom: 1px; width: 45px; height: 45px; border: 1px solid #fff; border-radius: 0 0 22px 0;
+  background: var(--side) center / cover no-repeat; z-index: 2; position: absolute; }
+html.scc2027 #scc-cam .scc-kills { left: 1px; bottom: 45px; height: 33px; width: 46px; padding: 0 0 0 7px; gap: 3px; z-index: 1;
+  border-radius: 0 22px 0 0; transform: translateY(12px);
+  background: linear-gradient(90deg, var(--side), rgba(0, 0, 0, 0) 90%); font-family: "S27 Rubik", sans-serif; font-size: 20px; }
+html.scc2027 #scc-cam .scc-kills.on { transform: none; }
+html.scc2027 #scc-cam .scc-kills svg { display: none; }
+html.scc2027 #scc-cam .scc-kills::before { content: ""; width: 17px; height: 17px; flex: 0 0 17px; background: #fff;
+  -webkit-mask: url("assets/target.png") center / contain no-repeat; mask: url("assets/target.png") center / contain no-repeat; }
+html.scc2027 #scc-cam .scc-kills span { position: static; transform: none; }
+html.scc2027 #scc-cam.s27-off { opacity: 0 !important; transform: translateY(24px) !important; }
+
+/* ------------------------------------------------------- buy-phase board */
+#board { left: 0; top: 0; width: 1920px; height: 1080px; pointer-events: none; }
+#board .bar { left: 0; top: 765px; width: 1920px; height: 340px; border-radius: 10px;
+  background: linear-gradient(rgba(102, 102, 102, .2), rgba(0, 0, 0, .2)), var(--navy); }
+#board .mark { top: 838px; width: 175px; height: 175px; object-fit: contain; opacity: .2; }
+.box { height: 52px; border: 1px solid var(--line); border-radius: 5px; background: rgba(13, 18, 26, .75); }
+/* team colour wash behind the agent, as in the fig (follows the side swap) */
+.box.who::before { content: ""; position: absolute; inset: 0; border-radius: 4px; background: var(--c); opacity: .2; }
+.box.who.L::before { -webkit-mask: linear-gradient(90deg, #000, transparent 50%); mask: linear-gradient(90deg, #000, transparent 50%); }
+.box.who.R::before { -webkit-mask: linear-gradient(270deg, #000, transparent 50%); mask: linear-gradient(270deg, #000, transparent 50%); }
+.box .agent { top: 0; width: 74px; height: 50px; background: transparent center 20% / cover no-repeat; }
+.L.box .agent { left: 0; border-radius: 4px 0 0 4px; -webkit-mask: linear-gradient(90deg, #000 70%, transparent); mask: linear-gradient(90deg, #000 70%, transparent); }
+.R.box .agent { right: 0; border-radius: 4px 0 0 4px; -webkit-mask: linear-gradient(90deg, #000 70%, transparent); mask: linear-gradient(90deg, #000 70%, transparent); transform: scaleX(-1); }
+.box .name { top: 18px; height: 14px; font-size: 20px; width: 190px; }
+.box .kda { top: 18px; height: 14px; font-size: 20px; width: 110px; }
+.box .abil { top: 7px; width: 30px; height: 30px; background: center / contain no-repeat; }
+.box .abil.none { opacity: .35; }
+.box .charges { top: 34px; height: 3px; }
+.box .charges > b { width: 11px; height: 3px; }
+.box .ult { top: 4.5px; width: 41px; height: 41px; }
+.box .gun { top: 11px; width: 110px; height: 28px; background: center / contain no-repeat; }
+.L.box .gun { transform: scaleX(-1); }
+.box .shieldimg { top: 13px; width: 25px; height: 25px; }
+.box .shieldimg.heavy { background: url("assets/heavy-shield.png") center / contain no-repeat; }
+.box .creds { top: 18px; height: 16px; font-size: 20px; gap: 6px; }
+.box .creds .cred-icon { width: 16px; height: 16px; }
+.box .spent { top: 20px; height: 11px; font-size: 16px; color: var(--gold); }
+.box.dead .agent { filter: grayscale(1); }
+
+/* the round tracker */
+#tracker { top: 626px; height: 124px; border-radius: 10px;
+  background: linear-gradient(rgba(102, 102, 102, .2), rgba(0, 0, 0, .2)), var(--navy); }
+#tracker .team { left: 15px; width: 136px; height: 46px; border-radius: 10px 0 0 10px; overflow: hidden;
+  background: linear-gradient(rgba(102, 102, 102, .2), rgba(0, 0, 0, .2)), rgba(17, 24, 35, .75); }
+#tracker .team::after { content: ""; position: absolute; inset: 0; border-radius: 10px 0 0 10px; padding: 1px;
+  background: linear-gradient(90deg, var(--c), #fff); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude; }
+#tracker .team .edge { left: 0; top: 0; bottom: 0; width: 6px; background: var(--c); }
+#tracker .team img { left: 15px; top: 11px; width: 24px; height: 24px; object-fit: contain; }
+#tracker .team .tri { left: 53px; top: 16px; height: 14px; font-size: 20px; width: 60px; }
+/* timeouts: the colour in a white ring (owen, 2026-11-18); a used one is the ring alone */
+#tracker .team .dot { left: 117px; width: 12px; height: 12px; margin-top: -1px; border-radius: 50%; box-sizing: border-box;
+  border: 1.5px solid #fff; background: var(--c); box-shadow: inset 0 0 0 1px var(--navy); }
+#tracker .team .dot.used { background: var(--navy); }
+#tracker .grid { top: 14px; height: 96px; border: 1px solid #fff; 
+  background: linear-gradient(rgba(102, 102, 102, .2), rgba(0, 0, 0, .2)), rgba(17, 24, 35, .75); }
+#tracker .num { top: 21px; width: 32px; height: 8px; font-size: 12px; }
+#tracker .cell { width: 32px; height: 32px; background: var(--cell); border: 1px solid var(--line); }
+#tracker .cell.won { border-color: var(--c); }
+#tracker .cell.won::after { content: ""; position: absolute; left: 4px; top: 4px; width: 22px; height: 22px; background: var(--c);
+  -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat; }
+#tracker .now { top: 15px; width: 38px; height: 94px; border: 1px solid var(--gold); }
+/* the line where the sides swap (owen's Buy Phase file): the colours the
+   teams play the next half in, red over blue */
+/* the series' maps, after the rounds (owen's "SCC Round with MAPS / MAP WINS" figs) */
+#tracker .map { top: 21px; width: 144px; height: 83px; border: 1px solid #acacac; background: #0d121a center / cover no-repeat; overflow: hidden; }
+#tracker .map::before { content: ""; position: absolute; inset: 0; background: linear-gradient(rgba(13, 18, 26, .15), rgba(13, 18, 26, .55)); }
+#tracker .map .logo { left: 60px; top: 12px; width: 23px; height: 24px; object-fit: contain; }
+#tracker .map .big { font-size: 20px; text-shadow: 0 1px 3px rgba(0, 0, 0, .6); }
+#tracker .map .small { font-size: 10px; text-shadow: 0 1px 3px rgba(0, 0, 0, .6); }
+#tracker .half { top: 36px; width: 1px; height: 68px; margin-left: .5px; background: linear-gradient(var(--right), var(--left)); }
+
+/* ------------------------------------------------------------- Ace */
+#ace { left: 381px; top: 650px; width: 1158px; height: 430px; opacity: 0; transform: translateY(60px);
+  transition: opacity .4s ease, transform .6s cubic-bezier(.2, .8, .2, 1); }
+#ace.on { opacity: 1; transform: none; }
+#ace .band { left: 0; top: 112px; width: 1158px; height: 318px; background: linear-gradient(rgba(0, 0, 0, 0), var(--c));
+  backdrop-filter: blur(6px); -webkit-mask: linear-gradient(transparent, #000 35%); mask: linear-gradient(transparent, #000 35%); }
+#ace .who { left: 22px; top: 0; width: 330px; height: 430px; background: center bottom / contain no-repeat; }
+#ace .team { left: 433px; top: 218px; height: 26px; font-size: 38px; gap: 14px; }
+#ace .team img { position: static; width: 58px; height: 66px; object-fit: contain; margin-top: -28px; }
+#ace .player { left: 433px; top: 268px; height: 53px; font-size: 76px; }
+#ace .line3 { left: 433px; top: 345px; height: 26px; font-size: 38px; }
+#ace .mark { left: 865px; top: 150px; width: 202px; height: 133px; background: url("assets/nace-ace.png") center / contain no-repeat; }
+#ace .word { left: 865px; top: 302px; width: 202px; height: 90px; font-size: 128px; }
+
+/* -------------------------------------------------------- Listen In */
+#listen { left: 452px; top: 732px; width: 1015px; height: 208px; opacity: 0; transform: translateY(40px);
+  transition: opacity .35s ease, transform .5s cubic-bezier(.2, .8, .2, 1); }
+#listen.on { opacity: 1; transform: none; }
+#listen .panel { left: 0; top: 35px; width: 1015px; height: 173px; border: 1px solid #fff;
+  background: url("assets/listen-bg.jpg") center / cover no-repeat; }
+#listen .tag { left: 427px; top: 0; width: 161px; height: 36px; border: 1px solid #fff; border-bottom: 0;
+  background: url("assets/listen-bg.jpg") center top / 1015px 173px no-repeat; }
+#listen .tag .t { left: 0; width: 159px; top: 10px; height: 15px; font-size: 15px; gap: 6px; }
+#listen .tag img { position: static; width: 22px; height: 25px; object-fit: contain; margin: -6px 0 -4px; }
+#listen .tile { top: 47px; width: 198px; height: 149px; background: #000; border: 1px solid #fff; overflow: hidden; }
+#listen .tile .scc-duo-cam { position: absolute; left: 0; top: 0; right: 0; bottom: 0; height: auto;
+  box-shadow: none; background: radial-gradient(circle at 50% 40%, #2c2c34, #101014 75%); }
+#listen .tile .nm { left: 0; right: 0; bottom: 0; height: 36px; background: rgba(17, 24, 35, .7); font-size: 17px; z-index: 2; }
+#listen .tile .nm > i { max-width: 180px; overflow: hidden; text-overflow: ellipsis; }
+
+/* -------------------------------------------------- 2v2 (two a side) */
+html.scc-2v2 .tab.p3, html.scc-2v2 .tab.p4, html.scc-2v2 .tab.p5,
+html.scc-2v2 .box.p3, html.scc-2v2 .box.p4, html.scc-2v2 .box.p5 { display: none !important; }
+html.scc-2v2 .scc-duo .scc-duo-cam { box-shadow: inset 0 0 0 1px #fff; border-radius: 0 0 12px 12px; }
+html.scc-2v2 .scc-duo svg { display: none; }
+html.scc2027 .scc-duo { width: 310px !important; }
+html.scc2027 .scc-duo.left { left: 17px !important; }
+html.scc2027 .scc-duo.right { left: 1593px !important; }
+html.scc-2v2 .scc-duo.on .scc-duo-cam { box-shadow: inset 0 0 0 2px var(--gold); }
+
+/* the round win banner: the Default 2026 HUD's (web/hud: banner1.png, Extra.js animationrep) */
+@font-face { font-family: "S27 Gridnik"; src: url("hud/Resources/FoundryGridnik-ExtraBold.otf"); }
+/* Round win: owen's "Round Win Graphic SCC" fig, 1573 x 467. A
+   #F9C229 flash opens from the middle and fades into the panel, then the
+   crest, ROUND WIN and the yellow bar with the winning team come in. */
+/* (drawn at the fig's size, then scaled to the Default 2026 banner's
+   780 px width at 570,150, owen: "match the sizing of the previous one") */
+#rwin { left: 570px; top: 159px; width: 1573px; height: 467px; transform: scale(.4959); transform-origin: 0 0;
+  z-index: 6; visibility: hidden; pointer-events: none; transition: opacity .35s ease; }
+#rwin.on { visibility: visible; }
+#rwin.out { opacity: 0; }
+#rwin .bg { left: 0; top: 42px; width: 1573px; height: 381px; background: url("assets/roundwin-bg.png") center / 100% 100% no-repeat; opacity: 0; }
+#rwin .flash { left: 0; top: 42px; width: 1573px; height: 381px; transform: scaleX(0); border-radius: 10px;
+  background: linear-gradient(90deg, rgba(249, 194, 41, 0), #F9C229 20%, #F9C229 79.8%, rgba(249, 194, 41, 0)); }
+#rwin .crest { left: 704px; top: 0; width: 165px; height: 165px; background: url("assets/roundwin-logo.png") center / contain no-repeat;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, .45)); opacity: 0; transform: scale(.6); }
+#rwin .word { font-size: 200px; color: #fff; opacity: 0; transform: translateY(30px); }
+#rwin .bar { left: 116px; top: 377px; width: 1370px; height: 90px; transform: scaleX(0);
+  background: linear-gradient(90deg, rgba(249, 194, 41, 0), #F9C229 20%, #F9C229 80%, rgba(249, 194, 41, 0)); }
+#rwin .who { left: 116px; top: 377px; width: 1370px; height: 90px; display: flex; align-items: center; justify-content: center; gap: 28px;
+  font: 52px/1 "S27 Gridnik", sans-serif; color: var(--navy); text-transform: uppercase; opacity: 0; transition: opacity .4s linear; }
+#rwin .who span, #rwin .who img { position: static; }
+#rwin .who .how.hidden { display: none; }
+/* (dots between the team, the side and how they won) */
+#rwin .who span + span::before { content: ""; display: inline-block; width: 12px; height: 12px; border-radius: 50%;
+  background: var(--navy); margin: 0 28px 0 0; vertical-align: middle; transform: translateY(-.1em); }
+#rwin.on .flash { animation: rwFlash .75s ease-out forwards; }
+#rwin.on .bg { opacity: 1; transition: opacity .3s ease .25s; }
+#rwin.on .crest { opacity: 1; transform: none; transition: opacity .3s ease .35s, transform .45s cubic-bezier(.2, 1.4, .4, 1) .35s; }
+#rwin.on .word { opacity: 1; transform: none; transition: opacity .3s ease .4s, transform .45s cubic-bezier(.2, .8, .2, 1) .4s; }
+#rwin.on .bar { transform: none; transition: transform .35s cubic-bezier(.2, .8, .2, 1) .5s; }
+#rwin.text .who { opacity: 1; }
+@keyframes rwFlash { 0% { transform: scaleX(0); opacity: 1; } 35% { transform: scaleX(1); opacity: 1; } 100% { transform: scaleX(1); opacity: 0; } }

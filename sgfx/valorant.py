@@ -416,6 +416,8 @@ class Val:
         from . import huds, valhud
         if huds.ensure(self.engine, "val27", "VAL HUD (SCC 2027)", "valorant", huds.builtin("val27")):
             self.engine.changed()
+        if huds.ensure(self.engine, "owen27", "VAL HUD (Owen SCC 2027)", "valorant", huds.builtin("owen27")):
+            self.engine.changed()
         from . import huds   # (in the HUD Builder as a HUD of their own, never among the show's graphics)
         if huds.ready_made(self.engine, "val", "VALORANT graphics", "valorant", hud_comps()):
             self.engine.changed()

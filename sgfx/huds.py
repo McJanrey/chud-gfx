@@ -79,6 +79,9 @@ def builtin(key):
     if key == "val27":
         from . import valhud
         return [(k, n.replace("VAL HUD · ", ""), kd, l) for k, n, kd, l in valhud.comps()]
+    if key == "owen27":   # (Owen's own SCC 2027 VALORANT HUD, run from library/owen-hud on this app's VALORANT data)
+        return [("owen27:hud", "HUD", "hud", [{"id": "owen27web", "type": "web", "name": "Owen SCC 2027 HUD", "src": "/library/owen-hud/index.html",
+                                              "x": 0, "y": 0, "w": 1920, "h": 1080}])]
     return None
 
 

@@ -10,9 +10,9 @@ for ws in sorted((src / "workspaces").iterdir()):
     if (ws / "project.json").is_file():
         shutil.copytree(ws, dst / "workspaces" / ws.name, ignore=lambda d, names: [n for n in names if n in SKIP])
 (dst / "library").mkdir(parents=True, exist_ok=True)
-for f in ("teams.json",):   # (machine settings, obs, stream keys and paid fonts stay out)
+for f in ("teams.json", "owen-hud"):   # (machine settings, obs, stream keys and paid fonts stay out)
     if (src / "library" / f).is_file():
-        shutil.copy2(src / "library" / f, dst / "library" / f)
+        (shutil.copytree if (src / "library" / f).is_dir() else shutil.copy2)(src / "library" / f, dst / "library" / f)
 import json
 for pj in (dst / "workspaces").glob("*/project.json"):   # (each install makes its own camera password)
     d = json.loads(pj.read_text(encoding="utf-8")); d.pop("cam_password", None)
