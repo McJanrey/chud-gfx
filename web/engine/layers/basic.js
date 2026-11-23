@@ -131,4 +131,5 @@ export function web(el, layer, ctx) {
   f.setAttribute("allowtransparency", "true");
   f.src = /^https?:/.test(src) ? src : ctx.url(src);
   el.appendChild(f);
+  el._keep = `${layer.id}|${f.src}`;   // (kept when the graphic redraws: a new iframe reloads the page, a flicker on every data tick)
 }
