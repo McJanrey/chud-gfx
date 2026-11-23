@@ -270,7 +270,7 @@ class Val:
             m = self.match
             m.history.append({"round": m.round, "winner": w, "how": str(body.get("how") or "")})
             gt = ((self.engine.project.get("global") or {}).get(("left", "right")[w]) or {})
-            self.last_round = {"Round": m.round, "Winner": m.teams[w]["name"], "Winner side": SIDES[w],
+            self.last_round = {"Round": m.round, "Winner": gt.get("name") or m.teams[w]["name"], "Winner side": SIDES[w],
                                "Winner tricode": str(gt.get("short") or gt.get("name") or m.teams[w]["name"] or "").upper(),
                                "Winner role": "ATTACK" if attackers(m.round, m.first) == w else "DEFENSE",
                                "Winner line": " • ".join(x for x in (str(gt.get("short") or gt.get("name") or m.teams[w]["name"] or "").upper(),

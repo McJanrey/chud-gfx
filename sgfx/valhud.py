@@ -52,7 +52,8 @@ def fields(m, g):
         gt, t = g.get(s.lower()) or {}, m.teams[i]
         col = _colour(gt.get("color"), (BLUE, RED)[i])
         name = gt.get("name") or t["name"] or ("Team A", "Team B")[i]
-        f.update({f"{s} color": col, f"{s} logo": gt.get("logo") or "", f"{s} tricode": (gt.get("short") or name[:3]).upper(),
+        f.update({f"{s} name": name,   # (the teams playing, from Global; the game's own team names only when Global has none)
+                  f"{s} color": col, f"{s} logo": gt.get("logo") or "", f"{s} tricode": (gt.get("short") or name[:3]).upper(),
                   f"{s} full name": name.upper(), f"{s} timeout 1": "/val-svg/dot/%s/%d.svg" % (col[1:], 1 if int(t.get("timeouts") or 0) >= 1 else 0),
                   f"{s} timeout 2": "/val-svg/dot/%s/%d.svg" % (col[1:], 1 if int(t.get("timeouts") or 0) >= 2 else 0)})
         try:
