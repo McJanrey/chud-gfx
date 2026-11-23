@@ -475,3 +475,8 @@ def hud_comps():
 
 def start(engine):
     engine.val = Val(engine)
+    if "val27" in (engine.project.get("hud_pages") or []):   # (VALORANT used here before: HUDs added since come in now, not at the next game)
+        try:
+            engine.val.add_hud()
+        except Exception as e:
+            __import__("logging").getLogger("sgfx").warning("VALORANT HUDs not added: %s", e)
