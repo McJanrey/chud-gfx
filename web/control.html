@@ -18,6 +18,7 @@
     <button data-page="ros">Run of show</button>
     <button data-page="cams">Cameras</button>
     <button data-page="stream">Stream</button>
+    <button data-page="valorant">VALORANT</button>
     <div class="group">Build</div>
     <button data-page="composer">Composer</button>
     <button data-page="hudbuilder">HUD Builder</button>
@@ -112,6 +113,10 @@
   <div class="pagehead"><h2>Run of show</h2><span class="muted">Templates per game build tonight's show. Next moves it on and cues the segment's graphics on Preview.</span></div>
   <div class="ros3" id="ros-body"></div>
 </main>
+<main id="page-valorant" class="page" hidden>
+  <div class="pagehead"><h2>VALORANT</h2><span class="muted">Match data, teams, series and the on-air graphics for a VALORANT broadcast.</span></div>
+  <div id="val-body"></div>
+</main>
 <main id="page-global" class="page" hidden>
   <div class="pagehead"><h2>Global</h2><span class="muted">Set once: every graphic in this workspace can use these.</span></div>
   <div class="grid" id="global-grid"></div>
@@ -165,6 +170,7 @@
 <div class="toast" id="toast" hidden></div>
 <script type="module" src="ui/control.js"></script>
 <script type="module" src="ui/global.js"></script>
+<script type="module" src="ui/valpage.js"></script>
 <script type="module" src="ui/setup.js"></script>
 <script type="module" src="ui/event.js"></script>
 <script type="module" src="ui/composer.js"></script>

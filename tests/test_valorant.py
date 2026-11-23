@@ -27,6 +27,20 @@ class Valorant(unittest.TestCase):
         rows = call(self.engine.port, "/api/state")[1]["data"]["tables"].get(name) or []
         return {r[0]: r[1] for r in rows[1:]}
 
+    def test_name_overrides_and_map_plan(self):
+        self.send({"players": [{"team": 0, "slot": 1, "name": "Kai"}, {"team": 1, "slot": 2, "name": "Onyx"}]})
+        names = {"left": ["Kaito", "", "", "", ""], "right": ["", "", "", "", ""]}
+        self.assertEqual(call(self.engine.port, "/api/val", {"names": names, "plan": [{"map": "Ascent", "result": "left"}, {"map": "Bind", "result": "x"}]})[0], 200)
+        self.assertEqual(self.table("VALORANT")["Left 1 name"], "Kaito")
+        self.send({"players": [{"team": 0, "slot": 1, "name": "Kai2"}]})   # (a new read never undoes a typed name)
+        self.assertEqual(self.table("VALORANT")["Left 1 name"], "Kaito")
+        v = call(self.engine.port, "/api/state")[1]["val"]
+        self.assertEqual([p["read_name"] for p in v["match"]["players"]], ["Kai2", "Onyx"])
+        self.assertEqual(v["plan"], [{"map": "Ascent", "result": "left"}, {"map": "Bind", "result": ""}])
+        self.assertGreaterEqual(v["updates"], 2)
+        call(self.engine.port, "/api/val", {"names": {"left": [""] * 5, "right": [""] * 5}})   # (cleared: the game's name is back)
+        self.assertEqual(self.table("VALORANT")["Left 1 name"], "Kai2")
+
     def test_match_rounds_maps_and_series(self):
         self.send({"teams": [{"name": "Saints", "score": 0}, {"name": "Lancers", "score": 0}], "round": 1, "map": "Ascent", "first_attack": 1,
                    "players": [{"team": 0, "slot": 1, "name": "Kai", "agent": "Jett", "alive": True, "credits": 800, "ult": 2, "ult_max": 7, "kills": 0, "deaths": 0}]})

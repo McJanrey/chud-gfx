@@ -5,7 +5,7 @@ import { $, el, api, App, ask, toast, morph } from "./lib.js";
 const STATE = { off: "Waiting for a reader", waiting: "Reader went quiet", on: "Reading" };
 
 // Outputs: the browser-source links (copy into OBS / vMix as 1920x1080 browser sources) and the data source.
-function outputs(app) {
+export function outputs(app) {
   const base = `http://127.0.0.1:${app.port || location.port}`;
   const row = (label, url) => el("label", { class: "f" }, el("span", {}, label),
     el("div", { class: "row" }, el("input", { readonly: true, value: url, class: "mono", onclick: e => e.target.select() }),

@@ -145,6 +145,8 @@ class Match:
             if isinstance(p, dict) and p.get("team") in (0, 1) and 1 <= int(p.get("slot") or 0) <= SLOTS:
                 row = self.players.setdefault((p["team"], int(p["slot"])), {})
                 row.update({k: p[k] for k in PLAYER if k in p})
+                if "name" in p:
+                    row["read_name"] = p["name"]   # (what the game says; "name" may be an override from the VALORANT page)
                 if "pick" in p and (not p["pick"] or UUID.match(str(p["pick"]))):
                     row["pick"] = str(p["pick"] or "")
                 if "locked" in p:
@@ -180,7 +182,7 @@ class Match:
 
 class Val:
     def __init__(self, engine):
-        self.engine, self.match, self.at, self.source = engine, Match(), 0, ""
+        self.engine, self.match, self.at, self.source, self.count = engine, Match(), 0, "", 0
         self.last_round = None
         self._maps, self._folder = [], None
 
@@ -198,8 +200,22 @@ class Val:
         if body.get("target") in ("chud", "owen", "off"):   # (which HUD draws it: Chud Hud, or the SCC Broadcast Engine's VAL HUD)
             c["target"] = body["target"]
             c["chud"] = ""
+        if isinstance(body.get("names"), dict):   # (the VALORANT page's name boxes: {"left": [5 names], "right": [5 names]}, blank = the game's own)
+            c["names"] = {s: [str(n or "").strip()[:40] for n in (list(body["names"].get(s) or []) + [""] * SLOTS)[:SLOTS]] for s in ("left", "right")}
+        if isinstance(body.get("plan"), list):   # (the series' maps: [{"map": "Ascent", "result": "" | "left" | "right"}])
+            c["plan"] = [{"map": str(m.get("map") or "")[:40], "result": m.get("result") if m.get("result") in ("left", "right") else ""}
+                         for m in body["plan"][:7] if isinstance(m, dict)]
         self.engine.project["val"] = c
+        self.apply_names()
         self.engine.save_project()
+        self.engine.changed()
+
+    def apply_names(self):
+        """A typed name wins over the game's: put in each player's name now, and again after every read."""
+        names = self.cfg().get("names") or {}
+        for (team, slot), p in self.match.players.items():
+            over = ((names.get(SIDES[team].lower()) or [""] * SLOTS) + [""] * SLOTS)[slot - 1]
+            p["name"] = over or p.get("read_name", p.get("name", ""))
 
     # --- finished maps (val-maps.json in the workspace) ---
     def _path(self):
@@ -236,10 +252,11 @@ class Val:
         if not isinstance(body, dict):
             raise ValueError("Send a set of fields")
         first = not self.at
-        self.at, self.source = time.time(), ip
+        self.at, self.source, self.count = time.time(), ip, self.count + 1
         base = getattr(self.match, "base", None)   # (the last score pair taken as true: a misread never moves it)
         spike, atk = self.match.spike, attackers(self.match.round, self.match.first)
         self.match.merge(body)
+        self.apply_names()
         ev, w = body.get("event"), body.get("winner")
         if not ev and "teams" in body:   # (scores only: a round won is a score one up on one side alone)
             after = [int(t["score"] or 0) for t in self.match.teams]
@@ -413,9 +430,18 @@ class Val:
                 "demo": bool(getattr(getattr(self.engine, "valdemo", None), "on", False)),
                 "chud": {"target": c.get("target", "owen" if c.get("chud_on", True) else "off"), "url": c.get("chud") or (self.CHUD if c.get("target") == "chud" else self.OWEN),
                          "ok": time.time() - getattr(self, "chud_ok", 0) < 5},
+                "plan": c.get("plan") or [], "names": c.get("names") or {}, "updates": self.count, "match": self.match_public(),
                 "source": self.source, "ago": round(time.time() - self.at) if self.at else None,
                 "maps": [{"n": i + 1, "map": m.get("map", ""), "winner": m.get("winner"),
                           "score": [m["fields"].get("Left score"), m["fields"].get("Right score")]} for i, m in enumerate(self.maps())]}
+
+    def match_public(self):
+        """What the VALORANT page shows: the clock, the timeouts, and each player as read (and as named)."""
+        m = self.match
+        return {"map": m.map, "phase": m.phase, "round": m.round, "timer": m.timer, "first_attack": m.first, "banner": m.banner,
+                "select": dict(m.select), "teams": [{"name": t["name"], "score": t["score"], "timeouts": t.get("timeouts")} for t in m.teams],
+                "players": [dict({k: p.get(k) for k in ("name", "read_name", "agent_id", "alive", "health", "credits", "kills", "deaths", "assists", "pick", "locked")}, team=t, slot=s)
+                            for (t, s), p in sorted(m.players.items())]}
 
     # --- ready-made graphics, added once each (one deleted stays gone) ---
     def add_hud(self):
