@@ -1174,7 +1174,10 @@ class Engine:
         elif path == "/api/val/reader":   # (read this PC's screen: the observer's VALORANT)
             r = self.valreader
             r.on = bool(body.get("on", r.on))
-            r.screen = int(body.get("screen") or r.screen)
+            if body.get("screen"):
+                r.screen = max(1, int(body["screen"]))
+                self.project.setdefault("val", {})["screen"] = r.screen   # (remembered: the same screen after a restart)
+                self.save_project()
             result = {"on": r.on, "screen": r.screen, "status": r.status}
         elif path == "/api/lol":
             self.lol.set(body)
@@ -1416,6 +1419,18 @@ def handler(engine):
                 return self.wfile.write(data)
             if path == "/api/assets":
                 return self._send(200, json.dumps({"assets": engine.assets()}))
+            if path == "/api/screens":   # (this PC's screens: which one a game is on, for the screen readers)
+                from . import screens
+                return self._send(200, json.dumps(screens.listing()))
+            if path.startswith("/api/screens/") and path.endswith(".jpg"):
+                from . import screens
+                try:
+                    data = screens.thumb(int(path[len("/api/screens/"):-4]))
+                except (ValueError, OSError):
+                    data = None
+                if not data:
+                    return self._send(404, b'{"error": "no such screen"}')
+                return self._send(200, data, "image/jpeg")
             if path == "/api/val/catalog":   # (every agent and map, for pickers)
                 return self._send(200, json.dumps(valorant.catalog()))
             if path == "/api/val/hud":   # (our own VAL HUD's data)

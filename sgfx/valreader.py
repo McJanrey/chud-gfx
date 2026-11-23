@@ -562,4 +562,8 @@ class Reader:
 
 def start(engine):
     engine.valreader = Reader(engine)
+    try:
+        engine.valreader.screen = max(1, int(((engine.project.get("val") or {}).get("screen")) or 1))   # (the screen picked last time)
+    except (TypeError, ValueError):
+        pass
     threading.Thread(target=engine.valreader.run, daemon=True, name="val-reader").start()

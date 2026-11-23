@@ -508,3 +508,7 @@ input[type=range] { padding: 0; accent-color: var(--accent); }
 .cmp-safe-frame.title { border-color: rgb(200 240 60 / .55); }
 .cmp-safe-frame span { position: absolute; right: 4px; top: 2px; font: 10px var(--mono); color: rgb(255 255 255 / .5); }
 .cmp-safe-frame.title span { color: rgb(200 240 60 / .7); top: auto; bottom: 2px; }
+
+/* screen picker (which screen a game is on) */
+.screen-picker { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+.screen-picker .screen-pic { width: 192px; aspect-ratio: 16 / 9; object-fit: contain; background: #000; border-radius: 6px; border: 1px solid var(--line, rgba(255,255,255,.12)); }

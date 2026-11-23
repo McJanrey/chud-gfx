@@ -4,6 +4,25 @@ import { $, el, api, App, ask, toast, morph } from "./lib.js";
 
 const STATE = { off: "Waiting for a reader", waiting: "Reader went quiet", on: "Reading" };
 
+// Which of this PC's screens a game is on (for a screen reader): each screen by its size and place, and a live
+// picture of the one picked so you can see the game is there. Any game's screen reader can use it.
+let screens = null, screensAt = 0;
+const where = (m, all) => {
+  const main = all.find(x => x.main) || all[0];
+  if (m.main) return "main screen";
+  return m.x >= main.x + main.w ? "right of main" : m.x + m.w <= main.x ? "left of main" : m.y + m.h <= main.y ? "above main" : m.y >= main.y + main.h ? "below main" : "";
+};
+export function screenPicker(current, onPick) {
+  const sel = el("select", { "aria-label": "Game screen", onchange: e => { onPick(+e.target.value); pic.src = `/api/screens/${e.target.value}.jpg?t=${Date.now()}`; } });
+  const pic = el("img", { class: "screen-pic", alt: "What's on that screen now", src: `/api/screens/${current}.jpg?t=${Math.floor(Date.now() / 5000)}` });
+  const fill = list => sel.replaceChildren(...list.map(m => el("option", { value: m.n, selected: m.n === current },
+    `Screen ${m.n} · ${m.w}×${m.h}${where(m, list) ? " · " + where(m, list) : ""}`)));
+  if (screens) fill(screens); else sel.appendChild(el("option", { value: current, selected: true }, `Screen ${current}`));
+  if (!screens || Date.now() - screensAt > 30000) fetch("/api/screens").then(r => r.json()).then(list => { screens = list; screensAt = Date.now(); if (sel.isConnected || true) fill(list); }).catch(() => {});
+  const again = el("button", { class: "small ghost", title: "Look at the screen again", onclick: () => { pic.src = `/api/screens/${sel.value}.jpg?t=${Date.now()}`; } }, "Refresh");
+  return el("div", { class: "screen-picker" }, el("label", { class: "f" }, el("span", {}, "Game screen"), sel), pic, again);
+}
+
 export function valCard() {
   const v = App.state.val || { on: true, series: true, status: "off", maps: [] };
   const app = App.state.app || {}, host = (app.addresses || [])[0] || "127.0.0.1";
@@ -14,7 +33,7 @@ export function valCard() {
     el("p", { class: "muted small" }, `A reader sends the match here as it changes (score, round, sides, spike, players). Chud Hud or a screen reader on the observer PC posts to http://${host}:${app.port || 7820}/api/val/ingest. The ready-made graphics (scorebug, round win, spike, timeout, tech pause, buy-phase scoreboard) appear in the HUD Builder as "VALORANT graphics" with the first data, each switched off until you turn it on.`),
     el("div", { class: "row" },
       el("label", { class: "switch" }, el("input", { type: "checkbox", checked: !!(v.reader || {}).on, onchange: e => api("/api/val/reader", { on: e.target.checked }) }), "Read this PC's screen"),
-      el("label", { class: "f" }, el("span", {}, "Screen"), el("input", { type: "number", min: 1, value: (v.reader || {}).screen || 1, "aria-label": "Screen number", onchange: e => api("/api/val/reader", { screen: +e.target.value || 1 }) })),
+      screenPicker((v.reader || {}).screen || 1, n => api("/api/val/reader", { screen: n })),
       el("span", { class: "muted small" }, (v.reader || {}).on ? (v.reader.status || "") : "")),
     el("label", { class: "f" }, el("span", {}, "Send to a HUD"),
       el("select", { "aria-label": "Send to a HUD", onchange: e => api("/api/val", { target: e.target.value }) },
