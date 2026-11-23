@@ -21,12 +21,17 @@ class Demo:
         if self.on:
             return
         self.on = True
+        self._maps_before = len(self.engine.val.maps())   # (the sample's finished maps are taken away again when it stops)
         self._stop.clear()
         threading.Thread(target=self.run, daemon=True, name="val-demo").start()
 
     def stop(self):
+        was = self.on
         self.on = False
         self._stop.set()
+        if was:   # (its made-up players, score and maps leave with it: Live then shows only the real game)
+            time.sleep(0.6)   # (its last send lands first)
+            self.engine.val.reset_match(getattr(self, "_maps_before", None))
 
     def send(self, body):
         try:

@@ -238,6 +238,15 @@ class Val:
             json.dump(self._maps, f, indent=1)
         os.replace(tmp, self._path())
 
+    def reset_match(self, keep_maps=None):
+        """A fresh match (no players, score 0): the sample match's made-up players don't stay on a live HUD.
+        keep_maps: the finished maps to keep (the ones from before the sample match)."""
+        self.match, self.last_round, self.at, self.source = Match(), None, 0, ""
+        if keep_maps is not None and len(self.maps()) > keep_maps:
+            self._maps = self._maps[:keep_maps]
+            self._write()
+        self.engine.changed()
+
     def clear(self):
         """A new series: the finished maps are put aside (val-maps-<time>.json), not deleted."""
         if self.maps():
