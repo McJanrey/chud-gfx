@@ -1048,7 +1048,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Jett/Jett.png"
 },
 {
 "id": "ow0040",
@@ -1128,7 +1129,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Jett/Jett.png"
 },
 {
 "id": "ow0043",
@@ -1185,7 +1187,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Jett/C.png"
 },
 {
 "id": "ow0045",
@@ -1210,7 +1213,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0046",
@@ -1235,7 +1239,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Jett/Q.png"
 },
 {
 "id": "ow0047",
@@ -1260,7 +1265,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0048",
@@ -1285,7 +1291,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Jett/E.png"
 },
 {
 "id": "ow0049",
@@ -1310,7 +1317,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0050",
@@ -1335,7 +1343,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/ring/3/7.svg"
 },
 {
 "id": "ow0051",
@@ -1361,7 +1370,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Jett/X.png"
 },
 {
 "id": "ow0052",
@@ -1535,7 +1545,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/guns/Vandal.png"
 },
 {
 "id": "ow0058",
@@ -1560,7 +1571,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/armor/heavy.svg"
 },
 {
 "id": "ow0059",
@@ -1617,7 +1629,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/obar/100/66b5f4/l.svg"
 },
 {
 "id": "ow0061",
@@ -2427,7 +2440,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Sova/Sova.png"
 },
 {
 "id": "ow0094",
@@ -2507,7 +2521,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Sova/Sova.png"
 },
 {
 "id": "ow0097",
@@ -2564,7 +2579,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Sova/C.png"
 },
 {
 "id": "ow0099",
@@ -2589,7 +2605,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0100",
@@ -2614,7 +2631,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Sova/Q.png"
 },
 {
 "id": "ow0101",
@@ -2639,7 +2657,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0102",
@@ -2664,7 +2683,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Sova/E.png"
 },
 {
 "id": "ow0103",
@@ -2689,7 +2709,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0104",
@@ -2714,7 +2735,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/ring/3/7.svg"
 },
 {
 "id": "ow0105",
@@ -2740,7 +2762,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Sova/X.png"
 },
 {
 "id": "ow0106",
@@ -2914,7 +2937,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/guns/Vandal.png"
 },
 {
 "id": "ow0112",
@@ -2939,7 +2963,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/armor/heavy.svg"
 },
 {
 "id": "ow0113",
@@ -2996,7 +3021,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/obar/100/66b5f4/l.svg"
 },
 {
 "id": "ow0115",
@@ -3076,7 +3102,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Omen/Omen.png"
 },
 {
 "id": "ow0118",
@@ -3156,7 +3183,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Omen/Omen.png"
 },
 {
 "id": "ow0121",
@@ -3213,7 +3241,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Omen/C.png"
 },
 {
 "id": "ow0123",
@@ -3238,7 +3267,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0124",
@@ -3263,7 +3293,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Omen/Q.png"
 },
 {
 "id": "ow0125",
@@ -3288,7 +3319,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0126",
@@ -3313,7 +3345,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Omen/E.png"
 },
 {
 "id": "ow0127",
@@ -3338,7 +3371,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0128",
@@ -3363,7 +3397,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/ring/3/7.svg"
 },
 {
 "id": "ow0129",
@@ -3389,7 +3424,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Omen/X.png"
 },
 {
 "id": "ow0130",
@@ -3563,7 +3599,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/guns/Vandal.png"
 },
 {
 "id": "ow0136",
@@ -3588,7 +3625,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/armor/heavy.svg"
 },
 {
 "id": "ow0137",
@@ -3645,7 +3683,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/obar/100/66b5f4/l.svg"
 },
 {
 "id": "ow0139",
@@ -3725,7 +3764,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Killjoy/Killjoy.png"
 },
 {
 "id": "ow0142",
@@ -3805,7 +3845,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Killjoy/Killjoy.png"
 },
 {
 "id": "ow0145",
@@ -3862,7 +3903,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Killjoy/C.png"
 },
 {
 "id": "ow0147",
@@ -3887,7 +3929,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0148",
@@ -3912,7 +3955,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Killjoy/Q.png"
 },
 {
 "id": "ow0149",
@@ -3937,7 +3981,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0150",
@@ -3962,7 +4007,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Killjoy/E.png"
 },
 {
 "id": "ow0151",
@@ -3987,7 +4033,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0152",
@@ -4012,7 +4059,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/ring/3/7.svg"
 },
 {
 "id": "ow0153",
@@ -4038,7 +4086,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Killjoy/X.png"
 },
 {
 "id": "ow0154",
@@ -4212,7 +4261,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/guns/Vandal.png"
 },
 {
 "id": "ow0160",
@@ -4237,7 +4287,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/armor/heavy.svg"
 },
 {
 "id": "ow0161",
@@ -4294,7 +4345,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/obar/100/66b5f4/l.svg"
 },
 {
 "id": "ow0163",
@@ -4374,7 +4426,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Skye/Skye.png"
 },
 {
 "id": "ow0166",
@@ -4454,7 +4507,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Skye/Skye.png"
 },
 {
 "id": "ow0169",
@@ -4511,7 +4565,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Skye/C.png"
 },
 {
 "id": "ow0171",
@@ -4536,7 +4591,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0172",
@@ -4561,7 +4617,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Skye/Q.png"
 },
 {
 "id": "ow0173",
@@ -4586,7 +4643,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0174",
@@ -4611,7 +4669,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Skye/E.png"
 },
 {
 "id": "ow0175",
@@ -4636,7 +4695,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0176",
@@ -4661,7 +4721,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/ring/3/7.svg"
 },
 {
 "id": "ow0177",
@@ -4687,7 +4748,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Skye/X.png"
 },
 {
 "id": "ow0178",
@@ -4861,7 +4923,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/guns/Vandal.png"
 },
 {
 "id": "ow0184",
@@ -4886,7 +4949,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/armor/heavy.svg"
 },
 {
 "id": "ow0185",
@@ -4943,7 +5007,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/obar/100/66b5f4/l.svg"
 },
 {
 "id": "ow0187",
@@ -5026,7 +5091,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Raze/Raze.png"
 },
 {
 "id": "ow0190",
@@ -5109,7 +5175,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Raze/Raze.png"
 },
 {
 "id": "ow0193",
@@ -5166,7 +5233,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Raze/C.png"
 },
 {
 "id": "ow0195",
@@ -5191,7 +5259,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0196",
@@ -5216,7 +5285,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Raze/Q.png"
 },
 {
 "id": "ow0197",
@@ -5241,7 +5311,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0198",
@@ -5266,7 +5337,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Raze/E.png"
 },
 {
 "id": "ow0199",
@@ -5291,7 +5363,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0200",
@@ -5316,7 +5389,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/ring/3/7.svg"
 },
 {
 "id": "ow0201",
@@ -5342,7 +5416,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Raze/X.png"
 },
 {
 "id": "ow0202",
@@ -5513,7 +5588,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/guns/Phantom.png"
 },
 {
 "id": "ow0208",
@@ -5538,7 +5614,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/armor/heavy.svg"
 },
 {
 "id": "ow0209",
@@ -5595,7 +5672,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/obar/100/ee5b58/r.svg"
 },
 {
 "id": "ow0211",
@@ -5678,7 +5756,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Fade/Fade.png"
 },
 {
 "id": "ow0214",
@@ -5761,7 +5840,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Fade/Fade.png"
 },
 {
 "id": "ow0217",
@@ -5818,7 +5898,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Fade/C.png"
 },
 {
 "id": "ow0219",
@@ -5843,7 +5924,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0220",
@@ -5868,7 +5950,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Fade/Q.png"
 },
 {
 "id": "ow0221",
@@ -5893,7 +5976,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0222",
@@ -5918,7 +6002,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Fade/E.png"
 },
 {
 "id": "ow0223",
@@ -5943,7 +6028,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0224",
@@ -5968,7 +6054,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/ring/3/7.svg"
 },
 {
 "id": "ow0225",
@@ -5994,7 +6081,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Fade/X.png"
 },
 {
 "id": "ow0226",
@@ -6165,7 +6253,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/guns/Phantom.png"
 },
 {
 "id": "ow0232",
@@ -6190,7 +6279,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/armor/heavy.svg"
 },
 {
 "id": "ow0233",
@@ -6247,7 +6337,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/obar/100/ee5b58/r.svg"
 },
 {
 "id": "ow0235",
@@ -6330,7 +6421,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Viper/Viper.png"
 },
 {
 "id": "ow0238",
@@ -6413,7 +6505,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Viper/Viper.png"
 },
 {
 "id": "ow0241",
@@ -6470,7 +6563,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Viper/C.png"
 },
 {
 "id": "ow0243",
@@ -6495,7 +6589,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0244",
@@ -6520,7 +6615,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Viper/Q.png"
 },
 {
 "id": "ow0245",
@@ -6545,7 +6641,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0246",
@@ -6570,7 +6667,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Viper/E.png"
 },
 {
 "id": "ow0247",
@@ -6595,7 +6693,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0248",
@@ -6620,7 +6719,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/ring/3/7.svg"
 },
 {
 "id": "ow0249",
@@ -6646,7 +6746,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Viper/X.png"
 },
 {
 "id": "ow0250",
@@ -6817,7 +6918,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/guns/Phantom.png"
 },
 {
 "id": "ow0256",
@@ -6842,7 +6944,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/armor/heavy.svg"
 },
 {
 "id": "ow0257",
@@ -6899,7 +7002,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/obar/100/ee5b58/r.svg"
 },
 {
 "id": "ow0259",
@@ -6982,7 +7086,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Cypher/Cypher.png"
 },
 {
 "id": "ow0262",
@@ -7065,7 +7170,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Cypher/Cypher.png"
 },
 {
 "id": "ow0265",
@@ -7122,7 +7228,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Cypher/C.png"
 },
 {
 "id": "ow0267",
@@ -7147,7 +7254,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0268",
@@ -7172,7 +7280,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Cypher/Q.png"
 },
 {
 "id": "ow0269",
@@ -7197,7 +7306,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0270",
@@ -7222,7 +7332,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Cypher/E.png"
 },
 {
 "id": "ow0271",
@@ -7247,7 +7358,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0272",
@@ -7272,7 +7384,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/ring/3/7.svg"
 },
 {
 "id": "ow0273",
@@ -7298,7 +7411,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Cypher/X.png"
 },
 {
 "id": "ow0274",
@@ -7469,7 +7583,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/guns/Phantom.png"
 },
 {
 "id": "ow0280",
@@ -7494,7 +7609,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/armor/heavy.svg"
 },
 {
 "id": "ow0281",
@@ -7551,7 +7667,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/obar/100/ee5b58/r.svg"
 },
 {
 "id": "ow0283",
@@ -7634,7 +7751,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Breach/Breach.png"
 },
 {
 "id": "ow0286",
@@ -7717,7 +7835,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Breach/Breach.png"
 },
 {
 "id": "ow0289",
@@ -7774,7 +7893,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Breach/C.png"
 },
 {
 "id": "ow0291",
@@ -7799,7 +7919,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0292",
@@ -7824,7 +7945,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Breach/Q.png"
 },
 {
 "id": "ow0293",
@@ -7849,7 +7971,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0294",
@@ -7874,7 +7997,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Breach/E.png"
 },
 {
 "id": "ow0295",
@@ -7899,7 +8023,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0296",
@@ -7924,7 +8049,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/ring/3/7.svg"
 },
 {
 "id": "ow0297",
@@ -7950,7 +8076,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Breach/X.png"
 },
 {
 "id": "ow0298",
@@ -8121,7 +8248,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/guns/Phantom.png"
 },
 {
 "id": "ow0304",
@@ -8146,7 +8274,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/armor/heavy.svg"
 },
 {
 "id": "ow0305",
@@ -8203,7 +8332,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/obar/100/ee5b58/r.svg"
 }
 ]
 },
@@ -8423,7 +8553,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Jett/C.png"
 },
 {
 "id": "ow0483",
@@ -8448,7 +8579,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0484",
@@ -8473,7 +8605,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Jett/Q.png"
 },
 {
 "id": "ow0485",
@@ -8498,7 +8631,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0486",
@@ -8523,7 +8657,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Jett/E.png"
 },
 {
 "id": "ow0487",
@@ -8548,7 +8683,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0488",
@@ -8628,7 +8764,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/guns/Vandal.png"
 },
 {
 "id": "ow0491",
@@ -8653,7 +8790,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/ring/3/7.svg"
 },
 {
 "id": "ow0492",
@@ -8679,7 +8817,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Jett/X.png"
 },
 {
 "id": "ow0493",
@@ -8758,7 +8897,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Jett/Jett.png"
 },
 {
 "id": "ow0496",
@@ -8958,7 +9098,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Sova/C.png"
 },
 {
 "id": "ow0503",
@@ -8983,7 +9124,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0504",
@@ -9008,7 +9150,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Sova/Q.png"
 },
 {
 "id": "ow0505",
@@ -9033,7 +9176,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0506",
@@ -9058,7 +9202,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Sova/E.png"
 },
 {
 "id": "ow0507",
@@ -9083,7 +9228,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0508",
@@ -9163,7 +9309,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/guns/Vandal.png"
 },
 {
 "id": "ow0511",
@@ -9188,7 +9335,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/ring/3/7.svg"
 },
 {
 "id": "ow0512",
@@ -9214,7 +9362,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Sova/X.png"
 },
 {
 "id": "ow0513",
@@ -9293,7 +9442,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Sova/Sova.png"
 },
 {
 "id": "ow0516",
@@ -9493,7 +9643,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Omen/C.png"
 },
 {
 "id": "ow0523",
@@ -9518,7 +9669,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0524",
@@ -9543,7 +9695,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Omen/Q.png"
 },
 {
 "id": "ow0525",
@@ -9568,7 +9721,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0526",
@@ -9593,7 +9747,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Omen/E.png"
 },
 {
 "id": "ow0527",
@@ -9618,7 +9773,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0528",
@@ -9698,7 +9854,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/guns/Vandal.png"
 },
 {
 "id": "ow0531",
@@ -9723,7 +9880,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/ring/3/7.svg"
 },
 {
 "id": "ow0532",
@@ -9749,7 +9907,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Omen/X.png"
 },
 {
 "id": "ow0533",
@@ -9828,7 +9987,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Omen/Omen.png"
 },
 {
 "id": "ow0536",
@@ -10028,7 +10188,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Killjoy/C.png"
 },
 {
 "id": "ow0543",
@@ -10053,7 +10214,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0544",
@@ -10078,7 +10240,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Killjoy/Q.png"
 },
 {
 "id": "ow0545",
@@ -10103,7 +10266,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0546",
@@ -10128,7 +10292,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Killjoy/E.png"
 },
 {
 "id": "ow0547",
@@ -10153,7 +10318,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0548",
@@ -10233,7 +10399,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/guns/Vandal.png"
 },
 {
 "id": "ow0551",
@@ -10258,7 +10425,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/ring/3/7.svg"
 },
 {
 "id": "ow0552",
@@ -10284,7 +10452,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Killjoy/X.png"
 },
 {
 "id": "ow0553",
@@ -10363,7 +10532,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Killjoy/Killjoy.png"
 },
 {
 "id": "ow0556",
@@ -10563,7 +10733,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Skye/C.png"
 },
 {
 "id": "ow0563",
@@ -10588,7 +10759,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0564",
@@ -10613,7 +10785,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Skye/Q.png"
 },
 {
 "id": "ow0565",
@@ -10638,7 +10811,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0566",
@@ -10663,7 +10837,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Skye/E.png"
 },
 {
 "id": "ow0567",
@@ -10688,7 +10863,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0568",
@@ -10768,7 +10944,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/guns/Vandal.png"
 },
 {
 "id": "ow0571",
@@ -10793,7 +10970,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/ring/3/7.svg"
 },
 {
 "id": "ow0572",
@@ -10819,7 +10997,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Skye/X.png"
 },
 {
 "id": "ow0573",
@@ -10898,7 +11077,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Skye/Skye.png"
 },
 {
 "id": "ow0576",
@@ -11098,7 +11278,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Raze/C.png"
 },
 {
 "id": "ow0583",
@@ -11123,7 +11304,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0584",
@@ -11148,7 +11330,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Raze/Q.png"
 },
 {
 "id": "ow0585",
@@ -11173,7 +11356,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0586",
@@ -11198,7 +11382,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Raze/E.png"
 },
 {
 "id": "ow0587",
@@ -11223,7 +11408,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0588",
@@ -11300,7 +11486,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/guns/Phantom.png"
 },
 {
 "id": "ow0591",
@@ -11325,7 +11512,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/ring/3/7.svg"
 },
 {
 "id": "ow0592",
@@ -11351,7 +11539,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Raze/X.png"
 },
 {
 "id": "ow0593",
@@ -11433,7 +11622,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Raze/Raze.png"
 },
 {
 "id": "ow0596",
@@ -11633,7 +11823,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Fade/C.png"
 },
 {
 "id": "ow0603",
@@ -11658,7 +11849,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0604",
@@ -11683,7 +11875,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Fade/Q.png"
 },
 {
 "id": "ow0605",
@@ -11708,7 +11901,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0606",
@@ -11733,7 +11927,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Fade/E.png"
 },
 {
 "id": "ow0607",
@@ -11758,7 +11953,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0608",
@@ -11835,7 +12031,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/guns/Phantom.png"
 },
 {
 "id": "ow0611",
@@ -11860,7 +12057,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/ring/3/7.svg"
 },
 {
 "id": "ow0612",
@@ -11886,7 +12084,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Fade/X.png"
 },
 {
 "id": "ow0613",
@@ -11968,7 +12167,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Fade/Fade.png"
 },
 {
 "id": "ow0616",
@@ -12168,7 +12368,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Viper/C.png"
 },
 {
 "id": "ow0623",
@@ -12193,7 +12394,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0624",
@@ -12218,7 +12420,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Viper/Q.png"
 },
 {
 "id": "ow0625",
@@ -12243,7 +12446,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0626",
@@ -12268,7 +12472,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Viper/E.png"
 },
 {
 "id": "ow0627",
@@ -12293,7 +12498,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0628",
@@ -12370,7 +12576,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/guns/Phantom.png"
 },
 {
 "id": "ow0631",
@@ -12395,7 +12602,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/ring/3/7.svg"
 },
 {
 "id": "ow0632",
@@ -12421,7 +12629,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Viper/X.png"
 },
 {
 "id": "ow0633",
@@ -12503,7 +12712,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Viper/Viper.png"
 },
 {
 "id": "ow0636",
@@ -12703,7 +12913,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Cypher/C.png"
 },
 {
 "id": "ow0643",
@@ -12728,7 +12939,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0644",
@@ -12753,7 +12965,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Cypher/Q.png"
 },
 {
 "id": "ow0645",
@@ -12778,7 +12991,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0646",
@@ -12803,7 +13017,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Cypher/E.png"
 },
 {
 "id": "ow0647",
@@ -12828,7 +13043,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0648",
@@ -12905,7 +13121,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/guns/Phantom.png"
 },
 {
 "id": "ow0651",
@@ -12930,7 +13147,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/ring/3/7.svg"
 },
 {
 "id": "ow0652",
@@ -12956,7 +13174,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Cypher/X.png"
 },
 {
 "id": "ow0653",
@@ -13038,7 +13257,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Cypher/Cypher.png"
 },
 {
 "id": "ow0656",
@@ -13238,7 +13458,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Breach/C.png"
 },
 {
 "id": "ow0663",
@@ -13263,7 +13484,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0664",
@@ -13288,7 +13510,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Breach/Q.png"
 },
 {
 "id": "ow0665",
@@ -13313,7 +13536,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0666",
@@ -13338,7 +13562,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Breach/E.png"
 },
 {
 "id": "ow0667",
@@ -13363,7 +13588,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/marks/1/2.svg"
 },
 {
 "id": "ow0668",
@@ -13440,7 +13666,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/guns/Phantom.png"
 },
 {
 "id": "ow0671",
@@ -13465,7 +13692,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "/val-svg/ring/3/7.svg"
 },
 {
 "id": "ow0672",
@@ -13491,7 +13719,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Breach/X.png"
 },
 {
 "id": "ow0673",
@@ -13573,7 +13802,8 @@
 "dur": 340,
 "delay": 0
 }
-}
+},
+"placeholder": "assets/hud/agents/Breach/Breach.png"
 },
 {
 "id": "ow0676",
