@@ -119,7 +119,10 @@ function drawHead() {
   const chip = (k, n) => el("button", { class: "small" + (mode === k ? " on" : ""), onclick: () => { mode = k; applyShow(); drawHead(); } }, n);
   const g = gameName(h.game);
   $("#hb-show").replaceChildren(el("span", { class: "muted small" }, "Show:"), chip("live", "Live"), chip("all", "Everything"), ...(PHASES[g] || []).map(([n]) => chip(n, n)),
-    g === "VALORANT" ? el("button", { class: "small ghost", title: "A made-up match, so names, money and guns show without a game", onclick: () => api("/api/val/demo", { on: !demo }).then(r => { demo = r.on; toast(r.on ? "Sample match on" : "Sample match off"); drawHead(); }) }, demo ? "Stop sample match" : "Sample match") : "");
+    // (where the HUD's data comes from, as one switch: the game (Live feed) or a made-up match (Demo match))
+    g === "VALORANT" ? el("span", { class: "seg", role: "group", "aria-label": "Data" },
+      el("button", { class: "small" + (demo ? "" : " on"), title: "The real game (the reader on the VALORANT page)", onclick: () => demo && api("/api/val/demo", { on: false }).then(r => { demo = r.on; drawHead(); }) }, "Live feed"),
+      el("button", { class: "small" + (demo ? " on" : ""), title: "A made-up match, so names, money and guns show without a game", onclick: () => !demo && api("/api/val/demo", { on: true }).then(r => { demo = r.on; drawHead(); }) }, "Demo match")) : "");
 }
 
 // --- HUD and part actions ----------------------------------------------------------------------------
